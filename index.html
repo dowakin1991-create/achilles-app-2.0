@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uk" class="auto-theme">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Achilles">
+    <link rel="apple-touch-icon" href="icon.png">
+    
+    <title>Achilles</title>
+    
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #1a1a1a;
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: rgba(0, 0, 0, 0.1);
+            --accent: #007aff;
+            --bg-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+        }
+
+        body.dark {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --glass-bg: rgba(30, 30, 30, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: rgba(0, 0, 0, 0.5);
+            --bg-gradient: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            padding-bottom: 80px; /* Місце для нижнього меню */
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px var(--glass-shadow);
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-top: max(20px, env(safe-area-inset-top)); /* Адаптація під "чубчик" iPhone */
+        }
+
+        .container { padding: 0 15px; }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+        }
+
+        .stat-card h3 { font-size: 14px; opacity: 0.8; margin-bottom: 5px; }
+        .stat-card p { font-size: 22px; font-weight: 600; }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-color);
+            outline: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size: 16px;
+        }
+
+        button { background: var(--accent); color: white; border: none; font-weight: bold; margin-top: 15px;}
+        
+        #search-results {
+            list-style: none;
+            margin-top: -5px;
+            margin-bottom: 10px;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        #search-results li {
+            padding: 12px 15px;
+            background: var(--glass-bg);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            padding-bottom: max(15px, env(safe-area-inset-bottom));
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-top: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+        .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
+        .nav-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass" id="app-title">Achilles</header>
+
+    <div class="container">
+        <div id="home" class="section active">
+            <div class="glass">
+                <h2 data-i18n="daily_goal">Денна норма калорій</h2>
+                <div style="font-size: 36px; font-weight: bold; margin: 10px 0;">2150 <span style="font-size: 16px; font-weight: normal;">ккал</span></div>
+                <p data-i18n="goal_maintenance">Мета: Підтримка ваги</p>
+            </div>
+
+            <div class="stat-grid">
+                <div class="glass stat-card">
+                    <h3 data-i18n="activity">Активність</h3>
+                    <p>8 432 <span style="font-size: 12px;">кроків</span></p>
+                </div>
+                <div class="glass stat-card">
+                    <h3 data-i18n="heart_rate">Пульс</h3>
+                    <p>72 <span style="font-size: 12px;">уд/хв</span></p>
+                </div>
+                <div class="glass stat-card">
+                    <h3 data-i18n="sleep">Сон</h3>
+                    <p>7г 20хв</p>
+                </div>
+                <div class="glass stat-card">
+                    <h3 data-i18n="water">Вода</h3>
+                    <p>1.5 / 2.5 л</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="food" class="section">
+            <div class="glass">
+                <h2 data-i18n="add_meal">Додати прийом їжі</h2>
+                <select id="meal-type">
+                    <option value="breakfast" data-i18n="breakfast">Сніданок</option>
+                    <option value="lunch" data-i18n="lunch">Обід</option>
+                    <option value="dinner" data-i18n="dinner">Вечеря</option>
+                    <option value="snack" data-i18n="snack">Перекус</option>
+                </select>
+                
+                <input type="text" id="food-search" placeholder="Пошук (наприклад: 'гре')" oninput="searchFood()">
+                <ul id="search-results"></ul>
+            </div>
+
+            <div class="glass">
+                <h3 data-i18n="recipes">Рекомендовані рецепти</h3>
+                <p style="font-size: 14px; opacity: 0.8; margin-top: 5px;" data-i18n="recipe_desc">Бюджетні страви для підтримки ваги</p>
+                <div style="margin-top: 15px; padding: 10px; border: 1px solid var(--glass-border); border-radius: 12px;">
+                    <strong data-i18n="recipe_1">Курка з рисом та овочами</strong>
+                    <p style="font-size: 12px; margin-top: 5px;">450 ккал | Б: 35г | Ж: 12г | В: 45г</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="settings" class="section">
+            <div class="glass">
+                <h2 data-i18n="profile">Профіль</h2>
+                <input type="number" placeholder="Зріст (см)" value="180">
+                <input type="number" placeholder="Вага (кг)" value="75">
+                <select>
+                    <option data-i18n="goal_1">Дефіцит (Здорове схуднення)</option>
+                    <option data-i18n="goal_2">Дефіцит (Швидке схуднення - ризик зриву!)</option>
+                    <option selected data-i18n="goal_3">Підтримка маси</option>
+                    <option data-i18n="goal_4">Профіцит (Набір м'язової маси)</option>
+                </select>
+                <button data-i18n="upload_photo">Завантажити фото в повний зріст</button>
+            </div>
+
+            <div class="glass">
+                <h2 data-i18n="app_settings">Налаштування додатку</h2>
+                
+                <label data-i18n="theme">Тема інтерфейсу:</label>
+                <select id="theme-selector" onchange="changeTheme()">
+                    <option value="auto" data-i18n="theme_auto">Адаптивна (Системна)</option>
+                    <option value="light" data-i18n="theme_light">Світла</option>
+                    <option value="dark" data-i18n="theme_dark">Темна</option>
+                </select>
+
+                <label data-i18n="language" style="display: block; margin-top: 10px;">Мова (Language):</label>
+                <select id="lang-selector" onchange="changeLanguage()">
+                    <option value="uk">Українська</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <nav class="nav-bar">
+        <div class="nav-item active" onclick="nav('home', this)">
+            <span class="nav-icon">📊</span>
+            <span data-i18n="nav_home">Головна</span>
+        </div>
+        <div class="nav-item" onclick="nav('food', this)">
+            <span class="nav-icon">🥗</span>
+            <span data-i18n="nav_food">Їжа</span>
+        </div>
+        <div class="nav-item" onclick="nav('settings', this)">
+            <span class="nav-icon">⚙️</span>
+            <span data-i18n="nav_settings">Налаштування</span>
+        </div>
+    </nav>
+
+    <script>
+        // База даних їжі для прикладу (імітація запиту до серверу/інтернету)
+        const foodDatabase = {
+            uk: ["Гречка варена", "Гречка сира", "Грейпфрут", "Грецький горіх"],
+            en: ["Buckwheat boiled", "Buckwheat raw", "Grapefruit", "Greek walnut"]
+        };
+
+        let currentLang = 'uk';
+
+        // Словник перекладів
+        const dict = {
+            uk: {
+                daily_goal: "Денна норма калорій",
+                goal_maintenance: "Мета: Підтримка ваги",
+                activity: "Активність", heart_rate: "Пульс", sleep: "Сон", water: "Вода",
+                add_meal: "Додати прийом їжі", breakfast: "Сніданок", lunch: "Обід", dinner: "Вечеря", snack: "Перекус",
+                recipes: "Рекомендовані рецепти", recipe_desc: "Бюджетні страви для підтримки ваги", recipe_1: "Курка з рисом та овочами",
+                profile: "Профіль", goal_1: "Дефіцит (Здорове схуднення)", goal_2: "Дефіцит (Швидке схуднення - ризик зриву!)", goal_3: "Підтримка маси", goal_4: "Профіцит (Набір м'язової маси)", upload_photo: "Завантажити фото в повний зріст",
+                app_settings: "Налаштування додатку", theme: "Тема інтерфейсу:", theme_auto: "Адаптивна (Системна)", theme_light: "Світла", theme_dark: "Темна", language: "Мова (Language):",
+                nav_home: "Головна", nav_food: "Їжа", nav_settings: "Налаштування", search_placeholder: "Пошук (наприклад: 'гре')"
+            },
+            en: {
+                daily_goal: "Daily Calorie Goal",
+                goal_maintenance: "Goal: Weight Maintenance",
+                activity: "Activity", heart_rate: "Heart Rate", sleep: "Sleep", water: "Water",
+                add_meal: "Add Meal", breakfast: "Breakfast", lunch: "Lunch", dinner: "Dinner", snack: "Snack",
+                recipes: "Recommended Recipes", recipe_desc: "Budget meals for weight maintenance", recipe_1: "Chicken with Rice and Vegetables",
+                profile: "Profile", goal_1: "Deficit (Healthy weight loss)", goal_2: "Deficit (Fast weight loss - relapse risk!)", goal_3: "Weight Maintenance", goal_4: "Surplus (Muscle gain)", upload_photo: "Upload Full Body Photo",
+                app_settings: "App Settings", theme: "UI Theme:", theme_auto: "Adaptive (System)", theme_light: "Light", theme_dark: "Dark", language: "Language:",
+                nav_home: "Home", nav_food: "Food", nav_settings: "Settings", search_placeholder: "Search (e.g. 'buck')"
+            }
+        };
+
+        // Навігація
+        function nav(sectionId, element) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // Пошук їжі (імітація автодоповнення)
+        function searchFood() {
+            const query = document.getElementById('food-search').value.toLowerCase();
+            const resultsBox = document.getElementById('search-results');
+            resultsBox.innerHTML = '';
+            
+            if(query.length > 0) {
+                const results = foodDatabase[currentLang].filter(item => item.toLowerCase().includes(query));
+                results.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    li.onclick = () => {
+                        document.getElementById('food-search').value = item;
+                        resultsBox.innerHTML = '';
+                    };
+                    resultsBox.appendChild(li);
+                });
+            }
+        }
+
+        // Зміна теми
+        function changeTheme() {
+            const theme = document.getElementById('theme-selector').value;
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+            } else if (theme === 'light') {
+                document.body.classList.remove('dark');
+            } else {
+                // Адаптивна тема за допомогою matchMedia
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark');
+                } else {
+                    document.body.classList.remove('dark');
+                }
+            }
+        }
+
+        // Зміна мови
+        function changeLanguage() {
+            currentLang = document.getElementById('lang-selector').value;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = dict[currentLang][key];
+            });
+            document.getElementById('food-search').placeholder = dict[currentLang].search_placeholder;
+            searchFood(); // Оновити результати пошуку якщо вони відкриті
+        }
+
+        // Ініціалізація системної теми при завантаженні
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', changeTheme);
+        changeTheme(); // Запуск при старті
+    </script>
+</body>
+</html>
