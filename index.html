@@ -10,112 +10,56 @@
     
     <title>Achilles</title>
     
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    
     <style>
         :root {
-            --bg-color: #f0f4f8;
-            --text-color: #1a1a1a;
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --glass-shadow: rgba(0, 0, 0, 0.1);
-            --accent: #d4af37; 
-            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --bg-color: #f0f4f8; --text-color: #1a1a1a; --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.5); --glass-shadow: rgba(0, 0, 0, 0.1);
+            --accent: #d4af37; --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
         }
-
         body.dark {
-            --bg-color: #0f0f0f;
-            --text-color: #f0f0f0;
-            --glass-bg: rgba(30, 30, 30, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-shadow: rgba(0, 0, 0, 0.5);
+            --bg-color: #0f0f0f; --text-color: #f0f0f0; --glass-bg: rgba(30, 30, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1); --glass-shadow: rgba(0, 0, 0, 0.5);
             --bg-gradient: linear-gradient(135deg, #121212 0%, #2c2c2c 100%);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text-color); transition: background 0.3s; min-height: 100vh; overflow-x: hidden; }
 
-        body {
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: var(--text-color);
-            transition: background 0.3s, color 0.3s;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* --- Екрани --- */
-        .screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; display: flex; flex-direction: column;
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); 
-            overflow-y: auto; padding-bottom: 90px;
-        }
+        .screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: flex; flex-direction: column; transition: all 0.5s ease; overflow-y: auto; padding-bottom: 90px; }
         .hidden-scale { opacity: 0; transform: scale(1.1); pointer-events: none; z-index: 0; }
         .hidden-slide { opacity: 0; transform: translateY(50px); pointer-events: none; z-index: 0; }
         .active-screen { opacity: 1; transform: none; pointer-events: auto; z-index: 20; }
 
-        /* --- Splash --- */
         #splash { background: #0a0a0a; color: white; justify-content: center; align-items: center; z-index: 100; cursor: pointer; }
         #splash img { width: 200px; height: 200px; border-radius: 40px; box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3); margin-bottom: 40px; animation: pulse 3s infinite; }
         #splash p { opacity: 0.6; font-size: 16px; animation: breathe 2s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes breathe { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
 
-        /* --- Реєстрація --- */
         #registration { padding: 40px 20px; justify-content: center; }
 
-        /* --- Glassmorphism --- */
-        .glass {
-            background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border); border-radius: 24px;
-            box-shadow: 0 8px 32px var(--glass-shadow); padding: 20px; margin-bottom: 20px;
-        }
-
+        .glass { background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 8px 32px var(--glass-shadow); padding: 20px; margin-bottom: 20px; }
         header { text-align: center; font-size: 24px; font-weight: bold; padding: max(20px, env(safe-area-inset-top)) 0 20px 0; margin-bottom: 10px; }
         .container { padding: 0 20px; }
 
-        /* --- Плиткове меню --- */
         .tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .tile {
-            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 24px; padding: 20px 15px;
-            text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 8px 24px var(--glass-shadow); transition: transform 0.2s; cursor: pointer;
-        }
+        .tile { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 20px 15px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 24px var(--glass-shadow); transition: transform 0.2s; cursor: pointer; }
         .tile:active { transform: scale(0.95); }
         .tile-icon { font-size: 32px; margin-bottom: 10px; }
         .tile-title { font-size: 14px; font-weight: 600; }
 
-        /* --- Форми --- */
-        input, select, button, .file-upload {
-            width: 100%; padding: 15px; margin: 10px 0;
-            border-radius: 18px; border: 1px solid var(--glass-border);
-            background: var(--glass-bg); color: var(--text-color);
-            outline: none; font-size: 16px;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        }
-        
-        /* Фікс для дати на iOS */
-        input[type="date"] {
-            appearance: none; -webkit-appearance: none;
-            position: relative;
-        }
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.8); /* Робить іконку світлою в темній темі */
-            position: absolute; right: 15px;
-        }
+        input, select, button, .file-upload { width: 100%; padding: 15px; margin: 10px 0; border-radius: 18px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-color); outline: none; font-size: 16px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        input[type="date"] { appearance: none; -webkit-appearance: none; position: relative; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.8); position: absolute; right: 15px; }
 
         button { background: var(--accent); color: #000; font-weight: bold; border: none; margin-top: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); }
         button:active { transform: scale(0.98); }
-        .file-upload { text-align: center; cursor: pointer; display: block; }
+        .file-upload { text-align: center; cursor: pointer; display: block; font-weight: bold; }
         input[type="file"] { display: none; }
 
-        /* --- Навігація нижня --- */
-        .nav-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            display: flex; justify-content: space-around;
-            padding: 15px; padding-bottom: max(15px, env(safe-area-inset-bottom));
-            background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border-top: 1px solid var(--glass-border); z-index: 1000;
-        }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px; padding-bottom: max(15px, env(safe-area-inset-bottom)); background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-top: 1px solid var(--glass-border); z-index: 1000; }
         .nav-item { text-align: center; font-size: 12px; cursor: pointer; opacity: 0.5; transition: 0.3s; }
         .nav-item.active { opacity: 1; color: var(--accent); font-weight: bold; }
         .nav-icon { font-size: 24px; display: block; margin-bottom: 4px; }
@@ -124,17 +68,10 @@
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Списки їжі та тренувань */
-        .list-item {
-            padding: 15px; border-bottom: 1px solid var(--glass-border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .list-item:last-child { border-bottom: none; }
+        .list-item { padding: 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
         .add-btn { width: auto; padding: 8px 15px; margin: 0; border-radius: 12px; font-size: 14px; }
-        
         .progress-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 10px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
-
         .workout-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 15px; margin-bottom: 15px; }
         .workout-card h3 { color: var(--accent); margin-bottom: 5px; }
     </style>
@@ -160,44 +97,34 @@
                 <input type="number" id="reg-height" placeholder="Зріст (см)">
                 <input type="number" id="reg-weight" placeholder="Вага (кг)">
             </div>
-            <label class="file-upload">
-                📷 Завантажити фото в повний зріст
-                <input type="file" accept="image/*">
-            </label>
+            <label class="file-upload">📷 Завантажити фото<input type="file" accept="image/*"></label>
             <button onclick="completeRegistration()">Увійти в Achilles</button>
         </div>
     </div>
 
     <div id="main-app" class="screen hidden-slide">
         <header id="greeting-header">Achilles</header>
-
         <div class="container">
             
             <div id="menu-section" class="section active">
                 <div class="tile-grid">
                     <div class="tile" onclick="openSection('dashboard-section'); updateNavIdx(1);">
-                        <span class="tile-icon">🔥</span>
-                        <span class="tile-title">Калорії та Вага</span>
+                        <span class="tile-icon">🔥</span><span class="tile-title">Калорії та Вага</span>
                     </div>
                     <div class="tile" onclick="openSection('food-section'); updateNavIdx(2);">
-                        <span class="tile-icon">🥗</span>
-                        <span class="tile-title">Щоденник їжі</span>
+                        <span class="tile-icon">🥗</span><span class="tile-title">Щоденник їжі</span>
                     </div>
                     <div class="tile" onclick="openSection('workout-section')">
-                        <span class="tile-icon">🏋️‍♂️</span>
-                        <span class="tile-title">Тренування</span>
+                        <span class="tile-icon">🏋️‍♂️</span><span class="tile-title">Тренування</span>
                     </div>
                     <div class="tile" onclick="openSection('stats-section')">
-                        <span class="tile-icon">❤️</span>
-                        <span class="tile-title">Здоров'я</span>
+                        <span class="tile-icon">❤️</span><span class="tile-title">Аналіз активності</span>
                     </div>
                     <div class="tile" onclick="openSection('about-section')">
-                        <span class="tile-icon">🛡️</span>
-                        <span class="tile-title">Про додаток</span>
+                        <span class="tile-icon">🛡️</span><span class="tile-title">Про додаток</span>
                     </div>
                     <div class="tile" onclick="openSection('settings-section')">
-                        <span class="tile-icon">⚙️</span>
-                        <span class="tile-title">Налаштування</span>
+                        <span class="tile-icon">⚙️</span><span class="tile-title">Налаштування</span>
                     </div>
                 </div>
             </div>
@@ -206,18 +133,15 @@
                 <div class="glass">
                     <h2>Твій план, Спартанцю</h2>
                     <p id="user-goal-text" style="opacity: 0.8; margin-top: 5px;">Аналізуємо...</p>
-                    
                     <div style="margin-top: 20px;">
                         <span style="font-size: 14px;">Спожито сьогодні:</span>
                         <div style="font-size: 32px; font-weight: bold; color: var(--accent);">
                             <span id="calories-consumed">0</span> / <span id="calories-goal">2000</span> <span style="font-size: 16px; color: var(--text-color);">ккал</span>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="calorie-progress"></div>
-                        </div>
+                        <div class="progress-bar"><div class="progress-fill" id="calorie-progress"></div></div>
+                        <p id="bonus-kcal-msg" style="font-size: 12px; color: #4cd964; margin-top: 5px; display: none;">+ Додаткові калорії за активність!</p>
                     </div>
                 </div>
-                
                 <div class="glass" id="eaten-list-container">
                     <h3>З'їдено сьогодні:</h3>
                     <div id="eaten-list" style="margin-top: 10px; font-size: 14px; opacity: 0.8;">Поки що нічого. Час підкріпитися!</div>
@@ -227,97 +151,78 @@
             <div id="food-section" class="section">
                 <div class="glass">
                     <h2>База продуктів</h2>
-                    <select id="meal-type">
-                        <option>Сніданок</option>
-                        <option>Обід</option>
-                        <option>Вечеря</option>
-                        <option>Перекус</option>
-                    </select>
-                    <input type="text" id="food-search" placeholder="Пошук (напр: 'гречка', 'курка')" oninput="searchFood()">
-                    
-                    <div id="food-results" style="margin-top: 15px;">
-                        </div>
+                    <select id="meal-type"><option>Сніданок</option><option>Обід</option><option>Вечеря</option><option>Перекус</option></select>
+                    <input type="text" id="food-search" placeholder="Пошук (напр: 'гречка')" oninput="searchFood()">
+                    <div id="food-results" style="margin-top: 15px;"></div>
                 </div>
             </div>
 
             <div id="workout-section" class="section">
                 <div class="glass">
                     <h2>Тренування</h2>
-                    <p style="opacity: 0.8; margin-bottom: 15px; font-size: 14px;">Базові вправи для твого рівня. Виконуй технічно!</p>
+                    <p style="opacity: 0.8; margin-bottom: 15px; font-size: 14px;">Базові вправи для твого рівня.</p>
+                    <div class="workout-card"><h3>Віджимання</h3><p style="font-size: 14px;">3 підходи по 10-15 разів.</p></div>
+                    <div class="workout-card"><h3>Присідання</h3><p style="font-size: 14px;">4 підходи по 20 разів.</p></div>
+                    <div class="workout-card"><h3>Планка</h3><p style="font-size: 14px;">3 підходи по 45-60 секунд.</p></div>
+                </div>
+            </div>
+
+            <div id="stats-section" class="section">
+                <div class="glass">
+                    <h2>Синхронізація (Скріншот)</h2>
+                    <p style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">Зроби скріншот з Apple Fitness, де видно кількість кроків. Наш ШІ знайде їх і перерахує твою норму калорій!</p>
                     
-                    <div class="workout-card">
-                        <h3>Віджимання від підлоги</h3>
-                        <p style="font-size: 14px;">3 підходи по 10-15 разів. Тримай спину рівно, опускайся до торкання грудьми підлоги.</p>
-                    </div>
-                    <div class="workout-card">
-                        <h3>Присідання (Сквоти)</h3>
-                        <p style="font-size: 14px;">4 підходи по 20 разів. Вага на п'ятах, коліна не виходять за носки.</p>
-                    </div>
-                    <div class="workout-card">
-                        <h3>Планка</h3>
-                        <p style="font-size: 14px;">3 підходи по 45-60 секунд. Напруж прес, не прогинай поперек.</p>
+                    <label class="file-upload" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent); color: var(--accent);">
+                        📸 Завантажити скріншот
+                        <input type="file" accept="image/*" onchange="processScreenshot(event)">
+                    </label>
+                    
+                    <div id="ocr-status" style="margin-top: 15px; font-size: 14px; font-weight: bold; text-align: center;"></div>
+                    
+                    <div style="margin-top: 20px; border-top: 1px solid var(--glass-border); padding-top: 15px;">
+                        <p style="font-size: 20px;">Кроки: <strong style="color: var(--accent);" id="detected-steps">0</strong></p>
+                        <p style="font-size: 12px; opacity: 0.7; margin-top: 5px;">*Додаємо +40 ккал до денної норми за кожні 1000 кроків.</p>
                     </div>
                 </div>
             </div>
 
-            <div id="stats-section" class="section"><div class="glass"><h2>Здоров'я</h2><p>Кроки: 8 432 / 10 000</p><p>Сон: 7г 20хв</p><p>Пульс: 72 уд/хв</p></div></div>
-            <div id="about-section" class="section"><div class="glass"><h2>Про Achilles</h2><p>Твій персональний спартанський тренер. Рахує калорії, пропонує тренування і не дає розслабитися!</p></div></div>
+            <div id="about-section" class="section"><div class="glass"><h2>Про Achilles</h2><p>Твій персональний спартанський тренер.</p></div></div>
             <div id="settings-section" class="section"><div class="glass"><h2>Налаштування</h2><button onclick="logout()" style="background: #ff3b30;">Скинути дані (Вийти)</button></div></div>
 
         </div>
     </div>
 
     <nav class="nav-bar" id="bottom-nav" style="display: none;">
-        <div class="nav-item active" onclick="openSection('menu-section'); updateNav(this)">
-            <span class="nav-icon">🎛️</span><span>Меню</span>
-        </div>
-        <div class="nav-item" onclick="openSection('dashboard-section'); updateNav(this)">
-            <span class="nav-icon">🔥</span><span>Статус</span>
-        </div>
-        <div class="nav-item" onclick="openSection('food-section'); updateNav(this)">
-            <span class="nav-icon">🥗</span><span>Їжа</span>
-        </div>
+        <div class="nav-item active" onclick="openSection('menu-section'); updateNav(this)"><span class="nav-icon">🎛️</span><span>Меню</span></div>
+        <div class="nav-item" onclick="openSection('dashboard-section'); updateNav(this)"><span class="nav-icon">🔥</span><span>Статус</span></div>
+        <div class="nav-item" onclick="openSection('food-section'); updateNav(this)"><span class="nav-icon">🥗</span><span>Їжа</span></div>
     </nav>
 
     <script>
-        // --- База даних їжі (Міні-версія) ---
         const foodDB = [
             { name: "Гречка варена", kcal: 110, p: 4.2, f: 1.1, c: 21 },
             { name: "Куряче філе (варене)", kcal: 165, p: 31, f: 3.6, c: 0 },
             { name: "Яйце куряче (1 шт)", kcal: 78, p: 6, f: 5, c: 0.6 },
             { name: "Вівсянка", kcal: 389, p: 16.9, f: 6.9, c: 66 },
             { name: "Банан (1 шт)", kcal: 105, p: 1.3, f: 0.3, c: 27 },
-            { name: "Сир кисломолочний 5%", kcal: 121, p: 17, f: 5, c: 1.8 },
-            { name: "Рис білий варений", kcal: 130, p: 2.7, f: 0.3, c: 28 },
-            { name: "Яблуко", kcal: 52, p: 0.3, f: 0.2, c: 14 }
+            { name: "Сир кисломолочний 5%", kcal: 121, p: 17, f: 5, c: 1.8 }
         ];
 
         let consumedCalories = 0;
+        let bonusCalories = 0; // Калорії за кроки
 
-        // --- Логіка екранів ---
-        window.onload = () => {
-            if(localStorage.getItem('achilles_user')) {
-                loadUserData();
-            }
-        };
+        window.onload = () => { if(localStorage.getItem('achilles_user')) { loadUserData(); } };
 
         function finishSplash() {
             const splash = document.getElementById('splash');
-            splash.classList.remove('active-screen');
-            splash.classList.add('hidden-scale');
-
+            splash.classList.remove('active-screen'); splash.classList.add('hidden-scale');
             setTimeout(() => {
                 splash.style.display = 'none';
-                if (localStorage.getItem('achilles_user')) {
-                    showMainApp();
-                } else {
-                    document.getElementById('registration').classList.remove('hidden-slide');
-                    document.getElementById('registration').classList.add('active-screen');
-                }
+                if (localStorage.getItem('achilles_user')) showMainApp();
+                else { document.getElementById('registration').classList.remove('hidden-slide'); document.getElementById('registration').classList.add('active-screen'); }
             }, 500); 
         }
 
-        // --- Алгоритм розрахунку калорій ---
         function completeRegistration() {
             const name = document.getElementById('reg-name').value;
             const gender = document.getElementById('reg-gender').value;
@@ -325,49 +230,25 @@
             const weight = parseFloat(document.getElementById('reg-weight').value);
             const dob = document.getElementById('reg-date').value;
 
-            if(!name || !gender || !height || !weight || !dob) { 
-                alert('Заповни всі поля, спартанцю!'); return; 
-            }
+            if(!name || !gender || !height || !weight || !dob) { alert('Заповни всі поля, спартанцю!'); return; }
 
-            // Розрахунок віку
-            const birthYear = new Date(dob).getFullYear();
-            const currentYear = new Date().getFullYear();
-            const age = currentYear - birthYear;
-
-            // Формула Міффліна-Сан Жеора для базового метаболізму (BMR)
+            const age = new Date().getFullYear() - new Date(dob).getFullYear();
             let bmr = (10 * weight) + (6.25 * height) - (5 * age);
             bmr += (gender === 'male') ? 5 : -161;
-
-            // Додаємо коефіцієнт активності (беремо середній 1.375)
             let tdee = Math.round(bmr * 1.375);
 
-            // Розрахунок ІМТ (Індекс маси тіла)
-            const heightInMeters = height / 100;
-            const bmi = weight / (heightInMeters * heightInMeters);
+            const bmi = weight / ((height/100) * (height/100));
+            let goalText = ""; let targetCalories = tdee;
 
-            let goalText = "";
-            let targetCalories = tdee;
+            if (bmi < 18.5) { goalText = "Набір маси (Профіцит)"; targetCalories += 400; } 
+            else if (bmi < 25) { goalText = "Підтримка форми"; } 
+            else if (bmi < 30) { goalText = "Легке схуднення"; targetCalories -= 400; } 
+            else { goalText = "Активне схуднення"; targetCalories -= 600; }
 
-            // Алгоритм пропозиції щодо фігури
-            if (bmi < 18.5) {
-                goalText = "Твоя мета: Набір маси (Профіцит). Треба м'язи!";
-                targetCalories += 400; // Профіцит
-            } else if (bmi >= 18.5 && bmi < 25) {
-                goalText = "Твоя мета: Підтримка форми. Ти у відмінній формі.";
-            } else if (bmi >= 25 && bmi < 30) {
-                goalText = "Твоя мета: Легке схуднення (Дефіцит). Спалимо зайве!";
-                targetCalories -= 400; // Дефіцит
-            } else {
-                goalText = "Твоя мета: Активне схуднення. Працюємо на результат!";
-                targetCalories -= 600; // Більший дефіцит
-            }
-
-            // Збереження даних
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_goal_text', goalText);
-            localStorage.setItem('achilles_target_kcal', targetCalories);
+            localStorage.setItem('achilles_base_kcal', targetCalories); // Базова норма без кроків
             
-            // Перехід
             document.getElementById('registration').classList.remove('active-screen');
             document.getElementById('registration').classList.add('hidden-slide');
             setTimeout(() => { document.getElementById('registration').style.display = 'none'; loadUserData(); showMainApp(); }, 500);
@@ -376,34 +257,34 @@
         function loadUserData() {
             document.getElementById('greeting-header').textContent = `Привіт, ${localStorage.getItem('achilles_user')}`;
             document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
-            document.getElementById('calories-goal').textContent = localStorage.getItem('achilles_target_kcal');
-            updateProgress();
+            updateGoalDisplay();
+        }
+
+        function updateGoalDisplay() {
+            const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
+            const finalGoal = baseKcal + bonusCalories;
+            document.getElementById('calories-goal').textContent = finalGoal;
+            
+            let percent = (consumedCalories / finalGoal) * 100;
+            if(percent > 100) percent = 100;
+            document.getElementById('calorie-progress').style.width = percent + '%';
+            document.getElementById('calorie-progress').style.background = percent > 90 ? '#ff3b30' : 'var(--accent)';
         }
 
         function showMainApp() {
-            document.getElementById('main-app').classList.remove('hidden-slide');
-            document.getElementById('main-app').classList.add('active-screen');
+            document.getElementById('main-app').classList.remove('hidden-slide'); document.getElementById('main-app').classList.add('active-screen');
             document.getElementById('bottom-nav').style.display = 'flex';
         }
 
-        // --- Логіка їжі ---
         function searchFood() {
             const query = document.getElementById('food-search').value.toLowerCase();
             const resultsBox = document.getElementById('food-results');
             resultsBox.innerHTML = '';
-            
             if(query.length > 1) {
                 const results = foodDB.filter(item => item.name.toLowerCase().includes(query));
                 results.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'list-item';
-                    div.innerHTML = `
-                        <div>
-                            <strong>${item.name}</strong><br>
-                            <span style="font-size: 12px; opacity: 0.8;">${item.kcal} ккал / 100г (Б:${item.p} Ж:${item.f} В:${item.c})</span>
-                        </div>
-                        <button class="add-btn" onclick="addFood('${item.name}', ${item.kcal})">+</button>
-                    `;
+                    const div = document.createElement('div'); div.className = 'list-item';
+                    div.innerHTML = `<div><strong>${item.name}</strong><br><span style="font-size: 12px; opacity: 0.8;">${item.kcal} ккал / 100г</span></div><button class="add-btn" onclick="addFood('${item.name}', ${item.kcal})">+</button>`;
                     resultsBox.appendChild(div);
                 });
             }
@@ -412,55 +293,80 @@
         function addFood(name, kcal) {
             consumedCalories += kcal;
             document.getElementById('calories-consumed').textContent = consumedCalories;
-            
             const list = document.getElementById('eaten-list');
             if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
             list.innerHTML += `<div style="padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">${name} - ${kcal} ккал</div>`;
             
-            updateProgress();
-            
-            // Очищаємо пошук і переходимо на дашборд
-            document.getElementById('food-search').value = '';
-            document.getElementById('food-results').innerHTML = '';
-            openSection('dashboard-section');
-            updateNavIdx(1); // Робимо кнопку "Статус" активною
+            updateGoalDisplay();
+            document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
+            openSection('dashboard-section'); updateNavIdx(1);
         }
 
-        function updateProgress() {
-            const goal = parseInt(localStorage.getItem('achilles_target_kcal')) || 2000;
-            let percent = (consumedCalories / goal) * 100;
-            if(percent > 100) percent = 100;
-            document.getElementById('calorie-progress').style.width = percent + '%';
+        // --- ЛОГІКА РОЗПІЗНАВАННЯ СКРІНШОТІВ (OCR) ---
+        async function processScreenshot(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('ocr-status');
+            status.style.color = 'var(--accent)';
+            status.innerHTML = '⚙️ ШІ читає скріншот... (Зачекай 5-15 секунд)';
             
-            if(percent > 90) {
-                document.getElementById('calorie-progress').style.background = '#ff3b30'; // Червоний, якщо майже ліміт
-            } else {
-                document.getElementById('calorie-progress').style.background = 'var(--accent)';
+            try {
+                // Викликаємо Tesseract.js (шукаємо англійський та український текст)
+                const result = await Tesseract.recognize(file, 'ukr+eng');
+                
+                // Переводимо весь знайдений текст у малий регістр для зручності
+                const text = result.data.text.toLowerCase();
+                console.log("Знайдений текст:", text); // Для відладки
+                
+                // Видаляємо пробіли і коми між цифрами (щоб "10 500" стало "10500")
+                const cleanText = text.replace(/(\d)\s+(\d)/g, '$1$2').replace(/,/g, '');
+                
+                let steps = 0;
+                // Шукаємо цифру, після якої (або перед якою) йде слово "кроки" або "steps"
+                // Простий regex: шукає блок цифр
+                const matchInfo = cleanText.match(/(\d+)\s*(?:крок|step)/);
+                
+                if (matchInfo) {
+                    steps = parseInt(matchInfo[1]);
+                } else {
+                    // Якщо слово "кроки" не розпізналось, просто беремо найбільше 4-5 значне число на екрані
+                    const numbers = cleanText.match(/\b\d{3,5}\b/g);
+                    if (numbers) {
+                        steps = Math.max(...numbers.map(Number));
+                    }
+                }
+
+                if (steps > 500) {
+                    document.getElementById('detected-steps').textContent = steps;
+                    
+                    // Розраховуємо додаткові калорії (40 ккал за 1000 кроків)
+                    bonusCalories = Math.floor(steps / 1000) * 40;
+                    
+                    status.style.color = '#4cd964'; // Зелений
+                    status.innerHTML = `✅ Успіх! Знайдено ${steps} кроків. Додано +${bonusCalories} ккал до норми.`;
+                    
+                    document.getElementById('bonus-kcal-msg').style.display = 'block';
+                    document.getElementById('bonus-kcal-msg').textContent = `+ ${bonusCalories} ккал за кроки!`;
+                    
+                    updateGoalDisplay();
+                } else {
+                    status.style.color = '#ff3b30'; // Червоний
+                    status.innerHTML = '⚠️ ШІ не знайшов кроки на фото. Переконайся, що цифри чітко видно.';
+                }
+                
+            } catch (err) {
+                status.style.color = '#ff3b30';
+                status.innerHTML = '❌ Помилка розпізнавання. Спробуй інше фото.';
+                console.error(err);
             }
         }
 
         // --- Навігація ---
-        function openSection(sectionId) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
-            window.scrollTo(0,0);
-        }
-
-        function updateNav(element) {
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        function updateNavIdx(index) {
-            const items = document.querySelectorAll('.nav-item');
-            items.forEach(n => n.classList.remove('active'));
-            if(items[index]) items[index].classList.add('active');
-        }
-
-        function logout() {
-            localStorage.clear();
-            location.reload();
-        }
+        function openSection(sectionId) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(sectionId).classList.add('active'); window.scrollTo(0,0); }
+        function updateNav(element) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); element.classList.add('active'); }
+        function updateNavIdx(index) { const items = document.querySelectorAll('.nav-item'); items.forEach(n => n.classList.remove('active')); if(items[index]) items[index].classList.add('active'); }
+        function logout() { localStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>
