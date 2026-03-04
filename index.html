@@ -302,7 +302,7 @@
             openSection('dashboard-section'); updateNavIdx(1);
         }
 
-        // --- ЛОГІКА РОЗПІЗНАВАННЯ СКРІНШОТІВ (OCR) ---
+        // --- ЛОГІКА РОЗПІЗНАВАННЯ СКРІНШОТІВ (ОНОВЛЕНА) ---
         async function processScreenshot(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -312,52 +312,50 @@
             status.innerHTML = '⚙️ ШІ читає скріншот... (Зачекай 5-15 секунд)';
             
             try {
-                // Викликаємо Tesseract.js (шукаємо англійський та український текст)
+                // Викликаємо Tesseract.js
                 const result = await Tesseract.recognize(file, 'ukr+eng');
-                
-                // Переводимо весь знайдений текст у малий регістр для зручності
                 const text = result.data.text.toLowerCase();
-                console.log("Знайдений текст:", text); // Для відладки
                 
-                // Видаляємо пробіли і коми між цифрами (щоб "10 500" стало "10500")
+                // 1. Видаляємо пробіли МІЖ цифрами (щоб "2 717" стало "2717") і забираємо коми
                 const cleanText = text.replace(/(\d)\s+(\d)/g, '$1$2').replace(/,/g, '');
                 
                 let steps = 0;
-                // Шукаємо цифру, після якої (або перед якою) йде слово "кроки" або "steps"
-                // Простий regex: шукає блок цифр
-                const matchInfo = cleanText.match(/(\d+)\s*(?:крок|step)/);
                 
-                if (matchInfo) {
+                // 2. Новий розумний пошук: шукаємо слово "крок" або "step",
+                // пропускаємо будь-який текст/переноси рядків і беремо перше число (від 2 до 6 знаків)
+                const matchInfo = cleanText.match(/(?:крок|step)[\s\S]*?(\d{2,6})/);
+                
+                if (matchInfo && matchInfo[1]) {
                     steps = parseInt(matchInfo[1]);
                 } else {
-                    // Якщо слово "кроки" не розпізналось, просто беремо найбільше 4-5 значне число на екрані
+                    // Резервний варіант
                     const numbers = cleanText.match(/\b\d{3,5}\b/g);
                     if (numbers) {
                         steps = Math.max(...numbers.map(Number));
                     }
                 }
 
-                if (steps > 500) {
+                if (steps > 50) { // Якщо знайшли адекватну кількість кроків
                     document.getElementById('detected-steps').textContent = steps;
                     
-                    // Розраховуємо додаткові калорії (40 ккал за 1000 кроків)
+                    // Додаємо 40 ккал за кожні 1000 кроків
                     bonusCalories = Math.floor(steps / 1000) * 40;
                     
                     status.style.color = '#4cd964'; // Зелений
                     status.innerHTML = `✅ Успіх! Знайдено ${steps} кроків. Додано +${bonusCalories} ккал до норми.`;
                     
                     document.getElementById('bonus-kcal-msg').style.display = 'block';
-                    document.getElementById('bonus-kcal-msg').textContent = `+ ${bonusCalories} ккал за кроки!`;
+                    document.getElementById('bonus-kcal-msg').textContent = `+ ${bonusCalories} ккал за активність!`;
                     
                     updateGoalDisplay();
                 } else {
                     status.style.color = '#ff3b30'; // Червоний
-                    status.innerHTML = '⚠️ ШІ не знайшов кроки на фото. Переконайся, що цифри чітко видно.';
+                    status.innerHTML = '⚠️ ШІ не розпізнав кроки. Спробуй трохи обрізати скріншот (залишити лише плитку з кроками).';
                 }
                 
             } catch (err) {
                 status.style.color = '#ff3b30';
-                status.innerHTML = '❌ Помилка розпізнавання. Спробуй інше фото.';
+                status.innerHTML = '❌ Помилка розпізнавання. Спробуй ще раз.';
                 console.error(err);
             }
         }
