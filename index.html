@@ -19,29 +19,27 @@
             --gold-glow: rgba(212, 175, 55, 0.3);
             --bg-grad-1: #e0e5ec;
             --bg-grad-2: #ffffff;
-            --glass-bg: rgba(255, 255, 255, 0.5);
+            --glass-bg: rgba(255, 255, 255, 0.6);
             --glass-border: rgba(255, 255, 255, 0.4);
             --text-main: #1a1a1a;
             --text-muted: #555555;
             --shadow: rgba(0, 0, 0, 0.1);
-            --menu-active: rgba(0, 0, 0, 0.05);
             --card-bg: rgba(255, 255, 255, 0.8);
-            --option-bg: #ffffff; /* Для світлої теми */
+            --option-bg: #ffffff;
         }
 
         body.dark {
             --gold: #f3c969;
-            --gold-glow: rgba(243, 201, 105, 0.4);
+            --gold-glow: rgba(243, 201, 105, 0.3);
             --bg-grad-1: #0f1319;
             --bg-grad-2: #1a1f2b;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-bg: rgba(30, 35, 45, 0.5); /* Більш глибокий колір скла */
+            --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
             --text-muted: #b0b3b8;
             --shadow: rgba(0, 0, 0, 0.5);
-            --menu-active: rgba(255, 255, 255, 0.12);
-            --card-bg: rgba(0, 0, 0, 0.2);
-            --option-bg: #1a1f2b; /* Для темної теми */
+            --card-bg: rgba(0, 0, 0, 0.3);
+            --option-bg: #1a1f2b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -50,116 +48,119 @@
             background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2)); 
             background-attachment: fixed; color: var(--text-main); 
             min-height: 100vh; overflow-x: hidden; transition: background 0.4s ease, color 0.4s ease;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* --- ЕКРАНИ (GPU ОПТИМІЗАЦІЯ ДЛЯ 120+ ГЦ) --- */
-        .screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-            overflow-y: auto; will-change: transform, opacity;
+        /* --- СУЦІЛЬНА СКЛЯНА ПАНЕЛЬ (UNIFIED WINDOW) --- */
+        .app-window {
+            position: relative;
+            display: none; /* Контролюється через JS */
+            width: 92%;
+            max-width: 900px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px; /* Плавні кути в стилі Apple */
+            box-shadow: 0 20px 50px var(--shadow);
+            margin: 120px auto 40px; /* Відступ зверху для логотипа */
+            
+            /* Анімація появи (GPU Optimized) */
+            opacity: 0;
+            will-change: transform, opacity;
+            animation: windowFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
         }
-        .hidden-scale { opacity: 0; transform: scale(1.05); pointer-events: none; z-index: 0; display: none; }
-        .hidden-slide { opacity: 0; transform: translateY(30px); pointer-events: none; z-index: 0; display: none; }
-        .active-screen { opacity: 1; transform: translateZ(0); pointer-events: auto; z-index: 20; display: flex; }
 
-        /* --- SPLASH SCREEN --- */
-        #splash { background: #0a0a0a; color: white; cursor: pointer; z-index: 100; }
-        .splash-logo, .avatar-logo {
-            border-radius: 50%; border: 2px solid var(--gold);
-            background-image: url('IMG_9302.jpeg'); 
-            /* ФІКС КВАДРАТА: Збільшуємо фон, щоб сховати кути, і центруємо */
-            background-size: 128%; 
-            background-position: center 10%; 
+        .app-window.active-flex { display: flex; }
+        
+        @keyframes windowFadeIn {
+            0% { opacity: 0; transform: translate3d(0, 30px, 0); }
+            100% { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+
+        /* --- ЛОГОТИП (ФОРМА ІКОНКИ IOS + ЗУМ) --- */
+        .avatar-container {
+            position: absolute;
+            top: -65px; /* Виступає за межі вікна */
+            left: 50%;
+            width: 130px;
+            height: 130px;
+            border-radius: 30px; /* Форма іконки iOS */
+            border: 2px solid var(--gold);
+            box-shadow: 0 15px 35px var(--shadow), inset 0 0 20px rgba(255,255,255,0.1);
+            z-index: 30;
+            overflow: hidden; /* Щоб картинка не вилазила за краї */
+            
+            /* Анімація зльоту (GPU Optimized) */
+            will-change: transform, opacity;
+            animation: bootLogo 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .avatar-logo {
+            width: 100%; height: 100%;
+            background-image: url('IMG_9302.jpeg');
+            /* СИЛЬНИЙ ЗУМ: Ховаємо напис і сірі рамки оригіналу */
+            background-size: 165%; 
+            background-position: center 12%; 
             background-repeat: no-repeat;
         }
-        .splash-logo {
-            width: 160px; height: 160px; box-shadow: 0 0 40px var(--gold-glow); margin-bottom: 40px; 
-            animation: pulse 3s infinite cubic-bezier(0.4, 0, 0.2, 1); will-change: transform;
-        }
-        #splash p { opacity: 0.6; font-size: 16px; animation: breathe 2s infinite ease-in-out; will-change: opacity; }
-        
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes breathe { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
 
-        /* --- РЕЄСТРАЦІЯ --- */
-        .glass-box { 
-            background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
-            border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 8px 32px var(--shadow); 
-            padding: 30px; width: 90%; max-width: 400px;
+        @keyframes bootLogo {
+            0% { transform: translate(-50%, 35vh) scale(1.6); opacity: 0; }
+            40% { transform: translate(-50%, 35vh) scale(1.4); opacity: 1; }
+            100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
         }
 
-        /* --- ГОЛОВНИЙ ДОДАТОК (КРОСПЛАТФОРМА) --- */
-        #main-app { align-items: flex-start; padding-top: 100px; padding-bottom: 90px; }
-        
-        .app-wrapper {
-            position: relative; display: flex; width: 100%; max-width: 800px; margin: 0 auto; padding: 0 20px;
-        }
-
-        /* АВАТАР */
-        .avatar-container {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            width: 130px; height: 130px; background: var(--glass-bg);
-            border-radius: 50%; border: 2px solid var(--glass-border);
-            box-shadow: 0 0 30px var(--gold-glow); display: flex; justify-content: center; align-items: center;
-            backdrop-filter: blur(10px); z-index: 10; opacity: 0; will-change: transform, opacity;
-        }
-        .avatar-logo { width: 100%; height: 100%; border: none; }
-
-        @keyframes logoRise {
-            0% { top: 30vh; transform: translateX(-50%) scale(1.5); opacity: 0; }
-            100% { top: -75px; transform: translateX(-50%) scale(1); opacity: 1; }
-        }
-
-        /* РОЗКІШНЕ МЕНЮ (ДЛЯ ПК) */
+        /* --- ЧИСТЕ БОКОВЕ МЕНЮ (ВСЕРЕДИНІ ПАНЕЛІ) --- */
         .sidebar {
-            width: 240px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 24px 0 0 24px;
-            padding: 80px 0 40px 0; display: flex; flex-direction: column; gap: 8px;
-            box-shadow: -10px 10px 40px var(--shadow); position: relative;
-            opacity: 0; will-change: transform, opacity; flex-shrink: 0;
+            width: 260px;
+            border-right: 1px solid var(--glass-border); /* Акуратний роздільник */
+            padding: 80px 15px 30px; /* Місце під логотип зверху */
+            display: flex; flex-direction: column; gap: 8px;
+            flex-shrink: 0;
         }
-        @keyframes slideInLeft { from { transform: translate3d(-50px, 0, 0); opacity: 0; } to { transform: translate3d(0, 0, 0); opacity: 1; } }
         
-        .menu-item, .nav-item { cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .menu-item {
-            display: flex; align-items: center; padding: 15px 25px; color: var(--text-main);
-            font-size: 15px; font-weight: 500; transition: all 0.3s ease; position: relative;
+            display: flex; align-items: center; padding: 14px 20px; 
+            color: var(--text-main); font-size: 15px; font-weight: 500; 
+            border-radius: 16px; cursor: pointer; transition: all 0.3s ease;
         }
-        .menu-item i { margin-right: 15px; font-size: 18px; color: var(--gold); transition: transform 0.3s; }
-        .menu-item:hover i { transform: scale(1.2); }
-        .menu-item.active {
-            background: var(--menu-active); border: 1px solid var(--glass-border); border-right: none;
-            border-radius: 16px 0 0 16px; margin-right: -10px; padding-left: 35px;
-            box-shadow: -5px 5px 15px var(--shadow); z-index: 5;
-        }
-
-        /* КОНТЕНТ */
-        .main-content {
-            width: 100%; min-height: 550px; background: var(--glass-bg);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border); border-radius: 24px;
-            padding: 70px 30px 30px; margin-left: -10px; box-shadow: 10px 10px 40px var(--shadow);
-            z-index: 2; position: relative; opacity: 0; will-change: transform, opacity;
-        }
-        @keyframes slideInRight { from { transform: translate3d(50px, 0, 0); opacity: 0; } to { transform: translate3d(0, 0, 0); opacity: 1; } }
+        .menu-item i { margin-right: 15px; font-size: 18px; color: var(--gold); opacity: 0.8; transition: transform 0.3s; }
+        .menu-item:hover { background: rgba(255,255,255,0.05); }
+        .menu-item:hover i { transform: scale(1.1); opacity: 1; }
         
-        .tab-content { display: none; opacity: 0; transform: translateY(15px); transition: opacity 0.4s ease, transform 0.4s ease; will-change: opacity, transform; }
-        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
+        .menu-item.active {
+            background: var(--gold-glow); /* Акуратна підсвітка замість нашарування рамок */
+            color: var(--gold);
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+        }
+        .menu-item.active i { color: var(--gold); opacity: 1; }
 
-        h1 { font-size: 26px; margin: 0 0 20px 0; text-align: center; }
+        /* --- КОНТЕНТНА ЧАСТИНА --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 70px 40px 40px; /* Місце під логотип */
+            min-height: 500px;
+            position: relative;
+        }
+        
+        .tab-content { 
+            display: none; opacity: 0; transform: translate3d(0, 15px, 0); 
+            transition: opacity 0.4s ease, transform 0.4s ease; will-change: opacity, transform; 
+        }
+        .tab-content.active { display: block; opacity: 1; transform: translate3d(0, 0, 0); }
+
+        h1 { font-size: 26px; margin: 0 0 25px 0; text-align: center; }
         h1 span { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
         p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
 
-        /* ЕЛЕМЕНТИ ФОРМ ТА ФІКС ВИПАДАЮЧОГО СПИСКУ */
+        /* --- ЕЛЕМЕНТИ ФОРМ --- */
         input, select, button, .file-upload { 
-            width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; 
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 14px; 
             border: 1px solid var(--glass-border); background: var(--card-bg); 
             color: var(--text-main); outline: none; font-size: 15px; 
             -webkit-appearance: none; appearance: none;
         }
         
-        /* Фікс сірого списку тем */
         select {
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat; background-position: right 15px center; background-size: 16px;
@@ -168,7 +169,7 @@
 
         button { 
             background: linear-gradient(135deg, var(--gold), #aa801e); color: white; font-weight: bold; 
-            border: none; cursor: pointer; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s; 
+            border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; 
             box-shadow: 0 4px 15px var(--shadow); will-change: transform;
         }
         button:active { transform: scale(0.97); }
@@ -177,7 +178,12 @@
 
         .progress-bar { width: 100%; height: 10px; background: rgba(128,128,128,0.2); border-radius: 5px; margin-top: 10px; overflow: hidden; transform: translateZ(0); }
         .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: width; }
-        .list-item { padding: 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
+        
+        .list-item { 
+            padding: 15px; border-bottom: 1px solid var(--glass-border); 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .list-item:last-child { border-bottom: none; }
         .add-btn { width: auto; padding: 8px 15px; margin: 0; }
 
         /* --- НИЖНЯ ПАНЕЛЬ (BOTTOM NAV) ДЛЯ СМАРТФОНІВ --- */
@@ -187,38 +193,35 @@
             background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
             border-top: 1px solid var(--glass-border); z-index: 1000; 
         }
-        .nav-item { text-align: center; font-size: 11px; flex: 1; opacity: 0.5; transition: 0.3s; }
+        .nav-item { text-align: center; font-size: 11px; flex: 1; opacity: 0.5; transition: 0.3s; cursor: pointer; -webkit-tap-highlight-color: transparent;}
         .nav-item.active { opacity: 1; color: var(--gold); font-weight: bold; transform: translateY(-3px); }
         .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
 
-        /* --- АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ ПРИСТРОЇВ --- */
+        /* --- АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ (АЙФОН/АНДРОЇД) --- */
         @media (max-width: 768px) {
-            .sidebar { display: none; } /* Ховаємо бокове меню */
-            .nav-bar { display: flex; } /* Показуємо нижнє меню */
+            .sidebar { display: none; } /* Ховаємо бокове меню на телефоні */
+            .nav-bar { display: flex; } /* Показуємо нижню панель */
             
-            #main-app { padding-top: 60px; padding-bottom: 100px; }
-            .app-wrapper { padding: 0 15px; }
-            .main-content { margin-left: 0; border-radius: 24px; padding: 60px 20px 25px; }
-            .avatar-container { top: -50px; width: 100px; height: 100px; }
+            .app-window { margin-top: 90px; margin-bottom: 100px; border-radius: 28px; }
+            .main-content { padding: 60px 20px 30px; }
+            .avatar-container { top: -50px; width: 100px; height: 100px; border-radius: 24px; }
             
-            @keyframes logoRise {
-                0% { top: 30vh; transform: translateX(-50%) scale(1.5); opacity: 0; }
-                100% { top: -50px; transform: translateX(-50%) scale(1); opacity: 1; }
+            @keyframes bootLogo {
+                0% { transform: translate(-50%, 35vh) scale(1.4); opacity: 0; }
+                40% { transform: translate(-50%, 35vh) scale(1.2); opacity: 1; }
+                100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
             }
         }
     </style>
 </head>
 <body class="dark"> 
     
-    <!-- SPLASH SCREEN -->
-    <div id="splash" class="screen active-screen" onclick="finishSplash()">
-        <div class="splash-logo"></div>
-        <p>Натисніть, щоб пробудити Achilles</p>
-    </div>
-
-    <!-- РЕЄСТРАЦІЯ -->
-    <div id="registration" class="screen hidden-slide">
-        <div class="glass-box">
+    <!-- 1. ВІКНО РЕЄСТРАЦІЇ (Якщо користувач новий) -->
+    <div class="app-window" id="registration-window" style="max-width: 450px;">
+        <div class="avatar-container">
+            <div class="avatar-logo"></div> 
+        </div>
+        <div class="main-content">
             <h2 style="text-align: center; margin-bottom: 20px;">Створення профілю</h2>
             <input type="text" id="reg-name" placeholder="Ім'я">
             <select id="reg-gender">
@@ -232,90 +235,89 @@
         </div>
     </div>
 
-    <!-- ГОЛОВНИЙ ДОДАТОК -->
-    <div id="main-app" class="screen hidden-slide">
-        <div class="app-wrapper">
+    <!-- 2. ГОЛОВНИЙ ДОДАТОК (Уніфікована панель) -->
+    <div class="app-window" id="main-app-window">
+        
+        <div class="avatar-container">
+            <div class="avatar-logo"></div> 
+        </div>
+
+        <!-- БОКОВЕ МЕНЮ (ПК) -->
+        <div class="sidebar">
+            <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
+            <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник їжі</div>
+            <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Тренування</div>
+            <div class="menu-item" data-target="tab-ai"><i class="fa-solid fa-robot"></i> Аналіз ШІ</div>
+            <div class="menu-item" data-target="tab-settings"><i class="fa-solid fa-gear"></i> Налаштування</div>
+        </div>
+
+        <!-- КОНТЕНТНА ЗОНА -->
+        <div class="main-content">
             
-            <div class="avatar-container" id="app-avatar">
-                <div class="avatar-logo"></div> 
+            <!-- ДЕШБОРД -->
+            <div id="tab-dashboard" class="tab-content active">
+                <h1 id="greeting-header">Привіт, <span>Спартанцю</span></h1>
+                <p id="user-goal-text" style="text-align: center; margin-bottom: 20px;">Аналізуємо...</p>
+                
+                <div style="background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 5px 15px var(--shadow);">
+                    <span style="font-size: 14px;">Спожито сьогодні:</span>
+                    <div style="font-size: 34px; font-weight: bold; color: var(--gold); margin: 5px 0;">
+                        <span id="calories-consumed">0</span> / <span id="calories-goal">2000</span> <span style="font-size: 16px; color: var(--text-main);">ккал</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" id="calorie-progress"></div></div>
+                    <p id="bonus-kcal-msg" style="font-size: 12px; color: #4cd964; margin-top: 8px; display: none; font-weight: bold;">+ Додаткові калорії за кроки!</p>
+                </div>
+
+                <h3 style="margin-top: 25px; font-size: 18px;">З'їдено сьогодні:</h3>
+                <div id="eaten-list" style="margin-top: 10px; font-size: 15px; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border);">Поки що нічого. Час підкріпитися!</div>
             </div>
 
-            <!-- БОКОВЕ МЕНЮ (ПК) -->
-            <div class="sidebar" id="app-sidebar">
-                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
-                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник їжі</div>
-                <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Тренування</div>
-                <div class="menu-item" data-target="tab-ai"><i class="fa-solid fa-robot"></i> Аналіз ШІ</div>
-                <div class="menu-item" data-target="tab-settings"><i class="fa-solid fa-gear"></i> Налаштування</div>
+            <!-- ЇЖА -->
+            <div id="tab-food" class="tab-content">
+                <h1>База <span>ПРОДУКТІВ</span></h1>
+                <input type="text" id="food-search" placeholder="Пошук (напр: 'гречка')" oninput="searchFood()">
+                <div id="food-results" style="margin-top: 15px; max-height: 350px; overflow-y: auto; border-radius: 16px; background: var(--card-bg); border: 1px solid var(--glass-border);"></div>
             </div>
 
-            <!-- КОНТЕНТ -->
-            <div class="main-content" id="app-content">
-                <!-- ДЕШБОРД -->
-                <div id="tab-dashboard" class="tab-content active">
-                    <h1 id="greeting-header">Привіт, <span>Спартанцю</span></h1>
-                    <p id="user-goal-text" style="text-align: center; margin-bottom: 20px;">Аналізуємо...</p>
-                    
-                    <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--glass-border);">
-                        <span style="font-size: 14px;">Спожито сьогодні:</span>
-                        <div style="font-size: 32px; font-weight: bold; color: var(--gold);">
-                            <span id="calories-consumed">0</span> / <span id="calories-goal">2000</span> <span style="font-size: 16px; color: var(--text-main);">ккал</span>
-                        </div>
-                        <div class="progress-bar"><div class="progress-fill" id="calorie-progress"></div></div>
-                        <p id="bonus-kcal-msg" style="font-size: 12px; color: #4cd964; margin-top: 5px; display: none;">+ Додаткові калорії за кроки!</p>
-                    </div>
+            <!-- ТРЕНУВАННЯ -->
+            <div id="tab-workout" class="tab-content">
+                <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
+                <p style="text-align: center; margin-bottom: 20px;">База вправ для підтримки форми.</p>
+                <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--glass-border);">
+                    <h4 style="color: var(--gold); font-size: 18px; margin-bottom: 5px;">Віджимання</h4><p>3 підходи по 10-15 разів</p>
+                </div>
+                <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--glass-border);">
+                    <h4 style="color: var(--gold); font-size: 18px; margin-bottom: 5px;">Присідання</h4><p>4 підходи по 20 разів</p>
+                </div>
+            </div>
 
-                    <h3 style="margin-top: 20px; font-size: 16px;">З'їдено сьогодні:</h3>
-                    <div id="eaten-list" style="margin-top: 10px; font-size: 14px;">Поки що нічого. Час підкріпитися!</div>
+            <!-- ШІ -->
+            <div id="tab-ai" class="tab-content">
+                <h1>Синхронізація <span>ШІ</span></h1>
+                <p style="text-align: center; margin-bottom: 25px;">Завантаж скріншот з Apple Fitness, щоб додати калорії за кроки.</p>
+                <label class="file-upload" style="background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold); padding: 20px;">
+                    📸 Завантажити скріншот
+                    <input type="file" accept="image/*" onchange="processScreenshot(event)">
+                </label>
+                <div id="ocr-status" style="margin-top: 20px; font-size: 15px; font-weight: bold; text-align: center;"></div>
+            </div>
+
+            <!-- НАЛАШТУВАННЯ -->
+            <div id="tab-settings" class="tab-content">
+                <h1><span>НАЛАШТУВАННЯ</span></h1>
+                <label style="font-weight: bold;">Тема інтерфейсу:</label>
+                <select id="theme-select" onchange="toggleTheme()">
+                    <option value="dark">Темна (Спартанська)</option>
+                    <option value="light">Світла (Олімпійська)</option>
+                    <option value="auto">Системна</option>
+                </select>
+                
+                <div style="margin-top: 25px; padding: 20px; background: rgba(76, 217, 100, 0.1); border: 1px solid #4cd964; border-radius: 16px; text-align: center;">
+                    <i class="fa-solid fa-cloud" style="color: #4cd964; font-size: 28px; margin-bottom: 10px;"></i>
+                    <div style="font-weight: bold; color: #4cd964; font-size: 16px;" id="firebase-status">Firebase: Підключаємо...</div>
                 </div>
 
-                <!-- ЇЖА -->
-                <div id="tab-food" class="tab-content">
-                    <h1>База <span>ПРОДУКТІВ</span></h1>
-                    <input type="text" id="food-search" placeholder="Пошук (напр: 'гречка')" oninput="searchFood()">
-                    <div id="food-results" style="margin-top: 15px; max-height: 350px; overflow-y: auto;"></div>
-                </div>
-
-                <!-- ТРЕНУВАННЯ -->
-                <div id="tab-workout" class="tab-content">
-                    <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
-                    <p style="text-align: center; margin-bottom: 20px;">База вправ для підтримки форми.</p>
-                    <div style="background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--glass-border);">
-                        <h4 style="color: var(--gold);">Віджимання</h4><p>3 підходи по 10-15 разів</p>
-                    </div>
-                    <div style="background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--glass-border);">
-                        <h4 style="color: var(--gold);">Присідання</h4><p>4 підходи по 20 разів</p>
-                    </div>
-                </div>
-
-                <!-- ШІ -->
-                <div id="tab-ai" class="tab-content">
-                    <h1>Синхронізація <span>ШІ</span></h1>
-                    <p style="text-align: center; margin-bottom: 20px;">Завантаж скріншот з Apple Fitness, щоб додати калорії за кроки.</p>
-                    <label class="file-upload" style="background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold);">
-                        📸 Завантажити скріншот
-                        <input type="file" accept="image/*" onchange="processScreenshot(event)">
-                    </label>
-                    <div id="ocr-status" style="margin-top: 15px; font-size: 14px; font-weight: bold; text-align: center;"></div>
-                </div>
-
-                <!-- НАЛАШТУВАННЯ -->
-                <div id="tab-settings" class="tab-content">
-                    <h1><span>НАЛАШТУВАННЯ</span></h1>
-                    <label style="font-weight: bold;">Тема інтерфейсу:</label>
-                    <select id="theme-select" onchange="toggleTheme()">
-                        <option value="dark">Темна (Спартанська)</option>
-                        <option value="light">Світла (Олімпійська)</option>
-                        <option value="auto">Системна</option>
-                    </select>
-                    
-                    <div style="margin-top: 20px; padding: 15px; background: rgba(76, 217, 100, 0.1); border: 1px solid #4cd964; border-radius: 12px; text-align: center;">
-                        <i class="fa-solid fa-cloud" style="color: #4cd964; font-size: 24px; margin-bottom: 10px;"></i>
-                        <div style="font-weight: bold; color: #4cd964;" id="firebase-status">Firebase: Підключаємо...</div>
-                    </div>
-
-                    <button onclick="logout()" style="background: #ff3b30; margin-top: 20px; box-shadow: none;">Скинути профіль</button>
-                </div>
+                <button onclick="logout()" style="background: #ff3b30; margin-top: 25px; box-shadow: none;">Скинути профіль</button>
             </div>
         </div>
     </div>
@@ -360,40 +362,22 @@
 
         let consumedCalories = 0; let bonusCalories = 0;
 
+        // АВТОЗАПУСК БЕЗ КЛІКУ
         window.onload = () => { 
             loadTheme();
-            if(localStorage.getItem('achilles_user')) loadUserData(); 
+            bootApp(); 
         };
 
-        function finishSplash() {
-            document.getElementById('splash').style.display = 'none';
+        function bootApp() {
             if (localStorage.getItem('achilles_user')) {
-                showMainApp();
+                loadUserData();
+                document.getElementById('main-app-window').classList.add('active-flex');
             } else { 
-                document.getElementById('registration').style.display = 'flex';
-                // Використовуємо requestAnimationFrame для ідеальної плавності
-                requestAnimationFrame(() => {
-                    document.getElementById('registration').classList.add('active-screen'); 
-                    document.getElementById('registration').classList.remove('hidden-slide');
-                });
+                document.getElementById('registration-window').classList.add('active-flex');
             }
         }
 
-        function showMainApp() {
-            document.getElementById('registration').style.display = 'none';
-            const mainApp = document.getElementById('main-app');
-            mainApp.style.display = 'flex';
-            
-            requestAnimationFrame(() => {
-                mainApp.classList.add('active-screen');
-                mainApp.classList.remove('hidden-slide');
-                document.getElementById('app-avatar').style.animation = 'logoRise 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-                document.getElementById('app-sidebar').style.animation = 'slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards';
-                document.getElementById('app-content').style.animation = 'slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards';
-            });
-        }
-
-        // КРОСПЛАТФОРМНА НАВІГАЦІЯ (Синхронізація меню ПК та Телефону)
+        // КРОСПЛАТФОРМНА НАВІГАЦІЯ
         const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
         const tabContents = document.querySelectorAll('.tab-content');
 
@@ -401,19 +385,17 @@
             item.addEventListener('click', () => {
                 const targetId = item.getAttribute('data-target');
                 
-                // Оновлюємо активний стан і на ПК, і на телефоні
                 allNavItems.forEach(mi => mi.classList.remove('active'));
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(activeItem => {
                     activeItem.classList.add('active');
                 });
 
-                // Перемикання вкладок
-                tabContents.forEach(tc => { tc.classList.remove('active'); tc.style.opacity = '0'; tc.style.transform = 'translateY(15px)'; });
+                tabContents.forEach(tc => { tc.classList.remove('active'); tc.style.opacity = '0'; tc.style.transform = 'translate3d(0, 15px, 0)'; });
                 const targetTab = document.getElementById(targetId);
                 targetTab.classList.add('active');
                 
                 requestAnimationFrame(() => {
-                    setTimeout(() => { targetTab.style.opacity = '1'; targetTab.style.transform = 'translateY(0)'; }, 30);
+                    setTimeout(() => { targetTab.style.opacity = '1'; targetTab.style.transform = 'translate3d(0, 0, 0)'; }, 30);
                 });
             });
         });
@@ -444,8 +426,12 @@
             localStorage.setItem('achilles_base_kcal', 2500); 
             localStorage.setItem('achilles_goal_text', 'Спартанська дисципліна');
             
-            document.getElementById('registration').classList.remove('active-screen');
-            setTimeout(() => { loadUserData(); showMainApp(); }, 400);
+            document.getElementById('registration-window').classList.remove('active-flex');
+            
+            setTimeout(() => { 
+                loadUserData(); 
+                document.getElementById('main-app-window').classList.add('active-flex');
+            }, 50);
         }
 
         function loadUserData() {
@@ -473,7 +459,7 @@
             if(query.length > 1) {
                 foodDB.filter(i => i.name.toLowerCase().includes(query)).forEach(item => {
                     resultsBox.innerHTML += `<div class="list-item">
-                        <div><strong>${item.name}</strong><br><span style="font-size: 12px; opacity: 0.8;">${item.kcal} ккал</span></div>
+                        <div><strong>${item.name}</strong><br><span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал</span></div>
                         <button class="add-btn" onclick="addFood('${item.name}', ${item.kcal})">+</button>
                     </div>`;
                 });
@@ -485,10 +471,15 @@
             document.getElementById('calories-consumed').textContent = consumedCalories;
             const list = document.getElementById('eaten-list');
             if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
-            list.innerHTML += `<div style="padding: 5px 0; border-bottom: 1px solid var(--glass-border);">${name} - ${kcal} ккал</div>`;
+            
+            const entry = document.createElement('div');
+            entry.style.padding = '8px 0';
+            entry.style.borderBottom = '1px solid var(--glass-border)';
+            entry.innerText = `${name} - ${kcal} ккал`;
+            list.appendChild(entry);
+            
             updateGoalDisplay();
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
-            
             document.querySelector('[data-target="tab-dashboard"]').click();
         }
 
