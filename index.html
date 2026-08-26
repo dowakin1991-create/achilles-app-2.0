@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Achilles">
-    <!-- ПРАВИЛЬНА НАЗВА ФАЙЛУ ДЛЯ ІКОНКИ -->
     <link rel="apple-touch-icon" href="IMG_9302.jpeg">
     <title>Achilles OS</title>
     
@@ -14,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     
     <style>
-        /* ТЕМИ */
+        /* --- ТЕМИ --- */
         :root {
             --gold: #d4af37;
             --gold-glow: rgba(212, 175, 55, 0.3);
@@ -27,6 +26,7 @@
             --shadow: rgba(0, 0, 0, 0.1);
             --menu-active: rgba(0, 0, 0, 0.05);
             --card-bg: rgba(255, 255, 255, 0.8);
+            --option-bg: #ffffff; /* Для світлої теми */
         }
 
         body.dark {
@@ -41,6 +41,7 @@
             --shadow: rgba(0, 0, 0, 0.5);
             --menu-active: rgba(255, 255, 255, 0.12);
             --card-bg: rgba(0, 0, 0, 0.2);
+            --option-bg: #1a1f2b; /* Для темної теми */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -48,89 +49,88 @@
         body { 
             background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2)); 
             background-attachment: fixed; color: var(--text-main); 
-            min-height: 100vh; overflow-x: hidden; transition: 0.5s ease;
+            min-height: 100vh; overflow-x: hidden; transition: background 0.4s ease, color 0.4s ease;
         }
 
-        /* ЕКРАНИ (Splash, Реєстрація, Додаток) */
+        /* --- ЕКРАНИ (GPU ОПТИМІЗАЦІЯ ДЛЯ 120+ ГЦ) --- */
         .screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
-            overflow-y: auto;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            overflow-y: auto; will-change: transform, opacity;
         }
-        .hidden-scale { opacity: 0; transform: scale(1.1); pointer-events: none; z-index: 0; }
-        .hidden-slide { opacity: 0; transform: translateY(50px); pointer-events: none; z-index: 0; display: none; }
-        .active-screen { opacity: 1; transform: none; pointer-events: auto; z-index: 20; display: flex; }
+        .hidden-scale { opacity: 0; transform: scale(1.05); pointer-events: none; z-index: 0; display: none; }
+        .hidden-slide { opacity: 0; transform: translateY(30px); pointer-events: none; z-index: 0; display: none; }
+        .active-screen { opacity: 1; transform: translateZ(0); pointer-events: auto; z-index: 20; display: flex; }
 
-        /* SPLASH SCREEN */
+        /* --- SPLASH SCREEN --- */
         #splash { background: #0a0a0a; color: white; cursor: pointer; z-index: 100; }
-        .splash-logo {
-            width: 160px; height: 160px; border-radius: 50%;
-            /* ПРАВИЛЬНА НАЗВА ФАЙЛУ ДЛЯ ЛОГО */
-            background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center;
-            box-shadow: 0 0 40px var(--gold-glow); margin-bottom: 40px; 
-            animation: pulse 3s infinite; border: 2px solid var(--gold);
+        .splash-logo, .avatar-logo {
+            border-radius: 50%; border: 2px solid var(--gold);
+            background-image: url('IMG_9302.jpeg'); 
+            /* ФІКС КВАДРАТА: Збільшуємо фон, щоб сховати кути, і центруємо */
+            background-size: 128%; 
+            background-position: center 10%; 
+            background-repeat: no-repeat;
         }
-        #splash p { opacity: 0.6; font-size: 16px; animation: breathe 2s infinite; }
+        .splash-logo {
+            width: 160px; height: 160px; box-shadow: 0 0 40px var(--gold-glow); margin-bottom: 40px; 
+            animation: pulse 3s infinite cubic-bezier(0.4, 0, 0.2, 1); will-change: transform;
+        }
+        #splash p { opacity: 0.6; font-size: 16px; animation: breathe 2s infinite ease-in-out; will-change: opacity; }
         
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes breathe { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes breathe { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
 
-        /* РЕЄСТРАЦІЯ */
+        /* --- РЕЄСТРАЦІЯ --- */
         .glass-box { 
             background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
             border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 8px 32px var(--shadow); 
             padding: 30px; width: 90%; max-width: 400px;
         }
 
-        /* ГОЛОВНИЙ ДОДАТОК (РОЗКІШНИЙ МАКЕТ) */
-        #main-app { align-items: flex-start; padding-top: 100px; }
+        /* --- ГОЛОВНИЙ ДОДАТОК (КРОСПЛАТФОРМА) --- */
+        #main-app { align-items: flex-start; padding-top: 100px; padding-bottom: 90px; }
         
         .app-wrapper {
-            position: relative; display: flex; width: 100%; max-width: 650px; margin: 0 auto;
+            position: relative; display: flex; width: 100%; max-width: 800px; margin: 0 auto; padding: 0 20px;
         }
 
-        /* АНІМАЦІЇ ПОЯВИ */
-        @keyframes logoRise {
-            0% { top: 40vh; transform: translateX(-50%) scale(1.8); opacity: 0; }
-            30% { top: 40vh; transform: translateX(-50%) scale(1.5); opacity: 1; }
-            100% { top: -90px; transform: translateX(-50%) scale(1); opacity: 1; }
-        }
-        @keyframes slideInLeft { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideInRight { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        /* АВАТАР (ПОЯВА ЗНИЗУ) */
+        /* АВАТАР */
         .avatar-container {
             position: absolute; left: 50%; transform: translateX(-50%);
-            width: 140px; height: 140px; background: var(--glass-bg);
+            width: 130px; height: 130px; background: var(--glass-bg);
             border-radius: 50%; border: 2px solid var(--glass-border);
             box-shadow: 0 0 30px var(--gold-glow); display: flex; justify-content: center; align-items: center;
-            backdrop-filter: blur(10px); z-index: 10;
-            opacity: 0; /* Анімація запускається через JS */
+            backdrop-filter: blur(10px); z-index: 10; opacity: 0; will-change: transform, opacity;
         }
-        .avatar-logo {
-            width: 100%; height: 100%; border-radius: 50%;
-            /* ПРАВИЛЬНА НАЗВА ФАЙЛУ */
-            background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center;
+        .avatar-logo { width: 100%; height: 100%; border: none; }
+
+        @keyframes logoRise {
+            0% { top: 30vh; transform: translateX(-50%) scale(1.5); opacity: 0; }
+            100% { top: -75px; transform: translateX(-50%) scale(1); opacity: 1; }
         }
 
-        /* РОЗКІШНЕ МЕНЮ */
+        /* РОЗКІШНЕ МЕНЮ (ДЛЯ ПК) */
         .sidebar {
-            width: 220px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            width: 240px; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border); border-radius: 24px 0 0 24px;
-            padding: 80px 0 40px 0; display: flex; flex-direction: column; gap: 10px;
+            padding: 80px 0 40px 0; display: flex; flex-direction: column; gap: 8px;
             box-shadow: -10px 10px 40px var(--shadow); position: relative;
-            opacity: 0; /* Анімація через JS */
+            opacity: 0; will-change: transform, opacity; flex-shrink: 0;
         }
+        @keyframes slideInLeft { from { transform: translate3d(-50px, 0, 0); opacity: 0; } to { transform: translate3d(0, 0, 0); opacity: 1; } }
+        
+        .menu-item, .nav-item { cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .menu-item {
-            display: flex; align-items: center; padding: 15px 30px; color: var(--text-main);
-            font-size: 15px; font-weight: 500; transition: all 0.4s; cursor: pointer; position: relative;
+            display: flex; align-items: center; padding: 15px 25px; color: var(--text-main);
+            font-size: 15px; font-weight: 500; transition: all 0.3s ease; position: relative;
         }
         .menu-item i { margin-right: 15px; font-size: 18px; color: var(--gold); transition: transform 0.3s; }
         .menu-item:hover i { transform: scale(1.2); }
         .menu-item.active {
             background: var(--menu-active); border: 1px solid var(--glass-border); border-right: none;
-            border-radius: 16px 0 0 16px; margin-right: -10px; padding-left: 25px;
+            border-radius: 16px 0 0 16px; margin-right: -10px; padding-left: 35px;
             box-shadow: -5px 5px 15px var(--shadow); z-index: 5;
         }
 
@@ -139,64 +139,84 @@
             width: 100%; min-height: 550px; background: var(--glass-bg);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border); border-radius: 24px;
-            padding: 60px 30px 30px; margin-left: -10px; box-shadow: 10px 10px 40px var(--shadow);
-            z-index: 2; position: relative;
-            opacity: 0; /* Анімація через JS */
+            padding: 70px 30px 30px; margin-left: -10px; box-shadow: 10px 10px 40px var(--shadow);
+            z-index: 2; position: relative; opacity: 0; will-change: transform, opacity;
         }
-        .tab-content { display: none; opacity: 0; transform: translateY(15px); transition: 0.4s ease; }
+        @keyframes slideInRight { from { transform: translate3d(50px, 0, 0); opacity: 0; } to { transform: translate3d(0, 0, 0); opacity: 1; } }
+        
+        .tab-content { display: none; opacity: 0; transform: translateY(15px); transition: opacity 0.4s ease, transform 0.4s ease; will-change: opacity, transform; }
         .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
 
         h1 { font-size: 26px; margin: 0 0 20px 0; text-align: center; }
         h1 span { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
         p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
 
-        /* ЕЛЕМЕНТИ ФОРМ */
+        /* ЕЛЕМЕНТИ ФОРМ ТА ФІКС ВИПАДАЮЧОГО СПИСКУ */
         input, select, button, .file-upload { 
-            width: 100%; padding: 12px; margin: 10px 0; border-radius: 12px; 
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; 
             border: 1px solid var(--glass-border); background: var(--card-bg); 
             color: var(--text-main); outline: none; font-size: 15px; 
+            -webkit-appearance: none; appearance: none;
         }
+        
+        /* Фікс сірого списку тем */
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 15px center; background-size: 16px;
+        }
+        select option { background-color: var(--option-bg); color: var(--text-main); font-weight: 500; }
+
         button { 
             background: linear-gradient(135deg, var(--gold), #aa801e); color: white; font-weight: bold; 
-            border: none; cursor: pointer; transition: 0.3s ease; box-shadow: 0 4px 15px var(--shadow);
+            border: none; cursor: pointer; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s; 
+            box-shadow: 0 4px 15px var(--shadow); will-change: transform;
         }
-        button:hover { transform: translateY(-2px); box-shadow: 0 0 20px var(--gold-glow); }
+        button:active { transform: scale(0.97); }
         .file-upload { text-align: center; cursor: pointer; display: block; font-weight: bold; }
         input[type="file"] { display: none; }
 
-        .progress-bar { width: 100%; height: 10px; background: rgba(128,128,128,0.2); border-radius: 5px; margin-top: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: 0.5s; }
+        .progress-bar { width: 100%; height: 10px; background: rgba(128,128,128,0.2); border-radius: 5px; margin-top: 10px; overflow: hidden; transform: translateZ(0); }
+        .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: width; }
         .list-item { padding: 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
         .add-btn { width: auto; padding: 8px 15px; margin: 0; }
 
-        /* АДАПТИВНІСТЬ ДЛЯ ТЕЛЕФОНІВ */
+        /* --- НИЖНЯ ПАНЕЛЬ (BOTTOM NAV) ДЛЯ СМАРТФОНІВ --- */
+        .nav-bar { 
+            position: fixed; bottom: 0; left: 0; width: 100%; display: none; justify-content: space-around; 
+            padding: 12px 10px calc(12px + env(safe-area-inset-bottom)); 
+            background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
+            border-top: 1px solid var(--glass-border); z-index: 1000; 
+        }
+        .nav-item { text-align: center; font-size: 11px; flex: 1; opacity: 0.5; transition: 0.3s; }
+        .nav-item.active { opacity: 1; color: var(--gold); font-weight: bold; transform: translateY(-3px); }
+        .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+
+        /* --- АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ ПРИСТРОЇВ --- */
         @media (max-width: 768px) {
-            #main-app { padding-top: 80px; }
-            .app-wrapper { flex-direction: column; width: 92%; }
-            .sidebar { 
-                width: 100%; border-radius: 24px 24px 0 0; padding: 20px 10px; 
-                flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 5px;
-            }
-            .menu-item { padding: 10px; font-size: 13px; border-radius: 12px; }
-            .menu-item.active { margin-right: 0; margin-bottom: -10px; border-radius: 16px 16px 0 0; border-right: 1px solid var(--glass-border); border-bottom: none; }
-            .main-content { margin-left: 0; border-radius: 0 0 24px 24px; padding: 40px 20px 20px; }
-            .avatar-container { top: -60px; width: 100px; height: 100px; }
+            .sidebar { display: none; } /* Ховаємо бокове меню */
+            .nav-bar { display: flex; } /* Показуємо нижнє меню */
+            
+            #main-app { padding-top: 60px; padding-bottom: 100px; }
+            .app-wrapper { padding: 0 15px; }
+            .main-content { margin-left: 0; border-radius: 24px; padding: 60px 20px 25px; }
+            .avatar-container { top: -50px; width: 100px; height: 100px; }
+            
             @keyframes logoRise {
-                0% { top: 40vh; transform: translateX(-50%) scale(1.5); opacity: 0; }
-                100% { top: -60px; transform: translateX(-50%) scale(1); opacity: 1; }
+                0% { top: 30vh; transform: translateX(-50%) scale(1.5); opacity: 0; }
+                100% { top: -50px; transform: translateX(-50%) scale(1); opacity: 1; }
             }
         }
     </style>
 </head>
 <body class="dark"> 
     
-    <!-- 1. SPLASH SCREEN -->
+    <!-- SPLASH SCREEN -->
     <div id="splash" class="screen active-screen" onclick="finishSplash()">
         <div class="splash-logo"></div>
         <p>Натисніть, щоб пробудити Achilles</p>
     </div>
 
-    <!-- 2. РЕЄСТРАЦІЯ -->
+    <!-- РЕЄСТРАЦІЯ -->
     <div id="registration" class="screen hidden-slide">
         <div class="glass-box">
             <h2 style="text-align: center; margin-bottom: 20px;">Створення профілю</h2>
@@ -206,25 +226,21 @@
                 <option value="male">Чоловіча</option>
                 <option value="female">Жіноча</option>
             </select>
-            <input type="date" id="reg-date" placeholder="Дата народження">
-            <div style="display: flex; gap: 10px;">
-                <input type="number" id="reg-height" placeholder="Зріст (см)">
-                <input type="number" id="reg-weight" placeholder="Вага (кг)">
-            </div>
+            <input type="number" id="reg-height" placeholder="Зріст (см)">
+            <input type="number" id="reg-weight" placeholder="Вага (кг)">
             <button onclick="completeRegistration()">Увійти в Achilles</button>
         </div>
     </div>
 
-    <!-- 3. ГОЛОВНИЙ ДОДАТОК -->
+    <!-- ГОЛОВНИЙ ДОДАТОК -->
     <div id="main-app" class="screen hidden-slide">
         <div class="app-wrapper">
             
-            <!-- ЛОГОТИП (Анімується при старті) -->
             <div class="avatar-container" id="app-avatar">
                 <div class="avatar-logo"></div> 
             </div>
 
-            <!-- РОЗКІШНЕ МЕНЮ -->
+            <!-- БОКОВЕ МЕНЮ (ПК) -->
             <div class="sidebar" id="app-sidebar">
                 <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
                 <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник їжі</div>
@@ -235,7 +251,6 @@
 
             <!-- КОНТЕНТ -->
             <div class="main-content" id="app-content">
-                
                 <!-- ДЕШБОРД -->
                 <div id="tab-dashboard" class="tab-content active">
                     <h1 id="greeting-header">Привіт, <span>Спартанцю</span></h1>
@@ -273,11 +288,10 @@
                     </div>
                 </div>
 
-                <!-- ШІ / OCR -->
+                <!-- ШІ -->
                 <div id="tab-ai" class="tab-content">
                     <h1>Синхронізація <span>ШІ</span></h1>
                     <p style="text-align: center; margin-bottom: 20px;">Завантаж скріншот з Apple Fitness, щоб додати калорії за кроки.</p>
-                    
                     <label class="file-upload" style="background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold);">
                         📸 Завантажити скріншот
                         <input type="file" accept="image/*" onchange="processScreenshot(event)">
@@ -295,23 +309,29 @@
                         <option value="auto">Системна</option>
                     </select>
                     
-                    <!-- Індикатор хмари -->
                     <div style="margin-top: 20px; padding: 15px; background: rgba(76, 217, 100, 0.1); border: 1px solid #4cd964; border-radius: 12px; text-align: center;">
                         <i class="fa-solid fa-cloud" style="color: #4cd964; font-size: 24px; margin-bottom: 10px;"></i>
                         <div style="font-weight: bold; color: #4cd964;" id="firebase-status">Firebase: Підключаємо...</div>
                     </div>
 
-                    <button onclick="logout()" style="background: #ff3b30; margin-top: 20px;">Скинути профіль</button>
+                    <button onclick="logout()" style="background: #ff3b30; margin-top: 20px; box-shadow: none;">Скинути профіль</button>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- FIREBASE ХМАРА (Підключення твого проєкту) -->
+    <!-- НИЖНЯ НАВІГАЦІЯ (МОБІЛЬНІ) -->
+    <nav class="nav-bar" id="bottom-nav">
+        <div class="nav-item active" data-target="tab-dashboard"><span class="nav-icon"><i class="fa-solid fa-fire"></i></span><span>Статус</span></div>
+        <div class="nav-item" data-target="tab-food"><span class="nav-icon"><i class="fa-solid fa-book"></i></span><span>Їжа</span></div>
+        <div class="nav-item" data-target="tab-workout"><span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span><span>Зал</span></div>
+        <div class="nav-item" data-target="tab-ai"><span class="nav-icon"><i class="fa-solid fa-robot"></i></span><span>ШІ</span></div>
+        <div class="nav-item" data-target="tab-settings"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span><span>Налаштування</span></div>
+    </nav>
+
+    <!-- FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        
         const firebaseConfig = {
             apiKey: "AIzaSyDjT5UjvgTs396KGsVtPrOEUrnkUi6LD1I",
             authDomain: "achilles-8de53.firebaseapp.com",
@@ -320,20 +340,17 @@
             messagingSenderId: "842206429977",
             appId: "1:842206429977:web:eb78b2a92587395999bb88"
         };
-
         try {
-            const app = initializeApp(firebaseConfig);
+            initializeApp(firebaseConfig);
             document.getElementById('firebase-status').innerText = "Firebase: Підключено успішно!";
-            console.log("Хмара Achilles готова до роботи!");
         } catch(e) {
             document.getElementById('firebase-status').innerText = "Firebase: Помилка з'єднання";
             document.getElementById('firebase-status').style.color = "#ff3b30";
         }
     </script>
 
-    <!-- ОСНОВНА ЛОГІКА ДОДАТКУ -->
+    <!-- ОСНОВНА ЛОГІКА -->
     <script>
-        // --- БАЗА ЇЖІ ---
         const foodDB = [
             { name: "Гречка варена", kcal: 110 }, { name: "Куряче філе", kcal: 165 },
             { name: "Яйце (1 шт)", kcal: 78 }, { name: "Вівсянка", kcal: 389 },
@@ -341,25 +358,24 @@
             { name: "Суші (роли)", kcal: 142 }
         ];
 
-        let consumedCalories = 0;
-        let bonusCalories = 0;
+        let consumedCalories = 0; let bonusCalories = 0;
 
         window.onload = () => { 
             loadTheme();
             if(localStorage.getItem('achilles_user')) loadUserData(); 
         };
 
-        // --- ЛОГІКА ЕКРАНІВ ТА АНІМАЦІЙ ---
         function finishSplash() {
             document.getElementById('splash').style.display = 'none';
             if (localStorage.getItem('achilles_user')) {
                 showMainApp();
             } else { 
                 document.getElementById('registration').style.display = 'flex';
-                setTimeout(() => {
+                // Використовуємо requestAnimationFrame для ідеальної плавності
+                requestAnimationFrame(() => {
                     document.getElementById('registration').classList.add('active-screen'); 
                     document.getElementById('registration').classList.remove('hidden-slide');
-                }, 50);
+                });
             }
         }
 
@@ -368,33 +384,41 @@
             const mainApp = document.getElementById('main-app');
             mainApp.style.display = 'flex';
             
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 mainApp.classList.add('active-screen');
                 mainApp.classList.remove('hidden-slide');
-                // Запуск кінематографічних анімацій
-                document.getElementById('app-avatar').style.animation = 'logoRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-                document.getElementById('app-sidebar').style.animation = 'slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards';
-                document.getElementById('app-content').style.animation = 'slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards';
-            }, 50);
+                document.getElementById('app-avatar').style.animation = 'logoRise 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                document.getElementById('app-sidebar').style.animation = 'slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards';
+                document.getElementById('app-content').style.animation = 'slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards';
+            });
         }
 
-        // --- ПЕРЕМИКАННЯ РОЗКІШНОГО МЕНЮ ---
-        const menuItems = document.querySelectorAll('.menu-item');
+        // КРОСПЛАТФОРМНА НАВІГАЦІЯ (Синхронізація меню ПК та Телефону)
+        const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        menuItems.forEach(item => {
+        allNavItems.forEach(item => {
             item.addEventListener('click', () => {
-                menuItems.forEach(mi => mi.classList.remove('active'));
-                tabContents.forEach(tc => { tc.classList.remove('active'); tc.style.opacity = '0'; tc.style.transform = 'translateY(15px)'; });
+                const targetId = item.getAttribute('data-target');
+                
+                // Оновлюємо активний стан і на ПК, і на телефоні
+                allNavItems.forEach(mi => mi.classList.remove('active'));
+                document.querySelectorAll(`[data-target="${targetId}"]`).forEach(activeItem => {
+                    activeItem.classList.add('active');
+                });
 
-                item.classList.add('active');
-                const targetTab = document.getElementById(item.getAttribute('data-target'));
+                // Перемикання вкладок
+                tabContents.forEach(tc => { tc.classList.remove('active'); tc.style.opacity = '0'; tc.style.transform = 'translateY(15px)'; });
+                const targetTab = document.getElementById(targetId);
                 targetTab.classList.add('active');
-                setTimeout(() => { targetTab.style.opacity = '1'; targetTab.style.transform = 'translateY(0)'; }, 50);
+                
+                requestAnimationFrame(() => {
+                    setTimeout(() => { targetTab.style.opacity = '1'; targetTab.style.transform = 'translateY(0)'; }, 30);
+                });
             });
         });
 
-        // --- ТЕМИ ---
+        // ТЕМИ
         function loadTheme() {
             const savedTheme = localStorage.getItem('achilles_theme') || 'dark';
             document.getElementById('theme-select').value = savedTheme;
@@ -410,20 +434,18 @@
             localStorage.setItem('achilles_theme', theme); applyTheme(theme);
         }
 
-        // --- РЕЄСТРАЦІЯ ---
+        // РЕЄСТРАЦІЯ
         function completeRegistration() {
             const name = document.getElementById('reg-name').value;
-            const gender = document.getElementById('reg-gender').value;
             const weight = parseFloat(document.getElementById('reg-weight').value);
-            
             if(!name || !weight) { alert('Заповни ім\'я та вагу!'); return; }
 
             localStorage.setItem('achilles_user', name);
-            localStorage.setItem('achilles_base_kcal', 2500); // Базове значення для прикладу
+            localStorage.setItem('achilles_base_kcal', 2500); 
             localStorage.setItem('achilles_goal_text', 'Спартанська дисципліна');
             
             document.getElementById('registration').classList.remove('active-screen');
-            setTimeout(() => { loadUserData(); showMainApp(); }, 500);
+            setTimeout(() => { loadUserData(); showMainApp(); }, 400);
         }
 
         function loadUserData() {
@@ -437,11 +459,13 @@
             document.getElementById('calories-goal').textContent = finalGoal;
             let percent = (consumedCalories / finalGoal) * 100;
             if(percent > 100) percent = 100;
-            document.getElementById('calorie-progress').style.width = percent + '%';
-            document.getElementById('calorie-progress').style.background = percent > 90 ? '#ff3b30' : 'var(--gold)';
+            requestAnimationFrame(() => {
+                document.getElementById('calorie-progress').style.width = percent + '%';
+                document.getElementById('calorie-progress').style.background = percent > 90 ? '#ff3b30' : 'var(--gold)';
+            });
         }
 
-        // --- ЇЖА ---
+        // ЇЖА
         function searchFood() {
             const query = document.getElementById('food-search').value.toLowerCase();
             const resultsBox = document.getElementById('food-results');
@@ -465,11 +489,10 @@
             updateGoalDisplay();
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
             
-            // Перекидаємо на Дешборд
             document.querySelector('[data-target="tab-dashboard"]').click();
         }
 
-        // --- ШІ OCR ---
+        // ШІ OCR
         async function processScreenshot(event) {
             const file = event.target.files[0];
             if (!file) return;
