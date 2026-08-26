@@ -66,7 +66,7 @@
             
             opacity: 0;
             will-change: transform, opacity;
-            animation: windowFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+            animation: windowFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards; /* Збільшив затримку, щоб лого встигло повисіти */
         }
 
         .app-window.active-flex { display: flex; }
@@ -76,7 +76,7 @@
             100% { opacity: 1; transform: translate3d(0, 0, 0); }
         }
 
-        /* --- ЛОГОТИП (ОРИГІНАЛЬНИЙ РОЗМІР) --- */
+        /* --- ЛОГОТИП (НОВА АНІМАЦІЯ: ВИДНО З САМОГО ПОЧАТКУ) --- */
         .avatar-container {
             position: absolute;
             top: -65px; 
@@ -87,26 +87,26 @@
             border: 2px solid var(--gold);
             box-shadow: 0 15px 35px var(--shadow), inset 0 0 20px rgba(255,255,255,0.1);
             z-index: 30;
-            background-color: #000; /* Чорний фон під картинку, якщо вона не квадратна */
+            background-color: #000;
             overflow: hidden; 
             
             will-change: transform, opacity;
-            animation: bootLogo 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: bootLogo 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .avatar-logo {
             width: 100%; height: 100%;
             background-image: url('IMG_9302.jpeg');
-            /* ФІКС: Картинка повністю поміщається без обрізки та зуму */
             background-size: cover; 
             background-position: center; 
             background-repeat: no-repeat;
         }
 
+        /* ОНОВЛЕНІ КЛЮЧОВІ КАДРИ */
         @keyframes bootLogo {
-            0% { transform: translate(-50%, 35vh) scale(1.6); opacity: 0; }
-            40% { transform: translate(-50%, 35vh) scale(1.4); opacity: 1; }
-            100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+            0% { transform: translate(-50%, 25vh) scale(1.4); opacity: 1; } /* З'являється по центру одразу видимим */
+            40% { transform: translate(-50%, 25vh) scale(1.4); opacity: 1; } /* Зависає, щоб ти його побачив */
+            100% { transform: translate(-50%, 0) scale(1); opacity: 1; } /* Летить на місце */
         }
 
         /* --- БОКОВЕ МЕНЮ --- */
@@ -206,8 +206,8 @@
             .avatar-container { top: -50px; width: 100px; height: 100px; border-radius: 22px; }
             
             @keyframes bootLogo {
-                0% { transform: translate(-50%, 35vh) scale(1.4); opacity: 0; }
-                40% { transform: translate(-50%, 35vh) scale(1.2); opacity: 1; }
+                0% { transform: translate(-50%, 30vh) scale(1.3); opacity: 1; }
+                40% { transform: translate(-50%, 30vh) scale(1.3); opacity: 1; }
                 100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
             }
         }
@@ -215,7 +215,7 @@
 </head>
 <body class="dark"> 
     
-    <!-- 1. ВІКНО РЕЄСТРАЦІЇ -->
+    <!-- ВІКНО РЕЄСТРАЦІЇ -->
     <div class="app-window" id="registration-window" style="max-width: 450px;">
         <div class="avatar-container">
             <div class="avatar-logo"></div> 
@@ -234,7 +234,7 @@
         </div>
     </div>
 
-    <!-- 2. ГОЛОВНИЙ ДОДАТОК -->
+    <!-- ГОЛОВНИЙ ДОДАТОК -->
     <div class="app-window" id="main-app-window">
         
         <div class="avatar-container">
@@ -277,7 +277,6 @@
             <div id="tab-workout" class="tab-content">
                 <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
                 <p style="text-align: center; margin-bottom: 20px;">База вправ для підтримки форми.</p>
-                <!-- Сюди будуть генеруватися тренування з JS-бази -->
                 <div id="workout-list-container"></div>
             </div>
 
@@ -302,7 +301,7 @@
                 
                 <div style="margin-top: 25px; padding: 20px; background: rgba(76, 217, 100, 0.1); border: 1px solid #4cd964; border-radius: 16px; text-align: center;">
                     <i class="fa-solid fa-cloud" style="color: #4cd964; font-size: 28px; margin-bottom: 10px;"></i>
-                    <div style="font-weight: bold; color: #4cd964; font-size: 16px;" id="firebase-status">Firebase: Підключаємо...</div>
+                    <div style="font-weight: bold; color: #4cd964; font-size: 16px;" id="firebase-status">Firebase: Підключено (Очікування)</div>
                 </div>
 
                 <button onclick="logout()" style="background: #ff3b30; margin-top: 25px; box-shadow: none;">Скинути профіль</button>
@@ -319,7 +318,8 @@
         <div class="nav-item" data-target="tab-settings"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span><span>Налаштування</span></div>
     </nav>
 
-    <!-- FIREBASE -->
+    <!-- ПІДКЛЮЧЕННЯ БАЗИ ДАНИХ ТА FIREBASE -->
+    <script src="database.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         const firebaseConfig = {
@@ -341,30 +341,19 @@
 
     <!-- ОСНОВНА ЛОГІКА -->
     <script>
-        // БАЗА ПРОДУКТІВ
-        const foodDB = [
-            { name: "Гречка (суха)", kcal: 343, fiber: "10г" }, 
-            { name: "Куряче філе (сире)", kcal: 110, fiber: "0г" },
-            { name: "Кабачки (смажені в борошні)", kcal: 85, fiber: "1.2г" }, 
-            { name: "Суші (роли класичні)", kcal: 142, fiber: "0.5г" },
-            { name: "Еспресо", kcal: 2, fiber: "0г" },
-            { name: "Яйце (1 шт)", kcal: 78, fiber: "0г" },
-            { name: "Вівсянка", kcal: 389, fiber: "10г" }
-        ];
-
-        // БАЗА ТРЕНУВАНЬ
-        const workoutDB = [
-            { name: "Тяга гантелі в нахилі", desc: "Спина. 3 підходи по 10-12 разів" },
-            { name: "Жим / Махи гантелями", desc: "Плечі. 3 підходи по 12-15 разів" },
-            { name: "Віджимання від підлоги", desc: "Груди. 3 підходи на максимум" },
-            { name: "Присідання з вагою", desc: "Ноги. 4 підходи по 15-20 разів" }
-        ];
-
         let consumedCalories = 0; let bonusCalories = 0;
 
+        // АВТОЗАПУСК БЕЗ КЛІКУ
         window.onload = () => { 
             loadTheme();
-            renderWorkouts();
+            
+            // Якщо файл database.js ще не створено, використовуємо пусті масиви, щоб не зламати додаток
+            if(typeof workoutDB !== 'undefined') {
+                renderWorkouts();
+            } else {
+                console.warn("Файл database.js не знайдено або він порожній. Створіть його!");
+            }
+            
             bootApp(); 
         };
 
@@ -377,7 +366,6 @@
             }
         }
 
-        // РЕНДЕР ТРЕНУВАНЬ
         function renderWorkouts() {
             const container = document.getElementById('workout-list-container');
             container.innerHTML = workoutDB.map(w => `
@@ -387,6 +375,7 @@
             `).join('');
         }
 
+        // КРОСПЛАТФОРМНА НАВІГАЦІЯ
         const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
         const tabContents = document.querySelectorAll('.tab-content');
 
@@ -462,6 +451,12 @@
             const query = document.getElementById('food-search').value.toLowerCase();
             const resultsBox = document.getElementById('food-results');
             resultsBox.innerHTML = '';
+            
+            if(typeof foodDB === 'undefined') {
+                resultsBox.innerHTML = '<div class="list-item">База даних не знайдена. Перевірте файл database.js!</div>';
+                return;
+            }
+
             if(query.length > 1) {
                 foodDB.filter(i => i.name.toLowerCase().includes(query)).forEach(item => {
                     resultsBox.innerHTML += `<div class="list-item">
