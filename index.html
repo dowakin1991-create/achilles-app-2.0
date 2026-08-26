@@ -33,7 +33,7 @@
             --gold-glow: rgba(243, 201, 105, 0.3);
             --bg-grad-1: #0f1319;
             --bg-grad-2: #1a1f2b;
-            --glass-bg: rgba(30, 35, 45, 0.5); /* Більш глибокий колір скла */
+            --glass-bg: rgba(30, 35, 45, 0.5); 
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
             --text-muted: #b0b3b8;
@@ -51,20 +51,19 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* --- СУЦІЛЬНА СКЛЯНА ПАНЕЛЬ (UNIFIED WINDOW) --- */
+        /* --- СУЦІЛЬНА СКЛЯНА ПАНЕЛЬ --- */
         .app-window {
             position: relative;
-            display: none; /* Контролюється через JS */
+            display: none; 
             width: 92%;
             max-width: 900px;
             background: var(--glass-bg);
             backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
             border: 1px solid var(--glass-border);
-            border-radius: 32px; /* Плавні кути в стилі Apple */
+            border-radius: 32px; 
             box-shadow: 0 20px 50px var(--shadow);
-            margin: 120px auto 40px; /* Відступ зверху для логотипа */
+            margin: 120px auto 40px; 
             
-            /* Анімація появи (GPU Optimized) */
             opacity: 0;
             will-change: transform, opacity;
             animation: windowFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
@@ -77,20 +76,20 @@
             100% { opacity: 1; transform: translate3d(0, 0, 0); }
         }
 
-        /* --- ЛОГОТИП (ФОРМА ІКОНКИ IOS + ЗУМ) --- */
+        /* --- ЛОГОТИП (ОРИГІНАЛЬНИЙ РОЗМІР) --- */
         .avatar-container {
             position: absolute;
-            top: -65px; /* Виступає за межі вікна */
+            top: -65px; 
             left: 50%;
             width: 130px;
             height: 130px;
-            border-radius: 30px; /* Форма іконки iOS */
+            border-radius: 28px; 
             border: 2px solid var(--gold);
             box-shadow: 0 15px 35px var(--shadow), inset 0 0 20px rgba(255,255,255,0.1);
             z-index: 30;
-            overflow: hidden; /* Щоб картинка не вилазила за краї */
+            background-color: #000; /* Чорний фон під картинку, якщо вона не квадратна */
+            overflow: hidden; 
             
-            /* Анімація зльоту (GPU Optimized) */
             will-change: transform, opacity;
             animation: bootLogo 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
@@ -98,9 +97,9 @@
         .avatar-logo {
             width: 100%; height: 100%;
             background-image: url('IMG_9302.jpeg');
-            /* СИЛЬНИЙ ЗУМ: Ховаємо напис і сірі рамки оригіналу */
-            background-size: 165%; 
-            background-position: center 12%; 
+            /* ФІКС: Картинка повністю поміщається без обрізки та зуму */
+            background-size: cover; 
+            background-position: center; 
             background-repeat: no-repeat;
         }
 
@@ -110,11 +109,11 @@
             100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
         }
 
-        /* --- ЧИСТЕ БОКОВЕ МЕНЮ (ВСЕРЕДИНІ ПАНЕЛІ) --- */
+        /* --- БОКОВЕ МЕНЮ --- */
         .sidebar {
             width: 260px;
-            border-right: 1px solid var(--glass-border); /* Акуратний роздільник */
-            padding: 80px 15px 30px; /* Місце під логотип зверху */
+            border-right: 1px solid var(--glass-border); 
+            padding: 80px 15px 30px; 
             display: flex; flex-direction: column; gap: 8px;
             flex-shrink: 0;
         }
@@ -129,16 +128,16 @@
         .menu-item:hover i { transform: scale(1.1); opacity: 1; }
         
         .menu-item.active {
-            background: var(--gold-glow); /* Акуратна підсвітка замість нашарування рамок */
+            background: var(--gold-glow); 
             color: var(--gold);
             box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
         }
         .menu-item.active i { color: var(--gold); opacity: 1; }
 
-        /* --- КОНТЕНТНА ЧАСТИНА --- */
+        /* --- КОНТЕНТ --- */
         .main-content {
             flex-grow: 1;
-            padding: 70px 40px 40px; /* Місце під логотип */
+            padding: 70px 40px 40px; 
             min-height: 500px;
             position: relative;
         }
@@ -197,14 +196,14 @@
         .nav-item.active { opacity: 1; color: var(--gold); font-weight: bold; transform: translateY(-3px); }
         .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
 
-        /* --- АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ (АЙФОН/АНДРОЇД) --- */
+        /* --- АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ --- */
         @media (max-width: 768px) {
-            .sidebar { display: none; } /* Ховаємо бокове меню на телефоні */
-            .nav-bar { display: flex; } /* Показуємо нижню панель */
+            .sidebar { display: none; } 
+            .nav-bar { display: flex; } 
             
             .app-window { margin-top: 90px; margin-bottom: 100px; border-radius: 28px; }
             .main-content { padding: 60px 20px 30px; }
-            .avatar-container { top: -50px; width: 100px; height: 100px; border-radius: 24px; }
+            .avatar-container { top: -50px; width: 100px; height: 100px; border-radius: 22px; }
             
             @keyframes bootLogo {
                 0% { transform: translate(-50%, 35vh) scale(1.4); opacity: 0; }
@@ -216,7 +215,7 @@
 </head>
 <body class="dark"> 
     
-    <!-- 1. ВІКНО РЕЄСТРАЦІЇ (Якщо користувач новий) -->
+    <!-- 1. ВІКНО РЕЄСТРАЦІЇ -->
     <div class="app-window" id="registration-window" style="max-width: 450px;">
         <div class="avatar-container">
             <div class="avatar-logo"></div> 
@@ -235,14 +234,13 @@
         </div>
     </div>
 
-    <!-- 2. ГОЛОВНИЙ ДОДАТОК (Уніфікована панель) -->
+    <!-- 2. ГОЛОВНИЙ ДОДАТОК -->
     <div class="app-window" id="main-app-window">
         
         <div class="avatar-container">
             <div class="avatar-logo"></div> 
         </div>
 
-        <!-- БОКОВЕ МЕНЮ (ПК) -->
         <div class="sidebar">
             <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
             <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник їжі</div>
@@ -251,10 +249,8 @@
             <div class="menu-item" data-target="tab-settings"><i class="fa-solid fa-gear"></i> Налаштування</div>
         </div>
 
-        <!-- КОНТЕНТНА ЗОНА -->
         <div class="main-content">
             
-            <!-- ДЕШБОРД -->
             <div id="tab-dashboard" class="tab-content active">
                 <h1 id="greeting-header">Привіт, <span>Спартанцю</span></h1>
                 <p id="user-goal-text" style="text-align: center; margin-bottom: 20px;">Аналізуємо...</p>
@@ -272,26 +268,19 @@
                 <div id="eaten-list" style="margin-top: 10px; font-size: 15px; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border);">Поки що нічого. Час підкріпитися!</div>
             </div>
 
-            <!-- ЇЖА -->
             <div id="tab-food" class="tab-content">
                 <h1>База <span>ПРОДУКТІВ</span></h1>
-                <input type="text" id="food-search" placeholder="Пошук (напр: 'гречка')" oninput="searchFood()">
+                <input type="text" id="food-search" placeholder="Пошук (напр: 'гречка, суші')" oninput="searchFood()">
                 <div id="food-results" style="margin-top: 15px; max-height: 350px; overflow-y: auto; border-radius: 16px; background: var(--card-bg); border: 1px solid var(--glass-border);"></div>
             </div>
 
-            <!-- ТРЕНУВАННЯ -->
             <div id="tab-workout" class="tab-content">
                 <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
                 <p style="text-align: center; margin-bottom: 20px;">База вправ для підтримки форми.</p>
-                <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--glass-border);">
-                    <h4 style="color: var(--gold); font-size: 18px; margin-bottom: 5px;">Віджимання</h4><p>3 підходи по 10-15 разів</p>
-                </div>
-                <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--glass-border);">
-                    <h4 style="color: var(--gold); font-size: 18px; margin-bottom: 5px;">Присідання</h4><p>4 підходи по 20 разів</p>
-                </div>
+                <!-- Сюди будуть генеруватися тренування з JS-бази -->
+                <div id="workout-list-container"></div>
             </div>
 
-            <!-- ШІ -->
             <div id="tab-ai" class="tab-content">
                 <h1>Синхронізація <span>ШІ</span></h1>
                 <p style="text-align: center; margin-bottom: 25px;">Завантаж скріншот з Apple Fitness, щоб додати калорії за кроки.</p>
@@ -302,7 +291,6 @@
                 <div id="ocr-status" style="margin-top: 20px; font-size: 15px; font-weight: bold; text-align: center;"></div>
             </div>
 
-            <!-- НАЛАШТУВАННЯ -->
             <div id="tab-settings" class="tab-content">
                 <h1><span>НАЛАШТУВАННЯ</span></h1>
                 <label style="font-weight: bold;">Тема інтерфейсу:</label>
@@ -353,18 +341,30 @@
 
     <!-- ОСНОВНА ЛОГІКА -->
     <script>
+        // БАЗА ПРОДУКТІВ
         const foodDB = [
-            { name: "Гречка варена", kcal: 110 }, { name: "Куряче філе", kcal: 165 },
-            { name: "Яйце (1 шт)", kcal: 78 }, { name: "Вівсянка", kcal: 389 },
-            { name: "Банан (1 шт)", kcal: 105 }, { name: "Кабачки смажені", kcal: 85 },
-            { name: "Суші (роли)", kcal: 142 }
+            { name: "Гречка (суха)", kcal: 343, fiber: "10г" }, 
+            { name: "Куряче філе (сире)", kcal: 110, fiber: "0г" },
+            { name: "Кабачки (смажені в борошні)", kcal: 85, fiber: "1.2г" }, 
+            { name: "Суші (роли класичні)", kcal: 142, fiber: "0.5г" },
+            { name: "Еспресо", kcal: 2, fiber: "0г" },
+            { name: "Яйце (1 шт)", kcal: 78, fiber: "0г" },
+            { name: "Вівсянка", kcal: 389, fiber: "10г" }
+        ];
+
+        // БАЗА ТРЕНУВАНЬ
+        const workoutDB = [
+            { name: "Тяга гантелі в нахилі", desc: "Спина. 3 підходи по 10-12 разів" },
+            { name: "Жим / Махи гантелями", desc: "Плечі. 3 підходи по 12-15 разів" },
+            { name: "Віджимання від підлоги", desc: "Груди. 3 підходи на максимум" },
+            { name: "Присідання з вагою", desc: "Ноги. 4 підходи по 15-20 разів" }
         ];
 
         let consumedCalories = 0; let bonusCalories = 0;
 
-        // АВТОЗАПУСК БЕЗ КЛІКУ
         window.onload = () => { 
             loadTheme();
+            renderWorkouts();
             bootApp(); 
         };
 
@@ -377,7 +377,16 @@
             }
         }
 
-        // КРОСПЛАТФОРМНА НАВІГАЦІЯ
+        // РЕНДЕР ТРЕНУВАНЬ
+        function renderWorkouts() {
+            const container = document.getElementById('workout-list-container');
+            container.innerHTML = workoutDB.map(w => `
+                <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--glass-border);">
+                    <h4 style="color: var(--gold); font-size: 18px; margin-bottom: 5px;">${w.name}</h4><p>${w.desc}</p>
+                </div>
+            `).join('');
+        }
+
         const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
         const tabContents = document.querySelectorAll('.tab-content');
 
@@ -400,7 +409,6 @@
             });
         });
 
-        // ТЕМИ
         function loadTheme() {
             const savedTheme = localStorage.getItem('achilles_theme') || 'dark';
             document.getElementById('theme-select').value = savedTheme;
@@ -416,7 +424,6 @@
             localStorage.setItem('achilles_theme', theme); applyTheme(theme);
         }
 
-        // РЕЄСТРАЦІЯ
         function completeRegistration() {
             const name = document.getElementById('reg-name').value;
             const weight = parseFloat(document.getElementById('reg-weight').value);
@@ -451,7 +458,6 @@
             });
         }
 
-        // ЇЖА
         function searchFood() {
             const query = document.getElementById('food-search').value.toLowerCase();
             const resultsBox = document.getElementById('food-results');
@@ -459,7 +465,7 @@
             if(query.length > 1) {
                 foodDB.filter(i => i.name.toLowerCase().includes(query)).forEach(item => {
                     resultsBox.innerHTML += `<div class="list-item">
-                        <div><strong>${item.name}</strong><br><span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал</span></div>
+                        <div><strong>${item.name}</strong><br><span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Клітковина: ${item.fiber}</span></div>
                         <button class="add-btn" onclick="addFood('${item.name}', ${item.kcal})">+</button>
                     </div>`;
                 });
@@ -483,7 +489,6 @@
             document.querySelector('[data-target="tab-dashboard"]').click();
         }
 
-        // ШІ OCR
         async function processScreenshot(event) {
             const file = event.target.files[0];
             if (!file) return;
