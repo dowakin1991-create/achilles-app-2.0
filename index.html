@@ -123,8 +123,8 @@
         .nav-item.active { opacity: 1; color: var(--gold); font-weight: bold; transform: translateY(-3px); }
         .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
 
-        .macro-box { display: flex; justify-content: space-between; margin-top: 15px; text-align: center; font-size: 14px; background: rgba(0,0,0,0.1); border-radius: 12px; padding: 10px; }
-        .macro-item strong { display: block; font-size: 18px; color: var(--text-main); }
+        .macro-box { display: flex; justify-content: space-around; margin-top: 15px; text-align: center; font-size: 14px; background: rgba(0,0,0,0.1); border-radius: 12px; padding: 15px; }
+        .macro-item strong { display: block; font-size: 22px; color: var(--text-main); margin-bottom: 2px; }
 
         @media (max-width: 768px) {
             .sidebar { display: none; } .nav-bar { display: flex; } 
@@ -147,7 +147,6 @@
                 <select id="reg-gender"><option value="male">Чоловіча</option><option value="female">Жіноча</option></select>
                 <input type="number" id="reg-height" placeholder="Зріст (см)">
                 <input type="number" id="reg-weight" placeholder="Вага (кг)">
-                <!-- ДОДАНО ВИБІР МЕТИ -->
                 <select id="reg-goal">
                     <option value="" disabled selected>Твоя мета</option>
                     <option value="lose">Схуднути (Дефіцит)</option>
@@ -186,29 +185,29 @@
                         <div class="progress-bar"><div class="progress-fill" id="calorie-progress"></div></div>
                         <p id="bonus-kcal-msg" style="font-size: 12px; color: #4cd964; margin-top: 8px; display: none; font-weight: bold;">+ Додаткові калорії за кроки!</p>
                         
-                        <!-- БЖВ СТАТИСТИКА -->
+                        <!-- БЖВ -->
                         <div class="macro-box">
-                            <div class="macro-item"><strong id="macro-p">0</strong> Білки</div>
-                            <div class="macro-item"><strong id="macro-f">0</strong> Жири</div>
-                            <div class="macro-item"><strong id="macro-c">0</strong> Вуглеводи</div>
+                            <div class="macro-item"><strong id="macro-p" style="color: #4cd964;">0</strong> Білки</div>
+                            <div class="macro-item"><strong id="macro-f" style="color: #ffcc00;">0</strong> Жири</div>
+                            <div class="macro-item"><strong id="macro-c" style="color: #34a853;">0</strong> Вуглеводи</div>
                         </div>
                     </div>
 
                     <h3 style="margin-top: 25px; font-size: 18px;">Щоденник:</h3>
-                    <div id="eaten-list" style="margin-top: 10px; font-size: 15px; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border);">Поки що нічого. Час підкріпитися!</div>
+                    <div id="eaten-list" style="margin-top: 10px; font-size: 15px; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border);">Поки що нічого. Час підкріпитися або потренуватися!</div>
                 </div>
 
                 <!-- ЇЖА -->
                 <div id="tab-food" class="tab-content">
                     <h1>База <span>ПРОДУКТІВ</span></h1>
-                    <input type="text" id="food-search" placeholder="Пошук (напр: 'авокадо', 'суші')" oninput="searchFood()">
+                    <input type="text" id="food-search" placeholder="Пошук (напр: 'курка', 'суші', 'гречка')" oninput="searchFood()">
                     <div id="food-results" style="margin-top: 15px; max-height: 400px; overflow-y: auto; border-radius: 16px; background: var(--card-bg); border: 1px solid var(--glass-border);"></div>
                 </div>
 
                 <!-- ТРЕНУВАННЯ -->
                 <div id="tab-workout" class="tab-content">
                     <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
-                    <p style="text-align: center; margin-bottom: 20px;">Записуй свої підходи та повторення.</p>
+                    <p style="text-align: center; margin-bottom: 20px;">Введи кількість повторень через кому (напр: 20, 15, 12)</p>
                     <div id="workout-list-container" style="max-height: 500px; overflow-y: auto; padding-right: 5px;"></div>
                 </div>
 
@@ -247,49 +246,97 @@
         <div class="nav-item" data-target="tab-settings"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span><span>Налаштування</span></div>
     </nav>
 
-    <!-- ВБУДОВАНА МЕГА-БАЗА ТА ЛОГІКА -->
     <script>
-        // ВБУДОВАНА БАЗА ЇЖІ (З БЖВ на 100г)
+        // ==========================================
+        // ВБУДОВАНА МЕГА-БАЗА ЇЖІ (БЖВ на 100г)
+        // ==========================================
         window.foodDB = [
-            { name: "Авокадо (Хаас)", kcal: 160, p: 2, f: 14.7, c: 8.5, fiber: 7.0 },
-            { name: "Суші (Філадельфія з лососем)", kcal: 175, p: 6.5, f: 5.3, c: 25, fiber: 0.5 },
-            { name: "Суші (Каліфорнія з крабом)", kcal: 150, p: 5.5, f: 3.2, c: 26, fiber: 0.8 },
-            { name: "Макі з огірком", kcal: 90, p: 2.1, f: 0.3, c: 20, fiber: 1.2 },
-            { name: "Гречка (суха)", kcal: 343, p: 13, f: 3.4, c: 71.5, fiber: 10.0 },
-            { name: "Гречка (варена)", kcal: 110, p: 4.2, f: 1.1, c: 21, fiber: 2.7 },
-            { name: "Рис білий (варений)", kcal: 130, p: 2.7, f: 0.3, c: 28, fiber: 0.4 },
-            { name: "Вівсянка (суха)", kcal: 389, p: 16.9, f: 6.9, c: 66, fiber: 10.0 },
-            { name: "Макарони твердих сортів (сухі)", kcal: 350, p: 12, f: 1.5, c: 71, fiber: 3.2 },
+            // М'ясо та птиця
             { name: "Куряче філе (сире)", kcal: 110, p: 23, f: 1.2, c: 0, fiber: 0 },
-            { name: "Куряче філе (запечене)", kcal: 165, p: 31, f: 3.6, c: 0, fiber: 0 },
+            { name: "Куряче філе (відварене/запечене)", kcal: 165, p: 31, f: 3.6, c: 0, fiber: 0 },
+            { name: "Куряче стегно (без шкіри)", kcal: 130, p: 19, f: 6, c: 0, fiber: 0 },
             { name: "Яловичина (вирізка, пісна)", kcal: 187, p: 28, f: 8, c: 0, fiber: 0 },
             { name: "Свинина (вирізка, пісна)", kcal: 143, p: 26, f: 4, c: 0, fiber: 0 },
+            { name: "Сало (солоне)", kcal: 797, p: 1.4, f: 89, c: 0, fiber: 0 },
+            { name: "Фарш курячий", kcal: 143, p: 17, f: 8, c: 0, fiber: 0 },
+            { name: "Фарш яловичий", kcal: 250, p: 17, f: 20, c: 0, fiber: 0 },
+            
+            // Риба та морепродукти
             { name: "Лосось (сирий)", kcal: 208, p: 20, f: 13, c: 0, fiber: 0 },
+            { name: "Лосось (слабосолений)", kcal: 202, p: 22, f: 12, c: 0, fiber: 0 },
+            { name: "Тунець (у власному соку)", kcal: 96, p: 21, f: 1, c: 0, fiber: 0 },
+            { name: "Креветки (варені)", kcal: 99, p: 21, f: 1, c: 1, fiber: 0 },
+            { name: "Минтай / Хек (сирий)", kcal: 72, p: 16, f: 1, c: 0, fiber: 0 },
+
+            // Суші та Азія
+            { name: "Суші (Філадельфія з лососем)", kcal: 175, p: 6.5, f: 5.3, c: 25, fiber: 0.5 },
+            { name: "Суші (Каліфорнія з крабом)", kcal: 150, p: 5.5, f: 3.2, c: 26, fiber: 0.8 },
+            { name: "Суші (Макі з огірком)", kcal: 90, p: 2.1, f: 0.3, c: 20, fiber: 1.2 },
+            { name: "Суші (Зелений дракон)", kcal: 185, p: 6, f: 7, c: 24, fiber: 1.2 },
+            { name: "Рис для суші (заправлений)", kcal: 145, p: 2.5, f: 0.2, c: 33, fiber: 0.4 },
+
+            // Крупи та макарони (суха вага)
+            { name: "Гречка (суха)", kcal: 343, p: 13, f: 3.4, c: 71.5, fiber: 10.0 },
+            { name: "Гречка (варена)", kcal: 110, p: 4.2, f: 1.1, c: 21, fiber: 2.7 },
+            { name: "Рис білий (сухий)", kcal: 360, p: 7, f: 0.6, c: 79, fiber: 1.3 },
+            { name: "Рис білий (варений)", kcal: 130, p: 2.7, f: 0.3, c: 28, fiber: 0.4 },
+            { name: "Вівсянка (суха)", kcal: 389, p: 16.9, f: 6.9, c: 66, fiber: 10.0 },
+            { name: "Булгур (сухий)", kcal: 342, p: 12.3, f: 1.3, c: 76, fiber: 18.0 },
+            { name: "Макарони твердих сортів (сухі)", kcal: 350, p: 12, f: 1.5, c: 71, fiber: 3.2 },
+            { name: "Макарони (варені)", kcal: 140, p: 5, f: 0.5, c: 28, fiber: 1.2 },
+
+            // Молочка та Яйця
             { name: "Яйце куряче (1 шт ~50г)", kcal: 78, p: 6, f: 5, c: 0.6, fiber: 0 },
+            { name: "Білок яєчний (з 1 яйця)", kcal: 17, p: 3.6, f: 0, c: 0.2, fiber: 0 },
             { name: "Сир кисломолочний 5%", kcal: 121, p: 17, f: 5, c: 1.8, fiber: 0 },
+            { name: "Сир кисломолочний 0%", kcal: 71, p: 16.5, f: 0, c: 1.3, fiber: 0 },
             { name: "Сметана 15%", kcal: 162, p: 2.6, f: 15, c: 3, fiber: 0 },
-            { name: "Кабачки (смажені в борошні)", kcal: 85, p: 1.5, f: 5, c: 9, fiber: 1.2 },
+            { name: "Молоко 2.5%", kcal: 52, p: 2.8, f: 2.5, c: 4.7, fiber: 0 },
+            { name: "Твердий сир (Голландський)", kcal: 350, p: 26, f: 27, c: 0, fiber: 0 },
+
+            // Овочі, фрукти, горіхи
+            { name: "Авокадо (Хаас)", kcal: 160, p: 2, f: 14.7, c: 8.5, fiber: 7.0 },
+            { name: "Банан (свіжий)", kcal: 89, p: 1.1, f: 0.3, c: 22.8, fiber: 2.6 },
+            { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
             { name: "Помідор (свіжий)", kcal: 18, p: 0.9, f: 0.2, c: 3.9, fiber: 1.2 },
             { name: "Огірок (свіжий)", kcal: 15, p: 0.8, f: 0.1, c: 2.8, fiber: 0.5 },
-            { name: "Банан (свіжий)", kcal: 89, p: 1.1, f: 0.3, c: 22.8, fiber: 2.6 },
-            { name: "Еспресо (без цукру)", kcal: 2, p: 0.1, f: 0, c: 0, fiber: 0 },
+            { name: "Броколі (варена)", kcal: 35, p: 2.4, f: 0.4, c: 7.2, fiber: 3.3 },
+            { name: "Картопля (сира)", kcal: 77, p: 2, f: 0.1, c: 17, fiber: 2.2 },
+            { name: "Картопля (варена)", kcal: 86, p: 2, f: 0.1, c: 20, fiber: 1.8 },
+            { name: "Волоський горіх", kcal: 654, p: 15, f: 65, c: 14, fiber: 6.7 },
+
+            // Фастфуд та страви
+            { name: "Борщ український (з м'ясом)", kcal: 65, p: 3, f: 4, c: 5, fiber: 1.8 },
+            { name: "Сирники (смажені)", kcal: 220, p: 14, f: 11, c: 16, fiber: 0.5 },
+            { name: "Піца Маргарита", kcal: 266, p: 11, f: 10, c: 33, fiber: 2.5 },
+            { name: "Піца Пепероні", kcal: 295, p: 12, f: 12, c: 34, fiber: 2.2 },
+            { name: "Бургер з яловичиною", kcal: 295, p: 13, f: 14, c: 30, fiber: 1.8 },
+            { name: "Картопля фрі", kcal: 312, p: 3.4, f: 15, c: 41, fiber: 3.8 },
+
+            // Напої та добавки
+            { name: "Еспресо / Американо", kcal: 2, p: 0.1, f: 0, c: 0, fiber: 0 },
             { name: "Капучино (без цукру)", kcal: 75, p: 3.4, f: 3.6, c: 7.4, fiber: 0 },
-            { name: "Шоколад чорний (70%+)", kcal: 598, p: 7.8, f: 42.6, c: 36, fiber: 10.9 }
+            { name: "Кола (звичайна)", kcal: 42, p: 0, f: 0, c: 10.6, fiber: 0 },
+            { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 },
+            { name: "Протеїн (Whey Protein)", kcal: 380, p: 80, f: 4, c: 6, fiber: 0 },
+            { name: "Шоколад чорний (70%+)", kcal: 598, p: 7.8, f: 42.6, c: 36, fiber: 10.9 },
+            { name: "Оливкова олія (1 ст.л ~15г)", kcal: 884, p: 0, f: 100, c: 0, fiber: 0 }
         ];
 
         // ВБУДОВАНА БАЗА ТРЕНУВАНЬ
         window.workoutDB = [
             { name: "Віджимання від підлоги", desc: "Груди/Трицепс. Базова вправа." },
-            { name: "Жим гантелей лежачи", desc: "Груди." },
-            { name: "Тяга гантелі в нахилі", desc: "Спина." },
             { name: "Підтягування на турніку", desc: "Спина/Біцепс." },
+            { name: "Тяга гантелі в нахилі", desc: "Спина. Лікоть уздовж корпусу." },
             { name: "Жим гантелей сидячи", desc: "Плечі (Армійський жим)." },
-            { name: "Махи гантелями в сторони", desc: "Середні дельти." },
+            { name: "Махи гантелями в сторони", desc: "Середні дельти. Без розгойдування." },
+            { name: "Жим гантелей лежачи", desc: "Груди. Плавно опускаємо." },
+            { name: "Віджимання на брусах", desc: "Груди/Трицепс." },
             { name: "Підйом гантелей на біцепс", desc: "Біцепс (з супінацією)." },
-            { name: "Французький жим з гантеллю", desc: "Трицепс." },
-            { name: "Присідання з гантелями", desc: "Ноги/Сідниці." },
-            { name: "Випади з гантелями", desc: "Ноги." },
-            { name: "Планка на ліктях", desc: "Кори." },
+            { name: "Французький жим", desc: "Трицепс." },
+            { name: "Присідання", desc: "Ноги/Сідниці." },
+            { name: "Випади", desc: "Ноги." },
+            { name: "Планка", desc: "Кори. (Пиши час в секундах замість разів)." },
             { name: "Скручування на прес", desc: "Прес." }
         ];
 
@@ -312,7 +359,7 @@
             }
         }
 
-        // РЕНДЕР ТРЕНУВАНЬ ІЗ ПОЛЯМИ ДЛЯ ВВЕДЕННЯ
+        // РЕНДЕР ТРЕНУВАНЬ З ДРАБИНКОЮ (ОДНЕ ТЕКСТОВЕ ПОЛЕ)
         function renderWorkouts() {
             const container = document.getElementById('workout-list-container');
             container.innerHTML = window.workoutDB.map((w, index) => `
@@ -320,18 +367,21 @@
                     <h4 style="color: var(--gold); font-size: 17px; margin-bottom: 5px;">${w.name}</h4>
                     <p style="font-size: 13px; opacity: 0.8; margin-bottom: 10px;">${w.desc}</p>
                     <div style="display: flex; gap: 10px;">
-                        <input type="number" id="sets-${index}" placeholder="Підходів (напр. 8)" style="margin:0; padding: 10px; flex: 1;">
-                        <input type="number" id="reps-${index}" placeholder="Разів (напр. 10)" style="margin:0; padding: 10px; flex: 1;">
-                        <button class="add-btn" onclick="logWorkout('${w.name}', 'sets-${index}', 'reps-${index}')" style="margin:0; padding: 0 15px;">OK</button>
+                        <input type="text" id="reps-${index}" placeholder="Повторення: 20, 15, 12, 9, 5" style="margin:0; padding: 12px; flex: 1; font-size: 14px;">
+                        <button class="add-btn" onclick="logWorkout('${w.name}', 'reps-${index}')" style="margin:0; padding: 0 15px;">OK</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function logWorkout(name, setsId, repsId) {
-            const sets = document.getElementById(setsId).value;
-            const reps = document.getElementById(repsId).value;
-            if(!sets || !reps) { alert('Спартанцю, введи підходи та повторення!'); return; }
+        function logWorkout(name, repsId) {
+            const repsInput = document.getElementById(repsId).value.trim();
+            if(!repsInput) { alert('Спартанцю, введи повторення через кому!'); return; }
+            
+            // Рахуємо кількість підходів за комами
+            const setsArray = repsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+            const setsCount = setsArray.length;
+            const setsText = setsCount === 1 ? '1 підхід' : `${setsCount} підходів`;
             
             const list = document.getElementById('eaten-list');
             if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
@@ -339,10 +389,10 @@
             const entry = document.createElement('div');
             entry.style.padding = '8px 0';
             entry.style.borderBottom = '1px solid var(--glass-border)';
-            entry.innerHTML = `🏋️ <strong>${name}</strong>: ${sets} підходів по ${reps} разів`;
+            entry.innerHTML = `🏋️ <strong>${name}</strong><br><span style="font-size: 13px; opacity: 0.8;">${setsText}: ${setsArray.join(', ')} повторень</span>`;
             list.appendChild(entry);
             
-            document.getElementById(setsId).value = ''; document.getElementById(repsId).value = '';
+            document.getElementById(repsId).value = '';
             document.querySelector('[data-target="tab-dashboard"]').click();
         }
 
@@ -376,7 +426,7 @@
         function loadTheme() { const savedTheme = localStorage.getItem('achilles_theme') || 'dark'; document.getElementById('theme-select').value = savedTheme; applyTheme(savedTheme); }
         function toggleTheme() { const theme = document.getElementById('theme-select').value; localStorage.setItem('achilles_theme', theme); applyTheme(theme); }
 
-        // РЕЄСТРАЦІЯ (З ВИБОРОМ МЕТИ)
+        // РЕЄСТРАЦІЯ
         function completeRegistration() {
             const name = document.getElementById('reg-name').value;
             const weight = parseFloat(document.getElementById('reg-weight').value);
@@ -384,11 +434,10 @@
             
             if(!name || !weight || !goal) { alert('Заповни всі поля, воїне!'); return; }
 
-            // Базовий розрахунок (спрощений)
             let baseKcal = weight * 24; 
             let goalText = "";
 
-            if (goal === 'lose') { baseKcal -= 400; goalText = "Активне схуднення (Дефіцит)"; }
+            if (goal === 'lose') { baseKcal -= 400; goalText = "Схуднення (Дефіцит)"; }
             else if (goal === 'gain') { baseKcal += 400; goalText = "Набір маси (Профіцит)"; }
             else { goalText = "Підтримка форми"; }
 
@@ -431,7 +480,6 @@
                 if(filtered.length === 0) { resultsBox.innerHTML = '<div class="list-item" style="color: var(--text-muted);">Нічого не знайдено</div>'; return; }
                 
                 filtered.forEach((item, index) => {
-                    // Кодуємо об'єкт в JSON для передачі у функцію
                     const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
                     resultsBox.innerHTML += `
                         <div class="list-item" style="align-items: flex-start;">
@@ -440,7 +488,7 @@
                                 <span style="font-size: 12px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                             </div>
                             <div style="display: flex; width: 100%; gap: 10px;">
-                                <input type="number" id="weight-${index}" placeholder="Вага (напр. 145г)" value="100" style="margin:0; padding: 10px; flex: 1;">
+                                <input type="number" id="weight-${index}" placeholder="Вага (напр. 145г)" style="margin:0; padding: 10px; flex: 1;">
                                 <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 15px;">+</button>
                             </div>
                         </div>`;
@@ -450,8 +498,11 @@
 
         function addFood(itemJsonStr, weightId) {
             const item = JSON.parse(itemJsonStr.replace(/&quot;/g, '"'));
-            let weight = parseFloat(document.getElementById(weightId).value);
-            if (!weight || weight <= 0) weight = 100; // Якщо не ввели, беремо 100г
+            let weightInput = document.getElementById(weightId).value;
+            let weight = parseFloat(weightInput);
+            
+            // Якщо не ввели вагу, автоматично вважаємо 100г
+            if (!weightInput || isNaN(weight) || weight <= 0) weight = 100; 
 
             const ratio = weight / 100;
             const actualKcal = Math.round(item.kcal * ratio);
