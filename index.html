@@ -47,48 +47,56 @@
         body { 
             background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2)); 
             background-attachment: fixed; color: var(--text-main); 
-            min-height: 100vh; overflow-x: hidden; transition: background 0.4s ease, color 0.4s ease;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100dvh; /* Динамічна висота для iOS */
+            overflow-x: hidden; transition: background 0.4s ease, color 0.4s ease;
         }
+
+        /* --- ЕКРАНИ (ФІКС ДЛЯ КЛАВІАТУРИ IOS) --- */
+        .screen {
+            position: absolute; /* Змінено з fixed для кращого скролу з клавіатурою */
+            top: 0; left: 0; width: 100%; min-height: 100dvh; z-index: 10;
+            display: none; flex-direction: column; 
+            justify-content: flex-start; /* Видалено центрування, яке ламало верстку */
+            align-items: center;
+            padding-bottom: 40px;
+            opacity: 0; will-change: transform, opacity;
+        }
+
+        .screen.active-flex { 
+            display: flex; opacity: 1; z-index: 20;
+            animation: screenFadeIn 0.5s ease forwards;
+        }
+
+        @keyframes screenFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* --- СУЦІЛЬНА СКЛЯНА ПАНЕЛЬ --- */
         .app-window {
             position: relative;
-            display: none; 
-            width: 92%;
-            max-width: 900px;
+            width: 92%; max-width: 900px;
             background: var(--glass-bg);
             backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
             border: 1px solid var(--glass-border);
             border-radius: 32px; 
             box-shadow: 0 20px 50px var(--shadow);
-            margin: 120px auto 40px; 
+            margin: 120px auto 40px auto; /* Авто-відступи */
+            display: flex;
             
-            opacity: 0;
-            will-change: transform, opacity;
-            animation: windowFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards; /* Збільшив затримку, щоб лого встигло повисіти */
+            opacity: 0; will-change: transform, opacity;
+            animation: windowFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; 
         }
-
-        .app-window.active-flex { display: flex; }
         
         @keyframes windowFadeIn {
             0% { opacity: 0; transform: translate3d(0, 30px, 0); }
             100% { opacity: 1; transform: translate3d(0, 0, 0); }
         }
 
-        /* --- ЛОГОТИП (НОВА АНІМАЦІЯ: ВИДНО З САМОГО ПОЧАТКУ) --- */
+        /* --- ЛОГОТИП (ОРИГІНАЛЬНИЙ РОЗМІР) --- */
         .avatar-container {
-            position: absolute;
-            top: -65px; 
-            left: 50%;
-            width: 130px;
-            height: 130px;
-            border-radius: 28px; 
-            border: 2px solid var(--gold);
+            position: absolute; top: -65px; left: 50%;
+            width: 130px; height: 130px; min-height: 130px; flex-shrink: 0;
+            border-radius: 28px; border: 2px solid var(--gold);
             box-shadow: 0 15px 35px var(--shadow), inset 0 0 20px rgba(255,255,255,0.1);
-            z-index: 30;
-            background-color: #000;
-            overflow: hidden; 
+            z-index: 30; background-color: #000; overflow: hidden; 
             
             will-change: transform, opacity;
             animation: bootLogo 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -97,25 +105,19 @@
         .avatar-logo {
             width: 100%; height: 100%;
             background-image: url('IMG_9302.jpeg');
-            background-size: cover; 
-            background-position: center; 
-            background-repeat: no-repeat;
+            background-size: cover; background-position: center; background-repeat: no-repeat;
         }
 
-        /* ОНОВЛЕНІ КЛЮЧОВІ КАДРИ */
         @keyframes bootLogo {
-            0% { transform: translate(-50%, 25vh) scale(1.4); opacity: 1; } /* З'являється по центру одразу видимим */
-            40% { transform: translate(-50%, 25vh) scale(1.4); opacity: 1; } /* Зависає, щоб ти його побачив */
-            100% { transform: translate(-50%, 0) scale(1); opacity: 1; } /* Летить на місце */
+            0% { transform: translate(-50%, 25vh) scale(1.4); opacity: 1; } 
+            40% { transform: translate(-50%, 25vh) scale(1.4); opacity: 1; } 
+            100% { transform: translate(-50%, 0) scale(1); opacity: 1; } 
         }
 
         /* --- БОКОВЕ МЕНЮ --- */
         .sidebar {
-            width: 260px;
-            border-right: 1px solid var(--glass-border); 
-            padding: 80px 15px 30px; 
-            display: flex; flex-direction: column; gap: 8px;
-            flex-shrink: 0;
+            width: 260px; border-right: 1px solid var(--glass-border); 
+            padding: 80px 15px 30px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;
         }
         
         .menu-item {
@@ -128,18 +130,14 @@
         .menu-item:hover i { transform: scale(1.1); opacity: 1; }
         
         .menu-item.active {
-            background: var(--gold-glow); 
-            color: var(--gold);
+            background: var(--gold-glow); color: var(--gold);
             box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
         }
         .menu-item.active i { color: var(--gold); opacity: 1; }
 
         /* --- КОНТЕНТ --- */
         .main-content {
-            flex-grow: 1;
-            padding: 70px 40px 40px; 
-            min-height: 500px;
-            position: relative;
+            flex-grow: 1; padding: 70px 40px 40px; min-height: 500px; position: relative;
         }
         
         .tab-content { 
@@ -178,10 +176,7 @@
         .progress-bar { width: 100%; height: 10px; background: rgba(128,128,128,0.2); border-radius: 5px; margin-top: 10px; overflow: hidden; transform: translateZ(0); }
         .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: width; }
         
-        .list-item { 
-            padding: 15px; border-bottom: 1px solid var(--glass-border); 
-            display: flex; justify-content: space-between; align-items: center; 
-        }
+        .list-item { padding: 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; }
         .list-item:last-child { border-bottom: none; }
         .add-btn { width: auto; padding: 8px 15px; margin: 0; }
 
@@ -201,9 +196,12 @@
             .sidebar { display: none; } 
             .nav-bar { display: flex; } 
             
-            .app-window { margin-top: 90px; margin-bottom: 100px; border-radius: 28px; }
+            /* На мобільному жорсткий відступ зверху, щоб клавіатура не ламала скрол */
+            .app-window { margin: 80px auto 120px auto; flex-direction: column; border-radius: 28px; }
             .main-content { padding: 60px 20px 30px; }
-            .avatar-container { top: -50px; width: 100px; height: 100px; border-radius: 22px; }
+            
+            /* Фікс форми іконки, щоб не плющило */
+            .avatar-container { top: -50px; width: 100px; height: 100px; min-height: 100px; flex-shrink: 0; border-radius: 22px; }
             
             @keyframes bootLogo {
                 0% { transform: translate(-50%, 30vh) scale(1.3); opacity: 1; }
@@ -215,96 +213,100 @@
 </head>
 <body class="dark"> 
     
-    <!-- ВІКНО РЕЄСТРАЦІЇ -->
-    <div class="app-window" id="registration-window" style="max-width: 450px;">
-        <div class="avatar-container">
-            <div class="avatar-logo"></div> 
-        </div>
-        <div class="main-content">
-            <h2 style="text-align: center; margin-bottom: 20px;">Створення профілю</h2>
-            <input type="text" id="reg-name" placeholder="Ім'я">
-            <select id="reg-gender">
-                <option value="" disabled selected>Стать</option>
-                <option value="male">Чоловіча</option>
-                <option value="female">Жіноча</option>
-            </select>
-            <input type="number" id="reg-height" placeholder="Зріст (см)">
-            <input type="number" id="reg-weight" placeholder="Вага (кг)">
-            <button onclick="completeRegistration()">Увійти в Achilles</button>
+    <!-- 1. ВІКНО РЕЄСТРАЦІЇ -->
+    <div class="screen" id="registration-window">
+        <div class="app-window" style="max-width: 450px; display: flex; flex-direction: column;">
+            <div class="avatar-container">
+                <div class="avatar-logo"></div> 
+            </div>
+            <div class="main-content">
+                <h2 style="text-align: center; margin-bottom: 20px;">Створення профілю</h2>
+                <input type="text" id="reg-name" placeholder="Ім'я">
+                <select id="reg-gender">
+                    <option value="" disabled selected>Стать</option>
+                    <option value="male">Чоловіча</option>
+                    <option value="female">Жіноча</option>
+                </select>
+                <input type="number" id="reg-height" placeholder="Зріст (см)">
+                <input type="number" id="reg-weight" placeholder="Вага (кг)">
+                <button onclick="completeRegistration()">Увійти в Achilles</button>
+            </div>
         </div>
     </div>
 
-    <!-- ГОЛОВНИЙ ДОДАТОК -->
-    <div class="app-window" id="main-app-window">
-        
-        <div class="avatar-container">
-            <div class="avatar-logo"></div> 
-        </div>
-
-        <div class="sidebar">
-            <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
-            <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник їжі</div>
-            <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Тренування</div>
-            <div class="menu-item" data-target="tab-ai"><i class="fa-solid fa-robot"></i> Аналіз ШІ</div>
-            <div class="menu-item" data-target="tab-settings"><i class="fa-solid fa-gear"></i> Налаштування</div>
-        </div>
-
-        <div class="main-content">
+    <!-- 2. ГОЛОВНИЙ ДОДАТОК -->
+    <div class="screen" id="main-app-window">
+        <div class="app-window">
             
-            <div id="tab-dashboard" class="tab-content active">
-                <h1 id="greeting-header">Привіт, <span>Спартанцю</span></h1>
-                <p id="user-goal-text" style="text-align: center; margin-bottom: 20px;">Аналізуємо...</p>
+            <div class="avatar-container">
+                <div class="avatar-logo"></div> 
+            </div>
+
+            <div class="sidebar">
+                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
+                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник їжі</div>
+                <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Тренування</div>
+                <div class="menu-item" data-target="tab-ai"><i class="fa-solid fa-robot"></i> Аналіз ШІ</div>
+                <div class="menu-item" data-target="tab-settings"><i class="fa-solid fa-gear"></i> Налаштування</div>
+            </div>
+
+            <div class="main-content">
                 
-                <div style="background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 5px 15px var(--shadow);">
-                    <span style="font-size: 14px;">Спожито сьогодні:</span>
-                    <div style="font-size: 34px; font-weight: bold; color: var(--gold); margin: 5px 0;">
-                        <span id="calories-consumed">0</span> / <span id="calories-goal">2000</span> <span style="font-size: 16px; color: var(--text-main);">ккал</span>
+                <div id="tab-dashboard" class="tab-content active">
+                    <h1 id="greeting-header">Привіт, <span>Спартанцю</span></h1>
+                    <p id="user-goal-text" style="text-align: center; margin-bottom: 20px;">Аналізуємо...</p>
+                    
+                    <div style="background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--glass-border); box-shadow: 0 5px 15px var(--shadow);">
+                        <span style="font-size: 14px;">Спожито сьогодні:</span>
+                        <div style="font-size: 34px; font-weight: bold; color: var(--gold); margin: 5px 0;">
+                            <span id="calories-consumed">0</span> / <span id="calories-goal">2000</span> <span style="font-size: 16px; color: var(--text-main);">ккал</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" id="calorie-progress"></div></div>
+                        <p id="bonus-kcal-msg" style="font-size: 12px; color: #4cd964; margin-top: 8px; display: none; font-weight: bold;">+ Додаткові калорії за кроки!</p>
                     </div>
-                    <div class="progress-bar"><div class="progress-fill" id="calorie-progress"></div></div>
-                    <p id="bonus-kcal-msg" style="font-size: 12px; color: #4cd964; margin-top: 8px; display: none; font-weight: bold;">+ Додаткові калорії за кроки!</p>
+
+                    <h3 style="margin-top: 25px; font-size: 18px;">З'їдено сьогодні:</h3>
+                    <div id="eaten-list" style="margin-top: 10px; font-size: 15px; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border);">Поки що нічого. Час підкріпитися!</div>
                 </div>
 
-                <h3 style="margin-top: 25px; font-size: 18px;">З'їдено сьогодні:</h3>
-                <div id="eaten-list" style="margin-top: 10px; font-size: 15px; background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border);">Поки що нічого. Час підкріпитися!</div>
-            </div>
-
-            <div id="tab-food" class="tab-content">
-                <h1>База <span>ПРОДУКТІВ</span></h1>
-                <input type="text" id="food-search" placeholder="Пошук (напр: 'гречка, суші')" oninput="searchFood()">
-                <div id="food-results" style="margin-top: 15px; max-height: 350px; overflow-y: auto; border-radius: 16px; background: var(--card-bg); border: 1px solid var(--glass-border);"></div>
-            </div>
-
-            <div id="tab-workout" class="tab-content">
-                <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
-                <p style="text-align: center; margin-bottom: 20px;">База вправ для підтримки форми.</p>
-                <div id="workout-list-container"></div>
-            </div>
-
-            <div id="tab-ai" class="tab-content">
-                <h1>Синхронізація <span>ШІ</span></h1>
-                <p style="text-align: center; margin-bottom: 25px;">Завантаж скріншот з Apple Fitness, щоб додати калорії за кроки.</p>
-                <label class="file-upload" style="background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold); padding: 20px;">
-                    📸 Завантажити скріншот
-                    <input type="file" accept="image/*" onchange="processScreenshot(event)">
-                </label>
-                <div id="ocr-status" style="margin-top: 20px; font-size: 15px; font-weight: bold; text-align: center;"></div>
-            </div>
-
-            <div id="tab-settings" class="tab-content">
-                <h1><span>НАЛАШТУВАННЯ</span></h1>
-                <label style="font-weight: bold;">Тема інтерфейсу:</label>
-                <select id="theme-select" onchange="toggleTheme()">
-                    <option value="dark">Темна (Спартанська)</option>
-                    <option value="light">Світла (Олімпійська)</option>
-                    <option value="auto">Системна</option>
-                </select>
-                
-                <div style="margin-top: 25px; padding: 20px; background: rgba(76, 217, 100, 0.1); border: 1px solid #4cd964; border-radius: 16px; text-align: center;">
-                    <i class="fa-solid fa-cloud" style="color: #4cd964; font-size: 28px; margin-bottom: 10px;"></i>
-                    <div style="font-weight: bold; color: #4cd964; font-size: 16px;" id="firebase-status">Firebase: Підключено (Очікування)</div>
+                <div id="tab-food" class="tab-content">
+                    <h1>База <span>ПРОДУКТІВ</span></h1>
+                    <input type="text" id="food-search" placeholder="Пошук (напр: 'гречка, суші')" oninput="searchFood()">
+                    <div id="food-results" style="margin-top: 15px; max-height: 350px; overflow-y: auto; border-radius: 16px; background: var(--card-bg); border: 1px solid var(--glass-border);"></div>
                 </div>
 
-                <button onclick="logout()" style="background: #ff3b30; margin-top: 25px; box-shadow: none;">Скинути профіль</button>
+                <div id="tab-workout" class="tab-content">
+                    <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
+                    <p style="text-align: center; margin-bottom: 20px;">База вправ для підтримки форми.</p>
+                    <div id="workout-list-container"></div>
+                </div>
+
+                <div id="tab-ai" class="tab-content">
+                    <h1>Синхронізація <span>ШІ</span></h1>
+                    <p style="text-align: center; margin-bottom: 25px;">Завантаж скріншот з Apple Fitness, щоб додати калорії за кроки.</p>
+                    <label class="file-upload" style="background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold); padding: 20px;">
+                        📸 Завантажити скріншот
+                        <input type="file" accept="image/*" onchange="processScreenshot(event)">
+                    </label>
+                    <div id="ocr-status" style="margin-top: 20px; font-size: 15px; font-weight: bold; text-align: center;"></div>
+                </div>
+
+                <div id="tab-settings" class="tab-content">
+                    <h1><span>НАЛАШТУВАННЯ</span></h1>
+                    <label style="font-weight: bold;">Тема інтерфейсу:</label>
+                    <select id="theme-select" onchange="toggleTheme()">
+                        <option value="dark">Темна (Спартанська)</option>
+                        <option value="light">Світла (Олімпійська)</option>
+                        <option value="auto">Системна</option>
+                    </select>
+                    
+                    <div style="margin-top: 25px; padding: 20px; background: rgba(76, 217, 100, 0.1); border: 1px solid #4cd964; border-radius: 16px; text-align: center;">
+                        <i class="fa-solid fa-cloud" style="color: #4cd964; font-size: 28px; margin-bottom: 10px;"></i>
+                        <div style="font-weight: bold; color: #4cd964; font-size: 16px;" id="firebase-status">Firebase: Підключаємо...</div>
+                    </div>
+
+                    <button onclick="logout()" style="background: #ff3b30; margin-top: 25px; box-shadow: none;">Скинути профіль</button>
+                </div>
             </div>
         </div>
     </div>
@@ -343,15 +345,15 @@
     <script>
         let consumedCalories = 0; let bonusCalories = 0;
 
-        // АВТОЗАПУСК БЕЗ КЛІКУ
+        // АВТОЗАПУСК
         window.onload = () => { 
             loadTheme();
             
-            // Якщо файл database.js ще не створено, використовуємо пусті масиви, щоб не зламати додаток
-            if(typeof workoutDB !== 'undefined') {
+            // Якщо файл database.js завантажився, малюємо тренування
+            if(window.workoutDB) {
                 renderWorkouts();
             } else {
-                console.warn("Файл database.js не знайдено або він порожній. Створіть його!");
+                console.warn("Файл database.js не знайдено або він порожній. Очистіть кеш браузера!");
             }
             
             bootApp(); 
@@ -368,7 +370,7 @@
 
         function renderWorkouts() {
             const container = document.getElementById('workout-list-container');
-            container.innerHTML = workoutDB.map(w => `
+            container.innerHTML = window.workoutDB.map(w => `
                 <div style="background: var(--card-bg); padding: 18px; border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--glass-border);">
                     <h4 style="color: var(--gold); font-size: 18px; margin-bottom: 5px;">${w.name}</h4><p>${w.desc}</p>
                 </div>
@@ -452,13 +454,13 @@
             const resultsBox = document.getElementById('food-results');
             resultsBox.innerHTML = '';
             
-            if(typeof foodDB === 'undefined') {
-                resultsBox.innerHTML = '<div class="list-item">База даних не знайдена. Перевірте файл database.js!</div>';
+            if(!window.foodDB) {
+                resultsBox.innerHTML = '<div class="list-item">База даних не знайдена. Зачекайте оновлення або очистіть кеш браузера (Ctrl+F5).</div>';
                 return;
             }
 
             if(query.length > 1) {
-                foodDB.filter(i => i.name.toLowerCase().includes(query)).forEach(item => {
+                window.foodDB.filter(i => i.name.toLowerCase().includes(query)).forEach(item => {
                     resultsBox.innerHTML += `<div class="list-item">
                         <div><strong>${item.name}</strong><br><span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Клітковина: ${item.fiber}</span></div>
                         <button class="add-btn" onclick="addFood('${item.name}', ${item.kcal})">+</button>
