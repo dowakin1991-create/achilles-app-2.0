@@ -12,6 +12,7 @@
     <title>Achilles OS</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     
     <style>
         /* === ПРЕМІУМ КОЛЬОРИ === */
@@ -24,8 +25,7 @@
             --option-bg: #ffffff; --input-bg: rgba(0,0,0,0.03);
         }
 
-        /* Застосовуємо тему до HTML, щоб гарантовано зафарбувати всі Safe Areas */
-        html.dark {
+        html.dark, body.dark {
             --gold: #f3c969; --gold-glow: rgba(243, 201, 105, 0.4);
             --bg-grad-1: #0b0e14; --bg-grad-2: #161b24;
             --glass-bg: rgba(25, 30, 40, 0.65); --glass-border: rgba(255, 255, 255, 0.08);
@@ -36,25 +36,13 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* ФІКС: Блокуємо ефект гумки (overscroll) та зафарбовуємо білу смугу */
-        html, body { 
-            width: 100%; height: 100%; 
-            background-color: var(--bg-grad-1);
-            overflow: hidden; /* Жорстко блокуємо скрол самого боді */
-            overscroll-behavior-y: none; /* Блокуємо пружинення iOS */
-        }
+        html, body { width: 100%; height: 100%; background-color: var(--bg-grad-1); overflow: hidden; overscroll-behavior-y: none; }
+        body { background: linear-gradient(145deg, var(--bg-grad-1), var(--bg-grad-2)); color: var(--text-main); transition: background 0.4s ease, color 0.4s ease; }
 
-        body { 
-            background: linear-gradient(145deg, var(--bg-grad-1), var(--bg-grad-2)); 
-            color: var(--text-main); transition: background 0.4s ease, color 0.4s ease;
-        }
-
-        /* === АРХІТЕКТУРА ЕКРАНІВ (NATIVE APP FEEL) === */
+        /* === ЕКРАНИ === */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
-            display: none; overflow-y: auto; overflow-x: hidden;
-            -webkit-overflow-scrolling: touch; /* Плавний скрол iOS ВСЕРЕДИНІ контейнера */
-            overscroll-behavior-y: contain; /* Не дає скролу вийти за межі */
+            display: none; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
             padding-top: env(safe-area-inset-top); padding-bottom: calc(env(safe-area-inset-bottom) + 90px);
             opacity: 0; will-change: transform, opacity;
         }
@@ -105,7 +93,6 @@
         h1 span { color: var(--gold); text-shadow: 0 0 15px var(--gold-glow); }
         p { font-size: 15px; color: var(--text-muted); line-height: 1.5; }
 
-        /* Форми */
         input, select, button { 
             width: 100%; padding: 16px; margin: 10px 0; border-radius: 18px; 
             border: 1px solid var(--glass-border); background: var(--input-bg); 
@@ -126,7 +113,7 @@
         .list-item:last-child { border-bottom: none; }
         .add-btn { width: auto; padding: 10px 20px; margin: 0; }
 
-        /* Нижня навігація (Мобайл) */
+        /* Нижня навігація */
         .nav-bar { 
             position: fixed; bottom: 0; left: 0; width: 100%; display: none; justify-content: space-around; 
             padding: 15px 10px calc(15px + env(safe-area-inset-bottom, 15px)); 
@@ -150,7 +137,6 @@
 
         @media (max-width: 768px) {
             .sidebar { display: none; } .nav-bar { display: flex; } 
-            /* Робимо відступи для iOS */
             .app-window { flex-direction: column; border-radius: 36px; margin-bottom: 40px; margin-top: 110px;}
             .main-content { padding: 50px 20px 30px; }
             .avatar-container { top: -55px; width: 110px; height: 110px; min-height: 110px; }
@@ -197,7 +183,7 @@
 
             <div class="sidebar">
                 <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
-                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник</div>
+                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник їжі</div>
                 <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Зал</div>
                 <div class="menu-item" data-target="tab-weight"><i class="fa-solid fa-scale-balanced"></i> Вага</div>
                 <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
@@ -232,7 +218,14 @@
                 <!-- ЇЖА -->
                 <div id="tab-food" class="tab-content">
                     <h1>База <span>ПРОДУКТІВ</span></h1>
-                    <input type="text" id="food-search" placeholder="Пошук (борщ, яблуко, суші...)" oninput="searchFood()">
+                    <p style="text-align: center; margin-bottom: 20px; font-size: 13px;">Тепер шукає і в локальній базі, і в 🌍 глобальній мережі (Open Food Facts).</p>
+                    <input type="text" id="food-search" placeholder="Пошук (гречка, snickers...)" oninput="onSearchInput()">
+                    
+                    <!-- Loading Індикатор -->
+                    <div id="loading-spinner" style="display:none; text-align:center; padding:20px; color:var(--gold);">
+                        <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                    </div>
+
                     <div id="food-results" style="margin-top: 15px; max-height: 450px; overflow-y: auto; border-radius: 20px; background: var(--card-bg); border: 1px solid var(--glass-border);"></div>
                 </div>
 
@@ -295,7 +288,7 @@
         </div>
     </div>
 
-    <!-- НИЖНЯ НАВІГАЦІЯ (5 Вкладок) -->
+    <!-- НИЖНЯ НАВІГАЦІЯ (5 Вкладок без ШІ) -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard"><span class="nav-icon"><i class="fa-solid fa-fire"></i></span><span>Статус</span></div>
         <div class="nav-item" data-target="tab-food"><span class="nav-icon"><i class="fa-solid fa-book"></i></span><span>Їжа</span></div>
@@ -304,205 +297,78 @@
         <div class="nav-item" data-target="tab-profile"><span class="nav-icon"><i class="fa-solid fa-user-gear"></i></span><span>Профіль</span></div>
     </nav>
 
-    <!-- FIREBASE (Якщо потрібен, залишається в коді) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        const firebaseConfig = {
-            apiKey: "AIzaSyDjT5UjvgTs396KGsVtPrOEUrnkUi6LD1I",
-            authDomain: "achilles-8de53.firebaseapp.com",
-            projectId: "achilles-8de53",
-            storageBucket: "achilles-8de53.firebasestorage.app",
-            messagingSenderId: "842206429977",
-            appId: "1:842206429977:web:eb78b2a92587395999bb88"
-        };
-        try { initializeApp(firebaseConfig); } catch(e) {}
-    </script>
-
-    <!-- ОСНОВНА ЛОГІКА ТА МЕГА-БАЗА -->
+    <!-- МЕГА-БАЗА ТА ЛОГІКА -->
     <script>
         // ==========================================
-        // 🍔 ГІГАНТСЬКА БАЗА ЇЖІ (БЖВ на 100г)
+        // ЛОКАЛЬНА БАЗА ЇЖІ (ШВИДКА)
         // ==========================================
         window.foodDB = [
-            // М'ЯСО, ПТИЦЯ, РИБА
+            { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
+            { name: "Банан (свіжий)", kcal: 89, p: 1.1, f: 0.3, c: 22.8, fiber: 2.6 },
+            { name: "Авокадо (Хаас)", kcal: 160, p: 2, f: 14.7, c: 8.5, fiber: 7.0 },
+            { name: "Груша", kcal: 57, p: 0.4, f: 0.1, c: 15, fiber: 3.1 },
+            { name: "Персик", kcal: 39, p: 0.9, f: 0.3, c: 10, fiber: 1.5 },
+            { name: "Кавун", kcal: 30, p: 0.6, f: 0.2, c: 8, fiber: 0.4 },
+            { name: "Помідор (свіжий)", kcal: 18, p: 0.9, f: 0.2, c: 3.9, fiber: 1.2 },
+            { name: "Огірок (свіжий)", kcal: 15, p: 0.8, f: 0.1, c: 2.8, fiber: 0.5 },
+            { name: "Броколі (варена)", kcal: 35, p: 2.4, f: 0.4, c: 7.2, fiber: 3.3 },
+            { name: "Картопля (сира)", kcal: 77, p: 2, f: 0.1, c: 17, fiber: 2.2 },
+            { name: "Картопля (варена)", kcal: 86, p: 2, f: 0.1, c: 20, fiber: 1.8 },
+            { name: "Кабачки (смажені в борошні)", kcal: 85, p: 1.5, f: 5, c: 9, fiber: 1.2 },
             { name: "Куряче філе (сире)", kcal: 110, p: 23, f: 1.2, c: 0, fiber: 0 },
             { name: "Куряче філе (варене/запечене)", kcal: 165, p: 31, f: 3.6, c: 0, fiber: 0 },
-            { name: "Куряче стегно (без шкіри)", kcal: 130, p: 19, f: 6, c: 0, fiber: 0 },
-            { name: "Куряча гомілка (зі шкірою)", kcal: 210, p: 16, f: 15, c: 0, fiber: 0 },
-            { name: "Крила курячі (запечені)", kcal: 254, p: 24, f: 17, c: 0, fiber: 0 },
-            { name: "Куряча печінка", kcal: 137, p: 19, f: 6, c: 1, fiber: 0 },
-            { name: "Індичка (філе сире)", kcal: 104, p: 23, f: 1.5, c: 0, fiber: 0 },
             { name: "Свинина (вирізка, пісна)", kcal: 143, p: 26, f: 4, c: 0, fiber: 0 },
-            { name: "Свинина (лопатка)", kcal: 257, p: 16, f: 21, c: 0, fiber: 0 },
-            { name: "Свинина (ошийок, жирний)", kcal: 344, p: 14, f: 32, c: 0, fiber: 0 },
             { name: "Яловичина (вирізка, пісна)", kcal: 187, p: 28, f: 8, c: 0, fiber: 0 },
-            { name: "Яловичина (лопатка)", kcal: 208, p: 20, f: 14, c: 0, fiber: 0 },
-            { name: "Яловича печінка", kcal: 127, p: 18, f: 4, c: 4, fiber: 0 },
             { name: "Сало (солоне)", kcal: 797, p: 1.4, f: 89, c: 0, fiber: 0 },
-            { name: "Фарш курячий", kcal: 143, p: 17, f: 8, c: 0, fiber: 0 },
-            { name: "Фарш яловичий (нежирний)", kcal: 250, p: 17, f: 20, c: 0, fiber: 0 },
-            { name: "Фарш свинно-яловичий", kcal: 275, p: 15, f: 24, c: 0, fiber: 0 },
-            { name: "Сосиски / Сардельки", kcal: 260, p: 10, f: 23, c: 2, fiber: 0 },
-            { name: "Ковбаса Лікарська", kcal: 257, p: 12, f: 22, c: 2, fiber: 0 },
-            { name: "Лосось / Сьомга (сирий)", kcal: 208, p: 20, f: 13, c: 0, fiber: 0 },
-            { name: "Лосось (слабосолений)", kcal: 202, p: 22, f: 12, c: 0, fiber: 0 },
-            { name: "Тунець (сирий)", kcal: 108, p: 24, f: 1, c: 0, fiber: 0 },
-            { name: "Тунець (у власному соку)", kcal: 96, p: 21, f: 1, c: 0, fiber: 0 },
-            { name: "Хек / Минтай (сирий)", kcal: 86, p: 16, f: 1, c: 0, fiber: 0 },
-            { name: "Оселедець слабосолений", kcal: 217, p: 14, f: 18, c: 0, fiber: 0 },
-            { name: "Скумбрія (запечена)", kcal: 262, p: 19, f: 20, c: 0, fiber: 0 },
-            { name: "Креветки (варені)", kcal: 99, p: 21, f: 1, c: 1, fiber: 0 },
-            { name: "Кальмар (сирий)", kcal: 75, p: 16, f: 1, c: 1, fiber: 0 },
-            { name: "Мідії", kcal: 172, p: 20, f: 4, c: 6, fiber: 0 },
-            { name: "Крабові палички", kcal: 73, p: 6, f: 1, c: 10, fiber: 0 },
+            { name: "Лосось (сирий/запечений)", kcal: 208, p: 20, f: 13, c: 0, fiber: 0 },
             { name: "Яйце куряче (1 шт ~50г)", kcal: 78, p: 6, f: 5, c: 0.6, fiber: 0 },
-            { name: "Яєчний білок (з 1 яйця)", kcal: 17, p: 3.6, f: 0, c: 0.2, fiber: 0 },
-            { name: "Яєчний жовток (з 1 яйця)", kcal: 55, p: 2.7, f: 4.5, c: 0.3, fiber: 0 },
-
-            // ГАРНІРИ ТА КРУПИ (СУХІ ТА ВАРЕНІ)
             { name: "Гречка (суха)", kcal: 343, p: 13, f: 3.4, c: 71.5, fiber: 10.0 },
             { name: "Гречка (варена)", kcal: 110, p: 4.2, f: 1.1, c: 21, fiber: 2.7 },
             { name: "Рис білий (сухий)", kcal: 360, p: 7, f: 0.6, c: 79, fiber: 1.3 },
             { name: "Рис білий (варений)", kcal: 130, p: 2.7, f: 0.3, c: 28, fiber: 0.4 },
-            { name: "Рис Басматі / Бурий (сухий)", kcal: 347, p: 8, f: 2.5, c: 73, fiber: 3.5 },
             { name: "Вівсянка (суха)", kcal: 389, p: 16.9, f: 6.9, c: 66, fiber: 10.0 },
-            { name: "Вівсянка (варена на воді)", kcal: 88, p: 3, f: 1.5, c: 15, fiber: 1.7 },
-            { name: "Булгур (сухий)", kcal: 342, p: 12.3, f: 1.3, c: 76, fiber: 18.0 },
-            { name: "Булгур (варений)", kcal: 83, p: 3, f: 0.2, c: 18, fiber: 4.5 },
-            { name: "Кускус (сухий)", kcal: 376, p: 12, f: 0.6, c: 77, fiber: 5.0 },
             { name: "Макарони твердих сортів (сухі)", kcal: 350, p: 12, f: 1.5, c: 71, fiber: 3.2 },
-            { name: "Макарони (варені)", kcal: 140, p: 5, f: 0.5, c: 28, fiber: 1.2 },
-            { name: "Перловка (суха)", kcal: 315, p: 9, f: 1.1, c: 67, fiber: 15.6 },
-            { name: "Кіноа (суха)", kcal: 368, p: 14, f: 6, c: 64, fiber: 7.0 },
-            { name: "Картопля (сира)", kcal: 77, p: 2, f: 0.1, c: 17, fiber: 2.2 },
-            { name: "Картопля (варена)", kcal: 86, p: 2, f: 0.1, c: 20, fiber: 1.8 },
-            { name: "Картопляне пюре (з молоком/маслом)", kcal: 110, p: 2, f: 4, c: 16, fiber: 1.5 },
-            { name: "Картопля (запечена)", kcal: 93, p: 2.5, f: 0.2, c: 21, fiber: 2.2 },
-
-            // ОВОЧІ, ФРУКТИ ТА ГОРІХИ
-            { name: "Помідор (свіжий)", kcal: 18, p: 0.9, f: 0.2, c: 3.9, fiber: 1.2 },
-            { name: "Огірок (свіжий)", kcal: 15, p: 0.8, f: 0.1, c: 2.8, fiber: 0.5 },
-            { name: "Капуста білокачанна", kcal: 25, p: 1.3, f: 0.1, c: 5.8, fiber: 2.0 },
-            { name: "Капуста пекінська", kcal: 16, p: 1.2, f: 0.2, c: 3.2, fiber: 1.2 },
-            { name: "Броколі (варена)", kcal: 35, p: 2.4, f: 0.4, c: 7.2, fiber: 3.3 },
-            { name: "Цвітна капуста (варена)", kcal: 23, p: 1.8, f: 0.3, c: 4, fiber: 2.0 },
-            { name: "Морква (сира)", kcal: 41, p: 0.9, f: 0.2, c: 9.6, fiber: 2.8 },
-            { name: "Буряк (варений)", kcal: 44, p: 1.7, f: 0.2, c: 10, fiber: 2.0 },
-            { name: "Цибуля ріпчаста", kcal: 40, p: 1.1, f: 0.1, c: 9, fiber: 1.7 },
-            { name: "Перець болгарський", kcal: 27, p: 1, f: 0.2, c: 6, fiber: 2.1 },
-            { name: "Кабачок / Цукіні (сирий)", kcal: 24, p: 1.2, f: 0.3, c: 3.1, fiber: 1.0 },
-            { name: "Авокадо (Хаас)", kcal: 160, p: 2, f: 14.7, c: 8.5, fiber: 7.0 },
-            { name: "Печериці (сирі)", kcal: 22, p: 3.1, f: 0.3, c: 3.3, fiber: 1.1 },
-            { name: "Кукурудза (консервована)", kcal: 86, p: 3, f: 1, c: 19, fiber: 2.0 },
-            { name: "Горошок (консервований)", kcal: 55, p: 3, f: 0.2, c: 10, fiber: 2.6 },
-            { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
-            { name: "Банан (свіжий)", kcal: 89, p: 1.1, f: 0.3, c: 22.8, fiber: 2.6 },
-            { name: "Груша", kcal: 57, p: 0.4, f: 0.1, c: 15, fiber: 3.1 },
-            { name: "Апельсин / Мандарин", kcal: 45, p: 0.9, f: 0.2, c: 11, fiber: 2.4 },
-            { name: "Персик / Абрикос", kcal: 40, p: 0.9, f: 0.3, c: 10, fiber: 1.5 },
-            { name: "Виноград", kcal: 69, p: 0.7, f: 0.2, c: 18, fiber: 0.9 },
-            { name: "Кавун / Диня", kcal: 32, p: 0.6, f: 0.2, c: 8, fiber: 0.5 },
-            { name: "Полуниця / Малина", kcal: 40, p: 1, f: 0.4, c: 8, fiber: 4.0 },
-            { name: "Волоський горіх", kcal: 654, p: 15, f: 65, c: 14, fiber: 6.7 },
-            { name: "Мигдаль / Фундук", kcal: 600, p: 21, f: 50, c: 21, fiber: 12.0 },
-            { name: "Арахіс (смажений)", kcal: 585, p: 26, f: 50, c: 16, fiber: 8.0 },
-            { name: "Арахісова паста (без цукру)", kcal: 588, p: 25, f: 50, c: 20, fiber: 6.0 },
-
-            // МОЛОЧНІ ПРОДУКТИ ТА СИРИ
-            { name: "Сир кисломолочний 0%", kcal: 71, p: 16.5, f: 0, c: 1.3, fiber: 0 },
-            { name: "Сир кисломолочний 5%", kcal: 121, p: 17, f: 5, c: 1.8, fiber: 0 },
-            { name: "Сир кисломолочний 9%", kcal: 159, p: 16, f: 9, c: 2, fiber: 0 },
-            { name: "Молоко 2.5%", kcal: 52, p: 2.8, f: 2.5, c: 4.7, fiber: 0 },
-            { name: "Молоко 3.2%", kcal: 60, p: 2.9, f: 3.2, c: 4.7, fiber: 0 },
-            { name: "Кефір / Ряжанка 2.5%", kcal: 55, p: 3, f: 2.5, c: 4.5, fiber: 0 },
-            { name: "Йогурт натуральний", kcal: 60, p: 4, f: 3, c: 5, fiber: 0 },
-            { name: "Сметана 15%", kcal: 162, p: 2.6, f: 15, c: 3, fiber: 0 },
-            { name: "Сметана 20%", kcal: 206, p: 2.5, f: 20, c: 3.4, fiber: 0 },
-            { name: "Твердий сир (Голландський/Радомер)", kcal: 350, p: 26, f: 27, c: 0, fiber: 0 },
-            { name: "Сир Моцарела", kcal: 280, p: 28, f: 17, c: 3, fiber: 0 },
-            { name: "Сир Сулугуні", kcal: 286, p: 20, f: 22, c: 0, fiber: 0 },
-            { name: "Сир Фета", kcal: 264, p: 14, f: 21, c: 4, fiber: 0 },
-            { name: "Масло вершкове 82%", kcal: 748, p: 0.5, f: 82, c: 0.8, fiber: 0 },
-
-            // ХЛІБ, ВИПІЧКА ТА ДОМАШНІ СТРАВИ
-            { name: "Хліб білий (пшеничний)", kcal: 265, p: 9, f: 3, c: 50, fiber: 2.7 },
-            { name: "Хліб чорний (житній)", kcal: 259, p: 8, f: 1, c: 48, fiber: 5.8 },
-            { name: "Хліб цільнозерновий", kcal: 247, p: 10, f: 4, c: 41, fiber: 7.4 },
-            { name: "Лаваш тонкий (вірменський)", kcal: 236, p: 8, f: 1, c: 48, fiber: 2.0 },
-            { name: "Борщ червоний (з м'ясом і сметаною)", kcal: 65, p: 3, f: 4, c: 5, fiber: 1.8 },
+            { name: "Борщ український (червоний, з м'ясом)", kcal: 65, p: 3, f: 4, c: 5, fiber: 1.8 },
             { name: "Борщ зелений (з яйцем)", kcal: 55, p: 4, f: 3, c: 4, fiber: 1.5 },
-            { name: "Суп курячий з локшиною", kcal: 45, p: 3, f: 1, c: 5, fiber: 0.8 },
             { name: "Вареники з картоплею", kcal: 180, p: 5, f: 4, c: 31, fiber: 1.5 },
-            { name: "Вареники з сиром/м'ясом", kcal: 210, p: 10, f: 6, c: 28, fiber: 1.2 },
-            { name: "Пельмені (свинина-яловичина)", kcal: 275, p: 12, f: 12, c: 29, fiber: 1.2 },
-            { name: "Деруни (смажені)", kcal: 230, p: 4, f: 15, c: 20, fiber: 2.0 },
+            { name: "Деруни (смажені зі сметаною)", kcal: 230, p: 4, f: 15, c: 20, fiber: 2.0 },
             { name: "Сирники (смажені)", kcal: 220, p: 14, f: 11, c: 16, fiber: 0.5 },
-            { name: "Млинці (без начинки)", kcal: 170, p: 5, f: 3, c: 30, fiber: 0.8 },
-            { name: "Котлета по-київськи", kcal: 345, p: 15, f: 25, c: 14, fiber: 0.5 },
-            { name: "Плов з куркою", kcal: 185, p: 6, f: 7, c: 24, fiber: 1.5 },
-            { name: "Кабачки (смажені в борошні)", kcal: 85, p: 1.5, f: 5, c: 9, fiber: 1.2 },
-
-            // СУШІ ТА ФАСТФУД
-            { name: "Суші (Філадельфія з лососем)", kcal: 175, p: 6.5, f: 5.3, c: 25, fiber: 0.5 },
-            { name: "Суші (Каліфорнія з крабом)", kcal: 150, p: 5.5, f: 3.2, c: 26, fiber: 0.8 },
-            { name: "Суші (Зелений дракон)", kcal: 185, p: 6, f: 7, c: 24, fiber: 1.0 },
-            { name: "Суші (Макі з лососем/огірком)", kcal: 110, p: 4, f: 1.5, c: 20, fiber: 1.0 },
-            { name: "Рис для суші (заправлений)", kcal: 145, p: 2.5, f: 0.2, c: 33, fiber: 0.4 },
             { name: "Піца Маргарита", kcal: 266, p: 11, f: 10, c: 33, fiber: 2.5 },
-            { name: "Піца Пепероні / М'ясна", kcal: 295, p: 12, f: 12, c: 34, fiber: 2.2 },
-            { name: "Піца Чотири сири", kcal: 330, p: 14, f: 15, c: 30, fiber: 1.5 },
             { name: "Бургер з яловичиною (МакДональдз)", kcal: 254, p: 13, f: 10, c: 30, fiber: 1.5 },
-            { name: "Чизбургер", kcal: 290, p: 15, f: 12, c: 31, fiber: 1.5 },
-            { name: "Картопля фрі (МакДональдз/КФС)", kcal: 312, p: 3.4, f: 15, c: 41, fiber: 3.8 },
+            { name: "Картопля фрі", kcal: 312, p: 3.4, f: 15, c: 41, fiber: 3.8 },
             { name: "Шаурма (курка, класична)", kcal: 220, p: 9, f: 10, c: 22, fiber: 1.5 },
-            { name: "Стріпси курячі (КФС)", kcal: 295, p: 16, f: 18, c: 16, fiber: 1.2 },
-
-            // СОЛОДОЩІ, НАПОЇ ТА ІНШЕ
-            { name: "Шоколад чорний (70%+)", kcal: 598, p: 7.8, f: 42.6, c: 36, fiber: 10.9 },
-            { name: "Шоколад молочний", kcal: 535, p: 7, f: 30, c: 59, fiber: 3.4 },
-            { name: "Снікерс (Snickers)", kcal: 488, p: 8, f: 23, c: 61, fiber: 1.4 },
-            { name: "Цукор", kcal: 387, p: 0, f: 0, c: 100, fiber: 0 },
-            { name: "Мед", kcal: 304, p: 0.3, f: 0, c: 82, fiber: 0.2 },
+            { name: "Суші (Філадельфія)", kcal: 175, p: 6.5, f: 5.3, c: 25, fiber: 0.5 },
+            { name: "Суші (Каліфорнія)", kcal: 150, p: 5.5, f: 3.2, c: 26, fiber: 0.8 },
+            { name: "Сир кисломолочний 5%", kcal: 121, p: 17, f: 5, c: 1.8, fiber: 0 },
+            { name: "Сметана 15%", kcal: 162, p: 2.6, f: 15, c: 3, fiber: 0 },
+            { name: "Молоко 2.5%", kcal: 52, p: 2.8, f: 2.5, c: 4.7, fiber: 0 },
+            { name: "Твердий сир (Голландський)", kcal: 350, p: 26, f: 27, c: 0, fiber: 0 },
             { name: "Еспресо / Американо", kcal: 2, p: 0.1, f: 0, c: 0, fiber: 0 },
-            { name: "Капучино / Лате (без цукру)", kcal: 85, p: 4, f: 4, c: 8, fiber: 0 },
-            { name: "Кола / Пепсі (звичайна)", kcal: 42, p: 0, f: 0, c: 10.6, fiber: 0 },
-            { name: "Кола / Пепсі Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 },
-            { name: "Сік (апельсин/яблуко)", kcal: 45, p: 0.5, f: 0, c: 11, fiber: 0.2 },
-            { name: "Пиво світле", kcal: 43, p: 0.5, f: 0, c: 3.6, fiber: 0 },
-            { name: "Вино сухе (червоне/біле)", kcal: 68, p: 0.2, f: 0, c: 2.5, fiber: 0 },
-            { name: "Горілка / Віскі", kcal: 231, p: 0, f: 0, c: 0, fiber: 0 },
+            { name: "Капучино (без цукру)", kcal: 75, p: 3.4, f: 3.6, c: 7.4, fiber: 0 },
             { name: "Протеїн (Whey Protein)", kcal: 380, p: 80, f: 4, c: 6, fiber: 0 },
-            { name: "Олія соняшникова / Оливкова", kcal: 899, p: 0, f: 100, c: 0, fiber: 0 },
-            { name: "Майонез 67%", kcal: 619, p: 1, f: 67, c: 3, fiber: 0 },
-            { name: "Кетчуп", kcal: 97, p: 1, f: 0, c: 23, fiber: 0.3 }
+            { name: "Шоколад чорний (70%+)", kcal: 598, p: 7.8, f: 42.6, c: 36, fiber: 10.9 },
+            { name: "Кола (звичайна)", kcal: 42, p: 0, f: 0, c: 10.6, fiber: 0 },
+            { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 },
+            { name: "Пиво світле", kcal: 43, p: 0.5, f: 0, c: 3.6, fiber: 0 },
+            { name: "Вино сухе (червоне/біле)", kcal: 68, p: 0.2, f: 0, c: 2.5, fiber: 0 }
         ];
 
         // ==========================================
-        // 🏋️ ГІГАНТСЬКА БАЗА ТРЕНУВАНЬ (СИЛОВІ + APPLE WATCH)
-        // factor = ккал за 1 повторення або 1 хв кардіо
+        // 🏋️ ГІГАНТСЬКА БАЗА ТРЕНУВАНЬ
         // ==========================================
         window.workoutDB = [
-            // АКТИВНІСТЬ / КАРДІО (ХВИЛИНИ)
             { name: "Вільне тренування (Apple Watch)", desc: "Вводь час у хвилинах.", factor: 6.0 },
             { name: "Біг (вулиця / доріжка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 11.0 },
             { name: "Велосипед / Велотренажер", desc: "Кардіо. Вводь час у хвилинах.", factor: 8.0 },
             { name: "Еліпсоїд (Орбітрек)", desc: "Кардіо. Вводь час у хвилинах.", factor: 9.0 },
-            { name: "Степпер", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
-            { name: "ВІІТ (HIIT) / Кросфіт", desc: "Інтервальне. Вводь час у хвилинах.", factor: 13.0 },
+            { name: "ВІІТ (HIIT)", desc: "Інтервальне. Вводь час у хвилинах.", factor: 12.0 },
             { name: "Ходьба (швидка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 5.0 },
             { name: "Плавання", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
-            { name: "Йога / Пілатес / Розтяжка", desc: "Відновлення. Вводь час у хвилинах.", factor: 3.5 },
-            { name: "Футбол / Баскетбол / Теніс", desc: "Спорт. Вводь час у хвилинах.", factor: 10.0 },
-            { name: "Бокс / Єдиноборства", desc: "Спорт. Вводь час у хвилинах.", factor: 11.0 },
-            { name: "Танці", desc: "Активність. Вводь час у хвилинах.", factor: 6.5 },
-            
-            // СИЛОВІ (ПОВТОРЕННЯ ЧЕРЕЗ КОМУ АБО КРАПКУ)
             { name: "Віджимання від підлоги", desc: "Груди/Трицепс. Вводь повторення.", factor: 0.4 },
             { name: "Віджимання на брусах", desc: "Нижні грудні/Трицепс.", factor: 0.6 },
             { name: "Жим штанги лежачи", desc: "Груди (База).", factor: 0.6 },
             { name: "Жим гантелей лежачи", desc: "Груди.", factor: 0.5 },
             { name: "Розведення гантелей лежачи (Розводка)", desc: "Груди.", factor: 0.3 },
-            { name: "Зведення рук в тренажері (Метелик)", desc: "Груди.", factor: 0.3 },
             { name: "Підтягування на турніку", desc: "Спина/Біцепс.", factor: 1.0 },
             { name: "Тяга верхнього блоку", desc: "Спина.", factor: 0.4 },
             { name: "Тяга нижнього блоку", desc: "Спина.", factor: 0.4 },
@@ -512,29 +378,21 @@
             { name: "Жим штанги стоячи (Армійський)", desc: "Плечі (База).", factor: 0.5 },
             { name: "Жим гантелей сидячи", desc: "Плечі.", factor: 0.4 },
             { name: "Махи гантелями в сторони", desc: "Середні дельти.", factor: 0.3 },
-            { name: "Махи гантелями перед собою", desc: "Передні дельти.", factor: 0.3 },
-            { name: "Розведення гантелей в нахилі", desc: "Задні дельти.", factor: 0.3 },
-            { name: "Тяга до підборіддя", desc: "Дельти/Трапеція.", factor: 0.4 },
             { name: "Підйом штанги на біцепс", desc: "Біцепс.", factor: 0.4 },
             { name: "Підйом гантелей на біцепс (супінація)", desc: "Біцепс.", factor: 0.3 },
             { name: "Молотки (Хаммери)", desc: "Брахіаліс.", factor: 0.3 },
             { name: "Французький жим (штанга/гантелі)", desc: "Трицепс.", factor: 0.4 },
-            { name: "Розгинання рук на блоці", desc: "Трицепс.", factor: 0.3 },
             { name: "Присідання зі штангою", desc: "Ноги (База).", factor: 0.8 },
             { name: "Присідання з гантелями (Гоблет)", desc: "Ноги.", factor: 0.6 },
             { name: "Жим ногами в тренажері", desc: "Ноги.", factor: 0.5 },
             { name: "Випади з гантелями", desc: "Ноги/Сідниці.", factor: 0.6 },
-            { name: "Болгарські спліт-присідання", desc: "Ноги.", factor: 0.6 },
-            { name: "Станова тяга (класика / сумо)", desc: "Спина/Ноги (База).", factor: 1.0 },
-            { name: "Румунська тяга (на прямих ногах)", desc: "Сідниці/Біцепс стегна.", factor: 0.6 },
-            { name: "Підйом на носки", desc: "Ікри.", factor: 0.2 },
+            { name: "Румунська тяга", desc: "Сідниці/Біцепс стегна.", factor: 0.6 },
             { name: "Планка (час в секундах)", desc: "Кори. Пиши секунди (напр: 60).", factor: 0.1 },
-            { name: "Скручування на прес", desc: "Прес.", factor: 0.2 },
-            { name: "Підйом ніг лежачи/у висі", desc: "Нижній прес.", factor: 0.3 }
+            { name: "Скручування на прес", desc: "Прес.", factor: 0.2 }
         ];
 
         // СТАН ДОДАТКУ
-        let consumedCalories = 0; let stepsBonus = 0; let workoutBonus = 0;
+        let consumedCalories = 0; let workoutBonus = 0;
         let macros = { p: 0, f: 0, c: 0 }; let targetMacros = { p: 0, f: 0, c: 0 };
 
         window.onload = () => { 
@@ -547,7 +405,7 @@
             if (localStorage.getItem('achilles_user')) {
                 loadUserData();
                 renderWeightChart();
-                document.documentElement.classList.add('dark'); // Safe Area Fix
+                document.documentElement.classList.add('dark');
                 document.getElementById('main-app-window').classList.add('active-block');
             } else { 
                 document.documentElement.classList.add('dark');
@@ -555,9 +413,6 @@
             }
         }
 
-        // ==========================================
-        // МАТЕМАТИКА
-        // ==========================================
         function calculateNorms(gender, weight, height, age, activity, goal) {
             let bmr = (10 * weight) + (6.25 * height) - (5 * age);
             bmr += (gender === 'male') ? 5 : -161;
@@ -701,7 +556,7 @@
         // ==========================================
         function updateGoalDisplay() {
             const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
-            const finalGoal = baseKcal + stepsBonus + workoutBonus; 
+            const finalGoal = baseKcal + workoutBonus; 
             
             document.getElementById('calories-goal').textContent = finalGoal;
             
@@ -716,13 +571,9 @@
                 document.getElementById('macro-c').innerText = Math.round(macros.c);
 
                 const msgObj = document.getElementById('bonus-kcal-msg');
-                let msgs = [];
-                if(stepsBonus > 0) msgs.push(`👣 Кроки: +${stepsBonus}`);
-                if(workoutBonus > 0) msgs.push(`🔥 Тренування: +${workoutBonus}`);
-                
-                if(msgs.length > 0) {
+                if(workoutBonus > 0) {
                     msgObj.style.display = 'inline-block';
-                    msgObj.innerText = msgs.join(' | ');
+                    msgObj.innerText = `🔥 Тренування: +${workoutBonus} ккал`;
                 } else { msgObj.style.display = 'none'; }
             });
         }
@@ -759,32 +610,90 @@
         function toggleTheme() { const theme = document.getElementById('theme-select').value; localStorage.setItem('achilles_theme', theme); applyTheme(theme); }
 
         // ==========================================
-        // ЇЖА ТА ТРЕНУВАННЯ (З ПОШУКОМ І КЛАВІАТУРАМИ)
+        // ЇЖА ТА ТРЕНУВАННЯ (З OPEN FOOD FACTS API)
         // ==========================================
-        function searchFood() {
+        let searchTimeout;
+        function onSearchInput() {
+            clearTimeout(searchTimeout);
             const query = document.getElementById('food-search').value.toLowerCase().trim();
+            if (query.length < 2) {
+                document.getElementById('food-results').innerHTML = '';
+                return;
+            }
+            // Швидко показуємо локальні
+            renderLocalFoodSearch(query);
+            
+            // Відкладаємо API запит, щоб не спамити
+            searchTimeout = setTimeout(() => searchOpenFoodFacts(query), 700);
+        }
+
+        function renderLocalFoodSearch(query) {
             const resultsBox = document.getElementById('food-results');
+            const filtered = window.foodDB.filter(i => i.name.toLowerCase().includes(query));
             resultsBox.innerHTML = '';
             
-            if(query.length >= 1) {
-                const filtered = window.foodDB.filter(i => i.name.toLowerCase().includes(query));
-                if(filtered.length === 0) { resultsBox.innerHTML = '<div class="list-item" style="color: var(--text-muted);">Нічого не знайдено</div>'; return; }
-                
-                filtered.forEach((item, index) => {
-                    const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
-                    resultsBox.innerHTML += `
-                        <div class="list-item" style="align-items: flex-start;">
-                            <div style="width: 100%; margin-bottom: 12px;">
-                                <strong>${item.name}</strong><br>
-                                <span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
-                            </div>
-                            <div style="display: flex; width: 100%; gap: 10px;">
-                                <!-- ЦИФРОВА КЛАВІАТУРА ДЛЯ ГРАМІВ -->
-                                <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
-                                <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 20px;">+</button>
-                            </div>
-                        </div>`;
-                });
+            filtered.forEach((item, index) => {
+                const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
+                resultsBox.innerHTML += `
+                    <div class="list-item" style="align-items: flex-start;">
+                        <div style="width: 100%; margin-bottom: 12px;">
+                            <strong>${item.name}</strong><br>
+                            <span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
+                        </div>
+                        <div style="display: flex; width: 100%; gap: 10px;">
+                            <!-- Тільки чиста цифрова клавіатура для грамів -->
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                            <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 20px;">+</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        async function searchOpenFoodFacts(query) {
+            const resultsBox = document.getElementById('food-results');
+            document.getElementById('loading-spinner').style.display = 'block';
+
+            try {
+                // Використовуємо відкритий API Open Food Facts
+                const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=10&fields=product_name,brands,nutriments`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                document.getElementById('loading-spinner').style.display = 'none';
+
+                if (data.products && data.products.length > 0) {
+                    data.products.forEach((p, apiIndex) => {
+                        const brand = p.brands ? ` (${p.brands.split(',')[0]})` : '';
+                        const name = "🌍 " + (p.product_name || 'Продукт') + brand;
+                        const nut = p.nutriments || {};
+                        const kcal = Math.round(nut['energy-kcal_100g'] || 0);
+                        const prot = Math.round(nut.proteins_100g || 0);
+                        const fat = Math.round(nut.fat_100g || 0);
+                        const carb = Math.round(nut.carbohydrates_100g || 0);
+
+                        // Додаємо тільки якщо є калорії і цього немає в локальній базі (проста перевірка)
+                        if (kcal > 0) {
+                            const item = { name: name, kcal: kcal, p: prot, f: fat, c: carb, fiber: 0 };
+                            const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
+                            const uniqueId = `api-weight-${apiIndex}`;
+                            
+                            resultsBox.innerHTML += `
+                                <div class="list-item" style="align-items: flex-start; border-left: 3px solid var(--gold);">
+                                    <div style="width: 100%; margin-bottom: 12px;">
+                                        <strong>${item.name}</strong><br>
+                                        <span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
+                                    </div>
+                                    <div style="display: flex; width: 100%; gap: 10px;">
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                                        <button class="add-btn" onclick="addFood('${itemJson}', '${uniqueId}')" style="margin:0; padding: 0 20px;">+</button>
+                                    </div>
+                                </div>`;
+                        }
+                    });
+                }
+            } catch (err) {
+                document.getElementById('loading-spinner').style.display = 'none';
+                console.error("Open Food Facts Error:", err);
             }
         }
 
@@ -857,7 +766,6 @@
             const setsCount = setsArray.length;
             let setsText = '';
             
-            // Визначаємо кардіо чи силові по ключових словах
             if (/Apple Watch|Біг|Велосипед|Еліпсоїд|Степпер|ВІІТ|Ходьба|Плавання|Йога|Футбол|Бокс|Танці/i.test(name)) {
                 setsText = `${totalRepsOrSecs} хв.`;
             } else if (name.includes('Планка')) {
@@ -880,61 +788,6 @@
             renderWorkouts(window.workoutDB); 
             updateGoalDisplay();
             document.querySelector('[data-target="tab-dashboard"]').click();
-        }
-
-        // ==========================================
-        // ОНОВЛЕНИЙ ШІ СИНХРОНІЗАЦІЯ (APPLE FITNESS)
-        // ==========================================
-        async function processScreenshot(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const status = document.getElementById('ocr-status');
-            status.style.color = 'var(--gold)'; status.innerHTML = '⚙️ ШІ аналізує... (Це може зайняти до 15 сек)';
-            
-            try {
-                const result = await Tesseract.recognize(file, 'ukr+eng');
-                const text = result.data.text.toLowerCase();
-                const cleanText = text.replace(/(\d)[^\S\r\n]+(\d)/g, '$1$2').replace(/,/g, '');
-                
-                let parsedKcal = 0; let parsedSteps = 0; let statusMsg = "";
-
-                const activeMatch = cleanText.match(/активн[а-я]*[\s\S]{0,15}?(\d+)\s*(?:ккал|kcal)/i) || cleanText.match(/(\d+)\s*(?:ккал|kcal)[\s\S]{0,15}?активн/i);
-                if (activeMatch) {
-                    parsedKcal = parseInt(activeMatch[1] || activeMatch[2]);
-                    if (parsedKcal > 10 && parsedKcal < 5000) {
-                        statusMsg += `🔥 Тренування Apple: +${parsedKcal} ккал.<br>`;
-                        workoutBonus += parsedKcal;
-                    }
-                }
-
-                const stepMatch = cleanText.match(/крок[а-я]*[\s\S]{0,15}?(\d{3,6})/i) || cleanText.match(/(\d{3,6})[\s\S]{0,15}?крок/i);
-                if (stepMatch) {
-                    parsedSteps = parseInt(stepMatch[1] || stepMatch[2]);
-                    if (parsedSteps > 100 && parsedSteps < 100000) {
-                        let stepKcal = Math.floor(parsedSteps / 1000) * 40;
-                        statusMsg += `👣 Кроки (${parsedSteps}): +${stepKcal} ккал.<br>`;
-                        stepsBonus += stepKcal;
-                    }
-                }
-
-                if (parsedKcal > 0 || parsedSteps > 0) {
-                    status.style.color = '#4cd964';
-                    status.innerHTML = `✅ Синхронізовано!<br><br><span style="font-weight:normal;">${statusMsg}</span>`;
-                    updateGoalDisplay();
-                } else {
-                    const genericKcal = cleanText.match(/(\d+)\s*(?:ккал|kcal)/i);
-                    if (genericKcal && parseInt(genericKcal[1]) > 10) {
-                        let kcal = parseInt(genericKcal[1]);
-                        workoutBonus += kcal;
-                        status.style.color = '#4cd964';
-                        status.innerHTML = `✅ Синхронізовано!<br><br><span style="font-weight:normal;">⚡ Розпізнано: +${kcal} ккал.</span>`;
-                        updateGoalDisplay();
-                    } else {
-                        status.style.color = '#ff3b30';
-                        status.innerHTML = '⚠️ Не знайдено ні кроків, ні калорій. Спробуй чіткіший скріншот.';
-                    }
-                }
-            } catch (err) { status.style.color = '#ff3b30'; status.innerHTML = '❌ Помилка розпізнавання.'; }
         }
 
         function logout() { localStorage.clear(); location.reload(); }
