@@ -103,6 +103,8 @@
 
         button { background: linear-gradient(135deg, var(--gold), #aa801e); color: white; font-weight: bold; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px var(--shadow); will-change: transform; }
         button:active { transform: scale(0.97); }
+        button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
+        
         .file-upload { text-align: center; cursor: pointer; display: block; font-weight: bold; }
         input[type="file"] { display: none; }
 
@@ -115,18 +117,25 @@
 
         .nav-bar { 
             position: fixed; bottom: 0; left: 0; width: 100%; display: none; justify-content: space-around; 
-            padding: 12px 10px calc(12px + env(safe-area-inset-bottom, 15px)); 
+            padding: 12px 5px calc(12px + env(safe-area-inset-bottom, 15px)); 
             background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); 
             border-top: 1px solid var(--glass-border); z-index: 1000; 
         }
-        .nav-item { text-align: center; font-size: 11px; flex: 1; opacity: 0.5; transition: 0.3s; cursor: pointer; -webkit-tap-highlight-color: transparent;}
+        .nav-item { text-align: center; font-size: 10px; flex: 1; opacity: 0.5; transition: 0.3s; cursor: pointer; -webkit-tap-highlight-color: transparent;}
         .nav-item.active { opacity: 1; color: var(--gold); font-weight: bold; transform: translateY(-3px); }
-        .nav-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+        .nav-icon { font-size: 20px; display: block; margin-bottom: 4px; }
 
-        .macro-box { display: flex; justify-content: space-around; margin-top: 15px; text-align: center; font-size: 14px; background: rgba(0,0,0,0.1); border-radius: 12px; padding: 15px; }
-        .macro-item strong { display: block; font-size: 22px; color: var(--text-main); margin-bottom: 2px; }
+        .macro-box { display: flex; justify-content: space-around; margin-top: 15px; text-align: center; font-size: 12px; background: rgba(0,0,0,0.1); border-radius: 12px; padding: 15px; }
+        .macro-item strong { display: block; font-size: 18px; color: var(--text-main); margin-bottom: 2px; }
 
         .bonus-badge { display: inline-block; background: rgba(76, 217, 100, 0.15); color: #4cd964; padding: 5px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-top: 10px; }
+
+        /* Графік ваги */
+        .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 180px; padding: 20px 10px 0; background: rgba(0,0,0,0.1); border-radius: 16px; margin-top: 15px;}
+        .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 14%; height: 100%; justify-content: flex-end;}
+        .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #aa801e); border-radius: 6px 6px 0 0; min-height: 5px; transition: height 0.5s ease; }
+        .chart-val { font-size: 11px; color: var(--gold); margin-bottom: 5px; font-weight: bold; }
+        .chart-date { font-size: 9px; opacity: 0.6; margin-top: 5px; }
 
         @media (max-width: 768px) {
             .sidebar { display: none; } .nav-bar { display: flex; } 
@@ -139,7 +148,7 @@
 </head>
 <body class="dark"> 
     
-    <!-- ВІКНО РЕЄСТРАЦІЇ -->
+    <!-- 1. ВІКНО РЕЄСТРАЦІЇ -->
     <div class="screen" id="registration-window">
         <div class="app-window" style="max-width: 450px; display: flex; flex-direction: column;">
             <div class="avatar-container"><div class="avatar-logo"></div></div>
@@ -147,9 +156,22 @@
                 <h2 style="text-align: center; margin-bottom: 20px;">Створення профілю</h2>
                 <input type="text" id="reg-name" placeholder="Ім'я">
                 <select id="reg-gender"><option value="male">Чоловіча</option><option value="female">Жіноча</option></select>
-                <input type="number" id="reg-height" placeholder="Зріст (см)">
-                <input type="number" id="reg-weight" placeholder="Вага (кг)">
-                <!-- ВИБІР МЕТИ -->
+                
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="reg-age" placeholder="Вік (років)">
+                    <input type="number" id="reg-height" placeholder="Зріст (см)">
+                </div>
+                
+                <input type="number" id="reg-weight" placeholder="Поточна вага (кг)">
+                
+                <select id="reg-activity">
+                    <option value="" disabled selected>Рівень активності</option>
+                    <option value="1.2">Мінімальна (Сидяча робота)</option>
+                    <option value="1.375">Слабка (Тренування 1-3 рази/тиж)</option>
+                    <option value="1.55">Середня (Тренування 3-5 разів/тиж)</option>
+                    <option value="1.725">Висока (Тренування щодня)</option>
+                </select>
+
                 <select id="reg-goal">
                     <option value="" disabled selected>Твоя мета</option>
                     <option value="lose">Схуднути (Дефіцит)</option>
@@ -161,17 +183,18 @@
         </div>
     </div>
 
-    <!-- ГОЛОВНИЙ ДОДАТОК -->
+    <!-- 2. ГОЛОВНИЙ ДОДАТОК -->
     <div class="screen" id="main-app-window">
         <div class="app-window">
             <div class="avatar-container"><div class="avatar-logo"></div></div>
 
             <div class="sidebar">
                 <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
-                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник їжі</div>
-                <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Тренування</div>
-                <div class="menu-item" data-target="tab-ai"><i class="fa-solid fa-robot"></i> Аналіз ШІ</div>
-                <div class="menu-item" data-target="tab-settings"><i class="fa-solid fa-gear"></i> Налаштування</div>
+                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник</div>
+                <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Зал</div>
+                <div class="menu-item" data-target="tab-weight"><i class="fa-solid fa-scale-balanced"></i> Вага</div>
+                <div class="menu-item" data-target="tab-ai"><i class="fa-solid fa-robot"></i> ШІ сканер</div>
+                <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
             </div>
 
             <div class="main-content">
@@ -187,14 +210,13 @@
                         </div>
                         <div class="progress-bar"><div class="progress-fill" id="calorie-progress"></div></div>
                         
-                        <!-- БОНУСИ ВІД ТРЕНУВАНЬ ТА КРОКІВ -->
                         <div id="bonus-kcal-msg" class="bonus-badge" style="display: none;"></div>
                         
-                        <!-- БЖВ -->
+                        <!-- БЖВ (З ЦІЛЯМИ) -->
                         <div class="macro-box">
-                            <div class="macro-item"><strong id="macro-p" style="color: #4cd964;">0</strong> Білки</div>
-                            <div class="macro-item"><strong id="macro-f" style="color: #ffcc00;">0</strong> Жири</div>
-                            <div class="macro-item"><strong id="macro-c" style="color: #34a853;">0</strong> Вуглеводи</div>
+                            <div class="macro-item"><strong id="macro-p" style="color: #4cd964;">0</strong><span id="target-p">/ 0г</span><br>Білки</div>
+                            <div class="macro-item"><strong id="macro-f" style="color: #ffcc00;">0</strong><span id="target-f">/ 0г</span><br>Жири</div>
+                            <div class="macro-item"><strong id="macro-c" style="color: #34a853;">0</strong><span id="target-c">/ 0г</span><br>Вуглеводи</div>
                         </div>
                     </div>
 
@@ -212,8 +234,24 @@
                 <!-- ТРЕНУВАННЯ -->
                 <div id="tab-workout" class="tab-content">
                     <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
-                    <p style="text-align: center; margin-bottom: 20px;">Введи кількість повторень через кому (напр: 20, 15, 12, 9, 5)</p>
+                    <p style="text-align: center; margin-bottom: 20px;">Введи повторення через кому (напр: 20, 15, 12). Ми самі порахуємо спалені калорії!</p>
                     <div id="workout-list-container" style="max-height: 500px; overflow-y: auto; padding-right: 5px;"></div>
+                </div>
+
+                <!-- ВАГА ТА ГРАФІК -->
+                <div id="tab-weight" class="tab-content">
+                    <h1>Трекер <span>ВАГИ</span></h1>
+                    <p style="text-align: center; margin-bottom: 20px;">Фіксуй вагу, щоб алгоритм міг адаптувати норму калорій.</p>
+                    
+                    <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--glass-border);">
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="new-weight-input" step="0.1" placeholder="Вага (кг)" style="margin:0; flex: 2;">
+                            <button onclick="logWeight()" style="margin:0; flex: 1;">Записати</button>
+                        </div>
+                        <div id="weight-chart-container">
+                            <!-- Графік малюється через JS -->
+                        </div>
+                    </div>
                 </div>
 
                 <!-- ШІ -->
@@ -227,16 +265,39 @@
                     <div id="ocr-status" style="margin-top: 20px; font-size: 15px; font-weight: bold; text-align: center;"></div>
                 </div>
 
-                <!-- НАЛАШТУВАННЯ -->
-                <div id="tab-settings" class="tab-content">
-                    <h1><span>НАЛАШТУВАННЯ</span></h1>
-                    <label style="font-weight: bold;">Тема інтерфейсу:</label>
+                <!-- ПРОФІЛЬ / НАЛАШТУВАННЯ -->
+                <div id="tab-profile" class="tab-content">
+                    <h1>Твій <span>ПРОФІЛЬ</span></h1>
+                    
+                    <div style="background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--glass-border); margin-bottom: 20px;">
+                        <input type="text" id="edit-name" placeholder="Ім'я">
+                        <select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="edit-age" placeholder="Вік">
+                            <input type="number" id="edit-height" placeholder="Зріст (см)">
+                        </div>
+                        <select id="edit-activity">
+                            <option value="1.2">Мінімальна (Сидяча робота)</option>
+                            <option value="1.375">Слабка (Тренування 1-3 рази/тиж)</option>
+                            <option value="1.55">Середня (Тренування 3-5 разів/тиж)</option>
+                            <option value="1.725">Висока (Тренування щодня)</option>
+                        </select>
+                        <select id="edit-goal">
+                            <option value="lose">Схуднення (Дефіцит)</option>
+                            <option value="maintain">Підтримка ваги</option>
+                            <option value="gain">Набір маси (Профіцит)</option>
+                        </select>
+                        <button onclick="saveProfile()" style="margin-top: 15px;">Зберегти зміни</button>
+                    </div>
+
+                    <label style="font-weight: bold; margin-left: 5px;">Тема інтерфейсу:</label>
                     <select id="theme-select" onchange="toggleTheme()">
                         <option value="dark">Темна (Спартанська)</option>
                         <option value="light">Світла (Олімпійська)</option>
                         <option value="auto">Системна</option>
                     </select>
-                    <button onclick="logout()" style="background: #ff3b30; margin-top: 25px; box-shadow: none;">Скинути профіль</button>
+
+                    <button class="secondary" onclick="logout()" style="margin-top: 25px; color: #ff3b30; border-color: #ff3b30;">Скинути всі дані</button>
                 </div>
             </div>
         </div>
@@ -247,13 +308,14 @@
         <div class="nav-item active" data-target="tab-dashboard"><span class="nav-icon"><i class="fa-solid fa-fire"></i></span><span>Статус</span></div>
         <div class="nav-item" data-target="tab-food"><span class="nav-icon"><i class="fa-solid fa-book"></i></span><span>Їжа</span></div>
         <div class="nav-item" data-target="tab-workout"><span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span><span>Зал</span></div>
+        <div class="nav-item" data-target="tab-weight"><span class="nav-icon"><i class="fa-solid fa-scale-balanced"></i></span><span>Вага</span></div>
         <div class="nav-item" data-target="tab-ai"><span class="nav-icon"><i class="fa-solid fa-robot"></i></span><span>ШІ</span></div>
-        <div class="nav-item" data-target="tab-settings"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span><span>Налаштування</span></div>
+        <div class="nav-item" data-target="tab-profile"><span class="nav-icon"><i class="fa-solid fa-user-gear"></i></span><span>Профіль</span></div>
     </nav>
 
-    <!-- ВБУДОВАНА МЕГА-БАЗА ТА ЛОГІКА -->
+    <!-- МЕГА-БАЗА ТА ЛОГІКА -->
     <script>
-        // ВБУДОВАНА БАЗА ЇЖІ (З БЖВ на 100г)
+        // ВБУДОВАНА БАЗА ЇЖІ
         window.foodDB = [
             { name: "Авокадо (Хаас)", kcal: 160, p: 2, f: 14.7, c: 8.5, fiber: 7.0 },
             { name: "Суші (Філадельфія з лососем)", kcal: 175, p: 6.5, f: 5.3, c: 25, fiber: 0.5 },
@@ -281,28 +343,26 @@
             { name: "Шоколад чорний (70%+)", kcal: 598, p: 7.8, f: 42.6, c: 36, fiber: 10.9 }
         ];
 
-        // ВБУДОВАНА БАЗА ТРЕНУВАНЬ (З КОЕФІЦІЄНТАМИ КАЛОРІЙ)
-        // factor - скільки калорій спалюється за 1 повторення (або секунду для планки)
+        // ВБУДОВАНА БАЗА ТРЕНУВАНЬ (З КОЕФІЦІЄНТАМИ)
         window.workoutDB = [
-            { name: "Віджимання від підлоги", desc: "Груди/Трицепс. (Вводь рази: 20, 15, 12...)", factor: 0.4 },
-            { name: "Жим гантелей лежачи", desc: "Груди. (Вводь рази: 12, 10...)", factor: 0.5 },
-            { name: "Тяга гантелі в нахилі", desc: "Спина. (Вводь рази: 12, 10...)", factor: 0.5 },
-            { name: "Підтягування на турніку", desc: "Спина/Біцепс. (Вводь рази: 10, 8...)", factor: 1.0 },
-            { name: "Жим гантелей сидячи", desc: "Плечі. (Вводь рази: 15, 12...)", factor: 0.4 },
-            { name: "Махи гантелями в сторони", desc: "Середні дельти. (Вводь рази: 15, 15...)", factor: 0.3 },
-            { name: "Підйом гантелей на біцепс", desc: "Біцепс. (Вводь рази: 12, 12...)", factor: 0.3 },
-            { name: "Французький жим з гантеллю", desc: "Трицепс. (Вводь рази: 12, 10...)", factor: 0.3 },
-            { name: "Присідання з гантелями", desc: "Ноги/Сідниці. (Вводь рази: 20, 15...)", factor: 0.7 },
-            { name: "Випади з гантелями", desc: "Ноги. (Вводь рази на ногу: 12, 12...)", factor: 0.6 },
-            { name: "Планка на ліктях", desc: "Кори. (Вводь секунди: 60, 45...)", factor: 0.1 },
-            { name: "Скручування на прес", desc: "Прес. (Вводь рази: 25, 20...)", factor: 0.2 }
+            { name: "Віджимання від підлоги", desc: "Груди/Трицепс.", factor: 0.4 },
+            { name: "Жим гантелей лежачи", desc: "Груди.", factor: 0.5 },
+            { name: "Тяга гантелі в нахилі", desc: "Спина.", factor: 0.5 },
+            { name: "Підтягування на турніку", desc: "Спина/Біцепс.", factor: 1.0 },
+            { name: "Жим гантелей сидячи", desc: "Плечі.", factor: 0.4 },
+            { name: "Махи гантелями в сторони", desc: "Середні дельти.", factor: 0.3 },
+            { name: "Підйом гантелей на біцепс", desc: "Біцепс.", factor: 0.3 },
+            { name: "Французький жим з гантеллю", desc: "Трицепс.", factor: 0.3 },
+            { name: "Присідання з гантелями", desc: "Ноги/Сідниці.", factor: 0.7 },
+            { name: "Випади з гантелями", desc: "Ноги.", factor: 0.6 },
+            { name: "Планка на ліктях", desc: "Кори. (Пиши час в сек)", factor: 0.1 },
+            { name: "Скручування на прес", desc: "Прес.", factor: 0.2 }
         ];
 
         // СТАН ДОДАТКУ
-        let consumedCalories = 0; 
-        let stepsBonus = 0;
-        let workoutBonus = 0;
+        let consumedCalories = 0; let stepsBonus = 0; let workoutBonus = 0;
         let macros = { p: 0, f: 0, c: 0 };
+        let targetMacros = { p: 0, f: 0, c: 0 };
 
         window.onload = () => { 
             loadTheme();
@@ -313,13 +373,207 @@
         function bootApp() {
             if (localStorage.getItem('achilles_user')) {
                 loadUserData();
+                renderWeightChart();
                 document.getElementById('main-app-window').classList.add('active-flex');
             } else { 
                 document.getElementById('registration-window').classList.add('active-flex');
             }
         }
 
-        // РЕНДЕР ТРЕНУВАНЬ (ДРАБИНКА)
+        // ==========================================
+        // МАТЕМАТИКА (Mifflin-St Jeor)
+        // ==========================================
+        function calculateNorms(gender, weight, height, age, activity, goal) {
+            // Формула Міффліна-Сент Джеора
+            let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+            bmr += (gender === 'male') ? 5 : -161; //
+
+            let tdee = bmr * parseFloat(activity); //
+
+            let targetKcal = tdee;
+            let goalText = "Підтримка форми";
+            if (goal === 'lose') { targetKcal -= 500; goalText = "Схуднення (Дефіцит)"; } //
+            else if (goal === 'gain') { targetKcal += 500; goalText = "Набір маси (Профіцит)"; }
+
+            // Розрахунок макросів
+            let targetP = weight * 2.0; // 2г білка на кг ваги
+            let targetF = weight * 1.0; // 1г жирів на кг ваги
+            let targetC = (targetKcal - (targetP * 4) - (targetF * 9)) / 4; 
+            if(targetC < 0) targetC = 0;
+
+            return {
+                kcal: Math.round(targetKcal),
+                goalText: goalText,
+                p: Math.round(targetP),
+                f: Math.round(targetF),
+                c: Math.round(targetC)
+            };
+        }
+
+        function completeRegistration() {
+            const name = document.getElementById('reg-name').value;
+            const gender = document.getElementById('reg-gender').value;
+            const age = parseInt(document.getElementById('reg-age').value);
+            const height = parseFloat(document.getElementById('reg-height').value);
+            const weight = parseFloat(document.getElementById('reg-weight').value);
+            const activity = document.getElementById('reg-activity').value;
+            const goal = document.getElementById('reg-goal').value;
+            
+            if(!name || !age || !height || !weight || !activity || !goal) { alert('Заповни всі поля!'); return; }
+
+            const norms = calculateNorms(gender, weight, height, age, activity, goal);
+
+            // Збереження профілю
+            let profile = { name, gender, age, height, activity, goal };
+            localStorage.setItem('achilles_profile', JSON.stringify(profile));
+            localStorage.setItem('achilles_user', name);
+            localStorage.setItem('achilles_base_kcal', norms.kcal); 
+            localStorage.setItem('achilles_goal_text', norms.goalText);
+            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
+
+            // Зберігаємо першу вагу
+            logNewWeight(weight);
+            
+            document.getElementById('registration-window').classList.remove('active-flex');
+            setTimeout(() => { loadUserData(); renderWeightChart(); document.getElementById('main-app-window').classList.add('active-flex'); }, 50);
+        }
+
+        function loadUserData() {
+            document.getElementById('greeting-header').innerHTML = `Привіт, <span>${localStorage.getItem('achilles_user')}</span>`;
+            document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
+            
+            let m = JSON.parse(localStorage.getItem('achilles_macros')) || {p: 0, f: 0, c: 0};
+            targetMacros = m;
+            document.getElementById('target-p').innerText = `/ ${m.p}г`;
+            document.getElementById('target-f').innerText = `/ ${m.f}г`;
+            document.getElementById('target-c').innerText = `/ ${m.c}г`;
+
+            // Заповнення форми редагування профілю
+            let prof = JSON.parse(localStorage.getItem('achilles_profile'));
+            if(prof) {
+                document.getElementById('edit-name').value = prof.name;
+                document.getElementById('edit-gender').value = prof.gender;
+                document.getElementById('edit-age').value = prof.age;
+                document.getElementById('edit-height').value = prof.height;
+                document.getElementById('edit-activity').value = prof.activity;
+                document.getElementById('edit-goal').value = prof.goal;
+            }
+
+            updateGoalDisplay();
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('edit-name').value;
+            const gender = document.getElementById('edit-gender').value;
+            const age = parseInt(document.getElementById('edit-age').value);
+            const height = parseFloat(document.getElementById('edit-height').value);
+            const activity = document.getElementById('edit-activity').value;
+            const goal = document.getElementById('edit-goal').value;
+
+            if(!name || !age || !height) { alert('Заповни всі поля!'); return; }
+
+            // Беремо останню вагу з історії
+            let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
+            let weight = history.length > 0 ? history[history.length - 1].weight : 80;
+
+            const norms = calculateNorms(gender, weight, height, age, activity, goal);
+
+            let profile = { name, gender, age, height, activity, goal };
+            localStorage.setItem('achilles_profile', JSON.stringify(profile));
+            localStorage.setItem('achilles_user', name);
+            localStorage.setItem('achilles_base_kcal', norms.kcal); 
+            localStorage.setItem('achilles_goal_text', norms.goalText);
+            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
+
+            alert('Профіль успішно оновлено!');
+            loadUserData();
+        }
+
+        // ==========================================
+        // ГРАФІК ВАГИ
+        // ==========================================
+        function logNewWeight(w) {
+            let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
+            let today = new Date().toISOString().split('T')[0].slice(5); // Формат "MM-DD"
+            history.push({ date: today, weight: w });
+            localStorage.setItem('achilles_weight_history', JSON.stringify(history));
+        }
+
+        function logWeight() {
+            const w = parseFloat(document.getElementById('new-weight-input').value);
+            if(!w) return;
+            logNewWeight(w);
+            document.getElementById('new-weight-input').value = '';
+            
+            // Якщо є профіль, перераховуємо норми під нову вагу
+            let prof = JSON.parse(localStorage.getItem('achilles_profile'));
+            if(prof) {
+                const norms = calculateNorms(prof.gender, w, prof.height, prof.age, prof.activity, prof.goal);
+                localStorage.setItem('achilles_base_kcal', norms.kcal); 
+                localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
+                loadUserData();
+            }
+            renderWeightChart();
+        }
+
+        function renderWeightChart() {
+            let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
+            let container = document.getElementById('weight-chart-container');
+            if (history.length === 0) { container.innerHTML = '<p style="opacity:0.5; text-align:center; padding-top:20px;">Немає даних.</p>'; return; }
+
+            let chartData = history.slice(-7); // Останні 7 записів
+            let minW = Math.min(...chartData.map(d => d.weight)) - 2;
+            let maxW = Math.max(...chartData.map(d => d.weight)) + 2;
+            let range = maxW - minW === 0 ? 10 : (maxW - minW);
+
+            let html = '<div class="chart-container">';
+            chartData.forEach(d => {
+                let h = ((d.weight - minW) / range) * 100;
+                if(h < 15) h = 15; // Мінімальна висота
+                html += `
+                    <div class="chart-bar-wrapper">
+                        <span class="chart-val">${d.weight}</span>
+                        <div class="chart-bar" style="height: ${h}%;"></div>
+                        <span class="chart-date">${d.date}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // ДЕШБОРД ТА ІНШЕ
+        // ==========================================
+        function updateGoalDisplay() {
+            const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
+            const finalGoal = baseKcal + stepsBonus + workoutBonus; 
+            
+            document.getElementById('calories-goal').textContent = finalGoal;
+            
+            let percent = (consumedCalories / finalGoal) * 100;
+            if(percent > 100) percent = 100;
+            
+            requestAnimationFrame(() => {
+                document.getElementById('calorie-progress').style.width = percent + '%';
+                document.getElementById('calorie-progress').style.background = percent > 90 ? '#ff3b30' : 'var(--gold)';
+                document.getElementById('macro-p').innerText = Math.round(macros.p);
+                document.getElementById('macro-f').innerText = Math.round(macros.f);
+                document.getElementById('macro-c').innerText = Math.round(macros.c);
+
+                const msgObj = document.getElementById('bonus-kcal-msg');
+                let msgs = [];
+                if(stepsBonus > 0) msgs.push(`👣 Кроки: +${stepsBonus}`);
+                if(workoutBonus > 0) msgs.push(`🔥 Тренування: +${workoutBonus}`);
+                
+                if(msgs.length > 0) {
+                    msgObj.style.display = 'inline-block';
+                    msgObj.innerText = msgs.join(' | ');
+                } else { msgObj.style.display = 'none'; }
+            });
+        }
+
+        // РЕНДЕР ТРЕНУВАНЬ
         function renderWorkouts() {
             const container = document.getElementById('workout-list-container');
             container.innerHTML = window.workoutDB.map((w, index) => `
@@ -334,12 +588,10 @@
             `).join('');
         }
 
-        // ЗАПИС ТРЕНУВАННЯ ТА РОЗРАХУНОК СПАЛЕНИХ КАЛОРІЙ
         function logWorkout(name, repsId, calFactor) {
             const repsInput = document.getElementById(repsId).value.trim();
-            if(!repsInput) { alert('Спартанцю, введи повторення через кому!'); return; }
+            if(!repsInput) { alert('Введи повторення через кому!'); return; }
             
-            // Парсимо введені числа (наприклад: 20, 15, 12)
             const setsArray = repsInput.split(',').map(s => parseFloat(s.trim())).filter(s => !isNaN(s));
             if(setsArray.length === 0) return;
 
@@ -391,72 +643,10 @@
                 else { document.body.className = ''; if(metaThemeColor) metaThemeColor.setAttribute("content", "#e0e5ec"); }
             }
         }
-
         function loadTheme() { const savedTheme = localStorage.getItem('achilles_theme') || 'dark'; document.getElementById('theme-select').value = savedTheme; applyTheme(savedTheme); }
         function toggleTheme() { const theme = document.getElementById('theme-select').value; localStorage.setItem('achilles_theme', theme); applyTheme(theme); }
 
-        // РЕЄСТРАЦІЯ (З ВИБОРОМ МЕТИ)
-        function completeRegistration() {
-            const name = document.getElementById('reg-name').value;
-            const weight = parseFloat(document.getElementById('reg-weight').value);
-            const goal = document.getElementById('reg-goal').value;
-            
-            if(!name || !weight || !goal) { alert('Заповни всі поля, воїне!'); return; }
-
-            // Базовий розрахунок за вагою
-            let baseKcal = weight * 24; 
-            let goalText = "";
-
-            if (goal === 'lose') { baseKcal -= 400; goalText = "Схуднення (Дефіцит)"; }
-            else if (goal === 'gain') { baseKcal += 400; goalText = "Набір маси (Профіцит)"; }
-            else { goalText = "Підтримка форми"; }
-
-            localStorage.setItem('achilles_user', name);
-            localStorage.setItem('achilles_base_kcal', baseKcal); 
-            localStorage.setItem('achilles_goal_text', goalText);
-            
-            document.getElementById('registration-window').classList.remove('active-flex');
-            setTimeout(() => { loadUserData(); document.getElementById('main-app-window').classList.add('active-flex'); }, 50);
-        }
-
-        function loadUserData() {
-            document.getElementById('greeting-header').innerHTML = `Привіт, <span>${localStorage.getItem('achilles_user')}</span>`;
-            document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
-            updateGoalDisplay();
-        }
-
-        function updateGoalDisplay() {
-            const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
-            const finalGoal = baseKcal + stepsBonus + workoutBonus; // Тренування та кроки розширюють ліміт
-            
-            document.getElementById('calories-goal').textContent = finalGoal;
-            
-            let percent = (consumedCalories / finalGoal) * 100;
-            if(percent > 100) percent = 100;
-            
-            requestAnimationFrame(() => {
-                document.getElementById('calorie-progress').style.width = percent + '%';
-                document.getElementById('calorie-progress').style.background = percent > 90 ? '#ff3b30' : 'var(--gold)';
-                document.getElementById('macro-p').innerText = Math.round(macros.p);
-                document.getElementById('macro-f').innerText = Math.round(macros.f);
-                document.getElementById('macro-c').innerText = Math.round(macros.c);
-
-                // Оновлення бейджика з бонусами
-                const msgObj = document.getElementById('bonus-kcal-msg');
-                let msgs = [];
-                if(stepsBonus > 0) msgs.push(`👣 Кроки: +${stepsBonus}`);
-                if(workoutBonus > 0) msgs.push(`🔥 Тренування: +${workoutBonus}`);
-                
-                if(msgs.length > 0) {
-                    msgObj.style.display = 'inline-block';
-                    msgObj.innerText = msgs.join(' | ');
-                } else {
-                    msgObj.style.display = 'none';
-                }
-            });
-        }
-
-        // ЇЖА ТА ГРАМІВКА
+        // ЇЖА
         function searchFood() {
             const query = document.getElementById('food-search').value.toLowerCase().trim();
             const resultsBox = document.getElementById('food-results');
@@ -487,17 +677,11 @@
             const item = JSON.parse(itemJsonStr.replace(/&quot;/g, '"'));
             let weightInput = document.getElementById(weightId).value;
             let weight = parseFloat(weightInput);
-            
-            if (!weightInput || isNaN(weight) || weight <= 0) weight = 100; // Дефолт 100г
+            if (!weightInput || isNaN(weight) || weight <= 0) weight = 100; 
 
             const ratio = weight / 100;
-            const actualKcal = Math.round(item.kcal * ratio);
-            const actualP = item.p * ratio;
-            const actualF = item.f * ratio;
-            const actualC = item.c * ratio;
-
-            consumedCalories += actualKcal;
-            macros.p += actualP; macros.f += actualF; macros.c += actualC;
+            consumedCalories += Math.round(item.kcal * ratio);
+            macros.p += item.p * ratio; macros.f += item.f * ratio; macros.c += item.c * ratio;
             
             document.getElementById('calories-consumed').textContent = consumedCalories;
             
@@ -507,12 +691,11 @@
             const entry = document.createElement('div');
             entry.style.padding = '10px 0';
             entry.style.borderBottom = '1px solid var(--glass-border)';
-            entry.innerHTML = `🥗 <strong>${item.name} (${weight}г)</strong><br><span style="font-size: 13px; opacity: 0.8;">${actualKcal} ккал | Б:${Math.round(actualP)} Ж:${Math.round(actualF)} В:${Math.round(actualC)}</span>`;
+            entry.innerHTML = `🥗 <strong>${item.name} (${weight}г)</strong><br><span style="font-size: 13px; opacity: 0.8;">${Math.round(item.kcal * ratio)} ккал | Б:${Math.round(item.p * ratio)} Ж:${Math.round(item.f * ratio)} В:${Math.round(item.c * ratio)}</span>`;
             list.appendChild(entry);
             
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
-            updateGoalDisplay();
-            document.querySelector('[data-target="tab-dashboard"]').click();
+            updateGoalDisplay(); document.querySelector('[data-target="tab-dashboard"]').click();
         }
 
         // ШІ OCR
@@ -537,7 +720,7 @@
 
                 if (steps > 50 && steps < 100000) { 
                     stepsBonus = Math.floor(steps / 1000) * 40;
-                    status.style.color = '#4cd964'; status.innerHTML = `✅ Знайдено ${steps} кроків.`;
+                    status.style.color = '#4cd964'; status.innerHTML = `✅ Знайдено ${steps} кроків. Додано +${stepsBonus} ккал.`;
                     updateGoalDisplay();
                 } else { status.style.color = '#ff3b30'; status.innerHTML = '⚠️ Не знайдено кроків. Обріж скріншот знизу.'; }
             } catch (err) { status.style.color = '#ff3b30'; status.innerHTML = '❌ Помилка.'; }
