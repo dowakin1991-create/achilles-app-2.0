@@ -20,20 +20,20 @@
             --bg-grad-1: #e8ecef; --bg-grad-2: #ffffff;
             --glass-bg: rgba(255, 255, 255, 0.75); --glass-border: rgba(212, 175, 55, 0.3);
             --text-main: #111111; --text-muted: #555555;
-            --shadow: rgba(0, 0, 0, 0.1); --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow: rgba(0, 0, 0, 0.08); --card-bg: rgba(255, 255, 255, 0.9);
             --option-bg: #ffffff; --input-bg: rgba(0,0,0,0.03);
         }
 
         html.dark, body.dark {
-            --gold: #e5c07b; /* Більш дорогий відтінок золота */
+            --gold: #e5c07b;
             --gold-glow: rgba(229, 192, 123, 0.4);
-            --bg-grad-1: #000000; /* Глибокий чорний (OLED) */
+            --bg-grad-1: #000000;
             --bg-grad-2: #0a0a0a;
-            --glass-bg: rgba(15, 15, 15, 0.8); 
-            --glass-border: rgba(229, 192, 123, 0.25); /* Золоті рамки */
+            --glass-bg: rgba(15, 15, 15, 0.85); 
+            --glass-border: rgba(229, 192, 123, 0.25);
             --text-main: #ffffff; --text-muted: #888888;
             --shadow: rgba(0, 0, 0, 0.8); 
-            --card-bg: linear-gradient(145deg, rgba(25,25,25,0.9), rgba(10,10,10,0.95)); /* Глянець */
+            --card-bg: linear-gradient(145deg, rgba(25,25,25,0.9), rgba(10,10,10,0.95));
             --option-bg: #111111; --input-bg: rgba(0,0,0,0.6);
         }
 
@@ -92,7 +92,6 @@
         h1 span { color: var(--gold); text-shadow: 0 0 15px var(--gold-glow); }
         p { font-size: 15px; color: var(--text-muted); line-height: 1.5; }
 
-        /* Форми Глянцеві */
         input, select, button { 
             width: 100%; padding: 16px; margin: 10px 0; border-radius: 18px; 
             border: 1px solid rgba(255,255,255,0.1); background: var(--input-bg); 
@@ -115,19 +114,18 @@
         .list-item:last-child { border-bottom: none; }
         .add-btn { width: auto; padding: 10px 20px; margin: 0; }
 
-        /* Нижня навігація із золотою смугою */
+        /* Нижня навігація */
         .nav-bar { 
             position: fixed; bottom: 0; left: 0; width: 100%; display: none; justify-content: space-around; 
             padding: 15px 10px calc(15px + env(safe-area-inset-bottom, 15px)); 
             background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); 
             border-top: 1px solid var(--glass-border); z-index: 1000; box-shadow: 0 -10px 30px var(--shadow);
-            border-bottom: 3px solid var(--gold); /* Замовлена кольорова смуга */
+            border-bottom: 3px solid var(--gold);
         }
         .nav-item { text-align: center; font-size: 11px; flex: 1; opacity: 0.4; transition: 0.3s; cursor: pointer; font-weight: 500;}
         .nav-item.active { opacity: 1; color: var(--gold); transform: translateY(-4px); }
         .nav-icon { font-size: 22px; display: block; margin-bottom: 6px; }
 
-        /* Макроси і Графіки */
         .macro-box { display: flex; justify-content: space-around; margin-top: 20px; text-align: center; font-size: 13px; background: rgba(0,0,0,0.4); border-radius: 16px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);}
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 2px; }
         .bonus-badge { display: inline-block; background: rgba(229, 192, 123, 0.15); color: var(--gold); padding: 6px 12px; border-radius: 10px; font-size: 14px; font-weight: 600; margin-top: 15px; border: 1px solid rgba(229, 192, 123, 0.3);}
@@ -138,7 +136,6 @@
         .chart-val { font-size: 12px; color: var(--gold); margin-bottom: 5px; font-weight: 600; }
         .chart-date { font-size: 10px; opacity: 0.6; margin-top: 5px; font-weight: 500;}
 
-        /* Фільтр улюблених вправ */
         .filter-tabs { display: flex; background: rgba(0,0,0,0.4); border-radius: 16px; padding: 5px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .filter-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; font-weight: bold; color: var(--text-muted); border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .filter-tab.active { background: var(--gold); color: #000; box-shadow: 0 4px 15px var(--gold-glow); }
@@ -227,7 +224,13 @@
                 <!-- ЇЖА -->
                 <div id="tab-food" class="tab-content">
                     <h1>База <span>ПРОДУКТІВ</span></h1>
-                    <input type="text" id="food-search" placeholder="Пошук (борщ, яблуко, суші...)" oninput="searchFood()">
+                    <p style="text-align: center; margin-bottom: 20px; font-size: 13px;">Локальна база + 🌍 Відкрита світова база Open Food Facts</p>
+                    <input type="text" id="food-search" placeholder="Пошук (гречка, snickers, кола...)" oninput="onSearchInput()">
+                    
+                    <div id="loading-spinner" style="display:none; text-align:center; padding:15px; color:var(--gold);">
+                        <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
+                    </div>
+
                     <div id="food-results" style="margin-top: 15px; max-height: 450px; overflow-y: auto; border-radius: 20px; background: var(--card-bg); border: 1px solid var(--glass-border);"></div>
                 </div>
 
@@ -295,7 +298,7 @@
         </div>
     </div>
 
-    <!-- НИЖНЯ НАВІГАЦІЯ (5 Вкладок) -->
+    <!-- НИЖНЯ НАВІГАЦІЯ -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard"><span class="nav-icon"><i class="fa-solid fa-fire"></i></span><span>Статус</span></div>
         <div class="nav-item" data-target="tab-food"><span class="nav-icon"><i class="fa-solid fa-book"></i></span><span>Їжа</span></div>
@@ -304,10 +307,9 @@
         <div class="nav-item" data-target="tab-profile"><span class="nav-icon"><i class="fa-solid fa-user-gear"></i></span><span>Профіль</span></div>
     </nav>
 
-    <!-- МЕГА-БАЗА ТА ЛОГІКА -->
     <script>
         // ==========================================
-        // МЕГА-БАЗА ЇЖІ
+        // ЛОКАЛЬНА БАЗА ЇЖІ (ПЕРЕВІРЕНА)
         // ==========================================
         window.foodDB = [
             { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
@@ -404,7 +406,7 @@
 
         window.onload = () => { 
             loadTheme();
-            renderWorkouts();
+            renderWorkouts(window.workoutDB);
             bootApp(); 
         };
 
@@ -512,9 +514,6 @@
             loadUserData();
         }
 
-        // ==========================================
-        // ГРАФІК ВАГИ
-        // ==========================================
         function logNewWeight(w) {
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let today = new Date().toISOString().split('T')[0].slice(5); 
@@ -558,9 +557,6 @@
             container.innerHTML = html;
         }
 
-        // ==========================================
-        // ДЕШБОРД ТА НАВІГАЦІЯ
-        // ==========================================
         function updateGoalDisplay() {
             const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
             const finalGoal = baseKcal + workoutBonus; 
@@ -600,9 +596,6 @@
             });
         });
 
-        // ==========================================
-        // ТЕМИ
-        // ==========================================
         function applyTheme(theme) {
             const metaThemeColor = document.getElementById('theme-color-meta');
             const htmlTag = document.documentElement;
@@ -617,32 +610,87 @@
         function toggleTheme() { const theme = document.getElementById('theme-select').value; localStorage.setItem('achilles_theme', theme); applyTheme(theme); }
 
         // ==========================================
-        // ЇЖА ТА ТРЕНУВАННЯ (З ФІЛЬТРАМИ І УЛЮБЛЕНИМ)
+        // ЇЖА (ГІБРИДНИЙ ПОШУК: ЛОКАЛЬНА + OPEN FOOD FACTS API)
         // ==========================================
-        function searchFood() {
+        let searchTimeout;
+        function onSearchInput() {
+            clearTimeout(searchTimeout);
             const query = document.getElementById('food-search').value.toLowerCase().trim();
+            if (query.length < 2) {
+                document.getElementById('food-results').innerHTML = '';
+                document.getElementById('loading-spinner').style.display = 'none';
+                return;
+            }
+            // 1. Миттєво показуємо з нашої локальної бази
+            renderLocalFoodSearch(query);
+            
+            // 2. Паралельно шукаємо у світовій базі Open Food Facts
+            searchTimeout = setTimeout(() => searchOpenFoodFacts(query), 600);
+        }
+
+        function renderLocalFoodSearch(query) {
             const resultsBox = document.getElementById('food-results');
+            const filtered = window.foodDB.filter(i => i.name.toLowerCase().includes(query));
             resultsBox.innerHTML = '';
             
-            if(query.length >= 1) {
-                const filtered = window.foodDB.filter(i => i.name.toLowerCase().includes(query));
-                if(filtered.length === 0) { resultsBox.innerHTML = '<div class="list-item" style="color: var(--text-muted);">Нічого не знайдено</div>'; return; }
-                
-                filtered.forEach((item, index) => {
-                    const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
-                    resultsBox.innerHTML += `
-                        <div class="list-item" style="align-items: flex-start;">
-                            <div style="width: 100%; margin-bottom: 12px;">
-                                <strong>${item.name}</strong><br>
-                                <span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
-                            </div>
-                            <div style="display: flex; width: 100%; gap: 10px;">
-                                <!-- ЦИФРОВА КЛАВІАТУРА ДЛЯ ГРАМІВ -->
-                                <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
-                                <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 20px;">+</button>
-                            </div>
-                        </div>`;
-                });
+            filtered.forEach((item, index) => {
+                const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
+                resultsBox.innerHTML += `
+                    <div class="list-item" style="align-items: flex-start;">
+                        <div style="width: 100%; margin-bottom: 12px;">
+                            <strong>${item.name}</strong><br>
+                            <span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
+                        </div>
+                        <div style="display: flex; width: 100%; gap: 10px;">
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                            <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 20px;">+</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        async function searchOpenFoodFacts(query) {
+            const resultsBox = document.getElementById('food-results');
+            document.getElementById('loading-spinner').style.display = 'block';
+
+            try {
+                const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=product_name,brands,nutriments`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                document.getElementById('loading-spinner').style.display = 'none';
+
+                if (data.products && data.products.length > 0) {
+                    data.products.forEach((p, apiIndex) => {
+                        const brand = p.brands ? ` (${p.brands.split(',')[0]})` : '';
+                        const name = "🌍 " + (p.product_name || 'Продукт') + brand;
+                        const nut = p.nutriments || {};
+                        const kcal = Math.round(nut['energy-kcal_100g'] || nut['energy-kcal'] || (nut['energy_100g'] ? nut['energy_100g'] / 4.184 : 0));
+                        const prot = Math.round(nut.proteins_100g || 0);
+                        const fat = Math.round(nut.fat_100g || 0);
+                        const carb = Math.round(nut.carbohydrates_100g || 0);
+
+                        if (kcal > 0 && (p.product_name && p.product_name.trim() !== '')) {
+                            const item = { name: name, kcal: kcal, p: prot, f: fat, c: carb, fiber: 0 };
+                            const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
+                            const uniqueId = `api-weight-${apiIndex}`;
+                            
+                            resultsBox.innerHTML += `
+                                <div class="list-item" style="align-items: flex-start; border-left: 3px solid var(--gold);">
+                                    <div style="width: 100%; margin-bottom: 12px;">
+                                        <strong>${item.name}</strong><br>
+                                        <span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
+                                    </div>
+                                    <div style="display: flex; width: 100%; gap: 10px;">
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                                        <button class="add-btn" onclick="addFood('${itemJson}', '${uniqueId}')" style="margin:0; padding: 0 20px;">+</button>
+                                    </div>
+                                </div>`;
+                        }
+                    });
+                }
+            } catch (err) {
+                document.getElementById('loading-spinner').style.display = 'none';
             }
         }
 
@@ -676,7 +724,9 @@
             updateGoalDisplay(); document.querySelector('[data-target="tab-dashboard"]').click();
         }
 
-        // --- УЛЮБЛЕНІ ВПРАВИ ТА ПОШУК ---
+        // ==========================================
+        // УЛЮБЛЕНІ ВПРАВИ ТА ПОШУК
+        // ==========================================
         function setWorkoutFilter(filter) {
             currentWorkoutFilter = filter;
             document.getElementById('btn-all-workouts').classList.toggle('active', filter === 'all');
@@ -728,7 +778,6 @@
                     </div>
                     <p style="font-size: 13px; opacity: 0.8; margin-bottom: 12px;">${w.desc}</p>
                     <div style="display: flex; gap: 10px;">
-                        <!-- КЛАВІАТУРА ДЛЯ ТРЕНУВАНЬ (цифри і знаки) -->
                         <input type="text" inputmode="decimal" id="reps-${index}" placeholder="Час (хв) або Повтори" style="margin:0; padding: 14px; flex: 1; font-size: 15px;">
                         <button class="add-btn" onclick="logWorkout('${w.name}', 'reps-${index}', ${w.factor})" style="margin:0; padding: 0 20px;">OK</button>
                     </div>
@@ -740,7 +789,6 @@
             const repsInput = document.getElementById(repsId).value.trim();
             if(!repsInput) { alert('Введи дані!'); return; }
             
-            // Розумний спліттер
             const setsArray = repsInput.split(/[.,\s]+/).map(s => parseFloat(s.trim())).filter(s => !isNaN(s));
             if(setsArray.length === 0) return;
 
@@ -771,7 +819,7 @@
             
             document.getElementById(repsId).value = '';
             document.getElementById('workout-search').value = '';
-            searchWorkout(); // Відновлюємо список
+            searchWorkout();
             updateGoalDisplay();
             document.querySelector('[data-target="tab-dashboard"]').click();
         }
