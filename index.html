@@ -102,7 +102,8 @@
         
         button { background: linear-gradient(135deg, var(--gold), #9e7311); color: #000; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
         button:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        button.secondary { background: var(--card-bg); color: #ff3b30; border: 1px solid rgba(255,59,48,0.3); box-shadow: none; }
+        button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
+        button.danger { background: var(--card-bg); color: #ff3b30; border: 1px solid rgba(255,59,48,0.3); box-shadow: none; }
 
         .progress-bar { width: 100%; height: 12px; background: rgba(0,0,0,0.4); border-radius: 6px; margin-top: 15px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); transform: translateZ(0); }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #9e7311, var(--gold)); width: 0%; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); will-change: width; }
@@ -126,18 +127,33 @@
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 2px; }
         .bonus-badge { display: inline-block; background: rgba(229, 192, 123, 0.15); color: var(--gold); padding: 6px 12px; border-radius: 10px; font-size: 14px; font-weight: 600; margin-top: 15px; border: 1px solid rgba(229, 192, 123, 0.3);}
 
-        .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 180px; padding: 20px 10px 0; background: var(--input-bg); border-radius: 18px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);}
-        .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 14%; height: 100%; justify-content: flex-end;}
-        .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #aa801e); border-radius: 6px 6px 0 0; min-height: 5px; transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .chart-val { font-size: 12px; color: var(--gold); margin-bottom: 5px; font-weight: 600; }
-        .chart-date { font-size: 10px; opacity: 0.6; margin-top: 5px; font-weight: 500;}
-
         .filter-tabs { display: flex; background: rgba(0,0,0,0.4); border-radius: 16px; padding: 5px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .filter-tab { flex: 1; text-align: center; padding: 12px; font-size: 14px; font-weight: bold; color: var(--text-muted); border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .filter-tab.active { background: var(--gold); color: #000; box-shadow: 0 4px 15px var(--gold-glow); }
-        .fav-btn { font-size: 20px; color: var(--text-muted); cursor: pointer; transition: 0.3s; padding: 5px;}
-        .fav-btn.active { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
 
+        /* === LIVE WORKOUT OVERLAY === */
+        .live-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000000; z-index: 9999; display: none; flex-direction: column;
+            align-items: center; justify-content: space-between; padding: env(safe-area-inset-top) 20px calc(env(safe-area-inset-bottom) + 30px);
+        }
+        .live-header { text-align: center; margin-top: 40px; }
+        .live-title { font-size: 28px; font-weight: 800; color: var(--gold); margin-bottom: 10px; }
+        .live-subtitle { font-size: 18px; color: #aaa; }
+        .live-timer { font-size: 90px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; text-shadow: 0 0 30px rgba(255,255,255,0.2); letter-spacing: -2px; }
+        .live-timer.rest { color: var(--gold); text-shadow: 0 0 30px var(--gold-glow); }
+        .live-controls { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; align-items: center;}
+        
+        .live-btn-main {
+            width: 220px; height: 220px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #9e7311);
+            color: #000; font-size: 24px; font-weight: 800; border: none; cursor: pointer;
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4); display: flex; align-items: center; justify-content: center;
+            text-align: center; line-height: 1.2; transition: 0.2s;
+        }
+        .live-btn-main:active { transform: scale(0.95); box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4); }
+        .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
+        
         @media (max-width: 768px) {
             .sidebar { display: none; } .nav-bar { display: flex; } 
             .app-window { flex-direction: column; border-radius: 36px; margin-bottom: 40px; margin-top: 110px;}
@@ -148,6 +164,30 @@
 </head>
 <body class="dark"> 
     
+    <!-- LIVE WORKOUT OVERLAY -->
+    <div id="live-overlay" class="live-overlay">
+        <div class="live-header">
+            <div class="live-title" id="live-title">Віджимання</div>
+            <div class="live-subtitle" id="live-subtitle">Підхід 1</div>
+        </div>
+        
+        <div class="live-timer" id="live-timer">00:00</div>
+
+        <div class="live-controls">
+            <div class="live-input-container" id="live-input-container">
+                <p style="color: #aaa; margin-bottom: 10px; font-size: 16px;">Скільки повторень зроблено?</p>
+                <input type="number" id="live-reps-input" inputmode="numeric" pattern="[0-9]*" placeholder="Введи цифру" style="width: 200px; text-align: center; font-size: 22px; margin: 0 auto; background: rgba(255,255,255,0.1); border-color: var(--gold);">
+            </div>
+            
+            <button class="live-btn-main" id="live-main-btn" onclick="toggleLiveState()">Підхід<br>закінчено</button>
+            
+            <div style="display: flex; gap: 15px; width: 100%; margin-top: 20px;">
+                <button class="secondary" style="margin:0; flex: 1;" onclick="cancelLiveWorkout()">Скасувати</button>
+                <button style="margin:0; flex: 1; background: var(--card-bg); color: var(--gold); border: 1px solid var(--gold);" onclick="finishLiveWorkout()">Завершити</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ВІКНО РЕЄСТРАЦІЇ -->
     <div class="screen" id="registration-window">
         <div class="app-window" style="max-width: 450px; flex-direction: column; margin-top: 120px;">
@@ -188,7 +228,6 @@
                 <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
                 <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Щоденник</div>
                 <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Зал</div>
-                <div class="menu-item" data-target="tab-weight"><i class="fa-solid fa-scale-balanced"></i> Вага</div>
                 <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
             </div>
 
@@ -221,12 +260,11 @@
                 <div id="tab-food" class="tab-content">
                     <h1>База <span>ПРОДУКТІВ</span></h1>
                     <p style="text-align: center; margin-bottom: 20px; font-size: 13px;">Локальна база + 🌍 Відкрита світова база Open Food Facts</p>
-                    <input type="text" id="food-search" placeholder="Пошук (гречка, snickers, кола...)" oninput="onSearchInput()">
+                    <input type="text" id="food-search" placeholder="Пошук (борщ, яблуко, суші...)" oninput="onSearchInput()">
                     
                     <div id="loading-spinner" style="display:none; text-align:center; padding:15px; color:var(--gold);">
                         <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>
                     </div>
-
                     <div id="food-results" style="margin-top: 15px; max-height: 450px; overflow-y: auto; border-radius: 20px; background: var(--card-bg); border: 1px solid var(--glass-border);"></div>
                 </div>
 
@@ -235,31 +273,41 @@
                     <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
                     
                     <div class="filter-tabs">
-                        <div id="btn-all-workouts" class="filter-tab active" onclick="setWorkoutFilter('all')">Усі вправи</div>
-                        <div id="btn-fav-workouts" class="filter-tab" onclick="setWorkoutFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
+                        <div id="btn-mode-extended" class="filter-tab active" onclick="setWorkoutMode('extended')">Розширене (Live)</div>
+                        <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')">Спрощене (Годинник)</div>
                     </div>
 
+                    <!-- Спрощений режим (Конструктор сесії) -->
+                    <div id="simple-mode-container" style="display: none;">
+                        <div style="background: var(--card-bg); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--glass-border);">
+                            <h4 style="color: var(--gold); margin-bottom: 15px; text-align: center;">Дані з Apple Watch</h4>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="simp-time" placeholder="Час (хв)" inputmode="numeric" pattern="[0-9]*" style="margin:0;">
+                                <input type="number" id="simp-kcal" placeholder="Ккал" inputmode="numeric" pattern="[0-9]*" style="margin:0;">
+                            </div>
+                            <div id="simp-added-list" style="margin-top: 15px;"></div>
+                            <button onclick="saveSimpleSession()" style="margin-top: 15px; width: 100%;">Завершити і Зберегти</button>
+                        </div>
+                        <h4 style="margin-bottom: 10px; color: var(--text-muted); text-align: center;">Додай вправи до сесії:</h4>
+                    </div>
+
+                    <!-- Пошук і список вправ -->
                     <input type="text" id="workout-search" placeholder="Пошук (біг, груди, спина...)" oninput="searchWorkout()">
                     <div id="workout-list-container" style="max-height: 400px; overflow-y: auto; padding-right: 5px; margin-top: 15px;"></div>
                 </div>
 
-                <!-- ВАГА -->
-                <div id="tab-weight" class="tab-content">
-                    <h1>Трекер <span>ВАГИ</span></h1>
-                    <p style="text-align: center; margin-bottom: 25px;">Фіксуй вагу для автоматичної зміни норми калорій.</p>
-                    <div style="background: var(--card-bg); padding: 25px 20px; border-radius: 24px; border: 1px solid var(--glass-border);">
+                <!-- ПРОФІЛЬ ТА ВАГА -->
+                <div id="tab-profile" class="tab-content">
+                    <h1>Твій <span>ПРОФІЛЬ</span></h1>
+                    
+                    <div style="background: var(--card-bg); padding: 25px 20px; border-radius: 24px; border: 1px solid var(--glass-border); margin-bottom: 25px;">
                         <div style="display: flex; gap: 10px;">
                             <input type="number" id="new-weight-input" inputmode="decimal" placeholder="Ранкова вага (кг)" style="margin:0; flex: 2;">
                             <button onclick="logWeight()" style="margin:0; flex: 1;">Записати</button>
                         </div>
                         <div id="weight-chart-container"></div>
                     </div>
-                </div>
 
-                <!-- ПРОФІЛЬ -->
-                <div id="tab-profile" class="tab-content">
-                    <h1>Твій <span>ПРОФІЛЬ</span></h1>
-                    
                     <div style="background: var(--card-bg); padding: 25px 20px; border-radius: 24px; border: 1px solid var(--glass-border); margin-bottom: 25px;">
                         <input type="text" id="edit-name" placeholder="Ім'я">
                         <select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
@@ -278,35 +326,27 @@
                             <option value="maintain">Підтримка ваги</option>
                             <option value="gain">Набір маси (Профіцит)</option>
                         </select>
-                        <button onclick="saveProfile()" style="margin-top: 20px;">Зберегти зміни</button>
+                        <button onclick="saveProfile()" style="margin-top: 20px;">Зберегти налаштування</button>
                     </div>
 
-                    <label style="font-weight: 600; margin-left: 5px; font-size: 15px;">Тема інтерфейсу:</label>
-                    <select id="theme-select" onchange="toggleTheme()" style="margin-top: 10px;">
-                        <option value="dark">Темна (Спартанська)</option>
-                        <option value="light">Світла (Олімпійська)</option>
-                        <option value="auto">Системна</option>
-                    </select>
-
-                    <button class="secondary" onclick="logout()" style="margin-top: 30px; color: #ff3b30; border-color: rgba(255,59,48,0.3);">Скинути всі дані</button>
+                    <button class="danger" onclick="logout()" style="margin-top: 10px;">Скинути всі дані профілю</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- НИЖНЯ НАВІГАЦІЯ (4 Вкладки, без ШІ) -->
+    <!-- НИЖНЯ НАВІГАЦІЯ (4 Вкладки) -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard"><span class="nav-icon"><i class="fa-solid fa-fire"></i></span><span>Статус</span></div>
         <div class="nav-item" data-target="tab-food"><span class="nav-icon"><i class="fa-solid fa-book"></i></span><span>Їжа</span></div>
         <div class="nav-item" data-target="tab-workout"><span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span><span>Зал</span></div>
-        <div class="nav-item" data-target="tab-weight"><span class="nav-icon"><i class="fa-solid fa-scale-balanced"></i></span><span>Вага</span></div>
         <div class="nav-item" data-target="tab-profile"><span class="nav-icon"><i class="fa-solid fa-user-gear"></i></span><span>Профіль</span></div>
     </nav>
 
     <!-- МЕГА-БАЗА ТА ЛОГІКА -->
     <script>
         // ==========================================
-        // ЛОКАЛЬНА БАЗА ЇЖІ (ПЕРЕВІРЕНА)
+        // ЛОКАЛЬНА БАЗА ЇЖІ 
         // ==========================================
         window.foodDB = [
             { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
@@ -379,13 +419,13 @@
             { name: "Тяга верхнього блоку", desc: "Спина.", factor: 0.4 },
             { name: "Тяга нижнього блоку", desc: "Спина.", factor: 0.4 },
             { name: "Тяга штанги в нахилі", desc: "Спина (База).", factor: 0.6 },
-            { name: "Тяга гантелі в нахилі (однією рукою)", desc: "Спина.", factor: 0.5 },
+            { name: "Тяга гантелі в нахилі", desc: "Спина.", factor: 0.5 },
             { name: "Шраги з гантелями/штангою", desc: "Трапеція.", factor: 0.3 },
             { name: "Жим штанги стоячи (Армійський)", desc: "Плечі (База).", factor: 0.5 },
             { name: "Жим гантелей сидячи", desc: "Плечі.", factor: 0.4 },
             { name: "Махи гантелями в сторони", desc: "Середні дельти.", factor: 0.3 },
             { name: "Підйом штанги на біцепс", desc: "Біцепс.", factor: 0.4 },
-            { name: "Підйом гантелей на біцепс (супінація)", desc: "Біцепс.", factor: 0.3 },
+            { name: "Підйом гантелей на біцепс", desc: "Біцепс.", factor: 0.3 },
             { name: "Молотки (Хаммери)", desc: "Брахіаліс.", factor: 0.3 },
             { name: "Французький жим (штанга/гантелі)", desc: "Трицепс.", factor: 0.4 },
             { name: "Присідання зі штангою", desc: "Ноги (База).", factor: 0.8 },
@@ -393,16 +433,20 @@
             { name: "Жим ногами в тренажері", desc: "Ноги.", factor: 0.5 },
             { name: "Випади з гантелями", desc: "Ноги/Сідниці.", factor: 0.6 },
             { name: "Румунська тяга", desc: "Сідниці/Біцепс стегна.", factor: 0.6 },
-            { name: "Планка (час в секундах)", desc: "Кори. Пиши секунди (напр: 60).", factor: 0.1 },
+            { name: "Планка", desc: "Кори. Пиши секунди (напр: 60).", factor: 0.1 },
             { name: "Скручування на прес", desc: "Прес.", factor: 0.2 }
         ];
 
+        // СТАН ДОДАТКУ
         let consumedCalories = 0; let workoutBonus = 0;
         let macros = { p: 0, f: 0, c: 0 }; let targetMacros = { p: 0, f: 0, c: 0 };
-        let currentWorkoutFilter = 'all';
+        
+        let currentWorkoutMode = 'extended'; // extended або simple
+        let liveWorkout = null; 
+        let simpleSessionExercises = [];
 
         window.onload = () => { 
-            loadTheme();
+            document.documentElement.classList.add('dark');
             renderWorkouts(window.workoutDB);
             bootApp(); 
         };
@@ -411,14 +455,15 @@
             if (localStorage.getItem('achilles_user')) {
                 loadUserData();
                 renderWeightChart();
-                document.documentElement.classList.add('dark');
                 document.getElementById('main-app-window').classList.add('active-block');
             } else { 
-                document.documentElement.classList.add('dark');
                 document.getElementById('registration-window').classList.add('active-block');
             }
         }
 
+        // ==========================================
+        // МАТЕМАТИКА ПРОФІЛЮ
+        // ==========================================
         function calculateNorms(gender, weight, height, age, activity, goal) {
             let bmr = (10 * weight) + (6.25 * height) - (5 * age);
             bmr += (gender === 'male') ? 5 : -161;
@@ -571,7 +616,7 @@
             
             requestAnimationFrame(() => {
                 document.getElementById('calorie-progress').style.width = percent + '%';
-                document.getElementById('calorie-progress').style.background = percent > 90 ? '#ff3b30' : 'var(--gold)';
+                document.getElementById('calorie-progress').style.background = percent > 90 ? '#ff3b30' : 'linear-gradient(90deg, #9e7311, var(--gold))';
                 document.getElementById('macro-p').innerText = Math.round(macros.p);
                 document.getElementById('macro-f').innerText = Math.round(macros.f);
                 document.getElementById('macro-c').innerText = Math.round(macros.c);
@@ -600,23 +645,7 @@
         });
 
         // ==========================================
-        // ТЕМИ
-        // ==========================================
-        function applyTheme(theme) {
-            const metaThemeColor = document.getElementById('theme-color-meta');
-            const htmlTag = document.documentElement;
-            if (theme === 'dark') { htmlTag.className = 'dark'; if(metaThemeColor) metaThemeColor.setAttribute("content", "#000000"); } 
-            else if (theme === 'light') { htmlTag.className = ''; if(metaThemeColor) metaThemeColor.setAttribute("content", "#e8ecef"); } 
-            else { 
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) { htmlTag.className = 'dark'; if(metaThemeColor) metaThemeColor.setAttribute("content", "#000000"); } 
-                else { htmlTag.className = ''; if(metaThemeColor) metaThemeColor.setAttribute("content", "#e8ecef"); }
-            }
-        }
-        function loadTheme() { const savedTheme = localStorage.getItem('achilles_theme') || 'dark'; document.getElementById('theme-select').value = savedTheme; applyTheme(savedTheme); }
-        function toggleTheme() { const theme = document.getElementById('theme-select').value; localStorage.setItem('achilles_theme', theme); applyTheme(theme); }
-
-        // ==========================================
-        // ЇЖА ТА ТРЕНУВАННЯ (З OPEN FOOD FACTS API)
+        // ЇЖА (ГІБРИДНИЙ ПОШУК)
         // ==========================================
         let searchTimeout;
         let currentAbortController = null;
@@ -625,9 +654,7 @@
             clearTimeout(searchTimeout);
             const query = document.getElementById('food-search').value.toLowerCase().trim();
             
-            if (currentAbortController) {
-                currentAbortController.abort();
-            }
+            if (currentAbortController) currentAbortController.abort();
 
             if (query.length < 2) {
                 document.getElementById('food-results').innerHTML = '';
@@ -668,13 +695,11 @@
             const signal = currentAbortController.signal;
 
             try {
-                // Використовуємо надійний ендпоінт
                 const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=product_name,brands,nutriments`;
                 const response = await fetch(url, { signal });
-                
-                if (!response.ok) throw new Error("API Limit");
-                
+                if (!response.ok) throw new Error("API Error");
                 const data = await response.json();
+                
                 document.getElementById('loading-spinner').style.display = 'none';
 
                 if (data.products && data.products.length > 0) {
@@ -707,10 +732,7 @@
                     });
                 }
             } catch (err) {
-                if (err.name !== 'AbortError') {
-                    document.getElementById('loading-spinner').style.display = 'none';
-                    console.error("Open Food Facts Error:", err);
-                }
+                if (err.name !== 'AbortError') document.getElementById('loading-spinner').style.display = 'none';
             }
         }
 
@@ -722,12 +744,9 @@
 
             const ratio = weight / 100;
             const actualKcal = Math.round(item.kcal * ratio);
-            const actualP = item.p * ratio;
-            const actualF = item.f * ratio;
-            const actualC = item.c * ratio;
-
+            
             consumedCalories += actualKcal;
-            macros.p += actualP; macros.f += actualF; macros.c += actualC;
+            macros.p += item.p * ratio; macros.f += item.f * ratio; macros.c += item.c * ratio;
             
             document.getElementById('calories-consumed').textContent = consumedCalories;
             
@@ -737,108 +756,229 @@
             const entry = document.createElement('div');
             entry.style.padding = '12px 0';
             entry.style.borderBottom = '1px solid var(--glass-border)';
-            entry.innerHTML = `🥗 <strong>${item.name} (${weight}г)</strong><br><span style="font-size: 14px; opacity: 0.8;">${actualKcal} ккал | Б:${Math.round(actualP)} Ж:${Math.round(actualF)} В:${Math.round(actualC)}</span>`;
+            entry.innerHTML = `🥗 <strong>${item.name} (${weight}г)</strong><br><span style="font-size: 14px; opacity: 0.8;">${actualKcal} ккал | Б:${Math.round(item.p * ratio)} Ж:${Math.round(item.f * ratio)} В:${Math.round(item.c * ratio)}</span>`;
             list.appendChild(entry);
             
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
             updateGoalDisplay(); document.querySelector('[data-target="tab-dashboard"]').click();
         }
 
-        function setWorkoutFilter(filter) {
-            currentWorkoutFilter = filter;
-            document.getElementById('btn-all-workouts').classList.toggle('active', filter === 'all');
-            document.getElementById('btn-fav-workouts').classList.toggle('active', filter === 'fav');
-            searchWorkout();
-        }
-
-        function toggleFavWorkout(name) {
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
-            if (favs.includes(name)) {
-                favs = favs.filter(n => n !== name);
+        // ==========================================
+        // ДВА РЕЖИМИ ТРЕНУВАНЬ (РОЗШИРЕНИЙ / СПРОЩЕНИЙ)
+        // ==========================================
+        function setWorkoutMode(mode) {
+            currentWorkoutMode = mode;
+            document.getElementById('btn-mode-extended').classList.toggle('active', mode === 'extended');
+            document.getElementById('btn-mode-simple').classList.toggle('active', mode === 'simple');
+            
+            if(mode === 'simple') {
+                document.getElementById('simple-mode-container').style.display = 'block';
             } else {
-                favs.push(name);
+                document.getElementById('simple-mode-container').style.display = 'none';
             }
-            localStorage.setItem('achilles_fav_workouts', JSON.stringify(favs));
-            searchWorkout();
+            searchWorkout(); // Перемалювати список вправ під потрібний режим
         }
 
         function searchWorkout() {
             const query = document.getElementById('workout-search').value.toLowerCase().trim();
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
-            
             let filtered = window.workoutDB;
-            
-            if (currentWorkoutFilter === 'fav') {
-                filtered = filtered.filter(w => favs.includes(w.name));
-            }
-            
             if (query.length > 0) {
                 filtered = filtered.filter(w => w.name.toLowerCase().includes(query) || w.desc.toLowerCase().includes(query));
             }
-            
             renderWorkouts(filtered);
         }
 
         function renderWorkouts(db = window.workoutDB) {
             const container = document.getElementById('workout-list-container');
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
-
             if(db.length === 0) { container.innerHTML = '<div class="list-item" style="color: var(--text-muted); text-align:center; padding: 20px;">Нічого не знайдено</div>'; return; }
             
             container.innerHTML = db.map((w, index) => {
-                let isFav = favs.includes(w.name);
+                // В залежності від режиму малюємо різні кнопки дії
+                let actionArea = '';
+                if (currentWorkoutMode === 'extended') {
+                    actionArea = `<button class="add-btn" onclick="openLiveWorkout('${w.name}', ${w.factor})" style="margin:0; padding: 14px; width: 100%;">▶ Почати Live</button>`;
+                } else {
+                    actionArea = `
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" inputmode="decimal" id="simp-reps-${index}" placeholder="Повтори (20, 15)" style="margin:0; padding: 14px; flex: 1; font-size: 15px;">
+                            <button class="add-btn" onclick="addExerciseToSimple('${w.name}', 'simp-reps-${index}')" style="margin:0; padding: 0 20px;">+</button>
+                        </div>
+                    `;
+                }
+
                 return `
                 <div style="background: var(--card-bg); padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--glass-border);">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <h4 style="color: var(--gold); font-size: 18px; margin-bottom: 5px;">${w.name}</h4>
-                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavWorkout('${w.name}')"></i>
-                    </div>
+                    <h4 style="color: var(--gold); font-size: 18px; margin-bottom: 5px;">${w.name}</h4>
                     <p style="font-size: 13px; opacity: 0.8; margin-bottom: 12px;">${w.desc}</p>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" inputmode="decimal" id="reps-${index}" placeholder="Час (хв) або Повтори" style="margin:0; padding: 14px; flex: 1; font-size: 15px;">
-                        <button class="add-btn" onclick="logWorkout('${w.name}', 'reps-${index}', ${w.factor})" style="margin:0; padding: 0 20px;">OK</button>
-                    </div>
+                    ${actionArea}
                 </div>
             `}).join('');
         }
 
-        function logWorkout(name, repsId, calFactor) {
-            const repsInput = document.getElementById(repsId).value.trim();
-            if(!repsInput) { alert('Введи дані!'); return; }
+        // --- ЛОГІКА СПРОЩЕНОГО РЕЖИМУ (КОНСТРУКТОР СЕСІЇ) ---
+        function addExerciseToSimple(name, inputId) {
+            let reps = document.getElementById(inputId).value.trim();
+            if(!reps) { alert("Введіть повторення!"); return; }
             
-            const setsArray = repsInput.split(/[.,\s]+/).map(s => parseFloat(s.trim())).filter(s => !isNaN(s));
-            if(setsArray.length === 0) return;
+            simpleSessionExercises.push({ name, reps });
+            document.getElementById(inputId).value = '';
+            renderSimpleAddedList();
+        }
 
-            const totalRepsOrSecs = setsArray.reduce((sum, val) => sum + val, 0);
-            const burnedKcal = Math.round(totalRepsOrSecs * calFactor);
+        function removeSimpleEx(index) {
+            simpleSessionExercises.splice(index, 1);
+            renderSimpleAddedList();
+        }
 
-            workoutBonus += burnedKcal;
+        function renderSimpleAddedList() {
+            let container = document.getElementById('simp-added-list');
+            if (simpleSessionExercises.length === 0) { container.innerHTML = ''; return; }
             
-            const setsCount = setsArray.length;
-            let setsText = '';
+            let html = simpleSessionExercises.map((ex, i) => `
+                <div style="font-size: 14px; margin-bottom: 8px; padding: 8px; background: rgba(255,255,255,0.05); border-radius: 8px; display:flex; justify-content:space-between;">
+                    <span>• ${ex.name}: <strong style="color:var(--gold);">${ex.reps}</strong></span>
+                    <i class="fa-solid fa-xmark" style="color:#ff3b30; cursor:pointer;" onclick="removeSimpleEx(${i})"></i>
+                </div>
+            `).join('');
+            container.innerHTML = html;
+        }
+
+        function saveSimpleSession() {
+            let t = document.getElementById('simp-time').value;
+            let k = document.getElementById('simp-kcal').value;
             
-            if (/Apple Watch|Біг|Велосипед|Еліпсоїд|Степпер|ВІІТ|Ходьба|Плавання|Йога|Футбол|Бокс|Танці/i.test(name)) {
-                setsText = `${totalRepsOrSecs} хв.`;
-            } else if (name.includes('Планка')) {
-                setsText = `${setsCount} підходів (по ${setsArray.join(', ')} сек)`;
-            } else {
-                setsText = setsCount === 1 ? '1 підхід' : `${setsCount} підходів (${setsArray.join(', ')})`;
-            }
-            
+            if(!t || !k) { alert('Введи час та калорії з годинника!'); return; }
+            if(simpleSessionExercises.length === 0) { alert('Додай хоча б одну вправу знизу!'); return; }
+
+            let kcalInt = parseInt(k);
+            workoutBonus += kcalInt;
+
+            let logHtml = `🏋️ <strong>Синхронізація Apple Watch (${t} хв)</strong><br>`;
+            simpleSessionExercises.forEach(ex => {
+                logHtml += `<span style="font-size: 13px; opacity: 0.8; display:block;">- ${ex.name}: ${ex.reps}</span>`;
+            });
+            logHtml += `<span style="font-size: 14px; margin-top: 5px; display:block;">Спалено: <strong style="color: var(--gold);">${kcalInt} ккал</strong></span>`;
+
             const list = document.getElementById('eaten-list');
             if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
-            
             const entry = document.createElement('div');
             entry.style.padding = '12px 0';
             entry.style.borderBottom = '1px solid var(--glass-border)';
-            entry.innerHTML = `🏋️ <strong>${name}</strong><br><span style="font-size: 14px; opacity: 0.8;">${setsText} | Спалено: <strong style="color: var(--gold);">${burnedKcal} ккал</strong></span>`;
+            entry.innerHTML = logHtml;
             list.appendChild(entry);
-            
-            document.getElementById(repsId).value = '';
-            document.getElementById('workout-search').value = '';
-            searchWorkout(); 
+
+            // Очищення
+            simpleSessionExercises = [];
+            document.getElementById('simp-time').value = '';
+            document.getElementById('simp-kcal').value = '';
+            renderSimpleAddedList();
             updateGoalDisplay();
             document.querySelector('[data-target="tab-dashboard"]').click();
+        }
+
+        // --- ЛОГІКА РОЗШИРЕНОГО РЕЖИМУ (LIVE TRACKER) ---
+        function openLiveWorkout(name, factor) {
+            liveWorkout = { name, factor, sets: [], timer: null, sec: 0, state: 'work', currentSet: 1 };
+            document.getElementById('live-overlay').style.display = 'flex';
+            document.getElementById('live-title').innerText = name;
+            document.getElementById('live-subtitle').innerText = 'Підхід 1';
+            document.getElementById('live-reps-input').value = '';
+            startLiveTimer(true);
+        }
+
+        function startLiveTimer(isWork) {
+            clearInterval(liveWorkout.timer);
+            liveWorkout.sec = isWork ? 0 : 90; // 90 сек відпочинку
+            liveWorkout.state = isWork ? 'work' : 'rest';
+            
+            let timerEl = document.getElementById('live-timer');
+            if(isWork) {
+                timerEl.classList.remove('rest');
+            } else {
+                timerEl.classList.add('rest');
+            }
+            
+            updateLiveTimeDisplay();
+
+            liveWorkout.timer = setInterval(() => {
+                if(isWork) {
+                    liveWorkout.sec++;
+                } else {
+                    liveWorkout.sec--;
+                    if(liveWorkout.sec <= 0) {
+                        clearInterval(liveWorkout.timer);
+                        // Тут можна додати звук Haptic Feedback
+                    }
+                }
+                updateLiveTimeDisplay();
+            }, 1000);
+        }
+
+        function updateLiveTimeDisplay() {
+            let m = Math.floor(liveWorkout.sec / 60).toString().padStart(2, '0');
+            let s = (liveWorkout.sec % 60).toString().padStart(2, '0');
+            document.getElementById('live-timer').innerText = `${m}:${s}`;
+        }
+
+        function toggleLiveState() {
+            if(liveWorkout.state === 'work') {
+                // Закінчили робити підхід -> перехід на відпочинок
+                startLiveTimer(false);
+                document.getElementById('live-subtitle').innerText = 'Відпочинок';
+                document.getElementById('live-input-container').style.display = 'block';
+                document.getElementById('live-main-btn').innerHTML = `Почати<br>Підхід ${liveWorkout.currentSet + 1}`;
+            } else {
+                // Закінчили відпочивати -> зберігаємо репси і йдемо на новий підхід
+                let repsInput = document.getElementById('live-reps-input').value;
+                let reps = parseFloat(repsInput);
+                if(isNaN(reps)) reps = 0; // Якщо пропустили, то 0
+                
+                liveWorkout.sets.push(reps);
+                liveWorkout.currentSet++;
+                document.getElementById('live-reps-input').value = '';
+
+                startLiveTimer(true);
+                document.getElementById('live-subtitle').innerText = `Підхід ${liveWorkout.currentSet}`;
+                document.getElementById('live-input-container').style.display = 'none';
+                document.getElementById('live-main-btn').innerHTML = 'Підхід<br>закінчено';
+            }
+        }
+
+        function finishLiveWorkout() {
+            // Якщо зараз відпочинок, то забираємо те, що встигли вписати в поле перед закриттям
+            if (liveWorkout.state === 'rest') {
+                let reps = parseFloat(document.getElementById('live-reps-input').value);
+                if(!isNaN(reps)) liveWorkout.sets.push(reps);
+            }
+            
+            clearInterval(liveWorkout.timer);
+            document.getElementById('live-overlay').style.display = 'none';
+            document.getElementById('live-input-container').style.display = 'none';
+            document.getElementById('live-main-btn').innerHTML = 'Підхід<br>закінчено';
+
+            if(liveWorkout.sets.length > 0) {
+                let totalReps = liveWorkout.sets.reduce((a,b) => a+b, 0);
+                let burnedKcal = Math.round(totalReps * liveWorkout.factor);
+                workoutBonus += burnedKcal;
+                
+                const list = document.getElementById('eaten-list');
+                if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
+                const entry = document.createElement('div');
+                entry.style.padding = '12px 0';
+                entry.style.borderBottom = '1px solid var(--glass-border)';
+                entry.innerHTML = `🏋️ <strong>${liveWorkout.name}</strong><br><span style="font-size: 14px; opacity: 0.8;">${liveWorkout.sets.length} підходів (${liveWorkout.sets.join(', ')}) | Спалено: <strong style="color: var(--gold);">${burnedKcal} ккал</strong></span>`;
+                list.appendChild(entry);
+                
+                updateGoalDisplay();
+                document.querySelector('[data-target="tab-dashboard"]').click();
+            }
+        }
+
+        function cancelLiveWorkout() {
+            clearInterval(liveWorkout.timer);
+            document.getElementById('live-overlay').style.display = 'none';
+            document.getElementById('live-input-container').style.display = 'none';
+            document.getElementById('live-main-btn').innerHTML = 'Підхід<br>закінчено';
         }
 
         function logout() { localStorage.clear(); location.reload(); }
