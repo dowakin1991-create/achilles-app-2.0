@@ -107,6 +107,7 @@
         button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 10px 20px rgba(199, 154, 60, 0.2); }
         button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(199, 154, 60, 0.3); }
         button:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(199, 154, 60, 0.2); }
+        button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
 
         .progress-bar { width: 100%; height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
@@ -129,10 +130,10 @@
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; }
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
         .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);}
-        .fav-btn { font-size: 22px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
+        .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
-        /* LIVE WORKOUT OVERLAY */
+        /* LIVE WORKOUT OVERLAY + CUSTOM FOOD OVERLAY */
         .live-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
@@ -189,6 +190,22 @@
                 <button class="danger" style="margin:0; flex: 1; padding: 20px; border-radius: 20px;" onclick="cancelLiveWorkout()">Скасувати</button>
                 <button style="margin:0; flex: 1; padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.1); color: var(--gold); border: 1px solid rgba(229, 192, 123, 0.3);" onclick="finishLiveWorkout()">Завершити</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ВІКНО СТВОРЕННЯ СВОГО ПРОДУКТУ -->
+    <div id="custom-food-overlay" class="live-overlay" style="justify-content: center; background: rgba(0,0,0,0.9);">
+        <div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; width: 100%; max-width: 400px; border: 1px solid var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+            <h3 style="color: var(--gold); text-align: center; margin-bottom: 20px; font-size: 22px;">Новий продукт</h3>
+            <input type="text" id="cf-name" placeholder="Назва (напр. Вівсянка 'Козуб')">
+            <input type="number" id="cf-kcal" placeholder="Ккал (на 100г)" inputmode="numeric" pattern="[0-9]*">
+            <div style="display: flex; gap: 10px;">
+                <input type="number" id="cf-p" placeholder="Білки" inputmode="decimal">
+                <input type="number" id="cf-f" placeholder="Жири" inputmode="decimal">
+                <input type="number" id="cf-c" placeholder="Вугл." inputmode="decimal">
+            </div>
+            <button style="width: 100%; padding: 20px; border-radius: 20px; font-size: 18px; margin-top: 20px;" onclick="saveCustomFood()">Зберегти продукт</button>
+            <button class="danger" style="width: 100%; padding: 15px; border-radius: 20px; margin-top: 10px;" onclick="document.getElementById('custom-food-overlay').style.display='none'">Скасувати</button>
         </div>
     </div>
 
@@ -257,7 +274,6 @@
             
             <div class="avatar-container" onclick="openProfileTab()"><div class="avatar-logo"></div></div>
 
-            <!-- САЙДБАР (ДЛЯ ПК) -->
             <div class="sidebar">
                 <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
                 <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Раціон</div>
@@ -265,7 +281,6 @@
                 <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
             </div>
 
-            <!-- ОСНОВНИЙ КОНТЕНТ -->
             <div class="main-content">
                 
                 <!-- ДЕШБОРД ТА ВАГА -->
@@ -304,7 +319,14 @@
                 <!-- ЇЖА -->
                 <div id="tab-food" class="tab-content">
                     <h1>База <span>ПРОДУКТІВ</span></h1>
-                    <p style="text-align: center; margin-bottom: 25px;">Пошук працює в локальній та 🌍 світовій базі (Open Food Facts)</p>
+                    
+                    <div class="filter-tabs" style="background: transparent; border: none; padding: 0; margin-bottom: 15px;">
+                        <div id="btn-food-all" class="filter-tab active" style="border: 1px solid var(--glass-border); border-radius: 20px;" onclick="setFoodFilter('all')">Пошук / Усі</div>
+                        <div id="btn-food-fav" class="filter-tab" style="border: 1px solid var(--glass-border); border-radius: 20px; margin-left: 10px;" onclick="setFoodFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
+                    </div>
+
+                    <button class="secondary" onclick="document.getElementById('custom-food-overlay').style.display='flex'" style="margin-bottom: 20px; border-radius: 20px;"><i class="fa-solid fa-plus"></i> Створити свій продукт</button>
+
                     <input type="text" id="food-search" placeholder="Пошук (борщ, яблуко, суші...)" oninput="onSearchInput()">
                     <div id="loading-spinner" style="display:none; text-align:center; padding:15px; color:var(--gold);"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
                     <div id="food-results" style="margin-top: 20px; padding-bottom: 20px;"></div>
@@ -319,7 +341,6 @@
                         <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')">Ручний ввід / Годинник</div>
                     </div>
 
-                    <!-- Блок Apple Watch (Видно лише в PRO якщо обрано ручний) -->
                     <div id="simple-aw-container" style="display: none;">
                         <div style="background: var(--card-bg); padding: 20px; border-radius: 30px; margin-bottom: 20px; border: 1px solid var(--glass-border);">
                             <h4 style="color: var(--gold); margin-bottom: 15px; text-align: center;">⌚ Дані з Apple Watch</h4>
@@ -350,7 +371,7 @@
                             <option value="pro">Режим: PRO (Трекінг спалених калорій)</option>
                         </select>
 
-                        <input type="text" id="edit-name" placeholder="Ім'я" disabled style="opacity: 0.5;"> <!-- Ім'я міняти не можна, бо це ID в хмарі -->
+                        <input type="text" id="edit-name" placeholder="Ім'я" disabled style="opacity: 0.5;"> 
                         <select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
                         <div style="display: flex; gap: 12px;">
                             <input type="number" id="edit-age" placeholder="Вік" inputmode="numeric" pattern="[0-9]*">
@@ -453,95 +474,39 @@
             { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 }
         ];
 
-        // ==========================================
-        // БАЗА ТРЕНУВАНЬ (РОЗШИРЕНА, БЕЗ РОСІЙСЬКИХ)
-        // ==========================================
         window.workoutDB = [
-            // --- КАРДІО ТА АКТИВНІСТЬ ---
-            { name: "Вільне тренування (Apple Watch)", desc: "Вводь час у хвилинах.", factor: 6.0 },
-            { name: "Біг (вулиця / доріжка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 11.5 },
-            { name: "Велосипед / Велотренажер", desc: "Кардіо. Вводь час у хвилинах.", factor: 8.5 },
+            { name: "Біг (вулиця / доріжка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 11.0 },
+            { name: "Велосипед / Велотренажер", desc: "Кардіо. Вводь час у хвилинах.", factor: 8.0 },
             { name: "Еліпсоїд (Орбітрек)", desc: "Кардіо. Вводь час у хвилинах.", factor: 9.0 },
-            { name: "Степпер / Сходи", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
-            { name: "Гребний тренажер", desc: "Кардіо/Спина. Вводь час у хвилинах.", factor: 11.0 },
-            { name: "ВІІТ (HIIT) / Табата", desc: "Інтервальне. Вводь час у хвилинах.", factor: 13.0 },
-            { name: "Кросфіт (WOD)", desc: "Інтенсив. Вводь час у хвилинах.", factor: 14.0 },
+            { name: "ВІІТ (HIIT)", desc: "Інтервальне. Вводь час у хвилинах.", factor: 12.0 },
             { name: "Ходьба (швидка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 5.0 },
-            { name: "Плавання (інтенсивне)", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
-            { name: "Стрибки на скакалці", desc: "Кардіо. Вводь час у хвилинах.", factor: 12.0 },
-            { name: "Йога / Пілатес / Розтяжка", desc: "Відновлення. Вводь час у хвилинах.", factor: 3.5 },
-            { name: "Футбол / Баскетбол / Теніс", desc: "Спорт. Вводь час у хвилинах.", factor: 10.0 },
-            { name: "Бокс / Робота по груші", desc: "Спорт. Вводь час у хвилинах.", factor: 11.0 },
-            
-            // --- ГРУДИ ---
+            { name: "Плавання", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
             { name: "Віджимання від підлоги", desc: "Груди/Трицепс.", factor: 0.4 },
             { name: "Віджимання на брусах", desc: "Нижні грудні/Трицепс.", factor: 0.6 },
-            { name: "Віджимання з додатковою вагою", desc: "Груди/Трицепс.", factor: 0.7 },
             { name: "Жим штанги лежачи", desc: "Груди (База).", factor: 0.6 },
-            { name: "Жим штанги під кутом вгору", desc: "Верхні грудні.", factor: 0.6 },
             { name: "Жим гантелей лежачи", desc: "Груди.", factor: 0.5 },
-            { name: "Жим гантелей під кутом вгору", desc: "Верхні грудні.", factor: 0.5 },
-            { name: "Розведення гантелей лежачи (Розводка)", desc: "Груди.", factor: 0.3 },
-            { name: "Зведення рук в тренажері (Метелик)", desc: "Груди.", factor: 0.3 },
-            { name: "Кросовер (зведення в блоках)", desc: "Груди.", factor: 0.35 },
-            { name: "Пуловер з гантеллю", desc: "Груди/Спина.", factor: 0.4 },
-
-            // --- СПИНА ---
+            { name: "Розведення гантелей лежачи", desc: "Груди.", factor: 0.3 },
             { name: "Підтягування на турніку", desc: "Спина/Біцепс.", factor: 1.0 },
-            { name: "Підтягування з додатковою вагою", desc: "Спина/Біцепс.", factor: 1.3 },
-            { name: "Тяга верхнього блоку до грудей", desc: "Спина.", factor: 0.4 },
-            { name: "Тяга нижнього блоку до пояса", desc: "Спина.", factor: 0.4 },
+            { name: "Тяга верхнього блоку", desc: "Спина.", factor: 0.4 },
+            { name: "Тяга нижнього блоку", desc: "Спина.", factor: 0.4 },
             { name: "Тяга штанги в нахилі", desc: "Спина (База).", factor: 0.6 },
-            { name: "Тяга гантелі в нахилі (однією рукою)", desc: "Спина.", factor: 0.5 },
-            { name: "Тяга Т-грифу", desc: "Спина.", factor: 0.6 },
-            { name: "Гіперекстензія", desc: "Поперек.", factor: 0.3 },
+            { name: "Тяга гантелі в нахилі", desc: "Спина.", factor: 0.5 },
             { name: "Шраги з гантелями/штангою", desc: "Трапеція.", factor: 0.3 },
-
-            // --- ПЛЕЧІ ---
-            { name: "Жим штанги стоячи (Армійський)", desc: "Плечі (База).", factor: 0.5 },
-            { name: "Жим Арнольда", desc: "Плечі.", factor: 0.4 },
+            { name: "Жим штанги стоячи", desc: "Плечі (База).", factor: 0.5 },
             { name: "Жим гантелей сидячи", desc: "Плечі.", factor: 0.4 },
             { name: "Махи гантелями в сторони", desc: "Середні дельти.", factor: 0.3 },
-            { name: "Махи гантелями перед собою", desc: "Передні дельти.", factor: 0.3 },
-            { name: "Розведення гантелей в нахилі", desc: "Задні дельти.", factor: 0.3 },
-            { name: "Тяга штанги до підборіддя", desc: "Дельти/Трапеція.", factor: 0.4 },
-            { name: "Зворотні розведення (тренажер)", desc: "Задні дельти.", factor: 0.3 },
-
-            // --- РУКИ (БІЦЕПС / ТРИЦЕПС) ---
-            { name: "Підйом штанги на біцепс стоячи", desc: "Біцепс.", factor: 0.4 },
-            { name: "Підйом гантелей на біцепс (супінація)", desc: "Біцепс.", factor: 0.3 },
+            { name: "Підйом штанги на біцепс", desc: "Біцепс.", factor: 0.4 },
+            { name: "Підйом гантелей на біцепс", desc: "Біцепс.", factor: 0.3 },
             { name: "Молотки (Хаммери)", desc: "Брахіаліс.", factor: 0.3 },
-            { name: "Концентровані згинання на біцепс", desc: "Біцепс.", factor: 0.2 },
-            { name: "Підйом на біцепс у блоці", desc: "Біцепс.", factor: 0.3 },
-            { name: "Французький жим лежачи", desc: "Трицепс.", factor: 0.4 },
-            { name: "Французький жим з гантеллю сидячи", desc: "Трицепс.", factor: 0.3 },
-            { name: "Розгинання рук на верхньому блоці", desc: "Трицепс.", factor: 0.3 },
-            { name: "Розгинання рук з канатом", desc: "Трицепс.", factor: 0.3 },
-            { name: "Віджимання від лави (задні)", desc: "Трицепс.", factor: 0.3 },
-
-            // --- НОГИ ТА СІДНИЦІ ---
-            { name: "Присідання зі штангою на плечах", desc: "Ноги (База).", factor: 0.8 },
-            { name: "Фронтальні присідання", desc: "Квадрицепс.", factor: 0.7 },
-            { name: "Присідання з гантелями (Гоблет)", desc: "Ноги.", factor: 0.6 },
+            { name: "Французький жим", desc: "Трицепс.", factor: 0.4 },
+            { name: "Присідання зі штангою", desc: "Ноги (База).", factor: 0.8 },
+            { name: "Присідання з гантелями", desc: "Ноги.", factor: 0.6 },
             { name: "Жим ногами в тренажері", desc: "Ноги.", factor: 0.5 },
-            { name: "Випади з гантелями/штангою", desc: "Ноги/Сідниці.", factor: 0.6 },
-            { name: "Болгарські спліт-присідання", desc: "Ноги/Сідниці.", factor: 0.6 },
-            { name: "Станова тяга (класика / сумо)", desc: "Спина/Ноги (База).", factor: 1.0 },
-            { name: "Румунська тяга (на прямих ногах)", desc: "Сідниці/Біцепс стегна.", factor: 0.6 },
-            { name: "Розгинання ніг у тренажері", desc: "Квадрицепс.", factor: 0.3 },
-            { name: "Згинання ніг у тренажері", desc: "Біцепс стегна.", factor: 0.3 },
-            { name: "Зведення / Розведення ніг", desc: "Внутрішня/Зовнішня стегна.", factor: 0.2 },
-            { name: "Сідничний місток (з вагою)", desc: "Сідниці.", factor: 0.4 },
-            { name: "Підйом на носки стоячи/сидячи", desc: "Ікри.", factor: 0.2 },
-
-            // --- ПРЕС ТА КОРИ ---
-            { name: "Планка (час в секундах)", desc: "Кори. Пиши секунди.", factor: 0.1 },
-            { name: "Планка бокова", desc: "Кори. Пиши секунди.", factor: 0.1 },
-            { name: "Скручування на прес (кранчі)", desc: "Верхній прес.", factor: 0.2 },
-            { name: "Підйом ніг лежачи/у висі", desc: "Нижній прес.", factor: 0.3 },
-            { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 },
-            { name: "Вправа 'Велосипед'", desc: "Прес/Косі.", factor: 0.2 },
-            { name: "Ролик для преса", desc: "Кори.", factor: 0.4 }
+            { name: "Випади з гантелями", desc: "Ноги/Сідниці.", factor: 0.6 },
+            { name: "Румунська тяга", desc: "Сідниці/Стегна.", factor: 0.6 },
+            { name: "Планка", desc: "Кори. Пиши секунди.", factor: 0.1 },
+            { name: "Скручування на прес", desc: "Верхній прес.", factor: 0.2 },
+            { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 }
         ];
 
         // ГЛОБАЛЬНИЙ СТАН
@@ -552,6 +517,7 @@
         window.targetMacros = { p: 0, f: 0, c: 0 };
         window.currentWorkoutMode = 'extended'; 
         window.currentWorkoutFilter = 'all';
+        window.currentFoodFilter = 'all';
         window.liveWorkout = null; 
 
         // ==========================================
@@ -580,6 +546,8 @@
                 targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
                 weightHistory: JSON.parse(localStorage.getItem('achilles_weight_history')) || [],
                 favWorkouts: JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [],
+                customFoods: JSON.parse(localStorage.getItem('achilles_custom_foods')) || [],
+                favFoods: JSON.parse(localStorage.getItem('achilles_fav_foods')) || [],
                 daily: {
                     date: window.todayDate,
                     consumedCalories: window.consumedCalories,
@@ -607,6 +575,8 @@
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros));
                     localStorage.setItem('achilles_weight_history', JSON.stringify(d.weightHistory || []));
                     localStorage.setItem('achilles_fav_workouts', JSON.stringify(d.favWorkouts || []));
+                    localStorage.setItem('achilles_custom_foods', JSON.stringify(d.customFoods || []));
+                    localStorage.setItem('achilles_fav_foods', JSON.stringify(d.favFoods || []));
                     
                     if(d.daily && d.daily.date === window.todayDate) {
                         window.consumedCalories = d.daily.consumedCalories || 0;
@@ -642,6 +612,7 @@
                     window.renderWeightChart();
                     window.updateGoalDisplay();
                     window.searchWorkout();
+                    if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
                 }
             } else { 
                 window.showScreen('login-window');
@@ -935,12 +906,97 @@
         };
 
         // ==========================================
-        // ЇЖА
+        // ЇЖА (ЛОКАЛЬНА + OPEN FOOD FACTS API + КАСТОМНА)
         // ==========================================
         let searchTimeout;
         let currentAbortController = null;
 
+        window.setFoodFilter = function(filter) {
+            window.currentFoodFilter = filter;
+            document.getElementById('btn-food-all').classList.toggle('active', filter === 'all');
+            document.getElementById('btn-food-fav').classList.toggle('active', filter === 'fav');
+            
+            if(filter === 'fav') {
+                document.getElementById('food-search').style.display = 'none';
+                clearTimeout(searchTimeout);
+                document.getElementById('loading-spinner').style.display = 'none';
+                window.renderFavFoods();
+            } else {
+                document.getElementById('food-search').style.display = 'block';
+                window.onSearchInput();
+            }
+        };
+
+        window.generateFoodCardHtml = function(item, index) {
+            let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            let isFav = favs.some(f => f.name === item.name);
+            const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
+            const uniqueId = `food-input-${index}`;
+            const isApi = item.name.includes('🌍');
+            
+            return `
+                <div class="list-item" style="align-items: flex-start; color: var(--text-main); ${isApi ? 'border-left: 3px solid var(--gold);' : ''}">
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <strong style="color: var(--text-main); font-size: 18px;">${item.name}</strong><br>
+                            <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
+                        </div>
+                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavFood('${itemJson}', event)"></i>
+                    </div>
+                    <div style="display: flex; width: 100%; gap: 10px;">
+                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                        <button class="add-btn" onclick="addFood('${itemJson}', '${uniqueId}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
+                    </div>
+                </div>`;
+        };
+
+        window.toggleFavFood = function(itemJsonStr, event) {
+            const item = JSON.parse(itemJsonStr.replace(/&quot;/g, '"'));
+            let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            
+            const index = favs.findIndex(f => f.name === item.name);
+            let isFav = false;
+            
+            if (index > -1) {
+                favs.splice(index, 1);
+            } else {
+                favs.push(item);
+                isFav = true;
+            }
+            
+            localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
+            window.syncToCloud();
+
+            if(event && event.target) {
+                if(isFav) {
+                    event.target.classList.remove('fa-regular');
+                    event.target.classList.add('fa-solid', 'active');
+                } else {
+                    event.target.classList.remove('fa-solid', 'active');
+                    event.target.classList.add('fa-regular');
+                }
+            }
+            
+            if(window.currentFoodFilter === 'fav') {
+                window.renderFavFoods();
+            }
+        };
+
+        window.renderFavFoods = function() {
+            const resultsBox = document.getElementById('food-results');
+            let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            
+            if (favs.length === 0) {
+                resultsBox.innerHTML = '<div class="list-item" style="color: var(--text-muted); text-align:center; padding: 20px; border: none;">Улюблених продуктів поки немає</div>';
+                return;
+            }
+            
+            resultsBox.innerHTML = favs.map((item, index) => window.generateFoodCardHtml(item, 'fav-' + index)).join('');
+        };
+
         window.onSearchInput = function() {
+            if(window.currentFoodFilter === 'fav') return;
+            
             clearTimeout(searchTimeout);
             const query = document.getElementById('food-search').value.toLowerCase().trim();
             if (currentAbortController) currentAbortController.abort();
@@ -957,23 +1013,11 @@
 
         window.renderLocalFoodSearch = function(query) {
             const resultsBox = document.getElementById('food-results');
-            const filtered = window.foodDB.filter(i => i.name.toLowerCase().includes(query));
-            resultsBox.innerHTML = '';
+            let customFoods = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
+            let allLocalDb = [...customFoods, ...window.foodDB];
             
-            filtered.forEach((item, index) => {
-                const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
-                resultsBox.innerHTML += `
-                    <div class="list-item" style="align-items: flex-start; color: var(--text-main);">
-                        <div style="width: 100%; margin-bottom: 12px;">
-                            <strong style="color: var(--text-main); font-size: 18px;">${item.name}</strong><br>
-                            <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
-                        </div>
-                        <div style="display: flex; width: 100%; gap: 10px;">
-                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
-                            <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
-                        </div>
-                    </div>`;
-            });
+            const filtered = allLocalDb.filter(i => i.name.toLowerCase().includes(query));
+            resultsBox.innerHTML = filtered.map((item, index) => window.generateFoodCardHtml(item, 'loc-' + index)).join('');
         };
 
         window.searchOpenFoodFacts = async function(query) {
@@ -992,6 +1036,7 @@
                 document.getElementById('loading-spinner').style.display = 'none';
 
                 if (data.products && data.products.length > 0) {
+                    let apiHtml = '';
                     data.products.forEach((p, apiIndex) => {
                         const brand = p.brands ? ` (${p.brands.split(',')[0]})` : '';
                         const name = "🌍 " + (p.product_name || 'Продукт') + brand;
@@ -1003,26 +1048,47 @@
 
                         if (kcal > 0 && (p.product_name && p.product_name.trim() !== '')) {
                             const item = { name: name, kcal: kcal, p: prot, f: fat, c: carb, fiber: 0 };
-                            const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
-                            const uniqueId = `api-weight-${apiIndex}`;
-                            
-                            resultsBox.innerHTML += `
-                                <div class="list-item" style="align-items: flex-start; border-left: 3px solid var(--gold); color: var(--text-main);">
-                                    <div style="width: 100%; margin-bottom: 12px;">
-                                        <strong style="color: var(--text-main); font-size: 18px;">${item.name}</strong><br>
-                                        <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
-                                    </div>
-                                    <div style="display: flex; width: 100%; gap: 10px;">
-                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
-                                        <button class="add-btn" onclick="addFood('${itemJson}', '${uniqueId}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
-                                    </div>
-                                </div>`;
+                            apiHtml += window.generateFoodCardHtml(item, 'api-' + apiIndex);
                         }
                     });
+                    resultsBox.innerHTML += apiHtml;
                 }
             } catch (err) {
                 if (err.name !== 'AbortError') document.getElementById('loading-spinner').style.display = 'none';
             }
+        };
+
+        // --- ДОДАВАННЯ СВОГО ПРОДУКТУ ---
+        window.saveCustomFood = function() {
+            let name = document.getElementById('cf-name').value.trim();
+            let kcal = parseInt(document.getElementById('cf-kcal').value);
+            let p = parseFloat(document.getElementById('cf-p').value) || 0;
+            let f = parseFloat(document.getElementById('cf-f').value) || 0;
+            let c = parseFloat(document.getElementById('cf-c').value) || 0;
+
+            if(!name || isNaN(kcal)) { alert('Введіть назву та калорійність!'); return; }
+
+            let customItem = { name: "🛠️ " + name, kcal, p, f, c, fiber: 0 };
+            
+            let customFoods = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
+            customFoods.push(customItem);
+            localStorage.setItem('achilles_custom_foods', JSON.stringify(customFoods));
+            
+            // Автоматично додаємо до улюблених
+            let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            favs.push(customItem);
+            localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
+
+            window.syncToCloud();
+            
+            document.getElementById('custom-food-overlay').style.display = 'none';
+            document.getElementById('cf-name').value = '';
+            document.getElementById('cf-kcal').value = '';
+            document.getElementById('cf-p').value = '';
+            document.getElementById('cf-f').value = '';
+            document.getElementById('cf-c').value = '';
+
+            window.setFoodFilter('fav');
         };
 
         window.addFood = function(itemJsonStr, weightId) {
@@ -1041,6 +1107,7 @@
             window.addLogEntry(logHtml);
             
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
+            if(window.currentFoodFilter === 'fav') window.renderFavFoods();
         };
 
         // ==========================================
