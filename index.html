@@ -107,7 +107,6 @@
         button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 10px 20px rgba(199, 154, 60, 0.2); }
         button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(199, 154, 60, 0.3); }
         button:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(199, 154, 60, 0.2); }
-        button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
 
         .progress-bar { width: 100%; height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
@@ -133,7 +132,7 @@
         .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
-        /* LIVE WORKOUT OVERLAY + CUSTOM FOOD OVERLAY */
+        /* LIVE WORKOUT OVERLAY */
         .live-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
@@ -169,6 +168,7 @@
         .sync-icon { font-size: 14px; color: var(--success); margin-left: 8px; opacity: 0; transition: opacity 0.5s; }
         .link-btn { text-align: center; margin-top: 20px; color: var(--gold); cursor: pointer; font-weight: 600; transition: opacity 0.3s; }
         .link-btn:active { opacity: 0.6; }
+        .label-text { font-size: 14px; color: var(--text-muted); margin: 10px 0 5px 5px; font-weight: 600; display: block; }
     </style>
 </head>
 <body class="dark"> 
@@ -242,24 +242,48 @@
                         <option value="pro">PRO (Трекінг спалених калорій)</option>
                     </select>
 
+                    <select id="reg-diet" required>
+                        <option value="" disabled selected>Стиль харчування</option>
+                        <option value="standard">Спортивний (Б: 2г/кг, Ж: 1г/кг)</option>
+                        <option value="balanced">Збалансований (30% Б / 30% Ж / 40% В)</option>
+                        <option value="lowcarb">Низьковуглеводний (Більше білка і жирів)</option>
+                        <option value="keto">Кето-дієта (75% Жирів, 5% Вугл.)</option>
+                    </select>
+
                     <select id="reg-gender" required><option value="" disabled selected>Стать</option><option value="male">Чоловік</option><option value="female">Жінка</option></select>
                     <div style="display: flex; gap: 10px;">
                         <input type="number" id="reg-age" placeholder="Вік (років)" inputmode="numeric" pattern="[0-9]*" required>
                         <input type="number" id="reg-height" placeholder="Зріст (см)" inputmode="numeric" pattern="[0-9]*" required>
                     </div>
                     <input type="number" id="reg-weight" placeholder="Поточна вага (кг)" inputmode="decimal" required>
-                    <select id="reg-activity" required>
-                        <option value="" disabled selected>Рівень активності</option>
+                    
+                    <span class="label-text">Твій графік (днів підряд):</span>
+                    <div style="display: flex; gap: 12px; margin-bottom: 8px;">
+                        <input type="number" id="reg-work-days" placeholder="Робочих (напр. 2)" inputmode="numeric" pattern="[0-9]*" value="2" required>
+                        <input type="number" id="reg-rest-days" placeholder="Вихідних (напр. 2)" inputmode="numeric" pattern="[0-9]*" value="2" required>
+                    </div>
+
+                    <select id="reg-activity-work" required>
+                        <option value="" disabled selected>Активність у РОБОЧИЙ день</option>
                         <option value="1.2">Мінімальна (Сидяча робота)</option>
-                        <option value="1.375">Слабка (Тренування 1-3 рази/тиж)</option>
-                        <option value="1.55">Середня (Тренування 3-5 разів/тиж)</option>
-                        <option value="1.725">Висока (Тренування щодня)</option>
+                        <option value="1.375">Легка (Офіс, трохи руху)</option>
+                        <option value="1.55">Середня (На ногах 8+ год)</option>
+                        <option value="1.725">Висока (Зміни 12-14 год на ногах)</option>
+                        <option value="1.9">Екстремальна (Важка праця)</option>
                     </select>
+
+                    <select id="reg-activity-rest" required>
+                        <option value="" disabled selected>Активність у ВИХІДНИЙ</option>
+                        <option value="1.2">Мінімальна (Диван, ПК, рест)</option>
+                        <option value="1.375">Легка (Прогулянки, хатні справи)</option>
+                        <option value="1.55">Середня (Активний відпочинок)</option>
+                    </select>
+
                     <select id="reg-goal" required>
                         <option value="" disabled selected>Твоя мета</option>
-                        <option value="lose">Схуднути (Дефіцит)</option>
+                        <option value="lose">Схуднути (Дефіцит 20%)</option>
                         <option value="maintain">Підтримка ваги</option>
-                        <option value="gain">Набір маси (Профіцит)</option>
+                        <option value="gain">Набір маси (Профіцит 15%)</option>
                     </select>
                     <button type="submit" id="reg-btn" style="margin-top: 25px; padding: 20px; font-size: 18px; border-radius: 24px;">Зареєструватися</button>
                 </form>
@@ -371,22 +395,44 @@
                             <option value="pro">Режим: PRO (Трекінг спалених калорій)</option>
                         </select>
 
-                        <input type="text" id="edit-name" placeholder="Ім'я" disabled style="opacity: 0.5;"> 
+                        <select id="edit-diet" style="margin-bottom: 15px;">
+                            <option value="standard">Спортивний (Б: 2г/кг, Ж: 1г/кг)</option>
+                            <option value="balanced">Збалансований (30% Б / 30% Ж / 40% В)</option>
+                            <option value="lowcarb">Низьковуглеводний (Більше білка і жирів)</option>
+                            <option value="keto">Кето-дієта (75% Жирів, 5% Вугл.)</option>
+                        </select>
+
+                        <input type="text" id="edit-name" placeholder="Ім'я" disabled style="opacity: 0.5;">
                         <select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
                         <div style="display: flex; gap: 12px;">
                             <input type="number" id="edit-age" placeholder="Вік" inputmode="numeric" pattern="[0-9]*">
                             <input type="number" id="edit-height" placeholder="Зріст (см)" inputmode="numeric" pattern="[0-9]*">
                         </div>
-                        <select id="edit-activity">
+                        
+                        <span class="label-text">Твій графік (днів підряд):</span>
+                        <div style="display: flex; gap: 12px; margin-bottom: 8px;">
+                            <input type="number" id="edit-work-days" placeholder="Робочих (напр. 2)" inputmode="numeric" pattern="[0-9]*">
+                            <input type="number" id="edit-rest-days" placeholder="Вихідних (напр. 2)" inputmode="numeric" pattern="[0-9]*">
+                        </div>
+
+                        <select id="edit-activity-work" style="margin-top: 8px;">
                             <option value="1.2">Мінімальна (Сидяча робота)</option>
-                            <option value="1.375">Слабка (Тренування 1-3 рази/тиж)</option>
-                            <option value="1.55">Середня (Тренування 3-5 разів/тиж)</option>
-                            <option value="1.725">Висока (Тренування щодня)</option>
+                            <option value="1.375">Легка (Офіс, трохи руху)</option>
+                            <option value="1.55">Середня (На ногах 8+ год)</option>
+                            <option value="1.725">Висока (Зміни 12-14 год на ногах)</option>
+                            <option value="1.9">Екстремальна (Важка праця)</option>
                         </select>
-                        <select id="edit-goal">
-                            <option value="lose">Схуднення (Дефіцит)</option>
+
+                        <select id="edit-activity-rest" style="margin-top: 8px;">
+                            <option value="1.2">Мінімальна (Диван, ПК, рест)</option>
+                            <option value="1.375">Легка (Прогулянки, хатні справи)</option>
+                            <option value="1.55">Середня (Активний відпочинок)</option>
+                        </select>
+
+                        <select id="edit-goal" style="margin-top: 8px;">
+                            <option value="lose">Схуднення (Дефіцит 20%)</option>
                             <option value="maintain">Підтримка ваги</option>
-                            <option value="gain">Набір маси (Профіцит)</option>
+                            <option value="gain">Набір маси (Профіцит 15%)</option>
                         </select>
                         <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти налаштування</button>
                     </div>
@@ -424,9 +470,6 @@
             db = getFirestore(app);
         } catch(e) { console.error("Firebase init error", e); }
 
-        // ==========================================
-        // БАЗИ ДАНИХ
-        // ==========================================
         window.foodDB = [
             { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
             { name: "Банан (свіжий)", kcal: 89, p: 1.1, f: 0.3, c: 22.8, fiber: 2.6 },
@@ -663,22 +706,46 @@
             btn.innerText = "Увійти";
         };
 
-        window.calculateNorms = function(gender, weight, height, age, activity, goal) {
+        // --- ОНОВЛЕНИЙ РОЗРАХУНОК НОРМ ---
+        window.calculateNorms = function(gender, weight, height, age, activityMultiplier, goal, diet) {
             let bmr = (10 * weight) + (6.25 * height) - (5 * age);
             bmr += (gender === 'male') ? 5 : -161;
-            let tdee = bmr * parseFloat(activity);
+            let tdee = bmr * parseFloat(activityMultiplier);
 
             let targetKcal = tdee;
             let goalText = "Підтримка форми";
-            if (goal === 'lose') { targetKcal -= 500; goalText = "Схуднення (Дефіцит)"; }
-            else if (goal === 'gain') { targetKcal += 500; goalText = "Набір маси (Профіцит)"; }
+            if (goal === 'lose') { targetKcal = tdee * 0.8; goalText = "Схуднення (Дефіцит 20%)"; }
+            else if (goal === 'gain') { targetKcal = tdee * 1.15; goalText = "Набір маси (Профіцит 15%)"; }
 
-            let targetP = weight * 2.0; 
-            let targetF = weight * 1.0; 
-            let targetC = (targetKcal - (targetP * 4) - (targetF * 9)) / 4; 
-            if(targetC < 0) targetC = 0;
+            targetKcal = Math.round(targetKcal);
 
-            return { kcal: Math.round(targetKcal), goalText: goalText, p: Math.round(targetP), f: Math.round(targetF), c: Math.round(targetC) };
+            let p, f, c;
+
+            if (diet === 'balanced') {
+                p = (targetKcal * 0.3) / 4;
+                f = (targetKcal * 0.3) / 9;
+                c = (targetKcal * 0.4) / 4;
+            } else if (diet === 'lowcarb') {
+                p = (targetKcal * 0.4) / 4;
+                f = (targetKcal * 0.4) / 9;
+                c = (targetKcal * 0.2) / 4;
+            } else if (diet === 'keto') {
+                p = (targetKcal * 0.2) / 4;
+                f = (targetKcal * 0.75) / 9;
+                c = (targetKcal * 0.05) / 4;
+            } else {
+                p = weight * 2.0;
+                f = weight * 1.0;
+                c = (targetKcal - (p * 4) - (f * 9)) / 4;
+                if(c < 0) { 
+                    c = 0; 
+                    let totalNeeded = (p*4) + (f*9);
+                    p = p * (targetKcal / totalNeeded);
+                    f = f * (targetKcal / totalNeeded);
+                }
+            }
+
+            return { kcal: targetKcal, goalText: goalText, p: Math.round(p), f: Math.round(f), c: Math.round(c) };
         };
 
         window.completeRegistration = async function() {
@@ -688,11 +755,18 @@
             const age = parseInt(document.getElementById('reg-age').value);
             const height = parseFloat(document.getElementById('reg-height').value);
             const weight = parseFloat(document.getElementById('reg-weight').value);
-            const activity = document.getElementById('reg-activity').value;
             const goal = document.getElementById('reg-goal').value;
             const appMode = document.getElementById('reg-app-mode').value;
+            const diet = document.getElementById('reg-diet').value;
             
-            if(!name || !pass || !age || !height || !weight || !activity || !goal || !appMode) { alert('Заповни всі поля!'); return; }
+            let wDays = parseInt(document.getElementById('reg-work-days').value) || 0;
+            let rDays = parseInt(document.getElementById('reg-rest-days').value) || 0;
+            if (wDays + rDays === 0) wDays = 1;
+            
+            const aWork = parseFloat(document.getElementById('reg-activity-work').value);
+            const aRest = parseFloat(document.getElementById('reg-activity-rest').value);
+            
+            if(!name || !pass || !age || !height || !weight || !aWork || !aRest || !goal || !appMode || !diet) { alert('Заповни всі поля!'); return; }
 
             const btn = document.getElementById('reg-btn');
             btn.innerText = "Створення...";
@@ -708,9 +782,10 @@
                 } catch(e) {}
             }
 
-            const norms = window.calculateNorms(gender, weight, height, age, activity, goal);
+            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
+            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
 
-            let profile = { name, password: pass, gender, age, height, activity, goal };
+            let profile = { name, password: pass, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
@@ -743,17 +818,21 @@
                 document.getElementById('edit-gender').value = prof.gender;
                 document.getElementById('edit-age').value = prof.age;
                 document.getElementById('edit-height').value = prof.height;
-                document.getElementById('edit-activity').value = prof.activity;
+                document.getElementById('edit-work-days').value = prof.workDays || 2;
+                document.getElementById('edit-rest-days').value = prof.restDays || 2;
+                document.getElementById('edit-activity-work').value = prof.activityWork || '1.725';
+                document.getElementById('edit-activity-rest').value = prof.activityRest || '1.2';
                 document.getElementById('edit-goal').value = prof.goal;
+                if(prof.diet) document.getElementById('edit-diet').value = prof.diet;
             }
             
-            let savedMode = localStorage.getItem('achilles_app_mode') || 'pro';
-            document.getElementById('edit-app-mode').value = savedMode;
+            let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
+            document.getElementById('edit-app-mode').value = savedAppMode;
 
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
             
-            if(savedMode === 'simple') {
+            if(savedAppMode === 'simple') {
                 if(modeTabs) modeTabs.style.display = 'none';
                 if(awContainer) awContainer.style.display = 'none';
                 window.currentWorkoutMode = 'manual';
@@ -771,26 +850,33 @@
             const gender = document.getElementById('edit-gender').value;
             const age = parseInt(document.getElementById('edit-age').value);
             const height = parseFloat(document.getElementById('edit-height').value);
-            const activity = document.getElementById('edit-activity').value;
+            const aWork = parseFloat(document.getElementById('edit-activity-work').value);
+            const aRest = parseFloat(document.getElementById('edit-activity-rest').value);
             const goal = document.getElementById('edit-goal').value;
             const appMode = document.getElementById('edit-app-mode').value;
+            const diet = document.getElementById('edit-diet').value;
+            
+            let wDays = parseInt(document.getElementById('edit-work-days').value) || 0;
+            let rDays = parseInt(document.getElementById('edit-rest-days').value) || 0;
+            if (wDays + rDays === 0) wDays = 1;
 
-            if(!name || !age || !height) { alert('Заповни всі поля!'); return; }
+            if(!name || !age || !height || !diet || !aWork || !aRest) { alert('Заповни всі поля!'); return; }
 
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let weight = history.length > 0 ? history[history.length - 1].weight : 80;
 
-            const norms = window.calculateNorms(gender, weight, height, age, activity, goal);
+            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
+            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
 
             let profile = JSON.parse(localStorage.getItem('achilles_profile')) || {};
-            profile = { ...profile, name, gender, age, height, activity, goal };
+            profile = { ...profile, name, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
             
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
             localStorage.setItem('achilles_base_kcal', norms.kcal); 
             localStorage.setItem('achilles_goal_text', norms.goalText);
             localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
-
+            
             window.loadUserData();
             window.syncToCloud();
             alert('Профіль успішно оновлено!');
@@ -814,7 +900,11 @@
             
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
-                const norms = window.calculateNorms(prof.gender, w, prof.height, prof.age, prof.activity, prof.goal);
+                prof.weight = w;
+                let avgAct = ((prof.activityWork * prof.workDays) + (prof.activityRest * prof.restDays)) / (prof.workDays + prof.restDays);
+                const norms = window.calculateNorms(prof.gender, w, prof.height, prof.age, avgAct, prof.goal, prof.diet || 'standard');
+                
+                localStorage.setItem('achilles_profile', JSON.stringify(prof));
                 localStorage.setItem('achilles_base_kcal', norms.kcal); 
                 localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
                 window.loadUserData();
@@ -1058,7 +1148,6 @@
             }
         };
 
-        // --- ДОДАВАННЯ СВОГО ПРОДУКТУ ---
         window.saveCustomFood = function() {
             let name = document.getElementById('cf-name').value.trim();
             let kcal = parseInt(document.getElementById('cf-kcal').value);
@@ -1074,7 +1163,6 @@
             customFoods.push(customItem);
             localStorage.setItem('achilles_custom_foods', JSON.stringify(customFoods));
             
-            // Автоматично додаємо до улюблених
             let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
             favs.push(customItem);
             localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
