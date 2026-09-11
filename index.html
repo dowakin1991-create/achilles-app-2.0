@@ -19,13 +19,6 @@
             --danger: #FF453A;
             --success: #32D74B;
             --bezier: cubic-bezier(0.25, 1, 0.4, 1);
-
-            /* Динамічний акцент теми */
-            --accent-1: #ffe7a3;
-            --accent-2: #f3c969;
-            --accent-3: #c79a3c;
-            --accent-text: #000000;
-            --accent-shadow: 229, 192, 123;
             --theme-speed: 8s;
         }
 
@@ -57,165 +50,109 @@
             --option-bg: #ffffff;
         }
 
-        /* --- ДИНАМІЧНА ТЕМА: ЗОЛОТА --- */
+        /* --- КОЛІР: ЗОЛОТО --- */
         [data-color="gold"] {
-            --primary: #E5C07B;
-            --primary-rgb: 229, 192, 123;
-            --primary-dark: #c79a3c;
-            --accent-1: #fff0b8;
-            --accent-2: #f3c969;
-            --accent-3: #c79a3c;
-            --accent-text: #000000;
-            --accent-shadow: 229, 192, 123;
+            --primary: #E5C07B; --primary-rgb: 229, 192, 123; --primary-dark: #c79a3c;
+            --accent-1: #fff0b8; --accent-2: #f3c969; --accent-3: #c79a3c;
+            --accent-text: #000000; --accent-shadow: 229, 192, 123;
         }
         [data-theme="light"][data-color="gold"] {
-            --primary: #D4AF37;
-            --primary-rgb: 212, 175, 55;
-            --primary-dark: #A68A2B;
-            --accent-1: #fff2b7;
-            --accent-2: #D4AF37;
-            --accent-3: #A67C00;
-            --accent-text: #17130a;
-            --accent-shadow: 212, 175, 55;
+            --primary: #D4AF37; --primary-rgb: 212, 175, 55; --primary-dark: #A68A2B;
+            --accent-1: #fff2b7; --accent-2: #D4AF37; --accent-3: #A67C00;
+            --accent-text: #17130a; --accent-shadow: 212, 175, 55;
         }
 
-        /* --- ДИНАМІЧНА ТЕМА: КРИВАВА СПАРТА --- */
+        /* --- КОЛІР: КРОВ --- */
         [data-color="blood"] {
-            --primary: #FF453A;
-            --primary-rgb: 255, 69, 58;
-            --primary-dark: #B32E27;
-            --accent-1: #ffaaa5;
-            --accent-2: #FF453A;
-            --accent-3: #9f1710;
-            --accent-text: #ffffff;
-            --accent-shadow: 255, 69, 58;
+            --primary: #FF453A; --primary-rgb: 255, 69, 58; --primary-dark: #B32E27;
+            --accent-1: #ffaaa5; --accent-2: #FF453A; --accent-3: #9f1710;
+            --accent-text: #ffffff; --accent-shadow: 255, 69, 58;
         }
         [data-theme="light"][data-color="blood"] {
-            --primary: #D70015;
-            --primary-rgb: 215, 0, 21;
-            --primary-dark: #A60010;
-            --accent-1: #ff8b86;
-            --accent-2: #D70015;
-            --accent-3: #87000d;
-            --accent-text: #ffffff;
-            --accent-shadow: 215, 0, 21;
+            --primary: #D70015; --primary-rgb: 215, 0, 21; --primary-dark: #A60010;
+            --accent-1: #ff8b86; --accent-2: #D70015; --accent-3: #87000d;
+            --accent-text: #ffffff; --accent-shadow: 215, 0, 21;
         }
 
-        /* --- ДИНАМІЧНА ТЕМА: НЕБЕСНО-БЛАКИТНА --- */
+        /* --- КОЛІР: НЕБО --- */
         [data-color="sky"] {
-            --primary: #0A84FF;
-            --primary-rgb: 10, 132, 255;
-            --primary-dark: #0056B3;
-            --accent-1: #b7e0ff;
-            --accent-2: #3B9DFF;
-            --accent-3: #0056B3;
-            --accent-text: #ffffff;
-            --accent-shadow: 10, 132, 255;
+            --primary: #0A84FF; --primary-rgb: 10, 132, 255; --primary-dark: #0056B3;
+            --accent-1: #b7e0ff; --accent-2: #3B9DFF; --accent-3: #0056B3;
+            --accent-text: #ffffff; --accent-shadow: 10, 132, 255;
         }
         [data-theme="light"][data-color="sky"] {
-            --primary: #007AFF;
-            --primary-rgb: 0, 122, 255;
-            --primary-dark: #0056B3;
-            --accent-1: #c7e8ff;
-            --accent-2: #3B9DFF;
-            --accent-3: #004fa6;
-            --accent-text: #ffffff;
-            --accent-shadow: 0, 122, 255;
+            --primary: #007AFF; --primary-rgb: 0, 122, 255; --primary-dark: #0056B3;
+            --accent-1: #c7e8ff; --accent-2: #3B9DFF; --accent-3: #004fa6;
+            --accent-text: #ffffff; --accent-shadow: 0, 122, 255;
         }
+
+        @keyframes themeFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes themeShine { 0% { filter: saturate(1) brightness(1); } 50% { filter: saturate(1.08) brightness(1.04); } 100% { filter: saturate(1) brightness(1); } }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
-
-        /* Плавне переливання всього основного акценту теми */
-        @keyframes themeFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes themeShine {
-            0% { filter: saturate(1) brightness(1); }
-            50% { filter: saturate(1.08) brightness(1.04); }
-            100% { filter: saturate(1) brightness(1); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.001ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.001ms !important;
-            }
-        }
         
+        /* Блокування нативного скролу IOS для знищення нижньої лінії */
         html, body {
-            width: 100%;
-            height: 100%;
-            min-height: 100%;
-            background-color: var(--bg-pure);
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-            color: var(--text-main);
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%;
+            background-color: var(--nav-bg); 
+            overflow: hidden; -webkit-font-smoothing: antialiased; color: var(--text-main);
             transition: background-color 0.4s var(--bezier), color 0.4s var(--bezier);
         }
 
         .nav-item, button, .filter-tab, .avatar-container { -webkit-user-select: none; user-select: none; }
 
         /* === 120FPS SPLASH SCREEN === */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: var(--bg-pure); z-index: 99999;
-            display: flex; justify-content: center; align-items: center;
-            transition: opacity 0.6s var(--bezier), transform 0.6s var(--bezier), visibility 0.6s;
-            will-change: opacity, transform;
-        }
-        #splash-screen.hidden { opacity: 0; transform: scale(0.92); visibility: hidden; }
-        .splash-logo {
-            width: 150px; height: 150px; border-radius: 36px;
-            border: 2px solid var(--primary);
-            background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center;
-            box-shadow: 0 15px 50px rgba(var(--primary-rgb), 0.3);
+        #splash-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-pure); z-index: 9998;
+            transition: opacity 0.5s ease;
         }
 
-        /* Кутова аватарка */
         .main-avatar {
-            position: fixed; 
-            z-index: 9999;
-            top: max(env(safe-area-inset-top), 20px); right: 20px;
+            position: absolute; z-index: 9999;
+            top: max(env(safe-area-inset-top, 45px), 20px); right: 20px;
             width: 50px; height: 50px;
-            border-radius: 50%;
-            border: 1.5px solid var(--primary);
+            border-radius: 50%; border: 1.5px solid var(--primary);
             background-color: var(--bg-pure); overflow: hidden; cursor: pointer;
             box-shadow: 0 4px 15px var(--shadow-color);
-            transition: transform 0.2s var(--bezier), border-color 0.4s var(--bezier), opacity 0.6s var(--bezier);
-            opacity: 0; /* З'являється після Splash */
+            transition: border-color 0.4s var(--bezier);
         }
-        .main-avatar.visible { opacity: 1; }
-        .main-avatar:active { transform: scale(0.9); }
+        
+        .main-avatar.splash-mode {
+            animation: splashToCorner 1.2s var(--bezier) forwards;
+        }
+
+        @keyframes splashToCorner {
+            0%, 30% { 
+                top: 50%; right: 50%; 
+                transform: translate(50%, -50%) scale(3.5); 
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(var(--primary-rgb), 0.3);
+            }
+            100% { 
+                top: max(env(safe-area-inset-top, 45px), 20px); right: 20px; 
+                transform: translate(0, 0) scale(1); 
+                border-radius: 50%;
+                box-shadow: 0 4px 15px var(--shadow-color);
+            }
+        }
+        .main-avatar:active { transform: scale(0.9); transition: transform 0.2s; }
         .avatar-logo { width: 100%; height: 100%; background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center; }
 
         /* === ЕКРАНИ ТА ВІКНА === */
         .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            display: none;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
-            padding-bottom: 40px;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10;
+            display: none; background-color: var(--bg-pure);
+            flex-direction: column;
         }
+        .screen.active-block { display: flex; z-index: 20; }
 
-        .screen.active-block { display: block; z-index: 20; }
-
-        .app-window { position: relative; width: 100%; min-height: 100%; display: flex; flex-direction: column; }
+        .app-window { flex: 1; display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden; }
 
         .main-content { 
-            flex-grow: 1; 
-            padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px 40px 20px; 
-            position: relative; width: 100%; opacity: 1; 
+            flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px calc(85px + env(safe-area-inset-bottom, 20px)) 20px; 
         }
         
         .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s var(--bezier); }
@@ -223,17 +160,11 @@
 
         h1 { font-size: 34px; margin: 20px 0 25px 0; text-align: left; font-weight: 800; letter-spacing: -1px; color: var(--text-main); line-height: 1.1;}
         h1 span {
-            color: transparent;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
-            background-size: 300% 300%;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+            color: transparent; background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%; -webkit-background-clip: text; animation: themeFlow var(--theme-speed) ease-in-out infinite;
         }
         p { font-size: 15px; color: var(--text-muted); line-height: 1.5; font-weight: 500; }
 
-        /* === ФОРМИ === */
         input, select, button { 
             width: 100%; padding: 18px 20px; margin: 8px 0; border-radius: 20px; 
             border: 1px solid var(--glass-border); background: var(--input-bg); 
@@ -247,244 +178,81 @@
         
         button {
             background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
-            background-size: 300% 300%;
-            color: var(--accent-text);
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 8px 15px rgba(var(--accent-shadow), 0.2);
-            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+            background-size: 300% 300%; color: var(--accent-text); font-weight: 700; border: none; cursor: pointer;
+            box-shadow: 0 8px 15px rgba(var(--accent-shadow), 0.2); animation: themeFlow var(--theme-speed) ease-in-out infinite;
         }
         button:active { transform: scale(0.96); }
-        button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
-        button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
+        button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; animation: none;}
+        button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); animation: none;}
 
         .progress-bar { width: 100%; height: 12px; background: var(--glass-border); border-radius: 6px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-3), var(--accent-2), var(--accent-1), var(--accent-2));
-            background-size: 300% 100%;
-            width: 0%;
-            transition: width 1.2s var(--bezier);
-            animation: themeFlow var(--theme-speed) ease-in-out infinite;
-        }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-3), var(--accent-2), var(--accent-1), var(--accent-2)); background-size: 300% 100%; width: 0%; transition: width 1.2s var(--bezier); animation: themeFlow var(--theme-speed) ease-in-out infinite; }
         
         .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; color: var(--text-main); border: 1px solid var(--glass-border); transition: background-color 0.4s var(--bezier), border-color 0.4s var(--bezier);}
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
 
         .macro-box { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; border: 1px solid var(--glass-border); }
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
-        .bonus-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, rgba(var(--accent-shadow), 0.14), rgba(var(--accent-shadow), 0.05));
-            color: var(--primary);
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            margin-top: 15px;
-        }
+        .bonus-badge { display: inline-block; background: linear-gradient(135deg, rgba(var(--accent-shadow), 0.14), rgba(var(--accent-shadow), 0.05)); color: var(--primary); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
 
         .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 160px; padding: 20px 10px 0; background: var(--input-bg); border-radius: 20px; margin-top: 15px; border: 1px solid var(--glass-border);}
         .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 14%; height: 100%; justify-content: flex-end;}
-        .chart-bar {
-            width: 100%;
-            background: linear-gradient(to top, var(--accent-3), var(--accent-2), var(--accent-1));
-            background-size: 100% 300%;
-            border-radius: 6px 6px 0 0;
-            min-height: 5px;
-            transition: height 1s var(--bezier);
-            animation: themeFlow var(--theme-speed) ease-in-out infinite;
-        }
-        .chart-val {
-            font-size: 13px;
-            color: var(--primary);
-            margin-bottom: 6px;
-            font-weight: 700;
-        }
+        .chart-bar { width: 100%; background: linear-gradient(to top, var(--accent-3), var(--accent-2), var(--accent-1)); background-size: 100% 300%; border-radius: 6px 6px 0 0; min-height: 5px; transition: height 1s var(--bezier); animation: themeFlow var(--theme-speed) ease-in-out infinite;}
+        .chart-val { font-size: 13px; color: var(--primary); margin-bottom: 6px; font-weight: 700; }
         
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; border: 1px solid var(--glass-border);}
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
-        .filter-tab.active {
-            background: var(--card-bg);
-            color: var(--primary);
-            box-shadow: 0 4px 15px var(--shadow-color);
-            border: 1px solid var(--glass-border);
-        }
-        .filter-tab.active {
-            background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            border-color: transparent;
-            background-size: auto, 300% 300%;
-            animation: themeFlow var(--theme-speed) ease-in-out infinite;
-        }
+        .filter-tab.active { background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3)); background-origin: border-box; background-clip: padding-box, border-box; border: 1px solid transparent; background-size: auto, 300% 300%; animation: themeFlow var(--theme-speed) ease-in-out infinite; color: var(--primary); box-shadow: 0 4px 15px var(--shadow-color); }
         .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
-        /* СТИЛІ КНОПКИ ВИДАЛЕННЯ У ЩОДЕННИКУ */
+        /* ВИДАЛЕННЯ З ПІДТВЕРДЖЕННЯМ */
         .delete-btn { color: var(--text-muted); font-size: 20px; padding: 10px; transition: color 0.3s var(--bezier), transform 0.3s var(--bezier); cursor: pointer; }
         .delete-btn:active { color: var(--danger); transform: scale(1.2); }
 
-        /* === НИЖНЯ НАВІГАЦІЯ: LAYOUT-BASED, БЕЗ position: fixed === */
-        .screen#main-app-window {
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            padding-bottom: 0;
+        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
+        .nav-bar { 
+            position: absolute; bottom: 0; left: 0; right: 0; 
+            display: flex; justify-content: space-around; align-items: flex-start;
+            height: calc(65px + env(safe-area-inset-bottom, 0px)); 
+            padding-top: 10px; padding-bottom: env(safe-area-inset-bottom, 0px); 
+            background: var(--nav-bg); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
+            border-top: 1px solid var(--glass-border); z-index: 1000; transition: background-color 0.4s var(--bezier);
         }
-
-        .screen#main-app-window.active-block {
-            display: flex;
-        }
-
-        .screen#main-app-window .app-window {
-            width: 100%;
-            height: 100%;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .screen#main-app-window .main-content {
-            flex: 1 1 auto;
-            min-height: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
-            padding-bottom: 40px;
-        }
-
-        .nav-bar {
-            position: relative;
-            width: 100%;
-            flex: 0 0 auto;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-
-            min-height: 65px;
-            height: calc(65px + env(safe-area-inset-bottom, 0px));
-
-            padding-top: 10px;
-            padding-right: 0;
-            padding-left: 0;
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-
-            background: var(--nav-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-
-            border-top: 1px solid var(--glass-border);
-            z-index: 1000;
-            isolation: isolate;
-            transition: background-color 0.4s var(--bezier);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            flex: 1;
-            height: 55px;
-            opacity: 0.4;
-            transition: all 0.3s var(--bezier);
-            cursor: pointer;
-            color: var(--text-main);
-        }
-        .nav-item.active {
-            opacity: 1;
-            color: var(--primary);
-            position: relative;
-        }
-        .nav-item.active .nav-icon,
-        .nav-item.active .nav-text {
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
-            background-size: 300% 300%;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: themeFlow var(--theme-speed) ease-in-out infinite;
-        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; flex: 1; height: 55px; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); }
+        .nav-item.active { opacity: 1; color: var(--primary); }
+        .nav-item.active .nav-icon, .nav-item.active .nav-text { background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1)); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: themeFlow var(--theme-speed) ease-in-out infinite; }
         .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); display: flex; align-items: center; justify-content: center;}
         .nav-item.active .nav-icon { transform: scale(1.15) translateY(-2px); }
         .nav-text { font-size: 11px; font-weight: 600; }
 
         /* === OVERLAYS === */
         .live-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            z-index: 9999; display: none; flex-direction: column;
-            align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 45px) 25px calc(env(safe-area-inset-bottom, 0px) + 40px);
+            z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: space-between; 
+            padding: env(safe-area-inset-top, 45px) 25px calc(env(safe-area-inset-bottom, 0px) + 40px);
             opacity: 0; transition: opacity 0.4s var(--bezier);
         }
         .live-header { text-align: center; margin-top: 60px; }
         .live-title { font-size: 34px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: -1px; text-align: center; padding: 0 20px;}
-        .live-subtitle {
-            font-size: 20px;
-            color: transparent;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
-            background-size: 300% 300%;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: themeFlow var(--theme-speed) ease-in-out infinite;
-            font-weight: 600;
-        }
+        .live-subtitle { font-size: 20px; color: transparent; background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1)); background-size: 300% 300%; -webkit-background-clip: text; animation: themeFlow var(--theme-speed) ease-in-out infinite; font-weight: 600; }
         .live-timer { font-size: 110px; font-weight: 800; color: var(--text-main); font-variant-numeric: tabular-nums; letter-spacing: -3px; transition: color 0.3s;}
         .live-timer.rest { color: var(--primary); }
         .live-controls { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center;}
-        .live-btn-main {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
-            background-size: 300% 300%;
-            color: var(--accent-text);
-            font-size: 26px;
-            font-weight: 800;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 20px 50px rgba(var(--accent-shadow), 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            line-height: 1.2;
-            transition: all 0.3s var(--bezier);
-            animation: themeFlow var(--theme-speed) ease-in-out infinite, themeShine 3s ease-in-out infinite;
-        }
+        .live-btn-main { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1)); background-size: 300% 300%; color: var(--accent-text); font-size: 26px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 20px 50px rgba(var(--accent-shadow), 0.3); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; transition: all 0.3s var(--bezier); animation: themeFlow var(--theme-speed) ease-in-out infinite, themeShine 3s ease-in-out infinite; }
         .live-btn-main:active { transform: scale(0.92); }
         .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
 
         .sync-icon { font-size: 14px; color: var(--success); margin-left: 8px; opacity: 0; transition: opacity 0.5s; }
-        .link-btn {
-            text-align: center;
-            margin-top: 20px;
-            color: transparent;
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
-            background-size: 300% 300%;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: themeFlow var(--theme-speed) ease-in-out infinite;
-            cursor: pointer;
-            font-weight: 600;
-        }
+        .link-btn { text-align: center; margin-top: 20px; color: transparent; background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1)); background-size: 300% 300%; -webkit-background-clip: text; animation: themeFlow var(--theme-speed) ease-in-out infinite; cursor: pointer; font-weight: 600; }
         .label-text { font-size: 14px; color: var(--text-muted); margin: 10px 0 5px 5px; font-weight: 600; display: block; text-align: left; }
     </style>
 </head>
 <body> 
     
-    <!-- СПРАВЖНІЙ АПАРАТНИЙ SPLASH SCREEN -->
-    <div id="splash-screen">
-        <div class="splash-logo"></div>
-    </div>
-    
-    <div id="global-avatar" class="main-avatar" onclick="openProfileTab()">
+    <div id="splash-bg"></div>
+    <div id="global-avatar" class="main-avatar splash-mode" onclick="openProfileTab()">
         <div class="avatar-logo"></div>
     </div>
 
@@ -527,7 +295,7 @@
     <!-- ВІКНО ЛОГІНЕННЯ -->
     <div class="screen" id="login-window">
         <div class="app-window">
-            <div class="main-content" style="display: flex; flex-direction: column; justify-content: center; min-height: 70vh;">
+            <div class="main-content" style="display: flex; flex-direction: column; justify-content: center; align-items: stretch;">
                 <h2 style="text-align: center; margin-bottom: 25px; font-size: 32px; font-weight: 800; color: var(--text-main); margin-top: 60px;">Вхід</h2>
                 <form onsubmit="event.preventDefault(); attemptLogin();">
                     <input type="text" id="login-username" placeholder="Логін" autocomplete="username" required>
@@ -760,24 +528,23 @@
                 </div>
             </div>
 
-        <!-- НИЖНЯ НАВІГАЦІЯ: ЧАСТИНА LAYOUT, БЕЗ position: fixed -->
-        <nav class="nav-bar" id="bottom-nav">
-            <div class="nav-item active" data-target="tab-dashboard">
-                <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
-                <span class="nav-text">Статус</span>
-            </div>
-            <div class="nav-item" data-target="tab-food">
-                <span class="nav-icon"><i class="fa-solid fa-utensils"></i></span>
-                <span class="nav-text">Раціон</span>
-            </div>
-            <div class="nav-item" data-target="tab-workout">
-                <span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span>
-                <span class="nav-text">Зал</span>
-            </div>
-        </nav>
+            <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ -->
+            <nav class="nav-bar" id="bottom-nav">
+                <div class="nav-item active" data-target="tab-dashboard">
+                    <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+                    <span class="nav-text">Статус</span>
+                </div>
+                <div class="nav-item" data-target="tab-food">
+                    <span class="nav-icon"><i class="fa-solid fa-utensils"></i></span>
+                    <span class="nav-text">Раціон</span>
+                </div>
+                <div class="nav-item" data-target="tab-workout">
+                    <span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span>
+                    <span class="nav-text">Зал</span>
+                </div>
+            </nav>
         </div>
     </div>
-
 
     <!-- FIREBASE MODULE SCRIPT -->
     <script type="module">
@@ -896,7 +663,6 @@
             document.getElementById(screenId).classList.add('active-block');
         }
 
-        // === ДИНАМІЧНЕ ЗАСТОСУВАННЯ ТЕМИ ===
         window.previewTheme = function() {
             let color = document.getElementById('edit-theme-color') ? document.getElementById('edit-theme-color').value : 'gold';
             let mode = document.getElementById('edit-theme-mode') ? document.getElementById('edit-theme-mode').value : 'auto';
@@ -979,7 +745,6 @@
             try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Cloud Sync Error", e); }
         };
 
-        // РОЗУМНА СИНХРОНІЗАЦІЯ
         window.loadFromCloud = async function(userName) {
             if(!db) return false;
             try {
@@ -1040,23 +805,21 @@
             return false;
         };
 
-        // 120 FPS ЗАПУСК ДОДАТКУ
         document.addEventListener("DOMContentLoaded", () => {
-            window.applyTheme(); // Одразу застосовуємо кольори
-
-            const splash = document.getElementById('splash-screen');
+            window.applyTheme(); 
+            const splash = document.getElementById('splash-bg');
             const avatar = document.getElementById('global-avatar');
             
-            // Апаратна анімація Splash-екрану
             setTimeout(() => {
                 if(splash) {
-                    splash.classList.add('hidden');
-                    setTimeout(() => splash.style.display = 'none', 600);
-                }
-                if(avatar) {
-                    avatar.classList.add('visible');
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.style.display = 'none', 500);
                 }
             }, 800);
+            
+            setTimeout(() => {
+                if(avatar) avatar.classList.remove('splash-mode');
+            }, 1300);
 
             const userName = localStorage.getItem('achilles_user');
             if (userName) {
@@ -1076,6 +839,9 @@
                 });
             } else { 
                 window.showScreen('login-window');
+                setTimeout(() => {
+                    if(avatar) { avatar.style.opacity = '1'; }
+                }, 1300);
             }
         });
 
@@ -1209,7 +975,6 @@
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
-            
             localStorage.setItem('achilles_theme_color', 'gold');
             localStorage.setItem('achilles_theme_mode', 'auto');
 
@@ -1390,7 +1155,6 @@
             }).join('');
         };
 
-        // ПІДТВЕРДЖЕННЯ ВИДАЛЕННЯ З ЩОДЕННИКА
         window.deleteLogEntry = function(id) {
             if (!confirm("Ви впевнені, що хочете видалити цей запис?")) return;
             
@@ -1624,13 +1388,10 @@
             localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
 
             window.syncToCloud();
-            
             window.closeCustomFood();
             
-            document.getElementById('cf-name').value = '';
-            document.getElementById('cf-kcal').value = '';
-            document.getElementById('cf-p').value = '';
-            document.getElementById('cf-f').value = '';
+            document.getElementById('cf-name').value = ''; document.getElementById('cf-kcal').value = '';
+            document.getElementById('cf-p').value = ''; document.getElementById('cf-f').value = '';
             document.getElementById('cf-c').value = '';
 
             window.setFoodFilter('fav');
