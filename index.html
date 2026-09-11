@@ -118,7 +118,7 @@
         /* === БРОНЕБІЙНИЙ LAYOUT (БЕЗ ПОЛОС ЗНИЗУ) === */
         html, body { 
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            width: 100%; height: 100%; 
+            width: 100%; height: 100dvh; 
             background-color: var(--bg-pure); 
             overflow: hidden; -webkit-font-smoothing: antialiased; color: var(--text-main);
             transition: background-color 0.4s ease, color 0.4s ease;
@@ -140,7 +140,7 @@
             box-shadow: 0 10px 40px rgba(var(--primary-rgb), 0.4); border: 2px solid var(--primary);
         }
 
-        /* Кутова Аватарка (З'являється плавно) */
+        /* Кутова Аватарка */
         .main-avatar {
             position: absolute; z-index: 9999;
             top: max(env(safe-area-inset-top), 20px); right: 20px;
@@ -164,7 +164,7 @@
         .main-content { 
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             overflow-y: auto; -webkit-overflow-scrolling: touch;
-            padding: max(env(safe-area-inset-top, 45px), 20px) 20px calc(80px + env(safe-area-inset-bottom, 20px)) 20px; 
+            padding: max(env(safe-area-inset-top, 45px), 20px) 20px calc(80px + env(safe-area-inset-bottom)) 20px; 
         }
 
         .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s var(--bezier); }
@@ -193,10 +193,10 @@
 
         /* === ВІДЖЕТИ === */
         .progress-bar { width: 100%; height: 12px; background: var(--glass-border); border-radius: 6px; margin-top: 15px; overflow: hidden; }
-        .progress-fill { height: 100%; width: 0%; border-radius: 6px; transition: width 1s var(--bezier); }
+        .progress-fill { height: 100%; width: 0%; transition: width 1s var(--bezier); border-radius: 6px;}
         
-        .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--glass-border); transition: background-color 0.4s ease, border-color 0.4s ease;}
-        .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
+        .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; color: var(--text-main); border: 1px solid var(--glass-border); transition: background-color 0.4s ease, border-color 0.4s ease;}
+        .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; box-shadow: none;}
 
         .macro-box { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 15px; border: 1px solid var(--glass-border); }
         .macro-item strong { display: block; font-size: 22px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
@@ -222,25 +222,43 @@
         .delete-btn { color: var(--text-muted); font-size: 20px; padding: 10px; cursor: pointer; transition: transform 0.2s; }
         .delete-btn:active { color: var(--danger); transform: scale(1.2); }
 
-        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (Без Полос) === */
+        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (Без дірок і артефактів) === */
         .nav-bar { 
             position: absolute; bottom: 0; left: 0; right: 0;
             display: flex; justify-content: space-around; align-items: flex-start;
             padding-top: 12px; 
-            padding-bottom: env(safe-area-inset-bottom, 0px); /* Гарантує прилягання до низу */
-            height: calc(65px + env(safe-area-inset-bottom, 0px));
+            /* Секрет усунення нижньої полоси: */
+            padding-bottom: env(safe-area-inset-bottom, 0px); 
+            height: auto; min-height: calc(65px + env(safe-area-inset-bottom, 0px));
             background: var(--nav-bg); 
             backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); 
             border-top: 1px solid var(--glass-border); z-index: 1000;
         }
+        /* Хак для ідеального заповнення зони свайпу */
+        .nav-bar::after {
+            content: ''; position: absolute; top: 100%; left: 0; right: 0; height: 100px; background: inherit;
+        }
+        
         .nav-item { 
             display: flex; flex-direction: column; align-items: center; 
             flex: 1; opacity: 0.4; transition: opacity 0.2s; color: var(--text-main); cursor: pointer;
         }
         .nav-item.active { opacity: 1; color: var(--primary); }
         .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.2s var(--bezier); }
-        /* Ідеальні іконки без артефактів (солідний колір) */
-        .nav-item.active .nav-icon { transform: scale(1.15) translateY(-2px); color: var(--primary); }
+        
+        /* ЧИСТІ ІКОНКИ (БЕЗ АРТЕФАКТІВ) */
+        .nav-item.active .nav-icon { 
+            transform: scale(1.15) translateY(-2px); 
+            color: var(--primary); 
+            text-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.5); 
+        }
+        
+        /* ТЕКСТ З ГРАДІЄНТОМ */
+        .nav-item.active .nav-text {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+        }
         .nav-text { font-size: 11px; font-weight: 600; }
 
         /* === OVERLAYS === */
@@ -267,7 +285,7 @@
         .profile-avatar-large {
             width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary);
             background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center;
-            margin: 0 auto 20px auto; box-shadow: 0 10px 30px var(--shadow-color); transition: border-color 0.4s ease;
+            margin: 0 auto 20px auto; box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.2); transition: border-color 0.4s ease;
         }
     </style>
 </head>
@@ -483,7 +501,7 @@
                     <div id="workout-list-container" style="margin-top: 20px; padding-bottom: 20px;"></div>
                 </div>
 
-                <!-- ПРОФІЛЬ -->
+                <!-- ПРОФІЛЬ (НОВА 4 Вкладка) -->
                 <div id="tab-profile" class="tab-content">
                     <div class="profile-avatar-large"></div>
                     <h1 style="text-align: center; margin-bottom: 30px;">Твій <span class="gradient-text">ПРОФІЛЬ</span></h1>
@@ -555,7 +573,7 @@
                 </div>
             </div>
 
-            <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (Без полос) -->
+            <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (4 Вкладки, Без Полос) -->
             <nav class="nav-bar" id="bottom-nav">
                 <div class="nav-item active" data-target="tab-dashboard">
                     <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
@@ -697,6 +715,10 @@
         window.previewTheme = function() {
             let color = document.getElementById('edit-theme-color') ? document.getElementById('edit-theme-color').value : 'gold';
             let mode = document.getElementById('edit-theme-mode') ? document.getElementById('edit-theme-mode').value : 'auto';
+            
+            localStorage.setItem('achilles_theme_color', color);
+            localStorage.setItem('achilles_theme_mode', mode);
+            
             window.applyTheme(color, mode);
         };
 
@@ -785,8 +807,13 @@
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile || {}));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    if(d.themeColor) localStorage.setItem('achilles_theme_color', d.themeColor);
-                    if(d.themeMode) localStorage.setItem('achilles_theme_mode', d.themeMode);
+                    
+                    // Блокування перезапису теми, якщо на телефоні вже є збережена 
+                    if(!localStorage.getItem('achilles_theme_color') && d.themeColor) {
+                        localStorage.setItem('achilles_theme_color', d.themeColor);
+                        localStorage.setItem('achilles_theme_mode', d.themeMode || 'auto');
+                    }
+                    
                     localStorage.setItem('achilles_base_kcal', d.baseKcal || 2000);
                     localStorage.setItem('achilles_goal_text', d.goalText || '');
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros || {p:0,f:0,c:0}));
@@ -839,7 +866,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             window.applyTheme(); 
             const splash = document.getElementById('splash-screen');
-            const avatar = document.getElementById('global-avatar');
             
             setTimeout(() => {
                 if(splash) {
@@ -847,10 +873,6 @@
                     setTimeout(() => splash.style.display = 'none', 500);
                 }
             }, 800);
-            
-            setTimeout(() => {
-                if(avatar) { avatar.classList.add('visible'); }
-            }, 1200);
 
             const userName = localStorage.getItem('achilles_user');
             if (userName) {
@@ -1014,8 +1036,6 @@
             window.loadDailyData();
             window.renderWeightChart(); 
             window.showScreen('main-app-window');
-            
-            setTimeout(() => { document.getElementById('global-avatar').classList.add('visible'); }, 500);
         };
 
         window.loadUserData = function() {
@@ -1070,9 +1090,6 @@
             const appMode = document.getElementById('edit-app-mode').value;
             const diet = document.getElementById('edit-diet').value;
             
-            const themeColor = document.getElementById('edit-theme-color').value;
-            const themeMode = document.getElementById('edit-theme-mode').value;
-            
             let wDays = parseInt(document.getElementById('edit-work-days').value) || 0;
             let rDays = parseInt(document.getElementById('edit-rest-days').value) || 0;
             if (wDays + rDays === 0) wDays = 1;
@@ -1084,10 +1101,7 @@
             
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_theme_color', themeColor);
-            localStorage.setItem('achilles_theme_mode', themeMode);
             
-            window.applyTheme(themeColor, themeMode);
             window.recalcAndSaveNorms(profile, false); 
 
             window.loadUserData();
@@ -1222,15 +1236,6 @@
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(activeItem => { activeItem.classList.add('active'); });
                 tabContents.forEach(tc => { tc.classList.remove('active'); });
                 document.getElementById(targetId).classList.add('active');
-                
-                const av = document.getElementById('global-avatar');
-                if(av && targetId === 'tab-profile') {
-                    av.style.opacity = '0';
-                    av.style.pointerEvents = 'none';
-                } else if(av) {
-                    av.style.opacity = '1';
-                    av.style.pointerEvents = 'auto';
-                }
                 
                 const mc = document.querySelector('.screen.active-block .main-content');
                 if(mc) mc.scrollTop = 0;
