@@ -99,33 +99,40 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
             display: none; opacity: 0; overflow-y: auto; overflow-x: hidden; 
             -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
-            padding-bottom: calc(130px + env(safe-area-inset-bottom, 20px)); 
+            padding-bottom: calc(140px + env(safe-area-inset-bottom, 20px)); /* Гарантований відступ під навігацію */
             background-color: var(--bg-pure);
         }
 
         .screen.active-block { 
             display: block; opacity: 1; z-index: 20; 
-            animation: screenFadeIn 0.4s var(--bezier) forwards;
+            animation: screenFadeIn 0.3s ease forwards;
         }
 
         @keyframes screenFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* === ГОЛОВНИЙ КОНТЕЙНЕР (ПК) === */
         .app-window {
-            position: relative; width: 100%; min-height: 100%; 
-            display: flex; flex-direction: column; 
+            position: relative; width: 92%; max-width: 1000px; 
+            background: var(--glass-bg); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--glass-border); border-radius: 36px; 
+            box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.1);
+            margin: 80px auto 40px auto; display: flex; flex-direction: row; 
+            min-height: 80vh;
         }
+
+        .sidebar { width: 260px; border-right: 1px solid var(--glass-border); padding: 60px 15px 30px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+        .menu-item { display: flex; align-items: center; padding: 15px 20px; color: var(--text-main); font-size: 16px; font-weight: 600; border-radius: 20px; cursor: pointer; transition: all 0.3s ease; }
+        .menu-item i { margin-right: 15px; font-size: 18px; color: var(--gold); opacity: 0.8; transition: transform 0.3s; }
+        .menu-item.active { background: var(--gold-glow); color: var(--gold); box-shadow: inset 0 0 15px rgba(255,255,255,0.05); }
+        .menu-item.active i { color: var(--gold); opacity: 1; transform: scale(1.1); }
+        .menu-item:hover { background: rgba(255,255,255,0.05); }
 
         .main-content { 
             flex-grow: 1; 
             padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px 40px 20px; 
             position: relative; width: 100%; 
+            opacity: 1; 
         }
-        
-        #main-app-window .main-content {
-            opacity: 0; transform: translate3d(0, 20px, 0);
-            animation: contentFadeIn120fps 0.5s 0.8s var(--bezier) forwards;
-        }
-        @keyframes contentFadeIn120fps { to { opacity: 1; transform: translate3d(0,0,0); } }
 
         .tab-content { display: none; opacity: 0; transform: translate3d(0, 15px, 0); }
         .tab-content.active { display: block; animation: tabFadeIn120fps 0.3s var(--bezier) forwards; }
@@ -185,26 +192,41 @@
         .del-log-btn:active { transform: scale(0.8); }
         .del-log-btn:hover { color: var(--danger); }
 
-        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
-        .nav-bar { 
-            position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
-            height: calc(75px + env(safe-area-inset-bottom, 0px));
-            padding-bottom: env(safe-area-inset-bottom, 0px); 
-            display: flex; justify-content: space-around; align-items: center;
-            background: var(--glass-bg); 
-            backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%); 
-            box-shadow: 0 -0.5px 0 var(--glass-border);
-            z-index: 1000;
-            transform: translateZ(0); 
+        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (ДЕСКТОП ХОВАЄМО) === */
+        .nav-bar { display: none; }
+
+        /* === МЕДІА ЗАПИТ ДЛЯ ТЕЛЕФОНІВ (СПРАВЖНІЙ IOS ДОДАТОК) === */
+        @media (max-width: 768px) {
+            .sidebar { display: none; } 
+            
+            /* Прибираємо "вікно", додаток стає на весь екран */
+            .app-window { 
+                width: 100%; max-width: none; border-radius: 0; border: none; margin: 0; 
+                background: transparent; backdrop-filter: none; box-shadow: none; 
+                flex-direction: column; min-height: 100%;
+            }
+
+            .nav-bar { 
+                display: flex; /* Показуємо на телефонах */
+                position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
+                height: calc(75px + env(safe-area-inset-bottom, 0px));
+                padding-bottom: env(safe-area-inset-bottom, 0px); 
+                justify-content: space-around; align-items: center;
+                background: var(--glass-bg); 
+                backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%); 
+                box-shadow: 0 -0.5px 0 var(--glass-border);
+                z-index: 1000;
+                transform: translateZ(0); 
+            }
+            .nav-item { 
+                display: flex; flex-direction: column; align-items: center; justify-content: center; 
+                flex: 1; height: 100%; opacity: 0.4; transition: opacity 0.3s var(--bezier), color 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
+            }
+            .nav-item.active { opacity: 1; color: var(--gold); }
+            .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); display: flex; align-items: center; justify-content: center; will-change: transform;}
+            .nav-item.active .nav-icon { transform: scale(1.15) translate3d(0, -2px, 0); }
+            .nav-text { font-size: 11px; font-weight: 600; }
         }
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            flex: 1; height: 100%; opacity: 0.4; transition: opacity 0.3s var(--bezier), color 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
-        }
-        .nav-item.active { opacity: 1; color: var(--gold); }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); display: flex; align-items: center; justify-content: center;}
-        .nav-item.active .nav-icon { transform: scale(1.15) translate3d(0, -2px, 0); }
-        .nav-text { font-size: 11px; font-weight: 600; }
 
         /* === LIVE WORKOUT ТА КАСТОМ ПРОДУКТ OVERLAY === */
         .live-overlay {
@@ -364,6 +386,15 @@
     <!-- ГОЛОВНИЙ ДОДАТОК -->
     <div class="screen" id="main-app-window">
         <div class="app-window">
+            
+            <!-- БОКОВЕ МЕНЮ ДЛЯ ПК -->
+            <div class="sidebar">
+                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-bolt-lightning"></i> Статус</div>
+                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-utensils"></i> Раціон</div>
+                <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Зал</div>
+                <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
+            </div>
+
             <div class="main-content">
                 
                 <!-- ДЕШБОРД ТА ВАГА -->
@@ -538,7 +569,7 @@
         </div>
     </div>
 
-    <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ -->
+    <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ ДЛЯ МОБАЙЛУ -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard">
             <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
@@ -676,9 +707,7 @@
         };
 
         window.showScreen = function(screenId) {
-            document.querySelectorAll('.screen').forEach(s => {
-                s.classList.remove('active-block');
-            });
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-block'));
             document.getElementById(screenId).classList.add('active-block');
         }
 
@@ -709,9 +738,7 @@
                     dailyLog: window.dailyLog
                 }
             };
-            
-            try { await setDoc(doc(db, "users", userName), dataToSave); } 
-            catch(e) { console.error("Cloud Sync Error", e); }
+            try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Cloud Sync Error", e); }
         };
 
         window.loadFromCloud = async function(userName) {
@@ -737,12 +764,10 @@
                         window.consumedCalories = d.daily.consumedCalories || 0;
                         window.workoutBonus = d.daily.workoutBonus || 0;
                         window.macros = d.daily.macros || {p:0, f:0, c:0, fiber:0};
-                        
-                        if(Array.isArray(d.daily.dailyLog)) { window.dailyLog = d.daily.dailyLog; } else { window.dailyLog = []; }
+                        window.dailyLog = Array.isArray(d.daily.dailyLog) ? d.daily.dailyLog : [];
                     } else {
-                        if (d.daily && d.daily.date) { window.archiveDay(d.daily.date, d.daily.consumedCalories, d.daily.dailyLog); }
-                        window.consumedCalories = 0; window.workoutBonus = 0; window.macros = {p:0,f:0,c:0, fiber:0};
-                        window.dailyLog = [];
+                        if (d.daily && d.daily.date) window.archiveDay(d.daily.date, d.daily.consumedCalories, d.daily.dailyLog);
+                        window.consumedCalories = 0; window.workoutBonus = 0; window.macros = {p:0,f:0,c:0, fiber:0}; window.dailyLog = [];
                         window.syncToCloud();
                     }
                     return true;
@@ -765,19 +790,18 @@
             window.todayDate = newDateStr;
             window.consumedCalories = 0; window.workoutBonus = 0;
             window.macros = {p:0, f:0, c:0, fiber:0}; window.dailyLog = [];
-            
             window.renderDailyLog(); window.updateGoalDisplay(); window.syncToCloud();
         };
 
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") {
                 const now = new Date().toISOString().split('T')[0];
-                if (now !== window.todayDate && localStorage.getItem('achilles_user')) { window.startNewDay(now); }
+                if (now !== window.todayDate && localStorage.getItem('achilles_user')) window.startNewDay(now);
             }
         });
 
-        // Прямий старт ААА-додатка (Без очікувань DOMContentLoaded)
-        async function bootApp() {
+        // === ПРЯМИЙ СТАРТ ДОДАТКУ ===
+        function bootApp() {
             let savedTheme = localStorage.getItem('achilles_theme') || 'dark';
             window.applyTheme(savedTheme);
 
@@ -790,7 +814,7 @@
                     splashBg.style.opacity = '0';
                     setTimeout(() => splashBg.style.display = 'none', 400);
                 }
-            }, 600);
+            }, 300);
 
             const userName = localStorage.getItem('achilles_user');
             
@@ -800,20 +824,22 @@
                 window.renderDailyLog();
                 window.showScreen('main-app-window');
                 
-                const loaded = await window.loadFromCloud(userName);
-                if(loaded) {
-                    window.loadUserData();
-                    window.renderWeightChart();
-                    window.renderDailyLog();
-                    window.updateGoalDisplay();
-                    window.searchWorkout();
-                    if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
-                }
+                window.loadFromCloud(userName).then(loaded => {
+                    if(loaded) {
+                        window.loadUserData();
+                        window.renderWeightChart();
+                        window.renderDailyLog();
+                        window.updateGoalDisplay();
+                        window.searchWorkout();
+                        if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
+                    }
+                });
             } else { 
                 window.showScreen('login-window');
             }
         }
         
+        // Запуск без очікування DOMContentLoaded
         bootApp();
 
         window.attemptLogin = async function() {
@@ -937,35 +963,34 @@
 
         window.loadUserData = function() {
             const uName = localStorage.getItem('achilles_user');
-            document.getElementById('display-username').innerText = uName;
-            document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
+            if(document.getElementById('display-username')) document.getElementById('display-username').innerText = uName;
+            if(document.getElementById('user-goal-text')) document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
             
             let m = JSON.parse(localStorage.getItem('achilles_macros')) || {p: 0, f: 0, c: 0};
             window.targetMacros = m;
-            document.getElementById('target-p').innerText = `/ ${m.p}г`;
-            document.getElementById('target-f').innerText = `/ ${m.f}г`;
-            document.getElementById('target-c').innerText = `/ ${m.c}г`;
+            if(document.getElementById('target-p')) document.getElementById('target-p').innerText = `/ ${m.p}г`;
+            if(document.getElementById('target-f')) document.getElementById('target-f').innerText = `/ ${m.f}г`;
+            if(document.getElementById('target-c')) document.getElementById('target-c').innerText = `/ ${m.c}г`;
 
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
-                document.getElementById('edit-name').value = prof.name;
-                document.getElementById('edit-gender').value = prof.gender;
-                document.getElementById('edit-age').value = prof.age;
-                document.getElementById('edit-height').value = prof.height;
-                document.getElementById('edit-work-days').value = prof.workDays || 2;
-                document.getElementById('edit-rest-days').value = prof.restDays || 2;
-                document.getElementById('edit-activity-work').value = prof.activityWork || '1.725';
-                document.getElementById('edit-activity-rest').value = prof.activityRest || '1.2';
-                document.getElementById('edit-goal').value = prof.goal;
-                if(prof.diet) document.getElementById('edit-diet').value = prof.diet;
+                if(document.getElementById('edit-name')) document.getElementById('edit-name').value = prof.name;
+                if(document.getElementById('edit-gender')) document.getElementById('edit-gender').value = prof.gender;
+                if(document.getElementById('edit-age')) document.getElementById('edit-age').value = prof.age;
+                if(document.getElementById('edit-height')) document.getElementById('edit-height').value = prof.height;
+                if(document.getElementById('edit-work-days')) document.getElementById('edit-work-days').value = prof.workDays || 2;
+                if(document.getElementById('edit-rest-days')) document.getElementById('edit-rest-days').value = prof.restDays || 2;
+                if(document.getElementById('edit-activity-work')) document.getElementById('edit-activity-work').value = prof.activityWork || '1.725';
+                if(document.getElementById('edit-activity-rest')) document.getElementById('edit-activity-rest').value = prof.activityRest || '1.2';
+                if(document.getElementById('edit-goal')) document.getElementById('edit-goal').value = prof.goal;
+                if(prof.diet && document.getElementById('edit-diet')) document.getElementById('edit-diet').value = prof.diet;
             }
             
             let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
-            document.getElementById('edit-app-mode').value = savedAppMode;
+            if(document.getElementById('edit-app-mode')) document.getElementById('edit-app-mode').value = savedAppMode;
             
             let savedTheme = localStorage.getItem('achilles_theme') || 'dark';
-            document.getElementById('edit-theme').value = savedTheme;
-            window.applyTheme(savedTheme);
+            if(document.getElementById('edit-theme')) document.getElementById('edit-theme').value = savedTheme;
 
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
@@ -1007,6 +1032,7 @@
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
             localStorage.setItem('achilles_theme', theme);
+            window.applyTheme(theme);
             
             let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
             let weight = profile.weight || 80;
@@ -1053,7 +1079,7 @@
         window.renderWeightChart = function() {
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let container = document.getElementById('weight-chart-container');
-            if (history.length === 0) return;
+            if (history.length === 0 || !container) return;
 
             let chartData = history.slice(-7);
             let minW = Math.min(...chartData.map(d => d.weight)) - 2;
@@ -1075,24 +1101,26 @@
             const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
             
             const finalGoal = appMode === 'pro' ? baseKcal + window.workoutBonus : baseKcal; 
-            document.getElementById('calories-goal').textContent = finalGoal;
+            if(document.getElementById('calories-goal')) document.getElementById('calories-goal').textContent = finalGoal;
             
             let percent = (window.consumedCalories / finalGoal) * 100;
             if(percent > 100) percent = 100;
             
             requestAnimationFrame(() => {
-                document.getElementById('calorie-progress').style.transform = `scaleX(${percent / 100})`;
-                document.getElementById('macro-p').innerText = Math.round(window.macros.p);
-                document.getElementById('macro-f').innerText = Math.round(window.macros.f);
-                document.getElementById('macro-c').innerText = Math.round(window.macros.c);
-                document.getElementById('macro-fiber').innerText = Math.round(window.macros.fiber || 0);
+                if(document.getElementById('calorie-progress')) document.getElementById('calorie-progress').style.transform = `scaleX(${percent / 100})`;
+                if(document.getElementById('macro-p')) document.getElementById('macro-p').innerText = Math.round(window.macros.p);
+                if(document.getElementById('macro-f')) document.getElementById('macro-f').innerText = Math.round(window.macros.f);
+                if(document.getElementById('macro-c')) document.getElementById('macro-c').innerText = Math.round(window.macros.c);
+                if(document.getElementById('macro-fiber')) document.getElementById('macro-fiber').innerText = Math.round(window.macros.fiber || 0);
 
                 const msgObj = document.getElementById('bonus-kcal-msg');
-                if(window.workoutBonus > 0 && appMode === 'pro') {
-                    msgObj.style.display = 'inline-block';
-                    msgObj.innerText = `🔥 Тренування: +${window.workoutBonus} ккал`;
-                } else { 
-                    msgObj.style.display = 'none'; 
+                if(msgObj) {
+                    if(window.workoutBonus > 0 && appMode === 'pro') {
+                        msgObj.style.display = 'inline-block';
+                        msgObj.innerText = `🔥 Тренування: +${window.workoutBonus} ккал`;
+                    } else { 
+                        msgObj.style.display = 'none'; 
+                    }
                 }
             });
         };
@@ -1100,6 +1128,7 @@
         window.renderDailyLog = function() {
             const container = document.getElementById('eaten-list-container');
             const placeholder = document.getElementById('eaten-list');
+            if(!container || !placeholder) return;
             
             if(!window.dailyLog || window.dailyLog.length === 0) {
                 container.innerHTML = '';
@@ -1175,6 +1204,7 @@
 
         window.renderHistory = function() {
             const container = document.getElementById('history-list-container');
+            if(!container) return;
             let history = JSON.parse(localStorage.getItem('achilles_daily_history')) || [];
             
             if(history.length === 0) {
@@ -1189,8 +1219,8 @@
                     : '<span style="opacity:0.5; font-size: 13px;">Немає записів</span>';
 
                 html += `
-                    <div class="history-card">
-                        <div class="history-date"><i class="fa-regular fa-calendar" style="margin-right: 8px;"></i> ${day.date}</div>
+                    <div class="list-item" style="padding: 20px;">
+                        <div style="font-size: 18px; font-weight: 700; color: var(--gold); margin-bottom: 10px;"><i class="fa-regular fa-calendar" style="margin-right: 8px;"></i> ${day.date}</div>
                         <div style="font-size: 18px; margin-bottom: 15px;">Спожито: <strong style="color: var(--gold);">${day.kcal} ккал</strong></div>
                         <div>${logItems}</div>
                     </div>
@@ -1233,7 +1263,7 @@
             const fiberText = item.fiber > 0 ? ` Кл:${item.fiber}` : '';
             
             return `
-                <div class="list-item" style="align-items: flex-start; color: var(--text-main); ${isApi ? 'border-left: 3px solid var(--gold);' : ''}">
+                <div class="list-item" style="align-items: flex-start; flex-direction: column; ${isApi ? 'border-left: 3px solid var(--gold);' : ''}">
                     <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-bottom: 12px;">
                         <div>
                             <strong style="color: var(--text-main); font-size: 18px;">${item.name}</strong><br>
@@ -1251,6 +1281,7 @@
         window.toggleFavFood = function(itemJsonStr, event) {
             const item = JSON.parse(itemJsonStr.replace(/&quot;/g, '"'));
             let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            
             const index = favs.findIndex(f => f.name === item.name);
             let isFav = false;
             
@@ -1273,6 +1304,7 @@
 
         window.renderFavFoods = function() {
             const resultsBox = document.getElementById('food-results');
+            if(!resultsBox) return;
             let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
             
             if (favs.length === 0) {
@@ -1299,6 +1331,7 @@
 
         window.renderLocalFoodSearch = function(query) {
             const resultsBox = document.getElementById('food-results');
+            if(!resultsBox) return;
             let customFoods = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
             let allLocalDb = [...customFoods, ...window.foodDB];
             
@@ -1308,7 +1341,8 @@
 
         window.searchOpenFoodFacts = async function(query) {
             const resultsBox = document.getElementById('food-results');
-            document.getElementById('loading-spinner').style.display = 'block';
+            const spinner = document.getElementById('loading-spinner');
+            if(spinner) spinner.style.display = 'block';
 
             currentAbortController = new AbortController();
             const signal = currentAbortController.signal;
@@ -1319,7 +1353,7 @@
                 if (!response.ok) throw new Error("API Error");
                 const data = await response.json();
                 
-                document.getElementById('loading-spinner').style.display = 'none';
+                if(spinner) spinner.style.display = 'none';
 
                 if (data.products && data.products.length > 0) {
                     let apiHtml = '';
@@ -1338,10 +1372,10 @@
                             apiHtml += window.generateFoodCardHtml(item, 'api-' + apiIndex);
                         }
                     });
-                    resultsBox.innerHTML += apiHtml;
+                    if(resultsBox) resultsBox.innerHTML += apiHtml;
                 }
             } catch (err) {
-                if (err.name !== 'AbortError') document.getElementById('loading-spinner').style.display = 'none';
+                if (err.name !== 'AbortError' && spinner) spinner.style.display = 'none';
             }
         };
 
@@ -1368,8 +1402,7 @@
             window.syncToCloud();
             
             document.getElementById('custom-food-overlay').style.display = 'none';
-            document.getElementById('cf-name').value = '';
-            document.getElementById('cf-kcal').value = ''; document.getElementById('cf-fiber').value = '';
+            document.getElementById('cf-name').value = ''; document.getElementById('cf-kcal').value = ''; document.getElementById('cf-fiber').value = '';
             document.getElementById('cf-p').value = ''; document.getElementById('cf-f').value = ''; document.getElementById('cf-c').value = '';
 
             window.setFoodFilter('fav');
@@ -1404,7 +1437,8 @@
             window.updateGoalDisplay();
             window.syncToCloud();
             
-            document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
+            document.getElementById('food-search').value = ''; 
+            if(document.getElementById('food-results')) document.getElementById('food-results').innerHTML = '';
             if(window.currentFoodFilter === 'fav') window.renderFavFoods();
             
             document.querySelector('[data-target="tab-dashboard"]').click();
@@ -1439,7 +1473,9 @@
         };
 
         window.searchWorkout = function() {
-            const query = document.getElementById('workout-search').value.toLowerCase().trim();
+            const searchEl = document.getElementById('workout-search');
+            if(!searchEl) return;
+            const query = searchEl.value.toLowerCase().trim();
             let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             let filtered = window.workoutDB;
@@ -1453,6 +1489,7 @@
 
         window.renderWorkouts = function(db = window.workoutDB) {
             const container = document.getElementById('workout-list-container');
+            if(!container) return;
             let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
 
@@ -1492,7 +1529,7 @@
                 }
 
                 return `
-                <div class="list-item">
+                <div class="list-item" style="flex-direction: column;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <h4 style="color: var(--text-main); font-size: 19px; margin-bottom: 5px; font-weight: 700;">${w.name}</h4>
                         <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavWorkout('${w.name}')"></i>
