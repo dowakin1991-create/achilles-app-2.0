@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Achilles">
-    <meta name="theme-color" content="#000000" id="theme-color-meta">
+    <meta name="theme-color" content="#000000">
     
     <link rel="apple-touch-icon" href="IMG_9302.jpeg">
     <title>Achilles OS</title>
@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === AAA ПРЕМІУМ КОЛЬОРИ === */
         :root {
             --gold: #E5C07B; 
             --gold-glow: rgba(229, 192, 123, 0.3);
@@ -23,77 +22,80 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #F5F5F7; 
             --text-muted: #86868B;
-            --shadow: rgba(0, 0, 0, 0.8); 
             --card-bg: rgba(28, 28, 30, 0.85);
             --input-bg: rgba(255, 255, 255, 0.08);
             --danger: #FF453A;
             --success: #32D74B;
-            --bezier: cubic-bezier(0.25, 1, 0.5, 1);
+            --bezier: cubic-bezier(0.25, 1, 0.4, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
         
         html, body { 
-            width: 100%; 
-            height: 100%; height: 100dvh; 
+            width: 100%; height: 100%; height: 100dvh; 
             background-color: var(--bg-pure); 
-            overflow: hidden; 
-            -webkit-font-smoothing: antialiased; 
-            color: var(--text-main);
+            overflow: hidden; -webkit-font-smoothing: antialiased; color: var(--text-main);
         }
 
-        /* Заборона виділення тексту для нативного вигляду */
-        .nav-item, button, .filter-tab, .avatar-container {
-            -webkit-user-select: none; user-select: none;
+        .nav-item, button, .filter-tab, .avatar-container { -webkit-user-select: none; user-select: none; }
+
+        /* === SPLASH ТА ГЛОБАЛЬНИЙ АВАТАР === */
+        #splash-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000000; z-index: 9998;
+            transition: opacity 0.6s var(--bezier);
         }
 
-        /* === ЕКРАНИ === */
+        .avatar-container {
+            position: fixed; 
+            z-index: 9999;
+            top: calc(env(safe-area-inset-top, 45px) + 5px);
+            right: 20px;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            border: 1.5px solid var(--gold);
+            background-color: #000; overflow: hidden; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.8s var(--bezier);
+        }
+        
+        .avatar-container:active { transform: scale(0.9); }
+        .avatar-logo { width: 100%; height: 100%; background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center; }
+
+        /* Стан завантаження (Splash) */
+        .avatar-container.splash-mode {
+            top: 50%; right: 50%;
+            transform: translate(50%, -50%) scale(4);
+            border-radius: 12px;
+            border: 1px solid rgba(229, 192, 123, 0.5);
+            box-shadow: 0 10px 40px rgba(229,192,123,0.2);
+        }
+
+        /* === ЕКРАНИ ТА ВІКНА === */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
             display: none; overflow-y: auto; overflow-x: hidden; 
             -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
-            padding-bottom: calc(100px + env(safe-area-inset-bottom)); 
+            padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); 
         }
 
-        .screen.active-block { 
-            display: block; z-index: 20; 
-        }
+        .screen.active-block { display: block; z-index: 20; }
 
-        /* === ГОЛОВНИЙ КОНТЕЙНЕР (ПК) === */
         .app-window {
-            position: relative; width: 92%; max-width: 1000px; 
-            background: var(--glass-bg); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid var(--glass-border); border-radius: 36px; 
-            box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.1);
-            margin: 80px auto 40px auto; display: flex; flex-direction: row; 
-            min-height: 80vh;
+            position: relative; width: 100%; min-height: 100%; 
+            display: flex; flex-direction: column; 
         }
 
-        .avatar-container {
-            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-            width: 100px; height: 100px; flex-shrink: 0;
-            border-radius: 28px; border: 1.5px solid var(--gold);
-            box-shadow: 0 15px 30px var(--shadow), inset 0 0 20px rgba(229,192,123,0.15);
-            z-index: 30; background-color: #000; overflow: hidden; cursor: pointer;
-            transition: transform 0.4s var(--bezier), box-shadow 0.4s var(--bezier);
+        .main-content { 
+            flex-grow: 1; 
+            padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px 40px 20px; 
+            position: relative; width: 100%; 
         }
-        .avatar-container:active { transform: translateX(-50%) scale(0.92); }
-        .avatar-logo { width: 100%; height: 100%; background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center; }
-
-        .sidebar { width: 260px; border-right: 1px solid var(--glass-border); padding: 60px 15px 30px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
-        .menu-item { display: flex; align-items: center; padding: 15px 20px; color: var(--text-main); font-size: 16px; font-weight: 600; border-radius: 20px; cursor: pointer; transition: all 0.3s ease; }
-        .menu-item i { margin-right: 15px; font-size: 18px; color: var(--gold); opacity: 0.8; transition: transform 0.3s; }
-        .menu-item.active { background: var(--gold-glow); color: var(--gold); box-shadow: inset 0 0 15px rgba(255,255,255,0.05); }
-        .menu-item.active i { color: var(--gold); opacity: 1; transform: scale(1.1); }
-        .menu-item:hover { background: rgba(255,255,255,0.05); }
-
-        .main-content { flex-grow: 1; padding: 60px 40px 40px; position: relative; width: 100%; }
         
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: tabFadeIn 0.4s var(--bezier) forwards; }
-        @keyframes tabFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s var(--bezier); }
+        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
 
-        h1 { font-size: 32px; margin: 0 0 25px 0; text-align: center; font-weight: 800; letter-spacing: -0.8px; color: var(--text-main); } 
+        h1 { font-size: 34px; margin: 20px 0 25px 0; text-align: left; font-weight: 800; letter-spacing: -1px; color: var(--text-main); line-height: 1.1;} 
         h1 span { color: var(--gold); }
         p { font-size: 15px; color: var(--text-muted); line-height: 1.5; font-weight: 500; }
 
@@ -104,143 +106,91 @@
             color: var(--text-main); font-size: 17px; font-weight: 500;
             -webkit-appearance: none; appearance: none; transition: all 0.3s var(--bezier);
         }
-        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); box-shadow: 0 0 0 3px rgba(229, 192, 123, 0.15); }
-        input::placeholder { color: var(--text-muted); opacity: 0.8; }
+        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+        input::placeholder { color: rgba(134, 134, 139, 0.7); }
         select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5c07b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 18px center; background-size: 18px; }
         select option { background-color: #1c1c1e; color: var(--text-main); }
         
-        button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 10px 20px rgba(199, 154, 60, 0.2); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(199, 154, 60, 0.3); }
-        button:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(199, 154, 60, 0.2); }
-        button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
+        button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 8px 15px rgba(199, 154, 60, 0.2); }
+        button:active { transform: scale(0.96); }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
 
-        .progress-bar { width: 100%; height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
+        .progress-bar { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #c79a3c, var(--gold)); width: 0%; transition: width 1.2s var(--bezier); }
         
-        .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 12px; color: var(--text-main); }
+        .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; color: var(--text-main); }
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
 
-        .nav-bar { display: none; } 
-
-        .macro-box { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; border: 1px solid rgba(255,255,255,0.03); }
+        /* Віджети */
+        .macro-box { display: flex; justify-content: space-between; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; }
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
-        .bonus-badge { display: inline-block; background: rgba(229, 192, 123, 0.15); color: var(--gold); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
-
-        .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 160px; padding: 20px 10px 0; background: var(--input-bg); border-radius: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.03);}
+        
+        .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 160px; padding: 20px 10px 0; background: var(--input-bg); border-radius: 20px; margin-top: 15px;}
         .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 14%; height: 100%; justify-content: flex-end;}
-        .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 8px 8px 0 0; min-height: 5px; transition: height 1s var(--bezier); }
-        .chart-val { font-size: 13px; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
+        .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 6px 6px 0 0; min-height: 5px; transition: height 1s var(--bezier); }
+        .chart-val { font-size: 12px; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
         
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; }
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
-        .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);}
+        .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
-        /* LIVE WORKOUT OVERLAY */
+        .day-mode-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 25px; }
+        .day-mode-btn { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 700; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
+        .day-mode-btn.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+
+        /* === ІДЕАЛЬНИЙ TAB BAR === */
+        .nav-bar { 
+            position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
+            height: calc(65px + env(safe-area-inset-bottom, 20px));
+            padding-bottom: env(safe-area-inset-bottom, 20px); 
+            display: flex; justify-content: space-around; align-items: center;
+            background: rgba(18, 18, 20, 0.85); 
+            backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%); 
+            border: none; outline: none;
+            z-index: 1000;
+        }
+        .nav-item { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            flex: 1; height: 100%; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
+        }
+        .nav-item.active { opacity: 1; color: var(--gold); }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); }
+        .nav-item.active .nav-icon { transform: scale(1.15) translateY(-2px); }
+        .nav-text { font-size: 11px; font-weight: 600; }
+
+        /* === LIVE WORKOUT OVERLAY === */
         .live-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             z-index: 9999; display: none; flex-direction: column;
-            align-items: center; justify-content: space-between; padding: env(safe-area-inset-top) 25px calc(env(safe-area-inset-bottom) + 40px);
+            align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 45px) 25px calc(env(safe-area-inset-bottom) + 40px);
             opacity: 0; transition: opacity 0.4s var(--bezier);
         }
-        .live-header { text-align: center; margin-top: 60px; }
+        .live-header { text-align: center; margin-top: 40px; }
         .live-title { font-size: 34px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: -1px; text-align: center; padding: 0 20px;}
         .live-subtitle { font-size: 20px; color: var(--gold); font-weight: 600; }
-        .live-timer { font-size: 110px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; text-shadow: 0 10px 40px rgba(0,0,0,0.5); letter-spacing: -3px; transition: color 0.3s;}
+        .live-timer { font-size: 110px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -3px; transition: color 0.3s;}
         .live-timer.rest { color: var(--gold); }
         .live-controls { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center;}
-        .live-btn-main { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-size: 26px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 20px 50px rgba(212, 175, 55, 0.3); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; transition: all 0.3s var(--bezier); }
+        .live-btn-main { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-size: 26px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; transition: all 0.3s var(--bezier); }
         .live-btn-main:active { transform: scale(0.92); }
         .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
 
-        /* === МЕДІА ЗАПИТ ДЛЯ ТЕЛЕФОНІВ (СПРАВЖНІЙ IOS ДОДАТОК) === */
-        @media (max-width: 768px) {
-            .sidebar { display: none; } 
-            
-            /* Прибираємо "вікно", додаток стає на весь екран */
-            .app-window { 
-                width: 100%; max-width: none; border-radius: 0; border: none; margin: 0; 
-                background: transparent; backdrop-filter: none; box-shadow: none; 
-                flex-direction: column; min-height: 100%;
-            }
-
-            /* Падінги з урахуванням чубчика iOS */
-            .main-content { 
-                padding: calc(env(safe-area-inset-top) + 20px) 20px 30px 20px; 
-            }
-            
-            /* Голлівудська Splash Анімація Логотипу */
-            .main-avatar { 
-                position: fixed; 
-                z-index: 9999;
-                width: 50px; height: 50px; 
-                border-radius: 50%; border: 2px solid var(--gold); 
-                animation: splashToCorner 2s var(--bezier) forwards;
-            }
-            @keyframes splashToCorner {
-                0%, 35% {
-                    top: 50%; right: 50%;
-                    transform: translate(50%, -50%) scale(3.5);
-                    border-radius: 16px;
-                    box-shadow: 0 20px 60px rgba(229,192,123,0.3);
-                }
-                100% {
-                    top: max(env(safe-area-inset-top), 20px); right: 20px;
-                    transform: translate(0, 0) scale(1);
-                    border-radius: 50%;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-                }
-            }
-
-            /* Плавна поява контенту після логотипу */
-            #main-app-window .main-content {
-                animation: contentFadeIn 2.2s var(--bezier) forwards;
-            }
-            @keyframes contentFadeIn {
-                0%, 50% { opacity: 0; transform: translateY(20px); }
-                100% { opacity: 1; transform: translateY(0); }
-            }
-
-            /* Текст ліворуч на телефоні */
-            h1 { text-align: left; font-size: 34px; margin-top: 50px; margin-bottom: 10px; line-height: 1.1;}
-            p#user-goal-text { text-align: left !important; margin-bottom: 30px !important; }
-
-            /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (БЕЗ ЛІНІЙ І ПРОБІЛІВ) === */
-            .nav-bar { 
-                position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
-                display: flex; justify-content: space-around; align-items: center;
-                height: calc(65px + env(safe-area-inset-bottom));
-                padding: 0 10px env(safe-area-inset-bottom) 10px; 
-                background: rgba(18, 18, 20, 0.92); 
-                backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
-                border-top: 1px solid rgba(255,255,255,0.08); z-index: 1000;
-                animation: navFadeIn 2.2s var(--bezier) forwards;
-            }
-            @keyframes navFadeIn {
-                0%, 50% { transform: translateY(100%); opacity: 0;}
-                100% { transform: translateY(0); opacity: 1;}
-            }
-            .nav-item { 
-                display: flex; flex-direction: column; align-items: center; justify-content: center; 
-                flex: 1; height: 100%; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
-            }
-            .nav-item.active { opacity: 1; color: var(--gold); }
-            .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); }
-            .nav-item.active .nav-icon { transform: scale(1.15) translateY(-2px); }
-            .nav-text { font-size: 11px; font-weight: 600; }
-        }
-
         .sync-icon { font-size: 14px; color: var(--success); margin-left: 8px; opacity: 0; transition: opacity 0.5s; }
-        .link-btn { text-align: center; margin-top: 20px; color: var(--gold); cursor: pointer; font-weight: 600; transition: opacity 0.3s; }
-        .link-btn:active { opacity: 0.6; }
+        .link-btn { text-align: center; margin-top: 20px; color: var(--gold); cursor: pointer; font-weight: 600; }
         .label-text { font-size: 14px; color: var(--text-muted); margin: 10px 0 5px 5px; font-weight: 600; display: block; text-align: left; }
     </style>
 </head>
-<body class="dark"> 
+<body> 
     
+    <!-- SPLASH SCREEN ТА ГЛОБАЛЬНИЙ АВАТАР -->
+    <div id="splash-bg"></div>
+    <div id="global-avatar" class="avatar-container splash-mode" onclick="openProfileTab()">
+        <div class="avatar-logo"></div>
+    </div>
+
     <!-- LIVE WORKOUT OVERLAY -->
     <div id="live-overlay" class="live-overlay">
         <div class="live-header">
@@ -256,14 +206,14 @@
             <button class="live-btn-main" id="live-main-btn" onclick="toggleLiveState()">Підхід<br>закінчено</button>
             <div style="display: flex; gap: 15px; width: 100%; margin-top: 30px;">
                 <button class="danger" style="margin:0; flex: 1; padding: 20px; border-radius: 20px;" onclick="cancelLiveWorkout()">Скасувати</button>
-                <button style="margin:0; flex: 1; padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.1); color: var(--gold); border: 1px solid rgba(229, 192, 123, 0.3);" onclick="finishLiveWorkout()">Завершити</button>
+                <button style="margin:0; flex: 1; padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.1); color: var(--gold);" onclick="finishLiveWorkout()">Завершити</button>
             </div>
         </div>
     </div>
 
     <!-- ВІКНО СТВОРЕННЯ СВОГО ПРОДУКТУ -->
     <div id="custom-food-overlay" class="live-overlay" style="justify-content: center; background: rgba(0,0,0,0.9);">
-        <div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; width: 100%; max-width: 400px; border: 1px solid var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+        <div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; width: 100%; max-width: 400px;">
             <h3 style="color: var(--gold); text-align: center; margin-bottom: 20px; font-size: 22px;">Новий продукт</h3>
             <input type="text" id="cf-name" placeholder="Назва (напр. Вівсянка 'Козуб')">
             <input type="number" id="cf-kcal" placeholder="Ккал (на 100г)" inputmode="numeric" pattern="[0-9]*">
@@ -279,10 +229,9 @@
 
     <!-- ВІКНО ЛОГІНЕННЯ -->
     <div class="screen" id="login-window">
-        <div class="app-window" style="max-width: 400px; flex-direction: column; margin-top: max(env(safe-area-inset-top), 60px);">
-            <div class="avatar-container" style="position: relative; margin: 20px auto; top: 0; left: 0; transform: none; width: 120px; height: 120px;"><div class="avatar-logo"></div></div>
-            <div class="main-content">
-                <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Вхід в Achilles</h2>
+        <div class="app-window">
+            <div class="main-content" style="display: flex; flex-direction: column; justify-content: center; min-height: 70vh;">
+                <h2 style="text-align: center; margin-bottom: 25px; font-size: 32px; font-weight: 800; color: var(--text-main);">Вхід</h2>
                 <form onsubmit="event.preventDefault(); attemptLogin();">
                     <input type="text" id="login-username" placeholder="Логін" autocomplete="username" required>
                     <input type="password" id="login-password" placeholder="Пароль" autocomplete="current-password" required>
@@ -295,11 +244,9 @@
 
     <!-- ВІКНО РЕЄСТРАЦІЇ -->
     <div class="screen" id="registration-window">
-        <div class="app-window" style="max-width: 450px; flex-direction: column;">
-            <div class="avatar-container" style="position: relative; margin: 20px auto; top: 0; left: 0; transform: none; width: 100px; height: 100px;"><div class="avatar-logo"></div></div>
+        <div class="app-window">
             <div class="main-content">
-                <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Новий Воїн</h2>
-                
+                <h2 style="text-align: center; margin-bottom: 25px; font-size: 32px; font-weight: 800; color: var(--text-main);">Новий Воїн</h2>
                 <form onsubmit="event.preventDefault(); completeRegistration();">
                     <input type="text" id="reg-name" placeholder="Логін (Унікальне ім'я)" autocomplete="username" required>
                     <input type="password" id="reg-password" placeholder="Придумай пароль" autocomplete="new-password" required>
@@ -325,7 +272,7 @@
                     </div>
                     <input type="number" id="reg-weight" placeholder="Поточна вага (кг)" inputmode="decimal" required>
                     
-                    <span class="label-text">Твій графік роботи (співвідношення днів):</span>
+                    <span class="label-text">Твій графік (днів підряд):</span>
                     <div style="display: flex; gap: 12px; margin-bottom: 8px;">
                         <input type="number" id="reg-work-days" placeholder="Робочих (напр. 2)" inputmode="numeric" pattern="[0-9]*" value="2" required>
                         <input type="number" id="reg-rest-days" placeholder="Вихідних (напр. 2)" inputmode="numeric" pattern="[0-9]*" value="2" required>
@@ -363,24 +310,14 @@
     <!-- ГОЛОВНИЙ ДОДАТОК -->
     <div class="screen" id="main-app-window">
         <div class="app-window">
-            
-            <div class="avatar-container main-avatar" onclick="openProfileTab()"><div class="avatar-logo"></div></div>
-
-            <div class="sidebar">
-                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-bolt-lightning"></i> Статус</div>
-                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-utensils"></i> Раціон</div>
-                <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Зал</div>
-                <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
-            </div>
-
             <div class="main-content">
                 
-                <!-- ДЕШБОРД ТА ВАГА -->
+                <!-- ДЕШБОРД -->
                 <div id="tab-dashboard" class="tab-content active">
                     <h1 id="greeting-header">Привіт, <span id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
-                    <p id="user-goal-text" style="text-align: center; margin-bottom: 30px;">Аналізуємо...</p>
+                    <p id="user-goal-text" style="text-align: left; margin-bottom: 25px; margin-top: -15px;">Аналізуємо...</p>
                     
-                    <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px;">
                         <span style="font-size: 16px; font-weight: 600; color: var(--text-muted);">Спожито сьогодні:</span>
                         <div style="font-size: 48px; font-weight: 800; color: var(--gold); margin: 5px 0; letter-spacing: -2px;">
                             <span id="calories-consumed">0</span> <span style="font-size: 24px; color: var(--text-muted); font-weight: 600;">/ <span id="calories-goal">2000</span> ккал</span>
@@ -396,7 +333,7 @@
                     </div>
 
                     <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Трекер ваги:</h3>
-                    <div style="background: var(--card-bg); padding: 25px 20px; border-radius: 30px; border: 1px solid var(--glass-border); margin-top: 15px;">
+                    <div style="background: var(--card-bg); padding: 25px 20px; border-radius: 30px; margin-top: 15px;">
                         <div style="display: flex; gap: 12px;">
                             <input type="number" id="new-weight-input" inputmode="decimal" placeholder="Вага (кг)" style="margin:0; flex: 2;">
                             <button onclick="logWeight()" style="margin:0; flex: 1; border-radius: 16px;">OK</button>
@@ -405,7 +342,7 @@
                     </div>
 
                     <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Щоденник:</h3>
-                    <div id="eaten-list" style="margin-top: 15px; font-size: 16px; background: var(--card-bg); padding: 25px; border-radius: 30px; border: 1px solid var(--glass-border); line-height: 1.6; color: var(--text-main);">Поки що нічого. Час підкріпитися або потренуватися!</div>
+                    <div id="eaten-list" style="margin-top: 15px; font-size: 16px; background: var(--card-bg); padding: 25px; border-radius: 30px; line-height: 1.6;">Поки що нічого. Час підкріпитися або потренуватися!</div>
                 </div>
 
                 <!-- ЇЖА -->
@@ -434,7 +371,7 @@
                     </div>
 
                     <div id="simple-aw-container" style="display: none;">
-                        <div style="background: var(--card-bg); padding: 20px; border-radius: 30px; margin-bottom: 20px; border: 1px solid var(--glass-border);">
+                        <div style="background: var(--card-bg); padding: 20px; border-radius: 30px; margin-bottom: 20px;">
                             <h4 style="color: var(--gold); margin-bottom: 15px; text-align: center;">⌚ Дані з Apple Watch</h4>
                             <div style="display: flex; gap: 12px;">
                                 <input type="number" id="simp-aw-time" placeholder="Час (хв)" inputmode="numeric" pattern="[0-9]*" style="margin:0;">
@@ -456,7 +393,7 @@
                 <!-- ПРОФІЛЬ -->
                 <div id="tab-profile" class="tab-content">
                     <h1>Твій <span>ПРОФІЛЬ</span></h1>
-                    <div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; border: 1px solid var(--glass-border); margin-bottom: 25px;">
+                    <div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; margin-bottom: 25px;">
                         
                         <select id="edit-app-mode" style="margin-bottom: 15px; border-color: var(--gold);">
                             <option value="simple">Режим: Звичайний (Без калорій)</option>
@@ -511,7 +448,7 @@
         </div>
     </div>
 
-    <!-- НИЖНЯ НАВІГАЦІЯ (ДЛЯ МОБАЙЛУ) -->
+    <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard">
             <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
@@ -708,6 +645,16 @@
         };
 
         window.onload = async () => { 
+            const avatar = document.getElementById('global-avatar');
+            const splashBg = document.getElementById('splash-bg');
+            
+            // Голлівудська анімація Splash-скріну
+            setTimeout(() => {
+                avatar.classList.remove('splash-mode');
+                splashBg.style.opacity = '0';
+                setTimeout(() => splashBg.style.display = 'none', 600);
+            }, 800);
+
             const userName = localStorage.getItem('achilles_user');
             
             if (userName) {
@@ -869,13 +816,13 @@
                 if(prof.diet) document.getElementById('edit-diet').value = prof.diet;
             }
             
-            let savedMode = localStorage.getItem('achilles_app_mode') || 'pro';
-            document.getElementById('edit-app-mode').value = savedMode;
+            let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
+            document.getElementById('edit-app-mode').value = savedAppMode;
 
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
             
-            if(savedMode === 'simple') {
+            if(savedAppMode === 'simple') {
                 if(modeTabs) modeTabs.style.display = 'none';
                 if(awContainer) awContainer.style.display = 'none';
                 window.currentWorkoutMode = 'manual';
@@ -1008,6 +955,7 @@
             list.appendChild(entry);
             window.updateGoalDisplay();
             window.syncToCloud();
+            document.querySelector('[data-target="tab-dashboard"]').click();
         };
 
         const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
@@ -1025,6 +973,7 @@
         });
 
         window.openProfileTab = function() {
+            if(!localStorage.getItem('achilles_user')) return;
             allNavItems.forEach(mi => mi.classList.remove('active'));
             document.querySelectorAll(`[data-target="tab-profile"]`).forEach(activeItem => { activeItem.classList.add('active'); });
             tabContents.forEach(tc => { tc.classList.remove('active'); });
@@ -1234,9 +1183,6 @@
             document.querySelector('[data-target="tab-dashboard"]').click();
         };
 
-        // ==========================================
-        // ТРЕНУВАННЯ
-        // ==========================================
         window.setWorkoutMode = function(mode) {
             window.currentWorkoutMode = mode;
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
