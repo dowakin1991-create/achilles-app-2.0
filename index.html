@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* === AAA ПРЕМІУМ КОЛЬОРИ === */
         :root {
             --gold: #E5C07B; 
             --gold-glow: rgba(229, 192, 123, 0.3);
@@ -116,7 +117,7 @@
 
         .nav-bar { display: none; } 
 
-        .macro-box { display: flex; justify-content: space-between; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; border: 1px solid rgba(255,255,255,0.03); }
+        .macro-box { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; border: 1px solid rgba(255,255,255,0.03); }
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
         .bonus-badge { display: inline-block; background: rgba(229, 192, 123, 0.15); color: var(--gold); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
 
@@ -201,7 +202,7 @@
                     <option value="pro">PRO (Трекінг спалених калорій)</option>
                 </select>
 
-                <select id="reg-gender"><option value="male">Чоловіча</option><option value="female">Жіноча</option></select>
+                <select id="reg-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
                 <div style="display: flex; gap: 10px;">
                     <input type="number" id="reg-age" placeholder="Вік (років)" inputmode="numeric" pattern="[0-9]*">
                     <input type="number" id="reg-height" placeholder="Зріст (см)" inputmode="numeric" pattern="[0-9]*">
@@ -229,7 +230,6 @@
     <div class="screen" id="main-app-window">
         <div class="app-window">
             
-            <!-- АВАТАР - ВХІД В ПРОФІЛЬ -->
             <div class="avatar-container" onclick="openProfileTab()"><div class="avatar-logo"></div></div>
 
             <!-- САЙДБАР (ДЛЯ ПК) -->
@@ -289,20 +289,21 @@
                 <div id="tab-workout" class="tab-content">
                     <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
                     
-                    <div class="filter-tabs">
+                    <!-- Перемикач режимів (Буде прихований у Звичайному профілі) -->
+                    <div class="filter-tabs" id="workout-mode-tabs">
                         <div id="btn-mode-extended" class="filter-tab active" onclick="setWorkoutMode('extended')">Розширене (Live)</div>
-                        <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')">Звичайний режим</div>
+                        <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')">Ручний ввід / Годинник</div>
                     </div>
 
-                    <!-- Швидкий запис Apple Watch у звичайному режимі -->
-                    <div id="simple-aw-container" style="display: none;">
+                    <!-- Швидкий запис Apple Watch (Видно лише в PRO якщо обрано спрощений) -->
+                    <div id="simple-aw-container" style="display: none; animation: slideInUpItem 0.4s var(--bezier) forwards;">
                         <div style="background: var(--card-bg); padding: 20px; border-radius: 30px; margin-bottom: 20px; border: 1px solid var(--glass-border);">
-                            <h4 style="color: var(--gold); margin-bottom: 15px; text-align: center;">⌚ Швидкий запис з Apple Watch</h4>
+                            <h4 style="color: var(--gold); margin-bottom: 15px; text-align: center;">⌚ Дані з Apple Watch</h4>
                             <div style="display: flex; gap: 12px;">
                                 <input type="number" id="simp-aw-time" placeholder="Час (хв)" inputmode="numeric" pattern="[0-9]*" style="margin:0;">
                                 <input type="number" id="simp-aw-kcal" placeholder="Ккал" inputmode="numeric" pattern="[0-9]*" style="margin:0;">
                             </div>
-                            <button onclick="logAppleWatch()" style="margin-top: 15px; width: 100%; border-radius: 16px;">Записати</button>
+                            <button onclick="logAppleWatch()" style="margin-top: 15px; width: 100%; border-radius: 16px;">Записати тренування</button>
                         </div>
                     </div>
 
@@ -352,7 +353,7 @@
         </div>
     </div>
 
-    <!-- НИЖНЯ НАВІГАЦІЯ (3 КНОПКИ) -->
+    <!-- НИЖНЯ НАВІГАЦІЯ (3 КНОПКИ ДЛЯ МОБАЙЛУ) -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard"><span class="nav-icon"><i class="fa-solid fa-bolt"></i></span><span>Статус</span></div>
         <div class="nav-item" data-target="tab-food"><span class="nav-icon"><i class="fa-solid fa-utensils"></i></span><span>Раціон</span></div>
@@ -547,6 +548,20 @@
             let savedMode = localStorage.getItem('achilles_app_mode') || 'pro';
             document.getElementById('edit-app-mode').value = savedMode;
 
+            // Налаштування UI вкладки "Зал" залежно від режиму додатку
+            const modeTabs = document.getElementById('workout-mode-tabs');
+            const awContainer = document.getElementById('simple-aw-container');
+            
+            if(savedMode === 'simple') {
+                if(modeTabs) modeTabs.style.display = 'none';
+                if(awContainer) awContainer.style.display = 'none';
+                currentWorkoutMode = 'manual';
+            } else {
+                if(modeTabs) modeTabs.style.display = 'flex';
+                setWorkoutMode('extended'); 
+            }
+
+            searchWorkout();
             updateGoalDisplay();
         }
 
@@ -724,7 +739,7 @@
                             <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                         </div>
                         <div style="display: flex; width: 100%; gap: 10px;">
-                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
                             <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
                         </div>
                     </div>`;
@@ -768,7 +783,7 @@
                                         <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                                     </div>
                                     <div style="display: flex; width: 100%; gap: 10px;">
-                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
                                         <button class="add-btn" onclick="addFood('${itemJson}', '${uniqueId}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
                                     </div>
                                 </div>`;
@@ -805,13 +820,17 @@
         // ==========================================
         function setWorkoutMode(mode) {
             currentWorkoutMode = mode;
-            document.getElementById('btn-mode-extended').classList.toggle('active', mode === 'extended');
-            document.getElementById('btn-mode-simple').classList.toggle('active', mode === 'simple');
+            let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             
-            if(mode === 'simple') {
-                document.getElementById('simple-aw-container').style.display = 'block';
-            } else {
-                document.getElementById('simple-aw-container').style.display = 'none';
+            if (appMode === 'pro') {
+                document.getElementById('btn-mode-extended').classList.toggle('active', mode === 'extended');
+                document.getElementById('btn-mode-simple').classList.toggle('active', mode === 'simple');
+                
+                if(mode === 'simple') {
+                    document.getElementById('simple-aw-container').style.display = 'block';
+                } else {
+                    document.getElementById('simple-aw-container').style.display = 'none';
+                }
             }
             searchWorkout();
         }
@@ -833,7 +852,12 @@
         function searchWorkout() {
             const query = document.getElementById('workout-search').value.toLowerCase().trim();
             let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
+            let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             let filtered = window.workoutDB;
+            
+            if (appMode === 'simple') {
+                filtered = filtered.filter(w => !w.name.includes('Apple Watch'));
+            }
             
             if (currentWorkoutFilter === 'fav') filtered = filtered.filter(w => favs.includes(w.name));
             if (query.length > 0) filtered = filtered.filter(w => w.name.toLowerCase().includes(query) || w.desc.toLowerCase().includes(query));
@@ -844,6 +868,7 @@
         function renderWorkouts(db = window.workoutDB) {
             const container = document.getElementById('workout-list-container');
             let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
+            let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
 
             if(db.length === 0) { container.innerHTML = '<div class="list-item" style="color: var(--text-muted); text-align:center; padding: 20px; border: none;">Нічого не знайдено</div>'; return; }
             
@@ -851,10 +876,9 @@
                 let isFav = favs.includes(w.name);
                 let actionArea = '';
                 
-                if (currentWorkoutMode === 'extended') {
+                if (appMode === 'pro' && currentWorkoutMode === 'extended') {
                     actionArea = `<button class="add-btn" onclick="openLiveWorkout('${w.name}', ${w.factor})" style="margin:0; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px;">▶ Почати Live</button>`;
                 } else {
-                    // Звичайний (Спрощений) Режим
                     if (w.desc.includes('хвилинах') || w.desc.includes('секундах')) {
                         let placeholder = w.desc.includes('хвилинах') ? 'Час (хв)' : 'Час (сек)';
                         actionArea = `
@@ -902,7 +926,6 @@
             let burnedKcal = Math.round(totalReps * factor);
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             
-            // Формуємо красивий текст підходів з вагою
             let setsDetails = repsArr.map((r, i) => {
                 let w = weightArr[i] !== undefined ? weightArr[i] : (weightArr.length > 0 ? weightArr[weightArr.length - 1] : 0);
                 return w > 0 ? `${r}x${w}кг` : `${r} разів`;
