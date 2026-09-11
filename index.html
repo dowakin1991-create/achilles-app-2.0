@@ -147,7 +147,7 @@
         .live-timer.rest { color: var(--gold); }
         .live-controls { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center;}
         .live-btn-main { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-size: 26px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 20px 50px rgba(212, 175, 55, 0.3); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; transition: all 0.3s var(--bezier); }
-        .live-btn-main:active { transform: scale(0.92); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); }
+        .live-btn-main:active { transform: scale(0.92); }
         .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
 
         @media (max-width: 768px) {
@@ -164,6 +164,10 @@
             .main-content { padding: 60px 20px 30px; }
             .avatar-container { top: -50px; width: 100px; height: 100px; min-height: 100px; border-radius: 26px;}
         }
+
+        .sync-icon { font-size: 14px; color: var(--success); margin-left: 8px; opacity: 0; transition: opacity 0.5s; }
+        .link-btn { text-align: center; margin-top: 20px; color: var(--gold); cursor: pointer; font-weight: 600; transition: opacity 0.3s; }
+        .link-btn:active { opacity: 0.6; }
     </style>
 </head>
 <body class="dark"> 
@@ -188,40 +192,62 @@
         </div>
     </div>
 
+    <!-- ВІКНО ЛОГІНЕННЯ -->
+    <div class="screen" id="login-window">
+        <div class="app-window" style="max-width: 400px; flex-direction: column; margin-top: 150px;">
+            <div class="avatar-container"><div class="avatar-logo"></div></div>
+            <div class="main-content">
+                <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Вхід в Achilles</h2>
+                <!-- Форма потрібна для Face ID / збереження паролів в iOS -->
+                <form onsubmit="event.preventDefault(); attemptLogin();">
+                    <input type="text" id="login-username" placeholder="Логін" autocomplete="username" required>
+                    <input type="password" id="login-password" placeholder="Пароль" autocomplete="current-password" required>
+                    <button type="submit" id="login-btn" style="margin-top: 25px; padding: 20px; font-size: 18px; border-radius: 24px;">Увійти</button>
+                </form>
+                <div class="link-btn" onclick="showScreen('registration-window')">Створити новий профіль</div>
+            </div>
+        </div>
+    </div>
+
     <!-- ВІКНО РЕЄСТРАЦІЇ -->
     <div class="screen" id="registration-window">
         <div class="app-window" style="max-width: 450px; flex-direction: column;">
             <div class="avatar-container"><div class="avatar-logo"></div></div>
             <div class="main-content">
-                <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Профіль Воїна</h2>
-                <input type="text" id="reg-name" placeholder="Ім'я">
+                <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Новий Воїн</h2>
                 
-                <select id="reg-app-mode">
-                    <option value="" disabled selected>Режим додатку</option>
-                    <option value="simple">Звичайний (Тільки запис, без калорій)</option>
-                    <option value="pro">PRO (Трекінг спалених калорій)</option>
-                </select>
+                <form onsubmit="event.preventDefault(); completeRegistration();">
+                    <input type="text" id="reg-name" placeholder="Логін (Унікальне ім'я)" autocomplete="username" required>
+                    <input type="password" id="reg-password" placeholder="Придумай пароль" autocomplete="new-password" required>
+                    
+                    <select id="reg-app-mode" required>
+                        <option value="" disabled selected>Режим додатку</option>
+                        <option value="simple">Звичайний (Тільки запис, без калорій)</option>
+                        <option value="pro">PRO (Трекінг спалених калорій)</option>
+                    </select>
 
-                <select id="reg-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
-                <div style="display: flex; gap: 10px;">
-                    <input type="number" id="reg-age" placeholder="Вік (років)" inputmode="numeric" pattern="[0-9]*">
-                    <input type="number" id="reg-height" placeholder="Зріст (см)" inputmode="numeric" pattern="[0-9]*">
-                </div>
-                <input type="number" id="reg-weight" placeholder="Поточна вага (кг)" inputmode="decimal">
-                <select id="reg-activity">
-                    <option value="" disabled selected>Рівень активності</option>
-                    <option value="1.2">Мінімальна (Сидяча робота)</option>
-                    <option value="1.375">Слабка (Тренування 1-3 рази/тиж)</option>
-                    <option value="1.55">Середня (Тренування 3-5 разів/тиж)</option>
-                    <option value="1.725">Висока (Тренування щодня)</option>
-                </select>
-                <select id="reg-goal">
-                    <option value="" disabled selected>Твоя мета</option>
-                    <option value="lose">Схуднути (Дефіцит)</option>
-                    <option value="maintain">Підтримка ваги</option>
-                    <option value="gain">Набір маси (Профіцит)</option>
-                </select>
-                <button onclick="completeRegistration()" style="margin-top: 25px; padding: 20px; font-size: 18px; border-radius: 24px;">Увійти в Achilles</button>
+                    <select id="reg-gender" required><option value="" disabled selected>Стать</option><option value="male">Чоловік</option><option value="female">Жінка</option></select>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="reg-age" placeholder="Вік (років)" inputmode="numeric" pattern="[0-9]*" required>
+                        <input type="number" id="reg-height" placeholder="Зріст (см)" inputmode="numeric" pattern="[0-9]*" required>
+                    </div>
+                    <input type="number" id="reg-weight" placeholder="Поточна вага (кг)" inputmode="decimal" required>
+                    <select id="reg-activity" required>
+                        <option value="" disabled selected>Рівень активності</option>
+                        <option value="1.2">Мінімальна (Сидяча робота)</option>
+                        <option value="1.375">Слабка (Тренування 1-3 рази/тиж)</option>
+                        <option value="1.55">Середня (Тренування 3-5 разів/тиж)</option>
+                        <option value="1.725">Висока (Тренування щодня)</option>
+                    </select>
+                    <select id="reg-goal" required>
+                        <option value="" disabled selected>Твоя мета</option>
+                        <option value="lose">Схуднути (Дефіцит)</option>
+                        <option value="maintain">Підтримка ваги</option>
+                        <option value="gain">Набір маси (Профіцит)</option>
+                    </select>
+                    <button type="submit" id="reg-btn" style="margin-top: 25px; padding: 20px; font-size: 18px; border-radius: 24px;">Зареєструватися</button>
+                </form>
+                <div class="link-btn" onclick="showScreen('login-window')">Вже є профіль? Увійти</div>
             </div>
         </div>
     </div>
@@ -245,7 +271,7 @@
                 
                 <!-- ДЕШБОРД ТА ВАГА -->
                 <div id="tab-dashboard" class="tab-content active">
-                    <h1 id="greeting-header">Привіт, <span>Спартанцю</span></h1>
+                    <h1 id="greeting-header">Привіт, <span id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
                     <p id="user-goal-text" style="text-align: center; margin-bottom: 30px;">Аналізуємо...</p>
                     
                     <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
@@ -289,14 +315,13 @@
                 <div id="tab-workout" class="tab-content">
                     <h1>Твої <span>ТРЕНУВАННЯ</span></h1>
                     
-                    <!-- Перемикач режимів (Буде прихований у Звичайному профілі) -->
                     <div class="filter-tabs" id="workout-mode-tabs">
                         <div id="btn-mode-extended" class="filter-tab active" onclick="setWorkoutMode('extended')">Розширене (Live)</div>
                         <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')">Ручний ввід / Годинник</div>
                     </div>
 
-                    <!-- Швидкий запис Apple Watch (Видно лише в PRO якщо обрано спрощений) -->
-                    <div id="simple-aw-container" style="display: none; animation: slideInUpItem 0.4s var(--bezier) forwards;">
+                    <!-- Блок Apple Watch (Видно лише в PRO якщо обрано ручний) -->
+                    <div id="simple-aw-container" style="display: none;">
                         <div style="background: var(--card-bg); padding: 20px; border-radius: 30px; margin-bottom: 20px; border: 1px solid var(--glass-border);">
                             <h4 style="color: var(--gold); margin-bottom: 15px; text-align: center;">⌚ Дані з Apple Watch</h4>
                             <div style="display: flex; gap: 12px;">
@@ -307,7 +332,6 @@
                         </div>
                     </div>
 
-                    <!-- Фільтр улюблених -->
                     <div class="filter-tabs" style="background: transparent; border: none; padding: 0; margin-bottom: 15px;">
                         <div id="btn-all-workouts" class="filter-tab active" style="border: 1px solid var(--glass-border); border-radius: 20px;" onclick="setWorkoutFilter('all')">Усі вправи</div>
                         <div id="btn-fav-workouts" class="filter-tab" style="border: 1px solid var(--glass-border); border-radius: 20px; margin-left: 10px;" onclick="setWorkoutFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
@@ -327,7 +351,7 @@
                             <option value="pro">Режим: PRO (Трекінг спалених калорій)</option>
                         </select>
 
-                        <input type="text" id="edit-name" placeholder="Ім'я">
+                        <input type="text" id="edit-name" placeholder="Ім'я" disabled style="opacity: 0.5;"> <!-- Ім'я міняти не можна, бо це ID в хмарі -->
                         <select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
                         <div style="display: flex; gap: 12px;">
                             <input type="number" id="edit-age" placeholder="Вік" inputmode="numeric" pattern="[0-9]*">
@@ -347,7 +371,7 @@
                         <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти налаштування</button>
                     </div>
 
-                    <button class="danger" onclick="logout()" style="padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700;">Вийти / Очистити дані</button>
+                    <button class="danger" onclick="logout()" style="padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700;">Вийти з акаунту</button>
                 </div>
             </div>
         </div>
@@ -360,10 +384,28 @@
         <div class="nav-item" data-target="tab-workout"><span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span><span>Зал</span></div>
     </nav>
 
-    <!-- МЕГА-БАЗА ТА ЛОГІКА -->
-    <script>
+    <!-- FIREBASE MODULE SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjT5UjvgTs396KGsVtPrOEUrnkUi6LD1I",
+            authDomain: "achilles-8de53.firebaseapp.com",
+            projectId: "achilles-8de53",
+            storageBucket: "achilles-8de53.firebasestorage.app",
+            messagingSenderId: "842206429977",
+            appId: "1:842206429977:web:eb78b2a92587395999bb88"
+        };
+        
+        let app, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+        } catch(e) { console.error("Firebase init error", e); }
+
         // ==========================================
-        // БАЗА ЇЖІ 
+        // БАЗИ ДАНИХ
         // ==========================================
         window.foodDB = [
             { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
@@ -391,34 +433,28 @@
             { name: "Рис білий (варений)", kcal: 130, p: 2.7, f: 0.3, c: 28, fiber: 0.4 },
             { name: "Вівсянка (суха)", kcal: 389, p: 16.9, f: 6.9, c: 66, fiber: 10.0 },
             { name: "Макарони твердих сортів (сухі)", kcal: 350, p: 12, f: 1.5, c: 71, fiber: 3.2 },
-            { name: "Борщ український (з м'ясом)", kcal: 65, p: 3, f: 4, c: 5, fiber: 1.8 },
+            { name: "Борщ український", kcal: 65, p: 3, f: 4, c: 5, fiber: 1.8 },
             { name: "Вареники з картоплею", kcal: 180, p: 5, f: 4, c: 31, fiber: 1.5 },
-            { name: "Деруни (смажені зі сметаною)", kcal: 230, p: 4, f: 15, c: 20, fiber: 2.0 },
+            { name: "Деруни (смажені)", kcal: 230, p: 4, f: 15, c: 20, fiber: 2.0 },
             { name: "Сирники (смажені)", kcal: 220, p: 14, f: 11, c: 16, fiber: 0.5 },
             { name: "Піца Маргарита", kcal: 266, p: 11, f: 10, c: 33, fiber: 2.5 },
-            { name: "Бургер з яловичиною (МакДональдз)", kcal: 254, p: 13, f: 10, c: 30, fiber: 1.5 },
+            { name: "Бургер з яловичиною", kcal: 254, p: 13, f: 10, c: 30, fiber: 1.5 },
             { name: "Картопля фрі", kcal: 312, p: 3.4, f: 15, c: 41, fiber: 3.8 },
-            { name: "Шаурма (курка, класична)", kcal: 220, p: 9, f: 10, c: 22, fiber: 1.5 },
+            { name: "Шаурма (курка)", kcal: 220, p: 9, f: 10, c: 22, fiber: 1.5 },
             { name: "Суші (Філадельфія)", kcal: 175, p: 6.5, f: 5.3, c: 25, fiber: 0.5 },
             { name: "Суші (Каліфорнія)", kcal: 150, p: 5.5, f: 3.2, c: 26, fiber: 0.8 },
             { name: "Сир кисломолочний 5%", kcal: 121, p: 17, f: 5, c: 1.8, fiber: 0 },
             { name: "Сметана 15%", kcal: 162, p: 2.6, f: 15, c: 3, fiber: 0 },
             { name: "Молоко 2.5%", kcal: 52, p: 2.8, f: 2.5, c: 4.7, fiber: 0 },
-            { name: "Твердий сир (Голландський)", kcal: 350, p: 26, f: 27, c: 0, fiber: 0 },
+            { name: "Твердий сир", kcal: 350, p: 26, f: 27, c: 0, fiber: 0 },
             { name: "Еспресо / Американо", kcal: 2, p: 0.1, f: 0, c: 0, fiber: 0 },
             { name: "Капучино (без цукру)", kcal: 75, p: 3.4, f: 3.6, c: 7.4, fiber: 0 },
-            { name: "Протеїн (Whey Protein)", kcal: 380, p: 80, f: 4, c: 6, fiber: 0 },
+            { name: "Протеїн (Whey)", kcal: 380, p: 80, f: 4, c: 6, fiber: 0 },
             { name: "Шоколад чорний (70%+)", kcal: 598, p: 7.8, f: 42.6, c: 36, fiber: 10.9 },
-            { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 },
-            { name: "Пиво світле", kcal: 43, p: 0.5, f: 0, c: 3.6, fiber: 0 },
-            { name: "Вино сухе (червоне/біле)", kcal: 68, p: 0.2, f: 0, c: 2.5, fiber: 0 }
+            { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 }
         ];
 
-        // ==========================================
-        // БАЗА ТРЕНУВАНЬ 
-        // ==========================================
         window.workoutDB = [
-            { name: "Вільне тренування (Apple Watch)", desc: "Вводь час у хвилинах.", factor: 6.0 },
             { name: "Біг (вулиця / доріжка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 11.0 },
             { name: "Велосипед / Велотренажер", desc: "Кардіо. Вводь час у хвилинах.", factor: 8.0 },
             { name: "Еліпсоїд (Орбітрек)", desc: "Кардіо. Вводь час у хвилинах.", factor: 9.0 },
@@ -436,7 +472,7 @@
             { name: "Тяга штанги в нахилі", desc: "Спина (База).", factor: 0.6 },
             { name: "Тяга гантелі в нахилі", desc: "Спина.", factor: 0.5 },
             { name: "Шраги з гантелями/штангою", desc: "Трапеція.", factor: 0.3 },
-            { name: "Жим штанги стоячи (Армійський)", desc: "Плечі (База).", factor: 0.5 },
+            { name: "Жим штанги стоячи", desc: "Плечі (База).", factor: 0.5 },
             { name: "Жим гантелей сидячи", desc: "Плечі.", factor: 0.4 },
             { name: "Махи гантелями в сторони", desc: "Середні дельти.", factor: 0.3 },
             { name: "Підйом штанги на біцепс", desc: "Біцепс.", factor: 0.4 },
@@ -453,33 +489,156 @@
             { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 }
         ];
 
-        let consumedCalories = 0; let workoutBonus = 0;
-        let macros = { p: 0, f: 0, c: 0 }; let targetMacros = { p: 0, f: 0, c: 0 };
-        
-        let currentWorkoutMode = 'extended'; 
-        let liveWorkout = null; 
-        let currentWorkoutFilter = 'all';
+        // ГЛОБАЛЬНИЙ СТАН
+        window.todayDate = new Date().toISOString().split('T')[0];
+        window.consumedCalories = 0; 
+        window.workoutBonus = 0;
+        window.macros = { p: 0, f: 0, c: 0 }; 
+        window.targetMacros = { p: 0, f: 0, c: 0 };
+        window.currentWorkoutMode = 'extended'; 
+        window.currentWorkoutFilter = 'all';
+        window.liveWorkout = null; 
 
-        window.onload = () => { 
-            document.documentElement.classList.add('dark');
-            renderWorkouts(window.workoutDB);
-            bootApp(); 
-        };
-
-        function bootApp() {
-            if (localStorage.getItem('achilles_user')) {
-                loadUserData();
-                renderWeightChart();
-                document.getElementById('main-app-window').classList.add('active-block');
-            } else { 
-                document.getElementById('registration-window').classList.add('active-block');
-            }
+        // ==========================================
+        // ЛОГІКА ЕКРАНІВ
+        // ==========================================
+        window.showScreen = function(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-block'));
+            document.getElementById(screenId).classList.add('active-block');
         }
 
         // ==========================================
-        // МАТЕМАТИКА ПРОФІЛЮ ТА РЕЖИМИ
+        // ХМАРНА СИНХРОНІЗАЦІЯ (FIREBASE)
         // ==========================================
-        function calculateNorms(gender, weight, height, age, activity, goal) {
+        window.syncToCloud = async function() {
+            const userName = localStorage.getItem('achilles_user');
+            if(!userName || !db) return;
+
+            const icon = document.getElementById('sync-icon');
+            if(icon) { icon.style.opacity = '1'; setTimeout(() => icon.style.opacity = '0', 2000); }
+
+            const dataToSave = {
+                profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
+                appMode: localStorage.getItem('achilles_app_mode') || 'pro',
+                baseKcal: localStorage.getItem('achilles_base_kcal') || 2000,
+                goalText: localStorage.getItem('achilles_goal_text') || '',
+                targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
+                weightHistory: JSON.parse(localStorage.getItem('achilles_weight_history')) || [],
+                favWorkouts: JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [],
+                daily: {
+                    date: window.todayDate,
+                    consumedCalories: window.consumedCalories,
+                    workoutBonus: window.workoutBonus,
+                    macros: window.macros,
+                    logHtml: document.getElementById('eaten-list').innerHTML
+                }
+            };
+            
+            try { await setDoc(doc(db, "users", userName), dataToSave); } 
+            catch(e) { console.error("Cloud Sync Error", e); }
+        };
+
+        window.loadFromCloud = async function(userName) {
+            if(!db) return false;
+            try {
+                const docSnap = await getDoc(doc(db, "users", userName));
+                if (docSnap.exists()) {
+                    const d = docSnap.data();
+                    
+                    localStorage.setItem('achilles_profile', JSON.stringify(d.profile));
+                    localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
+                    localStorage.setItem('achilles_base_kcal', d.baseKcal);
+                    localStorage.setItem('achilles_goal_text', d.goalText);
+                    localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros));
+                    localStorage.setItem('achilles_weight_history', JSON.stringify(d.weightHistory || []));
+                    localStorage.setItem('achilles_fav_workouts', JSON.stringify(d.favWorkouts || []));
+                    
+                    if(d.daily && d.daily.date === window.todayDate) {
+                        window.consumedCalories = d.daily.consumedCalories || 0;
+                        window.workoutBonus = d.daily.workoutBonus || 0;
+                        window.macros = d.daily.macros || {p:0, f:0, c:0};
+                        document.getElementById('eaten-list').innerHTML = d.daily.logHtml || 'Поки що нічого.';
+                    } else {
+                        window.consumedCalories = 0; window.workoutBonus = 0; window.macros = {p:0,f:0,c:0};
+                        document.getElementById('eaten-list').innerHTML = 'Поки що нічого. Час підкріпитися або потренуватися!';
+                        window.syncToCloud();
+                    }
+                    return true;
+                }
+            } catch(e) { console.error("Cloud Load Error", e); }
+            return false;
+        };
+
+        // ==========================================
+        // ІНІЦІАЛІЗАЦІЯ
+        // ==========================================
+        window.onload = async () => { 
+            document.documentElement.classList.add('dark');
+            const userName = localStorage.getItem('achilles_user');
+            
+            if (userName) {
+                window.loadUserData();
+                window.renderWeightChart();
+                window.showScreen('main-app-window');
+                
+                const loaded = await window.loadFromCloud(userName);
+                if(loaded) {
+                    window.loadUserData();
+                    window.renderWeightChart();
+                    window.updateGoalDisplay();
+                    window.searchWorkout();
+                }
+            } else { 
+                window.showScreen('login-window');
+            }
+        };
+
+        // ==========================================
+        // АВТОРИЗАЦІЯ ТА РЕЄСТРАЦІЯ
+        // ==========================================
+        window.attemptLogin = async function() {
+            const user = document.getElementById('login-username').value.trim();
+            const pass = document.getElementById('login-password').value;
+            if(!user || !pass) { alert("Введіть логін та пароль!"); return; }
+
+            const btn = document.getElementById('login-btn');
+            btn.innerText = "Завантаження...";
+            
+            try {
+                if(!db) throw new Error("Firebase not ready");
+                const docSnap = await getDoc(doc(db, "users", user));
+                
+                if(docSnap.exists()) {
+                    const d = docSnap.data();
+                    if(d.profile && d.profile.password === pass) {
+                        localStorage.setItem('achilles_user', user);
+                        await window.loadFromCloud(user);
+                        window.loadUserData();
+                        window.renderWeightChart();
+                        window.showScreen('main-app-window');
+                    } else {
+                        alert("Неправильний пароль!");
+                    }
+                } else {
+                    alert("Користувача не знайдено. Створіть профіль!");
+                }
+            } catch(e) {
+                console.error(e);
+                // Офлайн фолбек
+                const localUser = localStorage.getItem('achilles_user');
+                const localProf = JSON.parse(localStorage.getItem('achilles_profile'));
+                if(localUser === user && localProf && localProf.password === pass) {
+                    window.loadUserData();
+                    window.renderWeightChart();
+                    window.showScreen('main-app-window');
+                } else {
+                    alert("Помилка підключення до хмари.");
+                }
+            }
+            btn.innerText = "Увійти";
+        };
+
+        window.calculateNorms = function(gender, weight, height, age, activity, goal) {
             let bmr = (10 * weight) + (6.25 * height) - (5 * age);
             bmr += (gender === 'male') ? 5 : -161;
             let tdee = bmr * parseFloat(activity);
@@ -495,10 +654,11 @@
             if(targetC < 0) targetC = 0;
 
             return { kcal: Math.round(targetKcal), goalText: goalText, p: Math.round(targetP), f: Math.round(targetF), c: Math.round(targetC) };
-        }
+        };
 
-        function completeRegistration() {
-            const name = document.getElementById('reg-name').value;
+        window.completeRegistration = async function() {
+            const name = document.getElementById('reg-name').value.trim();
+            const pass = document.getElementById('reg-password').value;
             const gender = document.getElementById('reg-gender').value;
             const age = parseInt(document.getElementById('reg-age').value);
             const height = parseFloat(document.getElementById('reg-height').value);
@@ -507,11 +667,25 @@
             const goal = document.getElementById('reg-goal').value;
             const appMode = document.getElementById('reg-app-mode').value;
             
-            if(!name || !age || !height || !weight || !activity || !goal || !appMode) { alert('Заповни всі поля!'); return; }
+            if(!name || !pass || !age || !height || !weight || !activity || !goal || !appMode) { alert('Заповни всі поля!'); return; }
 
-            const norms = calculateNorms(gender, weight, height, age, activity, goal);
+            const btn = document.getElementById('reg-btn');
+            btn.innerText = "Створення...";
 
-            let profile = { name, gender, age, height, activity, goal };
+            if(db) {
+                try {
+                    const docSnap = await getDoc(doc(db, "users", name));
+                    if(docSnap.exists()) {
+                        alert("Це ім'я вже зайняте! Придумай інше.");
+                        btn.innerText = "Зареєструватися";
+                        return;
+                    }
+                } catch(e) {}
+            }
+
+            const norms = window.calculateNorms(gender, weight, height, age, activity, goal);
+
+            let profile = { name, password: pass, gender, age, height, activity, goal };
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
@@ -519,18 +693,21 @@
             localStorage.setItem('achilles_goal_text', norms.goalText);
             localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
 
-            logNewWeight(weight);
+            window.logNewWeight(weight);
             
-            document.getElementById('registration-window').classList.remove('active-block');
-            setTimeout(() => { loadUserData(); renderWeightChart(); document.getElementById('main-app-window').classList.add('active-block'); }, 50);
-        }
+            window.loadUserData(); 
+            window.renderWeightChart(); 
+            await window.syncToCloud(); 
+            window.showScreen('main-app-window');
+        };
 
-        function loadUserData() {
-            document.getElementById('greeting-header').innerHTML = `Привіт, <span>${localStorage.getItem('achilles_user')}</span>`;
+        window.loadUserData = function() {
+            const uName = localStorage.getItem('achilles_user');
+            document.getElementById('display-username').innerText = uName;
             document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
             
             let m = JSON.parse(localStorage.getItem('achilles_macros')) || {p: 0, f: 0, c: 0};
-            targetMacros = m;
+            window.targetMacros = m;
             document.getElementById('target-p').innerText = `/ ${m.p}г`;
             document.getElementById('target-f').innerText = `/ ${m.f}г`;
             document.getElementById('target-c').innerText = `/ ${m.c}г`;
@@ -548,24 +725,23 @@
             let savedMode = localStorage.getItem('achilles_app_mode') || 'pro';
             document.getElementById('edit-app-mode').value = savedMode;
 
-            // Налаштування UI вкладки "Зал" залежно від режиму додатку
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
             
             if(savedMode === 'simple') {
                 if(modeTabs) modeTabs.style.display = 'none';
                 if(awContainer) awContainer.style.display = 'none';
-                currentWorkoutMode = 'manual';
+                window.currentWorkoutMode = 'manual';
             } else {
                 if(modeTabs) modeTabs.style.display = 'flex';
-                setWorkoutMode('extended'); 
+                window.setWorkoutMode('extended'); 
             }
 
-            searchWorkout();
-            updateGoalDisplay();
-        }
+            window.searchWorkout();
+            window.updateGoalDisplay();
+        };
 
-        function saveProfile() {
+        window.saveProfile = function() {
             const name = document.getElementById('edit-name').value;
             const gender = document.getElementById('edit-gender').value;
             const age = parseInt(document.getElementById('edit-age').value);
@@ -579,47 +755,50 @@
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let weight = history.length > 0 ? history[history.length - 1].weight : 80;
 
-            const norms = calculateNorms(gender, weight, height, age, activity, goal);
+            const norms = window.calculateNorms(gender, weight, height, age, activity, goal);
 
-            let profile = { name, gender, age, height, activity, goal };
+            let profile = JSON.parse(localStorage.getItem('achilles_profile')) || {};
+            profile = { ...profile, name, gender, age, height, activity, goal };
+            
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
-            localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
             localStorage.setItem('achilles_base_kcal', norms.kcal); 
             localStorage.setItem('achilles_goal_text', norms.goalText);
             localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
 
+            window.loadUserData();
+            window.syncToCloud();
             alert('Профіль успішно оновлено!');
-            loadUserData();
-        }
+        };
 
         // ==========================================
-        // ГРАФІК ВАГИ
+        // ВАГА
         // ==========================================
-        function logNewWeight(w) {
+        window.logNewWeight = function(w) {
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let today = new Date().toISOString().split('T')[0].slice(5); 
             history.push({ date: today, weight: w });
             localStorage.setItem('achilles_weight_history', JSON.stringify(history));
-        }
+        };
 
-        function logWeight() {
+        window.logWeight = function() {
             const w = parseFloat(document.getElementById('new-weight-input').value);
             if(!w) return;
-            logNewWeight(w);
+            window.logNewWeight(w);
             document.getElementById('new-weight-input').value = '';
             
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
-                const norms = calculateNorms(prof.gender, w, prof.height, prof.age, prof.activity, prof.goal);
+                const norms = window.calculateNorms(prof.gender, w, prof.height, prof.age, prof.activity, prof.goal);
                 localStorage.setItem('achilles_base_kcal', norms.kcal); 
                 localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
-                loadUserData();
+                window.loadUserData();
             }
-            renderWeightChart();
-        }
+            window.renderWeightChart();
+            window.syncToCloud();
+        };
 
-        function renderWeightChart() {
+        window.renderWeightChart = function() {
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let container = document.getElementById('weight-chart-container');
             if (history.length === 0) return;
@@ -637,36 +816,49 @@
             });
             html += '</div>';
             container.innerHTML = html;
-        }
+        };
 
         // ==========================================
-        // ДЕШБОРД ТА НАВІГАЦІЯ
+        // ДЕШБОРД
         // ==========================================
-        function updateGoalDisplay() {
+        window.updateGoalDisplay = function() {
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
             
-            const finalGoal = appMode === 'pro' ? baseKcal + workoutBonus : baseKcal; 
+            const finalGoal = appMode === 'pro' ? baseKcal + window.workoutBonus : baseKcal; 
             document.getElementById('calories-goal').textContent = finalGoal;
             
-            let percent = (consumedCalories / finalGoal) * 100;
+            let percent = (window.consumedCalories / finalGoal) * 100;
             if(percent > 100) percent = 100;
             
             requestAnimationFrame(() => {
                 document.getElementById('calorie-progress').style.width = percent + '%';
-                document.getElementById('macro-p').innerText = Math.round(macros.p);
-                document.getElementById('macro-f').innerText = Math.round(macros.f);
-                document.getElementById('macro-c').innerText = Math.round(macros.c);
+                document.getElementById('macro-p').innerText = Math.round(window.macros.p);
+                document.getElementById('macro-f').innerText = Math.round(window.macros.f);
+                document.getElementById('macro-c').innerText = Math.round(window.macros.c);
 
                 const msgObj = document.getElementById('bonus-kcal-msg');
-                if(workoutBonus > 0 && appMode === 'pro') {
+                if(window.workoutBonus > 0 && appMode === 'pro') {
                     msgObj.style.display = 'inline-block';
-                    msgObj.innerText = `🔥 Тренування: +${workoutBonus} ккал`;
+                    msgObj.innerText = `🔥 Тренування: +${window.workoutBonus} ккал`;
                 } else { 
                     msgObj.style.display = 'none'; 
                 }
             });
-        }
+        };
+
+        window.addLogEntry = function(html) {
+            const list = document.getElementById('eaten-list');
+            if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
+            const entry = document.createElement('div');
+            entry.style.padding = '15px 0';
+            entry.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+            entry.innerHTML = html;
+            list.appendChild(entry);
+            window.updateGoalDisplay();
+            window.syncToCloud();
+            document.querySelector('[data-target="tab-dashboard"]').click();
+        };
 
         const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
         const tabContents = document.querySelectorAll('.tab-content');
@@ -675,42 +867,26 @@
             item.addEventListener('click', () => {
                 const targetId = item.getAttribute('data-target');
                 allNavItems.forEach(mi => mi.classList.remove('active'));
-                
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(activeItem => { activeItem.classList.add('active'); });
-                
                 tabContents.forEach(tc => { tc.classList.remove('active'); });
-                const targetTab = document.getElementById(targetId);
-                targetTab.classList.add('active');
+                document.getElementById(targetId).classList.add('active');
             });
         });
 
-        function openProfileTab() {
+        window.openProfileTab = function() {
             allNavItems.forEach(mi => mi.classList.remove('active'));
             document.querySelectorAll(`[data-target="tab-profile"]`).forEach(activeItem => { activeItem.classList.add('active'); });
             tabContents.forEach(tc => { tc.classList.remove('active'); });
-            const targetTab = document.getElementById('tab-profile');
-            targetTab.classList.add('active');
-        }
-
-        function addLogEntry(html) {
-            const list = document.getElementById('eaten-list');
-            if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
-            const entry = document.createElement('div');
-            entry.style.padding = '15px 0';
-            entry.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
-            entry.innerHTML = html;
-            list.appendChild(entry);
-            updateGoalDisplay();
-            document.querySelector('[data-target="tab-dashboard"]').click();
-        }
+            document.getElementById('tab-profile').classList.add('active');
+        };
 
         // ==========================================
-        // ЇЖА (ЛОКАЛЬНА + OPEN FOOD FACTS API)
+        // ЇЖА
         // ==========================================
         let searchTimeout;
         let currentAbortController = null;
 
-        function onSearchInput() {
+        window.onSearchInput = function() {
             clearTimeout(searchTimeout);
             const query = document.getElementById('food-search').value.toLowerCase().trim();
             if (currentAbortController) currentAbortController.abort();
@@ -721,11 +897,11 @@
                 return;
             }
             
-            renderLocalFoodSearch(query);
-            searchTimeout = setTimeout(() => searchOpenFoodFacts(query), 800);
-        }
+            window.renderLocalFoodSearch(query);
+            searchTimeout = setTimeout(() => window.searchOpenFoodFacts(query), 800);
+        };
 
-        function renderLocalFoodSearch(query) {
+        window.renderLocalFoodSearch = function(query) {
             const resultsBox = document.getElementById('food-results');
             const filtered = window.foodDB.filter(i => i.name.toLowerCase().includes(query));
             resultsBox.innerHTML = '';
@@ -739,14 +915,14 @@
                             <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                         </div>
                         <div style="display: flex; width: 100%; gap: 10px;">
-                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
                             <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
                         </div>
                     </div>`;
             });
-        }
+        };
 
-        async function searchOpenFoodFacts(query) {
+        window.searchOpenFoodFacts = async function(query) {
             const resultsBox = document.getElementById('food-results');
             document.getElementById('loading-spinner').style.display = 'block';
 
@@ -783,7 +959,7 @@
                                         <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                                     </div>
                                     <div style="display: flex; width: 100%; gap: 10px;">
-                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
                                         <button class="add-btn" onclick="addFood('${itemJson}', '${uniqueId}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
                                     </div>
                                 </div>`;
@@ -793,9 +969,9 @@
             } catch (err) {
                 if (err.name !== 'AbortError') document.getElementById('loading-spinner').style.display = 'none';
             }
-        }
+        };
 
-        function addFood(itemJsonStr, weightId) {
+        window.addFood = function(itemJsonStr, weightId) {
             const item = JSON.parse(itemJsonStr.replace(/&quot;/g, '"'));
             let weightInput = document.getElementById(weightId).value;
             let weight = parseFloat(weightInput);
@@ -804,68 +980,60 @@
             const ratio = weight / 100;
             const actualKcal = Math.round(item.kcal * ratio);
             
-            consumedCalories += actualKcal;
-            macros.p += item.p * ratio; macros.f += item.f * ratio; macros.c += item.c * ratio;
-            
-            document.getElementById('calories-consumed').textContent = consumedCalories;
+            window.consumedCalories += actualKcal;
+            window.macros.p += item.p * ratio; window.macros.f += item.f * ratio; window.macros.c += item.c * ratio;
             
             let logHtml = `🥗 <strong style="color: var(--text-main);">${item.name} (${weight}г)</strong><br><span style="font-size: 14px; opacity: 0.8; color: var(--gold);">${actualKcal} ккал</span> <span style="font-size: 12px; opacity: 0.6; color: var(--text-main);">| Б:${Math.round(item.p * ratio)} Ж:${Math.round(item.f * ratio)} В:${Math.round(item.c * ratio)}</span>`;
-            addLogEntry(logHtml);
+            window.addLogEntry(logHtml);
             
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
-        }
+        };
 
         // ==========================================
-        // ДВА РЕЖИМИ ТРЕНУВАНЬ
+        // ТРЕНУВАННЯ
         // ==========================================
-        function setWorkoutMode(mode) {
-            currentWorkoutMode = mode;
+        window.setWorkoutMode = function(mode) {
+            window.currentWorkoutMode = mode;
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             
             if (appMode === 'pro') {
                 document.getElementById('btn-mode-extended').classList.toggle('active', mode === 'extended');
                 document.getElementById('btn-mode-simple').classList.toggle('active', mode === 'simple');
-                
-                if(mode === 'simple') {
-                    document.getElementById('simple-aw-container').style.display = 'block';
-                } else {
-                    document.getElementById('simple-aw-container').style.display = 'none';
-                }
+                if(mode === 'simple') { document.getElementById('simple-aw-container').style.display = 'block'; } 
+                else { document.getElementById('simple-aw-container').style.display = 'none'; }
             }
-            searchWorkout();
-        }
+            window.searchWorkout();
+        };
 
-        function setWorkoutFilter(filter) {
-            currentWorkoutFilter = filter;
+        window.setWorkoutFilter = function(filter) {
+            window.currentWorkoutFilter = filter;
             document.getElementById('btn-all-workouts').classList.toggle('active', filter === 'all');
             document.getElementById('btn-fav-workouts').classList.toggle('active', filter === 'fav');
-            searchWorkout();
-        }
+            window.searchWorkout();
+        };
 
-        function toggleFavWorkout(name) {
+        window.toggleFavWorkout = function(name) {
             let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
             if (favs.includes(name)) { favs = favs.filter(n => n !== name); } else { favs.push(name); }
             localStorage.setItem('achilles_fav_workouts', JSON.stringify(favs));
-            searchWorkout();
-        }
+            window.searchWorkout();
+            window.syncToCloud();
+        };
 
-        function searchWorkout() {
+        window.searchWorkout = function() {
             const query = document.getElementById('workout-search').value.toLowerCase().trim();
             let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             let filtered = window.workoutDB;
             
-            if (appMode === 'simple') {
-                filtered = filtered.filter(w => !w.name.includes('Apple Watch'));
-            }
-            
-            if (currentWorkoutFilter === 'fav') filtered = filtered.filter(w => favs.includes(w.name));
+            if (appMode === 'simple') { filtered = filtered.filter(w => !w.name.includes('Apple Watch')); }
+            if (window.currentWorkoutFilter === 'fav') filtered = filtered.filter(w => favs.includes(w.name));
             if (query.length > 0) filtered = filtered.filter(w => w.name.toLowerCase().includes(query) || w.desc.toLowerCase().includes(query));
             
-            renderWorkouts(filtered);
-        }
+            window.renderWorkouts(filtered);
+        };
 
-        function renderWorkouts(db = window.workoutDB) {
+        window.renderWorkouts = function(db = window.workoutDB) {
             const container = document.getElementById('workout-list-container');
             let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
@@ -876,7 +1044,7 @@
                 let isFav = favs.includes(w.name);
                 let actionArea = '';
                 
-                if (appMode === 'pro' && currentWorkoutMode === 'extended') {
+                if (appMode === 'pro' && window.currentWorkoutMode === 'extended') {
                     actionArea = `<button class="add-btn" onclick="openLiveWorkout('${w.name}', ${w.factor})" style="margin:0; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px;">▶ Почати Live</button>`;
                 } else {
                     if (w.desc.includes('хвилинах') || w.desc.includes('секундах')) {
@@ -908,18 +1076,15 @@
                     ${actionArea}
                 </div>
             `}).join('');
-        }
+        };
 
-        // --- ЛОГІКА ЗВИЧАЙНОГО (СПРОЩЕНОГО) РЕЖИМУ ---
-        function logSimpleStrength(name, repsId, weightId, factor) {
+        window.logSimpleStrength = function(name, repsId, weightId, factor) {
             let repsStr = document.getElementById(repsId).value.trim();
             let weightStr = document.getElementById(weightId).value.trim();
-            
             if(!repsStr) { alert("Введіть повторення!"); return; }
             
             let repsArr = repsStr.split(/[.,\s]+/).map(s => parseInt(s.trim())).filter(s => !isNaN(s));
             let weightArr = weightStr ? weightStr.split(/[.,\s]+/).map(s => parseFloat(s.trim())).filter(s => !isNaN(s)) : [];
-            
             if(repsArr.length === 0) return;
 
             let totalReps = repsArr.reduce((a,b) => a+b, 0);
@@ -934,37 +1099,35 @@
             let logHtml = `🏋️ <strong style="color: var(--text-main);">${name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${repsArr.length} підходів: ${setsDetails}</span>`;
             
             if(appMode === 'pro') {
-                workoutBonus += burnedKcal;
+                window.workoutBonus += burnedKcal;
                 logHtml += `<span style="font-size: 15px; margin-top: 5px; display:block; color: var(--text-main);">Спалено: <strong style="color: var(--gold);">${burnedKcal} ккал</strong></span>`;
             }
 
-            addLogEntry(logHtml);
-            document.getElementById(repsId).value = '';
-            document.getElementById(weightId).value = '';
-        }
+            window.addLogEntry(logHtml);
+            document.getElementById(repsId).value = ''; document.getElementById(weightId).value = '';
+        };
 
-        function logSimpleCardio(name, timeId, factor, placeholder) {
+        window.logSimpleCardio = function(name, timeId, factor, placeholder) {
             let time = parseInt(document.getElementById(timeId).value);
             if(!time) { alert("Введіть час!"); return; }
             
             let tForCalc = placeholder.includes('сек') ? time / 60 : time;
             let burnedKcal = Math.round(tForCalc * factor);
-            
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             let unit = placeholder.includes('сек') ? 'сек' : 'хв';
             
             let logHtml = `🏃 <strong style="color: var(--text-main);">${name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">Час: ${time} ${unit}</span>`;
             
             if(appMode === 'pro') {
-                workoutBonus += burnedKcal;
+                window.workoutBonus += burnedKcal;
                 logHtml += `<span style="font-size: 15px; margin-top: 5px; display:block; color: var(--text-main);">Спалено: <strong style="color: var(--gold);">${burnedKcal} ккал</strong></span>`;
             }
 
-            addLogEntry(logHtml);
+            window.addLogEntry(logHtml);
             document.getElementById(timeId).value = '';
-        }
+        };
 
-        function logAppleWatch() {
+        window.logAppleWatch = function() {
             let t = parseInt(document.getElementById('simp-aw-time').value);
             let k = parseInt(document.getElementById('simp-aw-kcal').value);
             if(!t || !k) { alert("Введіть час та калорії!"); return; }
@@ -973,82 +1136,73 @@
             let logHtml = `⌚ <strong style="color: var(--text-main);">Тренування Apple Watch</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">Тривалість: ${t} хв</span>`;
             
             if (appMode === 'pro') {
-                workoutBonus += k;
+                window.workoutBonus += k;
                 logHtml += `<span style="font-size: 15px; margin-top: 8px; display:block; color: var(--text-main);">Спалено: <strong style="color: var(--gold);">${k} ккал</strong></span>`;
             }
             
-            addLogEntry(logHtml);
-            document.getElementById('simp-aw-time').value = '';
-            document.getElementById('simp-aw-kcal').value = '';
-        }
+            window.addLogEntry(logHtml);
+            document.getElementById('simp-aw-time').value = ''; document.getElementById('simp-aw-kcal').value = '';
+        };
 
-        // --- РОЗШИРЕНИЙ РЕЖИМ (LIVE TRACKER) ---
-        function openLiveWorkout(name, factor) {
-            liveWorkout = { name, factor, sets: [], timer: null, sec: 0, state: 'work', currentSet: 1 };
+        window.openLiveWorkout = function(name, factor) {
+            window.liveWorkout = { name, factor, sets: [], timer: null, sec: 0, state: 'work', currentSet: 1 };
             let overlay = document.getElementById('live-overlay');
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
-            
             document.getElementById('live-title').innerText = name;
             document.getElementById('live-subtitle').innerText = 'Підхід 1';
             document.getElementById('live-reps-input').value = '';
-            startLiveTimer(true);
-        }
+            window.startLiveTimer(true);
+        };
 
-        function startLiveTimer(isWork) {
-            clearInterval(liveWorkout.timer);
-            liveWorkout.sec = isWork ? 0 : 90; 
-            liveWorkout.state = isWork ? 'work' : 'rest';
-            
+        window.startLiveTimer = function(isWork) {
+            clearInterval(window.liveWorkout.timer);
+            window.liveWorkout.sec = isWork ? 0 : 90; 
+            window.liveWorkout.state = isWork ? 'work' : 'rest';
             let timerEl = document.getElementById('live-timer');
             if(isWork) { timerEl.classList.remove('rest'); } else { timerEl.classList.add('rest'); }
-            updateLiveTimeDisplay();
+            window.updateLiveTimeDisplay();
 
-            liveWorkout.timer = setInterval(() => {
-                if(isWork) { liveWorkout.sec++; } 
-                else {
-                    liveWorkout.sec--;
-                    if(liveWorkout.sec <= 0) clearInterval(liveWorkout.timer);
-                }
-                updateLiveTimeDisplay();
+            window.liveWorkout.timer = setInterval(() => {
+                if(isWork) { window.liveWorkout.sec++; } 
+                else { window.liveWorkout.sec--; if(window.liveWorkout.sec <= 0) clearInterval(window.liveWorkout.timer); }
+                window.updateLiveTimeDisplay();
             }, 1000);
-        }
+        };
 
-        function updateLiveTimeDisplay() {
-            let m = Math.floor(liveWorkout.sec / 60).toString().padStart(2, '0');
-            let s = (liveWorkout.sec % 60).toString().padStart(2, '0');
+        window.updateLiveTimeDisplay = function() {
+            let m = Math.floor(window.liveWorkout.sec / 60).toString().padStart(2, '0');
+            let s = (window.liveWorkout.sec % 60).toString().padStart(2, '0');
             document.getElementById('live-timer').innerText = `${m}:${s}`;
-        }
+        };
 
-        function toggleLiveState() {
-            if(liveWorkout.state === 'work') {
-                startLiveTimer(false);
+        window.toggleLiveState = function() {
+            if(window.liveWorkout.state === 'work') {
+                window.startLiveTimer(false);
                 document.getElementById('live-subtitle').innerText = 'Відпочинок';
                 document.getElementById('live-input-container').style.display = 'block';
-                document.getElementById('live-main-btn').innerHTML = `Почати<br>Підхід ${liveWorkout.currentSet + 1}`;
+                document.getElementById('live-main-btn').innerHTML = `Почати<br>Підхід ${window.liveWorkout.currentSet + 1}`;
             } else {
                 let repsInput = document.getElementById('live-reps-input').value;
                 let reps = parseFloat(repsInput);
                 if(isNaN(reps)) reps = 0; 
-                
-                liveWorkout.sets.push(reps);
-                liveWorkout.currentSet++;
+                window.liveWorkout.sets.push(reps);
+                window.liveWorkout.currentSet++;
                 document.getElementById('live-reps-input').value = '';
-
-                startLiveTimer(true);
-                document.getElementById('live-subtitle').innerText = `Підхід ${liveWorkout.currentSet}`;
+                window.startLiveTimer(true);
+                document.getElementById('live-subtitle').innerText = `Підхід ${window.liveWorkout.currentSet}`;
                 document.getElementById('live-input-container').style.display = 'none';
                 document.getElementById('live-main-btn').innerHTML = 'Підхід<br>закінчено';
             }
-        }
+        };
 
-        function finishLiveWorkout() {
-            if (liveWorkout.state === 'rest') {
+        window.finishLiveWorkout = function() {
+            if (window.liveWorkout.state === 'rest') {
                 let reps = parseFloat(document.getElementById('live-reps-input').value);
-                if(!isNaN(reps)) liveWorkout.sets.push(reps);
+                if(!isNaN(reps)) window.liveWorkout.sets.push(reps);
             }
             
-            clearInterval(liveWorkout.timer);
+            clearInterval(window.liveWorkout.timer);
             let overlay = document.getElementById('live-overlay');
             overlay.style.opacity = '0';
             setTimeout(() => { 
@@ -1057,24 +1211,23 @@
                 document.getElementById('live-main-btn').innerHTML = 'Підхід<br>закінчено';
             }, 400);
 
-            if(liveWorkout.sets.length > 0) {
+            if(window.liveWorkout.sets.length > 0) {
                 let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
-                let totalReps = liveWorkout.sets.reduce((a,b) => a+b, 0);
-                let burnedKcal = Math.round(totalReps * liveWorkout.factor);
+                let totalReps = window.liveWorkout.sets.reduce((a,b) => a+b, 0);
+                let burnedKcal = Math.round(totalReps * window.liveWorkout.factor);
                 
-                let logHtml = `🏋️ <strong style="color: var(--text-main);">${liveWorkout.name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${liveWorkout.sets.length} підходів (${liveWorkout.sets.join(', ')})</span>`;
+                let logHtml = `🏋️ <strong style="color: var(--text-main);">${window.liveWorkout.name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${window.liveWorkout.sets.length} підходів (${window.liveWorkout.sets.join(', ')})</span>`;
 
                 if (appMode === 'pro') {
-                    workoutBonus += burnedKcal;
+                    window.workoutBonus += burnedKcal;
                     logHtml += `<span style="font-size: 15px; margin-top: 5px; display:block; color: var(--text-main);">Спалено: <strong style="color: var(--gold);">${burnedKcal} ккал</strong></span>`;
                 }
-                
-                addLogEntry(logHtml);
+                window.addLogEntry(logHtml);
             }
-        }
+        };
 
-        function cancelLiveWorkout() {
-            clearInterval(liveWorkout.timer);
+        window.cancelLiveWorkout = function() {
+            clearInterval(window.liveWorkout.timer);
             let overlay = document.getElementById('live-overlay');
             overlay.style.opacity = '0';
             setTimeout(() => { 
@@ -1082,9 +1235,9 @@
                 document.getElementById('live-input-container').style.display = 'none';
                 document.getElementById('live-main-btn').innerHTML = 'Підхід<br>закінчено';
             }, 400);
-        }
+        };
 
-        function logout() { localStorage.clear(); location.reload(); }
+        window.logout = function() { localStorage.clear(); location.reload(); };
     </script>
 </body>
 </html>
