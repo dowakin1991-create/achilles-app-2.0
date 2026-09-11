@@ -67,6 +67,12 @@
             margin: 80px auto 40px auto; display: flex; flex-direction: row; 
         }
 
+        /* Заборона виділення тексту для нативного вигляду */
+        .nav-item, button, .filter-tab, .day-mode-btn, .avatar-container {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
         .avatar-container {
             position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
             width: 100px; height: 100px; flex-shrink: 0;
@@ -115,8 +121,6 @@
         .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 12px; color: var(--text-main); }
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
 
-        .nav-bar { display: none; } 
-
         .macro-box { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; border: 1px solid rgba(255,255,255,0.03); }
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
         .bonus-badge { display: inline-block; background: rgba(229, 192, 123, 0.15); color: var(--gold); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
@@ -126,6 +130,11 @@
         .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 8px 8px 0 0; min-height: 5px; transition: height 1s var(--bezier); }
         .chart-val { font-size: 13px; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
         
+        /* ДИНАМІЧНИЙ РЕЖИМ ДНЯ */
+        .day-mode-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); }
+        .day-mode-btn { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 700; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
+        .day-mode-btn.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; }
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
         .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);}
@@ -150,15 +159,28 @@
         .live-btn-main:active { transform: scale(0.92); }
         .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
 
+        /* === НИЖНЯ НАВІГАЦІЯ (ДЕСКТОП) === */
+        .nav-bar { display: none; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); }
+        .nav-item.active { opacity: 1; color: var(--gold); }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); }
+        .nav-item.active .nav-icon { transform: scale(1.1) translateY(-2px); }
+        .nav-text { font-size: 11px; font-weight: 600; }
+
+        /* === МЕДІА ЗАПИТ ДЛЯ ТЕЛЕФОНІВ === */
         @media (max-width: 768px) {
-            .app-window { flex-direction: column; margin-top: 100px; border-radius: 40px; margin-bottom: 20px;}
+            .app-window { flex-direction: column; margin-top: 80px; border-radius: 40px; margin-bottom: 20px;}
             .sidebar { display: none; } 
             
+            /* === НИЖНЯ НАВІГАЦІЯ (МОБАЙЛ) === */
             .nav-bar { 
-                position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; 
-                padding: 15px 10px calc(15px + env(safe-area-inset-bottom)); 
-                background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
-                border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
+                position: fixed; bottom: 0; left: 0; width: 100%; 
+                display: flex; justify-content: space-around; align-items: center;
+                padding-top: 12px;
+                padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
+                background: rgba(18, 18, 20, 0.85); 
+                backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); 
+                border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000;
             }
 
             .main-content { padding: 60px 20px 30px; }
@@ -310,6 +332,12 @@
                 <!-- ДЕШБОРД ТА ВАГА -->
                 <div id="tab-dashboard" class="tab-content active">
                     <h1 id="greeting-header">Привіт, <span id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
+                    
+                    <div class="day-mode-toggle">
+                        <div id="mode-rest-btn" class="day-mode-btn" onclick="setDayMode('rest')">🛋️ Вихідний</div>
+                        <div id="mode-work-btn" class="day-mode-btn" onclick="setDayMode('work')">👨‍🍳 Робоча зміна</div>
+                    </div>
+
                     <p id="user-goal-text" style="text-align: center; margin-bottom: 30px;">Аналізуємо...</p>
                     
                     <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
@@ -443,11 +471,20 @@
         </div>
     </div>
 
-    <!-- НИЖНЯ НАВІГАЦІЯ (3 КНОПКИ ДЛЯ МОБАЙЛУ) -->
+    <!-- НИЖНЯ НАВІГАЦІЯ (ДЛЯ МОБАЙЛУ) -->
     <nav class="nav-bar" id="bottom-nav">
-        <div class="nav-item active" data-target="tab-dashboard"><span class="nav-icon"><i class="fa-solid fa-bolt"></i></span><span>Статус</span></div>
-        <div class="nav-item" data-target="tab-food"><span class="nav-icon"><i class="fa-solid fa-utensils"></i></span><span>Раціон</span></div>
-        <div class="nav-item" data-target="tab-workout"><span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span><span>Зал</span></div>
+        <div class="nav-item active" data-target="tab-dashboard">
+            <span class="nav-icon"><i class="fa-solid fa-bolt"></i></span>
+            <span class="nav-text">Статус</span>
+        </div>
+        <div class="nav-item" data-target="tab-food">
+            <span class="nav-icon"><i class="fa-solid fa-utensils"></i></span>
+            <span class="nav-text">Раціон</span>
+        </div>
+        <div class="nav-item" data-target="tab-workout">
+            <span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span>
+            <span class="nav-text">Зал</span>
+        </div>
     </nav>
 
     <!-- FIREBASE MODULE SCRIPT -->
@@ -552,7 +589,6 @@
             { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 }
         ];
 
-        // ГЛОБАЛЬНИЙ СТАН
         window.todayDate = new Date().toISOString().split('T')[0];
         window.consumedCalories = 0; 
         window.workoutBonus = 0;
@@ -563,17 +599,11 @@
         window.currentFoodFilter = 'all';
         window.liveWorkout = null; 
 
-        // ==========================================
-        // ЛОГІКА ЕКРАНІВ
-        // ==========================================
         window.showScreen = function(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-block'));
             document.getElementById(screenId).classList.add('active-block');
         }
 
-        // ==========================================
-        // ХМАРНА СИНХРОНІЗАЦІЯ (FIREBASE)
-        // ==========================================
         window.syncToCloud = async function() {
             const userName = localStorage.getItem('achilles_user');
             if(!userName || !db) return;
@@ -584,6 +614,7 @@
             const dataToSave = {
                 profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
                 appMode: localStorage.getItem('achilles_app_mode') || 'pro',
+                dayMode: localStorage.getItem('achilles_day_mode') || 'rest',
                 baseKcal: localStorage.getItem('achilles_base_kcal') || 2000,
                 goalText: localStorage.getItem('achilles_goal_text') || '',
                 targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
@@ -613,6 +644,7 @@
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
+                    localStorage.setItem('achilles_day_mode', d.dayMode || 'rest');
                     localStorage.setItem('achilles_base_kcal', d.baseKcal);
                     localStorage.setItem('achilles_goal_text', d.goalText);
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros));
@@ -637,9 +669,6 @@
             return false;
         };
 
-        // ==========================================
-        // ІНІЦІАЛІЗАЦІЯ
-        // ==========================================
         window.onload = async () => { 
             document.documentElement.classList.add('dark');
             const userName = localStorage.getItem('achilles_user');
@@ -662,9 +691,6 @@
             }
         };
 
-        // ==========================================
-        // АВТОРИЗАЦІЯ ТА РЕЄСТРАЦІЯ
-        // ==========================================
         window.attemptLogin = async function() {
             const user = document.getElementById('login-username').value.trim();
             const pass = document.getElementById('login-password').value;
@@ -706,7 +732,6 @@
             btn.innerText = "Увійти";
         };
 
-        // --- ОНОВЛЕНИЙ РОЗРАХУНОК НОРМ ---
         window.calculateNorms = function(gender, weight, height, age, activityMultiplier, goal, diet) {
             let bmr = (10 * weight) + (6.25 * height) - (5 * age);
             bmr += (gender === 'male') ? 5 : -161;
@@ -748,6 +773,33 @@
             return { kcal: targetKcal, goalText: goalText, p: Math.round(p), f: Math.round(f), c: Math.round(c) };
         };
 
+        window.recalcAndSaveNorms = function(profile, dayMode) {
+            let activityMultiplier = dayMode === 'work' ? profile.activityWork : profile.activityRest;
+            const norms = window.calculateNorms(profile.gender, profile.weight, profile.height, profile.age, activityMultiplier, profile.goal, profile.diet || 'standard');
+            
+            localStorage.setItem('achilles_base_kcal', norms.kcal); 
+            localStorage.setItem('achilles_goal_text', norms.goalText);
+            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
+            
+            window.targetMacros = {p: norms.p, f: norms.f, c: norms.c};
+            document.getElementById('target-p').innerText = `/ ${norms.p}г`;
+            document.getElementById('target-f').innerText = `/ ${norms.f}г`;
+            document.getElementById('target-c').innerText = `/ ${norms.c}г`;
+            document.getElementById('user-goal-text').textContent = norms.goalText;
+            
+            window.updateGoalDisplay();
+            window.syncToCloud();
+        };
+
+        window.setDayMode = function(mode) {
+            localStorage.setItem('achilles_day_mode', mode);
+            document.getElementById('mode-rest-btn').classList.toggle('active', mode === 'rest');
+            document.getElementById('mode-work-btn').classList.toggle('active', mode === 'work');
+            
+            let profile = JSON.parse(localStorage.getItem('achilles_profile'));
+            if(profile) { window.recalcAndSaveNorms(profile, mode); }
+        };
+
         window.completeRegistration = async function() {
             const name = document.getElementById('reg-name').value.trim();
             const pass = document.getElementById('reg-password').value;
@@ -755,6 +807,8 @@
             const age = parseInt(document.getElementById('reg-age').value);
             const height = parseFloat(document.getElementById('reg-height').value);
             const weight = parseFloat(document.getElementById('reg-weight').value);
+            const activityWork = document.getElementById('reg-activity-work').value;
+            const activityRest = document.getElementById('reg-activity-rest').value;
             const goal = document.getElementById('reg-goal').value;
             const appMode = document.getElementById('reg-app-mode').value;
             const diet = document.getElementById('reg-diet').value;
@@ -789,29 +843,20 @@
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_base_kcal', norms.kcal); 
-            localStorage.setItem('achilles_goal_text', norms.goalText);
-            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
+            localStorage.setItem('achilles_day_mode', 'rest');
 
             window.logNewWeight(weight);
+            window.recalcAndSaveNorms(profile, 'rest');
             
             window.loadUserData(); 
             window.renderWeightChart(); 
-            await window.syncToCloud(); 
             window.showScreen('main-app-window');
         };
 
         window.loadUserData = function() {
             const uName = localStorage.getItem('achilles_user');
             document.getElementById('display-username').innerText = uName;
-            document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
             
-            let m = JSON.parse(localStorage.getItem('achilles_macros')) || {p: 0, f: 0, c: 0};
-            window.targetMacros = m;
-            document.getElementById('target-p').innerText = `/ ${m.p}г`;
-            document.getElementById('target-f').innerText = `/ ${m.f}г`;
-            document.getElementById('target-c').innerText = `/ ${m.c}г`;
-
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
                 document.getElementById('edit-name').value = prof.name;
@@ -829,6 +874,12 @@
             let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
             document.getElementById('edit-app-mode').value = savedAppMode;
 
+            let savedDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
+            document.getElementById('mode-rest-btn').classList.toggle('active', savedDayMode === 'rest');
+            document.getElementById('mode-work-btn').classList.toggle('active', savedDayMode === 'work');
+            
+            if(prof) window.recalcAndSaveNorms(prof, savedDayMode);
+
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
             
@@ -842,7 +893,6 @@
             }
 
             window.searchWorkout();
-            window.updateGoalDisplay();
         };
 
         window.saveProfile = function() {
@@ -862,29 +912,19 @@
 
             if(!name || !age || !height || !diet || !aWork || !aRest) { alert('Заповни всі поля!'); return; }
 
-            let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
-            let weight = history.length > 0 ? history[history.length - 1].weight : 80;
-
-            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
-            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
-
             let profile = JSON.parse(localStorage.getItem('achilles_profile')) || {};
-            profile = { ...profile, name, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
+            profile = { ...profile, name, gender, age, height, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
             
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_base_kcal', norms.kcal); 
-            localStorage.setItem('achilles_goal_text', norms.goalText);
-            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
             
+            let currentDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
+            window.recalcAndSaveNorms(profile, currentDayMode);
+
             window.loadUserData();
-            window.syncToCloud();
             alert('Профіль успішно оновлено!');
         };
 
-        // ==========================================
-        // ВАГА
-        // ==========================================
         window.logNewWeight = function(w) {
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let today = new Date().toISOString().split('T')[0].slice(5); 
@@ -901,16 +941,11 @@
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
                 prof.weight = w;
-                let avgAct = ((prof.activityWork * prof.workDays) + (prof.activityRest * prof.restDays)) / (prof.workDays + prof.restDays);
-                const norms = window.calculateNorms(prof.gender, w, prof.height, prof.age, avgAct, prof.goal, prof.diet || 'standard');
-                
                 localStorage.setItem('achilles_profile', JSON.stringify(prof));
-                localStorage.setItem('achilles_base_kcal', norms.kcal); 
-                localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
-                window.loadUserData();
+                let currentDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
+                window.recalcAndSaveNorms(prof, currentDayMode);
             }
             window.renderWeightChart();
-            window.syncToCloud();
         };
 
         window.renderWeightChart = function() {
@@ -933,9 +968,6 @@
             container.innerHTML = html;
         };
 
-        // ==========================================
-        // ДЕШБОРД
-        // ==========================================
         window.updateGoalDisplay = function() {
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
@@ -995,9 +1027,6 @@
             document.getElementById('tab-profile').classList.add('active');
         };
 
-        // ==========================================
-        // ЇЖА (ЛОКАЛЬНА + OPEN FOOD FACTS API + КАСТОМНА)
-        // ==========================================
         let searchTimeout;
         let currentAbortController = null;
 
@@ -1198,9 +1227,6 @@
             if(window.currentFoodFilter === 'fav') window.renderFavFoods();
         };
 
-        // ==========================================
-        // ТРЕНУВАННЯ
-        // ==========================================
         window.setWorkoutMode = function(mode) {
             window.currentWorkoutMode = mode;
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
