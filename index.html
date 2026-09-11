@@ -19,12 +19,12 @@
             --gold: #E5C07B; 
             --gold-glow: rgba(229, 192, 123, 0.3);
             --bg-pure: #000000;
-            --glass-bg: rgba(18, 18, 18, 0.7); 
+            --glass-bg: rgba(18, 18, 18, 0.75); 
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #F5F5F7; 
             --text-muted: #86868B;
             --shadow: rgba(0, 0, 0, 0.8); 
-            --card-bg: rgba(28, 28, 30, 0.8);
+            --card-bg: rgba(28, 28, 30, 0.85);
             --input-bg: rgba(255, 255, 255, 0.05);
             --danger: #FF453A;
             --success: #32D74B;
@@ -39,7 +39,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* === АРХІТЕКТУРА ЕКРАНІВ (NATIVE FEEL) === */
+        /* === ЕКРАНИ === */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
             display: none; overflow-y: auto; overflow-x: hidden; 
@@ -50,94 +50,95 @@
 
         .screen.active-block { 
             display: block; opacity: 1; z-index: 20; 
-            animation: screenFadeIn 0.5s var(--bezier) forwards; 
+            animation: screenFadeIn 0.4s var(--bezier) forwards; 
         }
         @keyframes screenFadeIn { 
-            from { opacity: 0; transform: scale(0.97) translateY(10px); } 
+            from { opacity: 0; transform: scale(0.98) translateY(10px); } 
             to { opacity: 1; transform: scale(1) translateY(0); } 
         }
 
-        /* === ГОЛОВНИЙ КОНТЕЙНЕР (GLASSMORPHISM 2.0) === */
+        /* === ГОЛОВНИЙ КОНТЕЙНЕР === */
         .app-window {
-            position: relative; width: 92%; max-width: 900px;
+            position: relative; width: 92%; max-width: 1000px; 
             background: var(--glass-bg); 
             backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
             border: 1px solid var(--glass-border); border-radius: 36px; 
             box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.1);
-            margin: 110px auto 40px auto; display: flex; flex-direction: column;
+            margin: 80px auto 40px auto; 
+            display: flex; flex-direction: row; 
         }
 
         /* === ЛОГОТИП === */
         .avatar-container {
-            position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
-            width: 120px; height: 120px; flex-shrink: 0;
-            border-radius: 32px; border: 1.5px solid var(--gold);
-            box-shadow: 0 20px 40px var(--shadow), inset 0 0 20px rgba(229,192,123,0.15);
+            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 100px; flex-shrink: 0;
+            border-radius: 28px; border: 1.5px solid var(--gold);
+            box-shadow: 0 15px 30px var(--shadow), inset 0 0 20px rgba(229,192,123,0.15);
             z-index: 30; background-color: #000; overflow: hidden; cursor: pointer;
             transition: transform 0.4s var(--bezier), box-shadow 0.4s var(--bezier);
         }
         .avatar-container:active { transform: translateX(-50%) scale(0.92); }
         .avatar-logo { width: 100%; height: 100%; background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center; }
 
+        /* === САЙДБАР (ДЕСКТОП) === */
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--glass-border); 
+            padding: 60px 15px 30px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; 
+        }
+        .menu-item { display: flex; align-items: center; padding: 15px 20px; color: var(--text-main); font-size: 16px; font-weight: 600; border-radius: 20px; cursor: pointer; transition: all 0.3s ease; }
+        .menu-item i { margin-right: 15px; font-size: 18px; color: var(--gold); opacity: 0.8; transition: transform 0.3s; }
+        .menu-item.active { background: var(--gold-glow); color: var(--gold); box-shadow: inset 0 0 15px rgba(255,255,255,0.05); }
+        .menu-item.active i { color: var(--gold); opacity: 1; transform: scale(1.1); }
+        .menu-item:hover { background: rgba(255,255,255,0.05); }
+
         /* === КОНТЕНТ === */
-        .main-content { flex-grow: 1; padding: 75px 25px 30px; position: relative; }
+        .main-content { flex-grow: 1; padding: 60px 40px 40px; position: relative; width: 100%; }
         
         .tab-content { 
-            display: none; opacity: 0; transform: translateY(20px) scale(0.98); 
-            transition: all 0.5s var(--bezier); will-change: opacity, transform; 
+            display: none; opacity: 0; transform: translateY(15px); 
+            transition: all 0.4s var(--bezier); will-change: opacity, transform; 
         }
-        .tab-content.active { display: block; opacity: 1; transform: translateY(0) scale(1); }
+        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
 
         h1 { font-size: 32px; margin: 0 0 25px 0; text-align: center; font-weight: 800; letter-spacing: -0.8px; color: var(--text-main); } 
         h1 span { color: var(--gold); }
         p { font-size: 15px; color: var(--text-muted); line-height: 1.5; font-weight: 500; }
 
-        /* === AAA ФОРМИ === */
+        /* === ФОРМИ === */
         input, select, button { 
             width: 100%; padding: 18px 20px; margin: 8px 0; border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.06); background: var(--input-bg); 
+            border: 1px solid rgba(255,255,255,0.08); background: var(--input-bg); 
             color: var(--text-main); font-size: 17px; font-weight: 500;
             -webkit-appearance: none; appearance: none; transition: all 0.3s var(--bezier);
         }
-        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); box-shadow: 0 0 0 4px rgba(229, 192, 123, 0.15); }
-        input::placeholder { color: #666; }
+        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); box-shadow: 0 0 0 3px rgba(229, 192, 123, 0.15); }
+        input::placeholder { color: var(--text-muted); opacity: 0.8; }
         
         select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5c07b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 18px center; background-size: 18px; }
+        select option { background-color: var(--option-bg); color: var(--text-main); }
         
-        button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 10px 25px rgba(199, 154, 60, 0.3); }
-        button:active { transform: scale(0.95); box-shadow: 0 5px 15px rgba(199, 154, 60, 0.2); }
+        button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 10px 20px rgba(199, 154, 60, 0.2); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(199, 154, 60, 0.3); }
+        button:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(199, 154, 60, 0.2); }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
 
-        /* Прогрес бар */
         .progress-bar { width: 100%; height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #c79a3c, var(--gold)); width: 0%; transition: width 1.2s var(--bezier); }
         
-        /* Списки з анімацією появи */
-        @keyframes slideInUpItem { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .list-item { 
             padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px;
             border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 12px; 
-            animation: slideInUpItem 0.4s var(--bezier) forwards;
+            color: var(--text-main);
         }
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
 
-        /* === НИЖНЯ НАВІГАЦІЯ === */
-        .nav-bar { 
-            position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; 
-            padding: 15px 10px calc(15px + env(safe-area-inset-bottom)); 
-            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
-            border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
-        }
-        .nav-item { text-align: center; font-size: 11px; flex: 1; opacity: 0.4; transition: all 0.4s var(--bezier); cursor: pointer; font-weight: 600; color: #fff;}
-        .nav-item.active { opacity: 1; color: var(--gold); transform: translateY(-4px) scale(1.05); }
-        .nav-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+        /* === НИЖНЯ НАВІГАЦІЯ (МОБАЙЛ) === */
+        .nav-bar { display: none; } 
 
-        /* Віджети */
         .macro-box { display: flex; justify-content: space-between; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; border: 1px solid rgba(255,255,255,0.03); }
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
         .bonus-badge { display: inline-block; background: rgba(229, 192, 123, 0.15); color: var(--gold); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
 
-        /* Графік ваги */
         .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 160px; padding: 20px 10px 0; background: var(--input-bg); border-radius: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.03);}
         .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 14%; height: 100%; justify-content: flex-end;}
         .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 8px 8px 0 0; min-height: 5px; transition: height 1s var(--bezier); }
@@ -149,7 +150,7 @@
         .fav-btn { font-size: 22px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
-        /* === LIVE WORKOUT OVERLAY (AAA) === */
+        /* === LIVE WORKOUT OVERLAY === */
         .live-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
@@ -158,24 +159,38 @@
             opacity: 0; transition: opacity 0.4s var(--bezier);
         }
         .live-header { text-align: center; margin-top: 60px; }
-        .live-title { font-size: 34px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: -1px; }
+        .live-title { font-size: 34px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: -1px; text-align: center; padding: 0 20px;}
         .live-subtitle { font-size: 20px; color: var(--gold); font-weight: 600; }
         .live-timer { font-size: 110px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; text-shadow: 0 10px 40px rgba(0,0,0,0.5); letter-spacing: -3px; transition: color 0.3s;}
         .live-timer.rest { color: var(--gold); }
         .live-controls { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center;}
-        
         .live-btn-main {
-            width: 200px; height: 200px; border-radius: 50%;
-            background: linear-gradient(135deg, #f3c969, #c79a3c);
+            width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, #f3c969, #c79a3c);
             color: #000; font-size: 26px; font-weight: 800; border: none; cursor: pointer;
             box-shadow: 0 20px 50px rgba(212, 175, 55, 0.3); display: flex; align-items: center; justify-content: center;
             text-align: center; line-height: 1.2; transition: all 0.3s var(--bezier);
         }
         .live-btn-main:active { transform: scale(0.92); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3); }
-        .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; animation: slideInUpItem 0.4s var(--bezier) forwards;}
+        .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
+
+        /* === МЕДІА ЗАПИТ ДЛЯ ТЕЛЕФОНІВ === */
+        @media (max-width: 768px) {
+            .app-window { flex-direction: column; margin-top: 100px; border-radius: 40px; margin-bottom: 20px;}
+            .sidebar { display: none; } 
+            
+            .nav-bar { 
+                position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; 
+                padding: 15px 10px calc(15px + env(safe-area-inset-bottom)); 
+                background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
+                border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
+            }
+
+            .main-content { padding: 60px 20px 30px; }
+            .avatar-container { top: -50px; width: 100px; height: 100px; min-height: 100px; border-radius: 26px;}
+        }
     </style>
 </head>
-<body> 
+<body class="dark"> 
     
     <!-- LIVE WORKOUT OVERLAY -->
     <div id="live-overlay" class="live-overlay">
@@ -199,11 +214,19 @@
 
     <!-- ВІКНО РЕЄСТРАЦІЇ -->
     <div class="screen" id="registration-window">
-        <div class="app-window" style="max-width: 450px; margin-top: 120px;">
+        <div class="app-window" style="max-width: 450px; flex-direction: column;">
             <div class="avatar-container"><div class="avatar-logo"></div></div>
             <div class="main-content">
-                <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px;">Профіль Воїна</h2>
+                <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Профіль Воїна</h2>
                 <input type="text" id="reg-name" placeholder="Ім'я">
+                
+                <!-- НОВИЙ ПУНКТ: РЕЖИМ ДОДАТКУ -->
+                <select id="reg-app-mode">
+                    <option value="" disabled selected>Режим додатку</option>
+                    <option value="simple">Звичайний (Тільки запис, без калорій)</option>
+                    <option value="pro">PRO (Трекінг спалених калорій)</option>
+                </select>
+
                 <select id="reg-gender"><option value="male">Чоловіча</option><option value="female">Жіноча</option></select>
                 <div style="display: flex; gap: 10px;">
                     <input type="number" id="reg-age" placeholder="Вік" inputmode="numeric" pattern="[0-9]*">
@@ -235,6 +258,15 @@
             <!-- АВАТАР - ВХІД В ПРОФІЛЬ -->
             <div class="avatar-container" onclick="openProfileTab()"><div class="avatar-logo"></div></div>
 
+            <!-- САЙДБАР (ДЛЯ ПК) -->
+            <div class="sidebar">
+                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
+                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Раціон</div>
+                <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Зал</div>
+                <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
+            </div>
+
+            <!-- ОСНОВНИЙ КОНТЕНТ -->
             <div class="main-content">
                 
                 <!-- ДЕШБОРД ТА ВАГА -->
@@ -257,8 +289,7 @@
                         </div>
                     </div>
 
-                    <!-- ТРЕКЕР ВАГИ НА ГОЛОВНОМУ ЕКРАНІ -->
-                    <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px;">Трекер ваги:</h3>
+                    <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Трекер ваги:</h3>
                     <div style="background: var(--card-bg); padding: 25px 20px; border-radius: 30px; border: 1px solid var(--glass-border); margin-top: 15px;">
                         <div style="display: flex; gap: 12px;">
                             <input type="number" id="new-weight-input" inputmode="decimal" placeholder="Вага (кг)" style="margin:0; flex: 2;">
@@ -267,7 +298,7 @@
                         <div id="weight-chart-container"></div>
                     </div>
 
-                    <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px;">Щоденник:</h3>
+                    <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Щоденник:</h3>
                     <div id="eaten-list" style="margin-top: 15px; font-size: 16px; background: var(--card-bg); padding: 25px; border-radius: 30px; border: 1px solid var(--glass-border); line-height: 1.6; color: var(--text-main);">Поки що нічого. Час підкріпитися або потренуватися!</div>
                 </div>
 
@@ -276,6 +307,7 @@
                     <h1>База <span>ПРОДУКТІВ</span></h1>
                     <p style="text-align: center; margin-bottom: 25px;">Пошук працює в локальній та 🌍 світовій базі (Open Food Facts)</p>
                     <input type="text" id="food-search" placeholder="Пошук (борщ, яблуко, суші...)" oninput="onSearchInput()">
+                    <div id="loading-spinner" style="display:none; text-align:center; padding:15px; color:var(--gold);"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
                     <div id="food-results" style="margin-top: 20px; padding-bottom: 20px;"></div>
                 </div>
 
@@ -315,6 +347,12 @@
                     <h1>Твій <span>ПРОФІЛЬ</span></h1>
                     
                     <div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; border: 1px solid var(--glass-border); margin-bottom: 25px;">
+                        
+                        <select id="edit-app-mode" style="margin-bottom: 15px; border-color: var(--gold);">
+                            <option value="simple">Режим: Звичайний (Без калорій)</option>
+                            <option value="pro">Режим: PRO (Трекінг спалених калорій)</option>
+                        </select>
+
                         <input type="text" id="edit-name" placeholder="Ім'я">
                         <select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
                         <div style="display: flex; gap: 12px;">
@@ -341,7 +379,7 @@
         </div>
     </div>
 
-    <!-- НИЖНЯ НАВІГАЦІЯ (3 КНОПКИ - AAA СТАНДАРТ) -->
+    <!-- НИЖНЯ НАВІГАЦІЯ (3 КНОПКИ) -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard"><span class="nav-icon"><i class="fa-solid fa-bolt"></i></span><span>Статус</span></div>
         <div class="nav-item" data-target="tab-food"><span class="nav-icon"><i class="fa-solid fa-utensils"></i></span><span>Раціон</span></div>
@@ -351,7 +389,7 @@
     <!-- МЕГА-БАЗА ТА ЛОГІКА -->
     <script>
         // ==========================================
-        // БАЗА ЇЖІ (З РОЗШИРЕННЯМ)
+        // БАЗА ЇЖІ 
         // ==========================================
         window.foodDB = [
             { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
@@ -397,7 +435,9 @@
             { name: "Капучино (без цукру)", kcal: 75, p: 3.4, f: 3.6, c: 7.4, fiber: 0 },
             { name: "Протеїн (Whey Protein)", kcal: 380, p: 80, f: 4, c: 6, fiber: 0 },
             { name: "Шоколад чорний (70%+)", kcal: 598, p: 7.8, f: 42.6, c: 36, fiber: 10.9 },
-            { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 }
+            { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 },
+            { name: "Пиво світле", kcal: 43, p: 0.5, f: 0, c: 3.6, fiber: 0 },
+            { name: "Вино сухе (червоне/біле)", kcal: 68, p: 0.2, f: 0, c: 2.5, fiber: 0 }
         ];
 
         // ==========================================
@@ -463,7 +503,7 @@
         }
 
         // ==========================================
-        // МАТЕМАТИКА ПРОФІЛЮ
+        // МАТЕМАТИКА ПРОФІЛЮ ТА РЕЖИМИ
         // ==========================================
         function calculateNorms(gender, weight, height, age, activity, goal) {
             let bmr = (10 * weight) + (6.25 * height) - (5 * age);
@@ -491,14 +531,16 @@
             const weight = parseFloat(document.getElementById('reg-weight').value);
             const activity = document.getElementById('reg-activity').value;
             const goal = document.getElementById('reg-goal').value;
+            const appMode = document.getElementById('reg-app-mode').value;
             
-            if(!name || !age || !height || !weight || !activity || !goal) { alert('Заповни всі поля!'); return; }
+            if(!name || !age || !height || !weight || !activity || !goal || !appMode) { alert('Заповни всі поля!'); return; }
 
             const norms = calculateNorms(gender, weight, height, age, activity, goal);
 
             let profile = { name, gender, age, height, activity, goal };
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
+            localStorage.setItem('achilles_app_mode', appMode);
             localStorage.setItem('achilles_base_kcal', norms.kcal); 
             localStorage.setItem('achilles_goal_text', norms.goalText);
             localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
@@ -528,6 +570,10 @@
                 document.getElementById('edit-activity').value = prof.activity;
                 document.getElementById('edit-goal').value = prof.goal;
             }
+            
+            let savedMode = localStorage.getItem('achilles_app_mode') || 'pro';
+            document.getElementById('edit-app-mode').value = savedMode;
+
             updateGoalDisplay();
         }
 
@@ -538,6 +584,7 @@
             const height = parseFloat(document.getElementById('edit-height').value);
             const activity = document.getElementById('edit-activity').value;
             const goal = document.getElementById('edit-goal').value;
+            const appMode = document.getElementById('edit-app-mode').value;
 
             if(!name || !age || !height) { alert('Заповни всі поля!'); return; }
 
@@ -549,6 +596,7 @@
             let profile = { name, gender, age, height, activity, goal };
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
+            localStorage.setItem('achilles_app_mode', appMode);
             localStorage.setItem('achilles_base_kcal', norms.kcal); 
             localStorage.setItem('achilles_goal_text', norms.goalText);
             localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
@@ -607,8 +655,11 @@
         // ДЕШБОРД ТА НАВІГАЦІЯ
         // ==========================================
         function updateGoalDisplay() {
+            let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             const baseKcal = parseInt(localStorage.getItem('achilles_base_kcal')) || 2000;
-            const finalGoal = baseKcal + workoutBonus; 
+            
+            // Якщо PRO - додаємо спалені калорії до ліміту. Якщо Ні - фіксований ліміт.
+            const finalGoal = appMode === 'pro' ? baseKcal + workoutBonus : baseKcal; 
             
             document.getElementById('calories-goal').textContent = finalGoal;
             
@@ -622,10 +673,12 @@
                 document.getElementById('macro-c').innerText = Math.round(macros.c);
 
                 const msgObj = document.getElementById('bonus-kcal-msg');
-                if(workoutBonus > 0) {
+                if(workoutBonus > 0 && appMode === 'pro') {
                     msgObj.style.display = 'inline-block';
                     msgObj.innerText = `🔥 Тренування: +${workoutBonus} ккал`;
-                } else { msgObj.style.display = 'none'; }
+                } else { 
+                    msgObj.style.display = 'none'; 
+                }
             });
         }
 
@@ -636,22 +689,25 @@
             item.addEventListener('click', () => {
                 const targetId = item.getAttribute('data-target');
                 allNavItems.forEach(mi => mi.classList.remove('active'));
+                
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(activeItem => { activeItem.classList.add('active'); });
+                
                 tabContents.forEach(tc => { tc.classList.remove('active'); });
                 const targetTab = document.getElementById(targetId);
                 targetTab.classList.add('active');
             });
         });
-        
+
         function openProfileTab() {
             allNavItems.forEach(mi => mi.classList.remove('active'));
+            document.querySelectorAll(`[data-target="tab-profile"]`).forEach(activeItem => { activeItem.classList.add('active'); });
             tabContents.forEach(tc => { tc.classList.remove('active'); });
             const targetTab = document.getElementById('tab-profile');
             targetTab.classList.add('active');
         }
 
         // ==========================================
-        // ЇЖА
+        // ЇЖА (ЛОКАЛЬНА + OPEN FOOD FACTS API)
         // ==========================================
         let searchTimeout;
         let currentAbortController = null;
@@ -679,10 +735,10 @@
             filtered.forEach((item, index) => {
                 const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
                 resultsBox.innerHTML += `
-                    <div class="list-item" style="align-items: flex-start;">
+                    <div class="list-item" style="align-items: flex-start; color: var(--text-main);">
                         <div style="width: 100%; margin-bottom: 12px;">
-                            <strong>${item.name}</strong><br>
-                            <span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
+                            <strong style="color: var(--text-main); font-size: 18px;">${item.name}</strong><br>
+                            <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                         </div>
                         <div style="display: flex; width: 100%; gap: 10px;">
                             <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
@@ -723,10 +779,10 @@
                             const uniqueId = `api-weight-${apiIndex}`;
                             
                             resultsBox.innerHTML += `
-                                <div class="list-item" style="align-items: flex-start; border-left: 3px solid var(--gold);">
+                                <div class="list-item" style="align-items: flex-start; border-left: 3px solid var(--gold); color: var(--text-main);">
                                     <div style="width: 100%; margin-bottom: 12px;">
-                                        <strong>${item.name}</strong><br>
-                                        <span style="font-size: 13px; opacity: 0.8;">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
+                                        <strong style="color: var(--text-main); font-size: 18px;">${item.name}</strong><br>
+                                        <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                                     </div>
                                     <div style="display: flex; width: 100%; gap: 10px;">
                                         <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
@@ -759,9 +815,9 @@
             if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
             
             const entry = document.createElement('div');
-            entry.style.padding = '12px 0';
+            entry.style.padding = '15px 0';
             entry.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
-            entry.innerHTML = `🥗 <strong>${item.name} (${weight}г)</strong><br><span style="font-size: 14px; opacity: 0.8; color: var(--gold);">${actualKcal} ккал</span> <span style="font-size: 12px; opacity: 0.6;">| Б:${Math.round(item.p * ratio)} Ж:${Math.round(item.f * ratio)} В:${Math.round(item.c * ratio)}</span>`;
+            entry.innerHTML = `🥗 <strong style="color: var(--text-main);">${item.name} (${weight}г)</strong><br><span style="font-size: 14px; opacity: 0.8; color: var(--gold);">${actualKcal} ккал</span> <span style="font-size: 12px; opacity: 0.6; color: var(--text-main);">| Б:${Math.round(item.p * ratio)} Ж:${Math.round(item.f * ratio)} В:${Math.round(item.c * ratio)}</span>`;
             list.appendChild(entry);
             
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
@@ -769,7 +825,7 @@
         }
 
         // ==========================================
-        // ДВА РЕЖИМИ ТРЕНУВАНЬ
+        // ДВА РЕЖИМИ ТРЕНУВАНЬ (РОЗШИРЕНИЙ / СПРОЩЕНИЙ)
         // ==========================================
         function setWorkoutMode(mode) {
             currentWorkoutMode = mode;
@@ -835,13 +891,13 @@
                         <h4 style="color: var(--text-main); font-size: 19px; margin-bottom: 5px; font-weight: 700;">${w.name}</h4>
                         <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavWorkout('${w.name}')"></i>
                     </div>
-                    <p style="font-size: 14px; opacity: 0.6; margin-bottom: 5px;">${w.desc}</p>
+                    <p style="font-size: 14px; opacity: 0.6; margin-bottom: 5px; color: var(--text-main);">${w.desc}</p>
                     ${actionArea}
                 </div>
             `}).join('');
         }
 
-        // --- СПРОЩЕНИЙ РЕЖИМ ---
+        // --- СПРОЩЕНИЙ РЕЖИМ (КОНСТРУКТОР СЕСІЇ) ---
         function addExerciseToSimple(name, inputId) {
             let reps = document.getElementById(inputId).value.trim();
             if(!reps) { alert("Введіть повторення!"); return; }
@@ -875,13 +931,17 @@
             if(simpleSessionExercises.length === 0) { alert('Додай хоча б одну вправу знизу!'); return; }
 
             let kcalInt = parseInt(k);
-            workoutBonus += kcalInt;
-
-            let logHtml = `🏋️ <strong>Синхронізація Apple Watch (${t} хв)</strong><br>`;
+            let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
+            
+            let logHtml = `🏋️ <strong style="color: var(--text-main);">Тренування Apple Watch (${t} хв)</strong><br>`;
             simpleSessionExercises.forEach(ex => {
-                logHtml += `<span style="font-size: 14px; opacity: 0.8; display:block; margin-top:4px;">- ${ex.name}: ${ex.reps}</span>`;
+                logHtml += `<span style="font-size: 14px; opacity: 0.8; display:block; margin-top:4px; color: var(--text-main);">- ${ex.name}: ${ex.reps}</span>`;
             });
-            logHtml += `<span style="font-size: 15px; margin-top: 8px; display:block;">Спалено: <strong style="color: var(--gold);">${kcalInt} ккал</strong></span>`;
+
+            if (appMode === 'pro') {
+                workoutBonus += kcalInt;
+                logHtml += `<span style="font-size: 15px; margin-top: 8px; display:block; color: var(--text-main);">Спалено: <strong style="color: var(--gold);">${kcalInt} ккал</strong></span>`;
+            }
 
             const list = document.getElementById('eaten-list');
             if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
@@ -899,12 +959,11 @@
             document.querySelector('[data-target="tab-dashboard"]').click();
         }
 
-        // --- LIVE TRACKER ---
+        // --- РОЗШИРЕНИЙ РЕЖИМ (LIVE TRACKER) ---
         function openLiveWorkout(name, factor) {
             liveWorkout = { name, factor, sets: [], timer: null, sec: 0, state: 'work', currentSet: 1 };
             let overlay = document.getElementById('live-overlay');
             overlay.style.display = 'flex';
-            // Невеликий таймут для застосування opacity
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
             
             document.getElementById('live-title').innerText = name;
@@ -915,7 +974,7 @@
 
         function startLiveTimer(isWork) {
             clearInterval(liveWorkout.timer);
-            liveWorkout.sec = isWork ? 0 : 90; // 90 сек відпочинку
+            liveWorkout.sec = isWork ? 0 : 90; 
             liveWorkout.state = isWork ? 'work' : 'rest';
             
             let timerEl = document.getElementById('live-timer');
@@ -923,9 +982,8 @@
             updateLiveTimeDisplay();
 
             liveWorkout.timer = setInterval(() => {
-                if(isWork) {
-                    liveWorkout.sec++;
-                } else {
+                if(isWork) { liveWorkout.sec++; } 
+                else {
                     liveWorkout.sec--;
                     if(liveWorkout.sec <= 0) clearInterval(liveWorkout.timer);
                 }
@@ -977,16 +1035,23 @@
             }, 400);
 
             if(liveWorkout.sets.length > 0) {
+                let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
                 let totalReps = liveWorkout.sets.reduce((a,b) => a+b, 0);
                 let burnedKcal = Math.round(totalReps * liveWorkout.factor);
-                workoutBonus += burnedKcal;
+                
+                let logHtml = `🏋️ <strong style="color: var(--text-main);">${liveWorkout.name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${liveWorkout.sets.length} підходів (${liveWorkout.sets.join(', ')})</span>`;
+
+                if (appMode === 'pro') {
+                    workoutBonus += burnedKcal;
+                    logHtml += `<span style="font-size: 15px; margin-top: 5px; display:block; color: var(--text-main);">Спалено: <strong style="color: var(--gold);">${burnedKcal} ккал</strong></span>`;
+                }
                 
                 const list = document.getElementById('eaten-list');
                 if(list.innerText.includes("Поки що нічого")) list.innerHTML = '';
                 const entry = document.createElement('div');
                 entry.style.padding = '15px 0';
                 entry.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
-                entry.innerHTML = `🏋️ <strong>${liveWorkout.name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block;">${liveWorkout.sets.length} підходів (${liveWorkout.sets.join(', ')})</span><span style="font-size: 15px; margin-top: 5px; display:block;">Спалено: <strong style="color: var(--gold);">${burnedKcal} ккал</strong></span>`;
+                entry.innerHTML = logHtml;
                 list.appendChild(entry);
                 
                 updateGoalDisplay();
