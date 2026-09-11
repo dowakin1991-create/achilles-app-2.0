@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" data-theme="dark" data-color="gold">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -14,71 +14,68 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === ДИНАМІЧНА СИСТЕМА ТЕМ (THEME ENGINE) === */
+        /* === AAA ПРЕМІУМ СИСТЕМА ТЕМ === */
         :root {
             --danger: #FF453A;
             --success: #32D74B;
             --bezier: cubic-bezier(0.25, 1, 0.4, 1);
         }
 
-        /* 1. ТЕМНА: Золото Ахіллеса (За замовчуванням) */
-        body.theme-dark-gold {
+        /* --- ТЕМНИЙ РЕЖИМ (БАЗА) --- */
+        [data-theme="dark"] {
+            --bg-pure: #000000;
+            --glass-bg: rgba(18, 18, 20, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #F5F5F7;
+            --text-muted: #86868B;
+            --card-bg: rgba(28, 28, 30, 0.85);
+            --input-bg: rgba(255, 255, 255, 0.08);
+            --shadow-color: rgba(0,0,0,0.5);
+            --nav-bg: rgba(18, 18, 20, 0.92);
+            --option-bg: #1c1c1e;
+        }
+
+        /* --- СВІТЛИЙ РЕЖИМ (БАЗА) --- */
+        [data-theme="light"] {
+            --bg-pure: #F2F2F7;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --text-main: #1C1C1E;
+            --text-muted: #8E8E93;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --shadow-color: rgba(0,0,0,0.05);
+            --nav-bg: rgba(255, 255, 255, 0.92);
+            --option-bg: #ffffff;
+        }
+
+        /* --- КОЛІРНА ПАЛІТРА: ЗОЛОТА --- */
+        [data-color="gold"] {
             --primary: #E5C07B; --primary-rgb: 229, 192, 123; --primary-dark: #c79a3c;
             --btn-grad-1: #f3c969; --btn-grad-2: #c79a3c; --btn-text: #000000;
-            --bg-pure: #000000; --glass-bg: rgba(18, 18, 20, 0.85); --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #F5F5F7; --text-muted: #86868B;
-            --card-bg: rgba(28, 28, 30, 0.85); --input-bg: rgba(255, 255, 255, 0.08);
-            --shadow-color: rgba(0,0,0,0.5);
+        }
+        [data-theme="light"][data-color="gold"] {
+            --primary: #D4AF37; --primary-rgb: 212, 175, 55; --primary-dark: #A68A2B;
         }
 
-        /* 2. ТЕМНА: Багряна Спарта */
-        body.theme-dark-red {
+        /* --- КОЛІРНА ПАЛІТРА: КРИВАВА СПАРТА --- */
+        [data-color="blood"] {
             --primary: #FF453A; --primary-rgb: 255, 69, 58; --primary-dark: #B32E27;
             --btn-grad-1: #FF6A61; --btn-grad-2: #FF453A; --btn-text: #ffffff;
-            --bg-pure: #000000; --glass-bg: rgba(18, 18, 20, 0.85); --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #F5F5F7; --text-muted: #86868B;
-            --card-bg: rgba(28, 28, 30, 0.85); --input-bg: rgba(255, 255, 255, 0.08);
-            --shadow-color: rgba(0,0,0,0.5);
+        }
+        [data-theme="light"][data-color="blood"] {
+            --primary: #D70015; --primary-rgb: 215, 0, 21; --primary-dark: #A60010;
+            --btn-grad-1: #FF3B30; --btn-grad-2: #D70015;
         }
 
-        /* 3. ТЕМНА: Глибокий Океан */
-        body.theme-dark-blue {
+        /* --- КОЛІРНА ПАЛІТРА: НЕБЕСНО-БЛАКИТНА --- */
+        [data-color="sky"] {
             --primary: #0A84FF; --primary-rgb: 10, 132, 255; --primary-dark: #0056B3;
             --btn-grad-1: #3B9DFF; --btn-grad-2: #0A84FF; --btn-text: #ffffff;
-            --bg-pure: #000000; --glass-bg: rgba(18, 18, 20, 0.85); --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #F5F5F7; --text-muted: #86868B;
-            --card-bg: rgba(28, 28, 30, 0.85); --input-bg: rgba(255, 255, 255, 0.08);
-            --shadow-color: rgba(0,0,0,0.5);
         }
-
-        /* 4. СВІТЛА: Олімп */
-        body.theme-light-gold {
-            --primary: #D4AF37; --primary-rgb: 212, 175, 55; --primary-dark: #A68A2B;
-            --btn-grad-1: #F3C969; --btn-grad-2: #D4AF37; --btn-text: #000000;
-            --bg-pure: #F2F2F7; --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(0, 0, 0, 0.1);
-            --text-main: #1C1C1E; --text-muted: #8E8E93;
-            --card-bg: rgba(255, 255, 255, 0.95); --input-bg: rgba(0, 0, 0, 0.04);
-            --shadow-color: rgba(0,0,0,0.08);
-        }
-
-        /* 5. СВІТЛА: Егейська */
-        body.theme-light-blue {
+        [data-theme="light"][data-color="sky"] {
             --primary: #007AFF; --primary-rgb: 0, 122, 255; --primary-dark: #0056B3;
-            --btn-grad-1: #3B9DFF; --btn-grad-2: #007AFF; --btn-text: #ffffff;
-            --bg-pure: #F2F2F7; --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(0, 0, 0, 0.1);
-            --text-main: #1C1C1E; --text-muted: #8E8E93;
-            --card-bg: rgba(255, 255, 255, 0.95); --input-bg: rgba(0, 0, 0, 0.04);
-            --shadow-color: rgba(0,0,0,0.08);
-        }
-
-        /* 6. СВІТЛА: Природа */
-        body.theme-light-green {
-            --primary: #34C759; --primary-rgb: 52, 199, 89; --primary-dark: #248A3D;
-            --btn-grad-1: #51D773; --btn-grad-2: #34C759; --btn-text: #ffffff;
-            --bg-pure: #F2F2F7; --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(0, 0, 0, 0.1);
-            --text-main: #1C1C1E; --text-muted: #8E8E93;
-            --card-bg: rgba(255, 255, 255, 0.95); --input-bg: rgba(0, 0, 0, 0.04);
-            --shadow-color: rgba(0,0,0,0.08);
+            --btn-grad-1: #3B9DFF; --btn-grad-2: #007AFF;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -92,45 +89,36 @@
 
         .nav-item, button, .filter-tab, .avatar-container { -webkit-user-select: none; user-select: none; }
 
-        /* === SPLASH ТА ГЛОБАЛЬНИЙ АВАТАР === */
-        #splash-bg {
+        /* === 120FPS SPLASH SCREEN === */
+        #splash-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--bg-pure); z-index: 9998;
-            transition: opacity 0.5s ease;
+            background-color: var(--bg-pure); z-index: 99999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.6s var(--bezier), transform 0.6s var(--bezier), visibility 0.6s;
+            will-change: opacity, transform;
+        }
+        #splash-screen.hidden { opacity: 0; transform: scale(0.92); visibility: hidden; }
+        .splash-logo {
+            width: 150px; height: 150px; border-radius: 36px;
+            border: 2px solid var(--primary);
+            background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center;
+            box-shadow: 0 15px 50px rgba(var(--primary-rgb), 0.3);
         }
 
+        /* Кутова аватарка */
         .main-avatar {
             position: fixed; 
             z-index: 9999;
-            top: max(env(safe-area-inset-top), 20px);
-            right: 20px;
+            top: max(env(safe-area-inset-top), 20px); right: 20px;
             width: 50px; height: 50px;
             border-radius: 50%;
             border: 1.5px solid var(--primary);
             background-color: var(--bg-pure); overflow: hidden; cursor: pointer;
             box-shadow: 0 4px 15px var(--shadow-color);
-            transition: transform 0.2s var(--bezier), border-color 0.4s var(--bezier);
+            transition: transform 0.2s var(--bezier), border-color 0.4s var(--bezier), opacity 0.6s var(--bezier);
+            opacity: 0; /* З'являється після Splash */
         }
-        
-        .main-avatar.splash-mode {
-            animation: splashToCorner 1.2s var(--bezier) forwards;
-        }
-
-        @keyframes splashToCorner {
-            0%, 20% { 
-                top: 50%; right: 50%; 
-                transform: translate(50%, -50%) scale(3.5); 
-                border-radius: 12px;
-                box-shadow: 0 10px 40px rgba(var(--primary-rgb), 0.3);
-            }
-            100% { 
-                top: max(env(safe-area-inset-top), 20px); right: 20px; 
-                transform: translate(0, 0) scale(1); 
-                border-radius: 50%;
-                box-shadow: 0 4px 15px var(--shadow-color);
-            }
-        }
-
+        .main-avatar.visible { opacity: 1; }
         .main-avatar:active { transform: scale(0.9); }
         .avatar-logo { width: 100%; height: 100%; background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center; }
 
@@ -144,16 +132,12 @@
 
         .screen.active-block { display: block; z-index: 20; }
 
-        .app-window {
-            position: relative; width: 100%; min-height: 100%; 
-            display: flex; flex-direction: column; 
-        }
+        .app-window { position: relative; width: 100%; min-height: 100%; display: flex; flex-direction: column; }
 
         .main-content { 
             flex-grow: 1; 
             padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px 40px 20px; 
-            position: relative; width: 100%; 
-            opacity: 1; 
+            position: relative; width: 100%; opacity: 1; 
         }
         
         .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s var(--bezier); }
@@ -173,7 +157,7 @@
         input:focus { border-color: var(--primary); background: var(--glass-border); }
         input::placeholder { color: var(--text-muted); opacity: 0.8; }
         select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386868B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 18px center; background-size: 18px; }
-        select option { background-color: var(--bg-pure); color: var(--text-main); }
+        select option { background-color: var(--option-bg); color: var(--text-main); }
         
         button { background: linear-gradient(135deg, var(--btn-grad-1), var(--btn-grad-2)); color: var(--btn-text); font-weight: 700; border: none; cursor: pointer; box-shadow: 0 8px 15px rgba(var(--primary-rgb), 0.2); }
         button:active { transform: scale(0.96); }
@@ -201,27 +185,25 @@
         .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
-        /* СТИЛІ ДЛЯ КНОПКИ ВИДАЛЕННЯ У ЩОДЕННИКУ */
-        .delete-btn {
-            color: var(--text-muted); font-size: 20px; padding: 10px;
-            transition: color 0.3s var(--bezier), transform 0.3s var(--bezier); cursor: pointer;
-        }
+        /* СТИЛІ КНОПКИ ВИДАЛЕННЯ У ЩОДЕННИКУ */
+        .delete-btn { color: var(--text-muted); font-size: 20px; padding: 10px; transition: color 0.3s var(--bezier), transform 0.3s var(--bezier); cursor: pointer; }
         .delete-btn:active { color: var(--danger); transform: scale(1.2); }
 
-        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
+        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (БЕЗ ЛІНІЙ) === */
         .nav-bar { 
             position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
-            display: flex; justify-content: space-around; align-items: center;
-            height: calc(65px + env(safe-area-inset-bottom, 0px));
-            padding-bottom: env(safe-area-inset-bottom, 0px); 
-            background: var(--glass-bg); 
+            display: flex; justify-content: space-around; align-items: flex-start;
+            height: calc(65px + env(safe-area-inset-bottom, 0px)); /* Висота разом з безпечною зоною */
+            padding-top: 10px;
+            padding-bottom: env(safe-area-inset-bottom, 0px); /* Матове скло заповнює все до самого низу */
+            background: var(--nav-bg); 
             backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
             border-top: 1px solid var(--glass-border); z-index: 1000;
             transition: background-color 0.4s var(--bezier);
         }
         .nav-item { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            flex: 1; height: 100%; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
+            flex: 1; height: 55px; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
         }
         .nav-item.active { opacity: 1; color: var(--primary); }
         .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); display: flex; align-items: center; justify-content: center;}
@@ -251,11 +233,14 @@
         .label-text { font-size: 14px; color: var(--text-muted); margin: 10px 0 5px 5px; font-weight: 600; display: block; text-align: left; }
     </style>
 </head>
-<body class="theme-dark-gold"> 
+<body> 
     
-    <!-- SPLASH SCREEN ТА ГЛОБАЛЬНИЙ АВАТАР -->
-    <div id="splash-bg"></div>
-    <div id="global-avatar" class="main-avatar splash-mode" onclick="openProfileTab()">
+    <!-- СПРАВЖНІЙ АПАРАТНИЙ SPLASH SCREEN -->
+    <div id="splash-screen">
+        <div class="splash-logo"></div>
+    </div>
+    
+    <div id="global-avatar" class="main-avatar" onclick="openProfileTab()">
         <div class="avatar-logo"></div>
     </div>
 
@@ -466,18 +451,21 @@
                     <h1>Твій <span>ПРОФІЛЬ</span></h1>
                     <div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; margin-bottom: 25px; border: 1px solid var(--glass-border);">
                         
-                        <span class="label-text">Оформлення (Тема):</span>
-                        <select id="edit-theme" style="margin-bottom: 15px;" onchange="window.previewTheme(this.value)">
-                            <option value="auto">Системна (Світла/Темна)</option>
-                            <option value="dark-gold">Темна: Ахіллес (Золото)</option>
-                            <option value="dark-red">Темна: Спарта (Червоний)</option>
-                            <option value="dark-blue">Темна: Неон (Синій)</option>
-                            <option value="light-gold">Світла: Олімп (Золото)</option>
-                            <option value="light-blue">Світла: Егейська (Синій)</option>
-                            <option value="light-green">Світла: Природа (Зелений)</option>
+                        <span class="label-text">Колір додатка:</span>
+                        <select id="edit-theme-color" style="margin-bottom: 8px;" onchange="window.previewTheme()">
+                            <option value="gold">🏆 Золотий Ахіллес</option>
+                            <option value="blood">🩸 Кривава Спарта</option>
+                            <option value="sky">🌌 Небесно-блакитна</option>
                         </select>
 
-                        <select id="edit-app-mode" style="margin-bottom: 15px;">
+                        <span class="label-text">Режим екрану:</span>
+                        <select id="edit-theme-mode" style="margin-bottom: 25px;" onchange="window.previewTheme()">
+                            <option value="auto">🌗 Системний (Авто)</option>
+                            <option value="dark">🌙 Темний</option>
+                            <option value="light">☀️ Світлий</option>
+                        </select>
+
+                        <select id="edit-app-mode" style="margin-bottom: 15px; border-color: var(--primary);">
                             <option value="simple">Режим: Звичайний (Без калорій)</option>
                             <option value="pro">Режим: PRO (Трекінг спалених калорій)</option>
                         </select>
@@ -521,7 +509,7 @@
                             <option value="maintain">Підтримка ваги</option>
                             <option value="gain">Набір маси (Профіцит 15%)</option>
                         </select>
-                        <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти (Перерахувати норму)</button>
+                        <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти налаштування</button>
                     </div>
 
                     <button class="danger" onclick="logout()" style="padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700;">Вийти з акаунту</button>
@@ -663,33 +651,33 @@
             document.getElementById(screenId).classList.add('active-block');
         }
 
-        // === ДИНАМІЧНА СИСТЕМА ТЕМ ===
-        window.previewTheme = function(themeName) {
-            window.applyTheme(themeName);
+        // === ДИНАМІЧНЕ ЗАСТОСУВАННЯ ТЕМИ ===
+        window.previewTheme = function() {
+            let color = document.getElementById('edit-theme-color') ? document.getElementById('edit-theme-color').value : 'gold';
+            let mode = document.getElementById('edit-theme-mode') ? document.getElementById('edit-theme-mode').value : 'auto';
+            window.applyTheme(color, mode);
         };
 
-        window.applyTheme = function(themeName) {
-            document.body.className = '';
-            let active = themeName;
+        window.applyTheme = function(colorStr, modeStr) {
+            let color = colorStr || localStorage.getItem('achilles_theme_color') || 'gold';
+            let mode = modeStr || localStorage.getItem('achilles_theme_mode') || 'auto';
             
-            if(!themeName || themeName === 'auto') {
-                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                active = prefersDark ? 'dark-gold' : 'light-gold';
+            let actualMode = mode;
+            if (mode === 'auto') {
+                actualMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
             }
             
-            document.body.classList.add('theme-' + active);
+            document.documentElement.setAttribute('data-color', color);
+            document.documentElement.setAttribute('data-theme', actualMode);
             
             const metaThemeColor = document.querySelector('meta[name="theme-color"]');
             if (metaThemeColor) {
-                metaThemeColor.setAttribute("content", active.includes('light') ? "#F2F2F7" : "#000000");
+                metaThemeColor.setAttribute("content", actualMode === 'light' ? "#F2F2F7" : "#000000");
             }
         };
 
-        // Слухаємо системні зміни iOS (якщо увімкнено "Авто")
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            if ((localStorage.getItem('achilles_theme') || 'auto') === 'auto') {
-                window.applyTheme('auto');
-            }
+            if ((localStorage.getItem('achilles_theme_mode') || 'auto') === 'auto') { window.applyTheme(); }
         });
 
         window.loadDailyData = function() {
@@ -712,11 +700,8 @@
 
         window.saveDailyData = function() {
             let dailyData = {
-                date: window.todayDate,
-                consumedCalories: window.consumedCalories,
-                workoutBonus: window.workoutBonus,
-                macros: window.macros,
-                log: window.dailyLog
+                date: window.todayDate, consumedCalories: window.consumedCalories,
+                workoutBonus: window.workoutBonus, macros: window.macros, log: window.dailyLog
             };
             localStorage.setItem('achilles_daily_data', JSON.stringify(dailyData));
             window.syncToCloud(); 
@@ -732,7 +717,8 @@
             const dataToSave = {
                 profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
                 appMode: localStorage.getItem('achilles_app_mode') || 'pro',
-                theme: localStorage.getItem('achilles_theme') || 'auto',
+                themeColor: localStorage.getItem('achilles_theme_color') || 'gold',
+                themeMode: localStorage.getItem('achilles_theme_mode') || 'auto',
                 baseKcal: localStorage.getItem('achilles_base_kcal') || 2000,
                 goalText: localStorage.getItem('achilles_goal_text') || '',
                 targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
@@ -741,17 +727,14 @@
                 customFoods: JSON.parse(localStorage.getItem('achilles_custom_foods')) || [],
                 favFoods: JSON.parse(localStorage.getItem('achilles_fav_foods')) || [],
                 daily: {
-                    date: window.todayDate,
-                    consumedCalories: window.consumedCalories,
-                    workoutBonus: window.workoutBonus,
-                    macros: window.macros,
-                    log: window.dailyLog
+                    date: window.todayDate, consumedCalories: window.consumedCalories,
+                    workoutBonus: window.workoutBonus, macros: window.macros, log: window.dailyLog
                 }
             };
             try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Cloud Sync Error", e); }
         };
 
-        // РОЗУМНА СИНХРОНІЗАЦІЯ (SMART MERGE) - ОСТАТОЧНИЙ ФІКС
+        // РОЗУМНА СИНХРОНІЗАЦІЯ
         window.loadFromCloud = async function(userName) {
             if(!db) return false;
             try {
@@ -761,7 +744,8 @@
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile || {}));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    localStorage.setItem('achilles_theme', d.theme || 'auto');
+                    if(d.themeColor) localStorage.setItem('achilles_theme_color', d.themeColor);
+                    if(d.themeMode) localStorage.setItem('achilles_theme_mode', d.themeMode);
                     localStorage.setItem('achilles_base_kcal', d.baseKcal || 2000);
                     localStorage.setItem('achilles_goal_text', d.goalText || '');
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros || {p:0,f:0,c:0}));
@@ -782,7 +766,6 @@
                     let cloudFF = d.favFoods || [];
                     if(cloudFF.length > localFF.length) localStorage.setItem('achilles_fav_foods', JSON.stringify(cloudFF));
                     
-                    // Бронебійна логіка щоденника
                     let localDaily = JSON.parse(localStorage.getItem('achilles_daily_data'));
                     let cloudDaily = d.daily;
 
@@ -797,43 +780,41 @@
                             window.dailyLog = cloudDaily.log || [];
                             
                             localStorage.setItem('achilles_daily_data', JSON.stringify({
-                                date: window.todayDate,
-                                consumedCalories: window.consumedCalories,
-                                workoutBonus: window.workoutBonus,
-                                macros: window.macros,
-                                log: window.dailyLog
+                                date: window.todayDate, consumedCalories: window.consumedCalories,
+                                workoutBonus: window.workoutBonus, macros: window.macros, log: window.dailyLog
                             }));
-                        } else if (lCount > cCount) {
-                            // Локальних даних більше! БЛОКУЄМО перезапис і відправляємо на сервер
-                            window.syncToCloud(); 
-                        }
+                        } else if (lCount > cCount) { window.syncToCloud(); }
                     } else if (localDaily && localDaily.date === window.todayDate) {
                         window.syncToCloud(); 
                     }
                     
-                    window.applyTheme(d.theme || 'auto');
+                    window.applyTheme();
                     return true;
                 }
             } catch(e) { console.error("Cloud Load Error", e); }
             return false;
         };
 
+        // 120 FPS ЗАПУСК ДОДАТКУ
         document.addEventListener("DOMContentLoaded", () => {
+            window.applyTheme(); // Одразу застосовуємо кольори
+
+            const splash = document.getElementById('splash-screen');
             const avatar = document.getElementById('global-avatar');
-            const splashBg = document.getElementById('splash-bg');
             
+            // Апаратна анімація Splash-екрану
             setTimeout(() => {
-                if(avatar) avatar.classList.remove('splash-mode');
-                if(splashBg) {
-                    splashBg.style.opacity = '0';
-                    setTimeout(() => splashBg.style.display = 'none', 500);
+                if(splash) {
+                    splash.classList.add('hidden');
+                    setTimeout(() => splash.style.display = 'none', 600);
                 }
-            }, 600);
+                if(avatar) {
+                    avatar.classList.add('visible');
+                }
+            }, 800);
 
             const userName = localStorage.getItem('achilles_user');
-            
             if (userName) {
-                window.applyTheme(localStorage.getItem('achilles_theme'));
                 window.loadUserData();
                 window.loadDailyData(); 
                 window.renderWeightChart();
@@ -849,7 +830,6 @@
                     }
                 });
             } else { 
-                window.applyTheme('auto');
                 window.showScreen('login-window');
             }
         });
@@ -984,11 +964,14 @@
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_theme', 'auto');
+            
+            localStorage.setItem('achilles_theme_color', 'gold');
+            localStorage.setItem('achilles_theme_mode', 'auto');
 
             window.logNewWeight(weight);
             window.recalcAndSaveNorms(profile, false); 
             
+            window.applyTheme();
             window.loadUserData(); 
             window.loadDailyData();
             window.renderWeightChart(); 
@@ -1016,8 +999,8 @@
             let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
             document.getElementById('edit-app-mode').value = savedAppMode;
             
-            let savedTheme = localStorage.getItem('achilles_theme') || 'auto';
-            document.getElementById('edit-theme').value = savedTheme;
+            document.getElementById('edit-theme-color').value = localStorage.getItem('achilles_theme_color') || 'gold';
+            document.getElementById('edit-theme-mode').value = localStorage.getItem('achilles_theme_mode') || 'auto';
 
             if(prof) window.recalcAndSaveNorms(prof, true);
 
@@ -1046,7 +1029,9 @@
             const goal = document.getElementById('edit-goal').value;
             const appMode = document.getElementById('edit-app-mode').value;
             const diet = document.getElementById('edit-diet').value;
-            const theme = document.getElementById('edit-theme').value;
+            
+            const themeColor = document.getElementById('edit-theme-color').value;
+            const themeMode = document.getElementById('edit-theme-mode').value;
             
             let wDays = parseInt(document.getElementById('edit-work-days').value) || 0;
             let rDays = parseInt(document.getElementById('edit-rest-days').value) || 0;
@@ -1059,9 +1044,10 @@
             
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_theme', theme);
+            localStorage.setItem('achilles_theme_color', themeColor);
+            localStorage.setItem('achilles_theme_mode', themeMode);
             
-            window.applyTheme(theme);
+            window.applyTheme(themeColor, themeMode);
             window.recalcAndSaveNorms(profile, false); 
 
             window.loadUserData();
@@ -1159,7 +1145,10 @@
             }).join('');
         };
 
+        // ПІДТВЕРДЖЕННЯ ВИДАЛЕННЯ З ЩОДЕННИКА
         window.deleteLogEntry = function(id) {
+            if (!confirm("Ви впевнені, що хочете видалити цей запис?")) return;
+            
             const index = window.dailyLog.findIndex(e => e.id === id);
             if (index === -1) return;
             
