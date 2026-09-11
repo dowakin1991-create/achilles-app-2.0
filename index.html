@@ -586,7 +586,7 @@
         window.workoutBonus = 0;
         window.macros = { p: 0, f: 0, c: 0 }; 
         window.targetMacros = { p: 0, f: 0, c: 0 };
-        window.dailyLog = []; // МАСИВ ЩОДЕННИКА!
+        window.dailyLog = []; 
 
         window.currentWorkoutMode = 'extended'; 
         window.currentWorkoutFilter = 'all';
@@ -598,7 +598,6 @@
             document.getElementById(screenId).classList.add('active-block');
         }
 
-        // === ОНОВЛЕНИЙ ЗАВАНТАЖУВАЧ ДАНИХ (LOCAL-FIRST) ===
         window.loadDailyData = function() {
             let saved = JSON.parse(localStorage.getItem('achilles_daily_data'));
             if (saved && saved.date === window.todayDate) {
@@ -663,14 +662,12 @@
                 if (docSnap.exists()) {
                     const d = docSnap.data();
                     
-                    // 1. Профіль завжди беремо з хмари (якщо є)
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile || {}));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
                     localStorage.setItem('achilles_base_kcal', d.baseKcal || 2000);
                     localStorage.setItem('achilles_goal_text', d.goalText || '');
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros || {p:0,f:0,c:0}));
                     
-                    // 2. Масиви об'єднуємо по довжині (щоб уникнути втрати даних при швидкому оновленні)
                     let localW = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
                     let cloudW = d.weightHistory || [];
                     localStorage.setItem('achilles_weight_history', JSON.stringify(localW.length >= cloudW.length ? localW : cloudW));
@@ -687,7 +684,6 @@
                     let cloudFF = d.favFoods || [];
                     localStorage.setItem('achilles_fav_foods', JSON.stringify(localFF.length >= cloudFF.length ? localFF : cloudFF));
                     
-                    // 3. Синхронізація Щоденника
                     let localDaily = JSON.parse(localStorage.getItem('achilles_daily_data'));
                     let cloudDaily = d.daily;
 
@@ -696,10 +692,8 @@
                         let localLogCount = (localDaily && localDaily.date === window.todayDate && localDaily.log) ? localDaily.log.length : 0;
                         
                         if (localLogCount >= cloudLogCount && localLogCount > 0) {
-                            // Телефон має кращі дані. Заставляємо хмару оновитися.
                             window.syncToCloud(); 
                         } else {
-                            // Хмара має кращі дані. Забираємо собі.
                             window.consumedCalories = cloudDaily.consumedCalories || 0;
                             window.workoutBonus = cloudDaily.workoutBonus || 0;
                             window.macros = cloudDaily.macros || {p:0, f:0, c:0};
@@ -714,10 +708,8 @@
                             }));
                         }
                     } else if (localDaily && localDaily.date === window.todayDate) {
-                        // У телефоні сьогоднішній день, у хмарі ще вчорашній.
                         window.syncToCloud();
                     } else {
-                        // Обидва старі (пройшла північ).
                         window.consumedCalories = 0; window.workoutBonus = 0; window.macros = {p:0,f:0,c:0};
                         window.dailyLog = [];
                         window.saveDailyData();
@@ -728,7 +720,6 @@
             return false;
         };
 
-        // ЗАПУСК ДОДАТКУ
         document.addEventListener("DOMContentLoaded", () => {
             const avatar = document.getElementById('global-avatar');
             const splashBg = document.getElementById('splash-bg');
@@ -745,14 +736,14 @@
             
             if (userName) {
                 window.loadUserData();
-                window.loadDailyData(); // МИТТЄВЕ ВІДМАЛЬОВУВАННЯ
+                window.loadDailyData(); 
                 window.renderWeightChart();
                 window.showScreen('main-app-window');
                 
                 window.loadFromCloud(userName).then(loaded => {
                     if(loaded) {
                         window.loadUserData();
-                        window.loadDailyData(); // ОНОВЛЕННЯ З ХМАРИ
+                        window.loadDailyData(); 
                         window.renderWeightChart();
                         window.searchWorkout();
                         if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
@@ -1023,6 +1014,10 @@
             
             requestAnimationFrame(() => {
                 document.getElementById('calorie-progress').style.width = percent + '%';
+                
+                // === ДОДАНО РЯДОК ДЛЯ ВІДОБРАЖЕННЯ КАЛОРІЙ ===
+                document.getElementById('calories-consumed').innerText = Math.round(window.consumedCalories); 
+                
                 document.getElementById('macro-p').innerText = Math.round(window.macros.p);
                 document.getElementById('macro-f').innerText = Math.round(window.macros.f);
                 document.getElementById('macro-c').innerText = Math.round(window.macros.c);
@@ -1037,7 +1032,6 @@
             });
         };
 
-        // === ОНОВЛЕНИЙ ЩОДЕННИК З ВИДАЛЕННЯМ ===
         window.renderDiary = function() {
             const list = document.getElementById('eaten-list');
             if (!window.dailyLog || window.dailyLog.length === 0) {
@@ -1303,7 +1297,6 @@
             window.setFoodFilter('fav');
         };
 
-        // ОНОВЛЕНЕ ДОДАВАННЯ ЇЖІ В МАСИВ
         window.addFood = function(itemJsonStr, weightId) {
             const item = JSON.parse(itemJsonStr.replace(/&quot;/g, '"'));
             let weightInput = document.getElementById(weightId).value;
@@ -1340,9 +1333,6 @@
             document.querySelector('[data-target="tab-dashboard"]').click();
         };
 
-        // ==========================================
-        // ТРЕНУВАННЯ
-        // ==========================================
         window.setWorkoutMode = function(mode) {
             window.currentWorkoutMode = mode;
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
@@ -1429,7 +1419,6 @@
             `}).join('');
         };
 
-        // ОНОВЛЕНЕ ДОДАВАННЯ ТРЕНУВАННЯ В МАСИВ
         window.logWorkoutEntry = function(name, burnedKcal, detailsHtml) {
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             let htmlStr = `🏋️ <strong style="color: var(--text-main);">${name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${detailsHtml}</span>`;
