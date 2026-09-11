@@ -25,52 +25,53 @@
             --text-muted: #86868B;
             --shadow: rgba(0, 0, 0, 0.8); 
             --card-bg: rgba(28, 28, 30, 0.85);
-            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(255, 255, 255, 0.08);
             --danger: #FF453A;
             --success: #32D74B;
             --bezier: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        html.dark, body.dark {
-            --gold: #e5c07b;
-            --gold-glow: rgba(229, 192, 123, 0.4);
-            --bg-grad-1: #000000;
-            --bg-grad-2: #0a0a0a;
-            --glass-bg: rgba(15, 15, 15, 0.85); 
-            --glass-border: rgba(229, 192, 123, 0.25);
-            --text-main: #ffffff; --text-muted: #888888;
-            --shadow: rgba(0, 0, 0, 0.8); 
-            --card-bg: linear-gradient(145deg, rgba(25,25,25,0.9), rgba(10,10,10,0.95));
-            --option-bg: #111111; --input-bg: rgba(0,0,0,0.6);
-        }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        html, body { width: 100%; height: 100%; background-color: var(--bg-pure); overflow: hidden; overscroll-behavior-y: none; -webkit-font-smoothing: antialiased; }
-        body { background: linear-gradient(145deg, var(--bg-grad-1), var(--bg-grad-2)); color: var(--text-main); transition: background 0.4s ease, color 0.4s ease; }
-
-        .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
-            display: none; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
-            padding-top: env(safe-area-inset-top); padding-bottom: calc(env(safe-area-inset-bottom) + 95px);
-            opacity: 0; will-change: transform, opacity;
+        html, body { 
+            width: 100%; 
+            height: 100%; height: 100dvh; /* Ідеально для iOS */
+            background-color: var(--bg-pure); 
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased; 
+            color: var(--text-main);
         }
 
-        .screen.active-block { display: block; opacity: 1; z-index: 20; animation: screenFadeIn 0.4s var(--bezier) forwards; }
-        @keyframes screenFadeIn { from { opacity: 0; transform: scale(0.98) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        /* Заборона виділення тексту для нативного вигляду */
+        .nav-item, button, .filter-tab, .avatar-container {
+            -webkit-user-select: none; user-select: none;
+        }
 
+        /* === ЕКРАНИ === */
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
+            display: none; overflow-y: auto; overflow-x: hidden; 
+            -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
+            padding-bottom: calc(100px + env(safe-area-inset-bottom)); /* Місце під меню */
+        }
+
+        .screen.active-block { 
+            display: block; z-index: 20; 
+            animation: screenFadeIn 0.4s var(--bezier) forwards; 
+        }
+        @keyframes screenFadeIn { 
+            from { opacity: 0; transform: scale(0.98) translateY(10px); } 
+            to { opacity: 1; transform: scale(1) translateY(0); } 
+        }
+
+        /* === ГОЛОВНИЙ КОНТЕЙНЕР (ПК) === */
         .app-window {
             position: relative; width: 92%; max-width: 1000px; 
             background: var(--glass-bg); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
             border: 1px solid var(--glass-border); border-radius: 36px; 
             box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.1);
             margin: 80px auto 40px auto; display: flex; flex-direction: row; 
-        }
-
-        /* Заборона виділення тексту для нативного вигляду */
-        .nav-item, button, .filter-tab, .day-mode-btn, .avatar-container {
-            -webkit-user-select: none;
-            user-select: none;
+            min-height: 80vh;
         }
 
         .avatar-container {
@@ -89,16 +90,19 @@
         .menu-item i { margin-right: 15px; font-size: 18px; color: var(--gold); opacity: 0.8; transition: transform 0.3s; }
         .menu-item.active { background: var(--gold-glow); color: var(--gold); box-shadow: inset 0 0 15px rgba(255,255,255,0.05); }
         .menu-item.active i { color: var(--gold); opacity: 1; transform: scale(1.1); }
-        .menu-item:hover { background: rgba(255,255,255,0.05); }
 
         .main-content { flex-grow: 1; padding: 60px 40px 40px; position: relative; width: 100%; }
-        .tab-content { display: none; opacity: 0; transform: translateY(15px); transition: all 0.4s var(--bezier); will-change: opacity, transform; }
-        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
+        
+        /* Гарантоване відображення вкладок */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: tabFadeIn 0.4s var(--bezier) forwards; }
+        @keyframes tabFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         h1 { font-size: 32px; margin: 0 0 25px 0; text-align: center; font-weight: 800; letter-spacing: -0.8px; color: var(--text-main); } 
         h1 span { color: var(--gold); }
         p { font-size: 15px; color: var(--text-muted); line-height: 1.5; font-weight: 500; }
 
+        /* === ФОРМИ === */
         input, select, button { 
             width: 100%; padding: 18px 20px; margin: 8px 0; border-radius: 20px; 
             border: 1px solid rgba(255,255,255,0.08); background: var(--input-bg); 
@@ -108,11 +112,11 @@
         input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); box-shadow: 0 0 0 3px rgba(229, 192, 123, 0.15); }
         input::placeholder { color: var(--text-muted); opacity: 0.8; }
         select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5c07b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 18px center; background-size: 18px; }
-        select option { background-color: var(--option-bg); color: var(--text-main); }
+        select option { background-color: #1c1c1e; color: var(--text-main); }
         
         button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 10px 20px rgba(199, 154, 60, 0.2); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(199, 154, 60, 0.3); }
         button:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(199, 154, 60, 0.2); }
+        button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
 
         .progress-bar { width: 100%; height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
@@ -130,11 +134,6 @@
         .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 8px 8px 0 0; min-height: 5px; transition: height 1s var(--bezier); }
         .chart-val { font-size: 13px; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
         
-        /* ДИНАМІЧНИЙ РЕЖИМ ДНЯ */
-        .day-mode-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); }
-        .day-mode-btn { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 700; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
-        .day-mode-btn.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; }
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
         .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);}
@@ -161,36 +160,54 @@
 
         /* === НИЖНЯ НАВІГАЦІЯ (ДЕСКТОП) === */
         .nav-bar { display: none; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); }
-        .nav-item.active { opacity: 1; color: var(--gold); }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); }
-        .nav-item.active .nav-icon { transform: scale(1.1) translateY(-2px); }
-        .nav-text { font-size: 11px; font-weight: 600; }
 
-        /* === МЕДІА ЗАПИТ ДЛЯ ТЕЛЕФОНІВ === */
+        /* === МЕДІА ЗАПИТ ДЛЯ ТЕЛЕФОНІВ (СПРАВЖНІЙ IOS ДОДАТОК) === */
         @media (max-width: 768px) {
-            .app-window { flex-direction: column; margin-top: 80px; border-radius: 40px; margin-bottom: 20px;}
             .sidebar { display: none; } 
             
-            /* === НИЖНЯ НАВІГАЦІЯ (МОБАЙЛ) === */
+            /* Прибираємо "вікно", додаток стає на весь екран */
+            .app-window { 
+                width: 100%; max-width: none; border-radius: 0; border: none; margin: 0; 
+                background: transparent; backdrop-filter: none; box-shadow: none; 
+                flex-direction: column; min-height: 100%;
+            }
+
+            /* Падінги з урахуванням чубчика iOS */
+            .main-content { padding: calc(env(safe-area-inset-top) + 20px) 20px 30px 20px; }
+            
+            /* Аватарка як кнопка профілю у правому куті (Apple Style) */
+            .avatar-container { 
+                position: absolute; top: max(env(safe-area-inset-top), 20px); right: 20px; left: auto; transform: none; 
+                width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); 
+                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            }
+            .avatar-container:active { transform: scale(0.9); }
+
+            /* Текст ліворуч на телефоні */
+            h1 { text-align: left; font-size: 34px; margin-top: 50px; margin-bottom: 10px; line-height: 1.1;}
+            p#user-goal-text { text-align: left !important; margin-bottom: 30px !important; }
+
+            /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
             .nav-bar { 
                 position: fixed; bottom: 0; left: 0; width: 100%; 
                 display: flex; justify-content: space-around; align-items: center;
                 padding-top: 12px;
-                padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
+                padding-bottom: calc(12px + env(safe-area-inset-bottom, 20px)); /* Враховує полосу свайпу */
                 background: rgba(18, 18, 20, 0.85); 
                 backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); 
                 border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000;
             }
-
-            .main-content { padding: 60px 20px 30px; }
-            .avatar-container { top: -50px; width: 100px; height: 100px; min-height: 100px; border-radius: 26px;}
+            .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); }
+            .nav-item.active { opacity: 1; color: var(--gold); }
+            .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); }
+            .nav-item.active .nav-icon { transform: scale(1.15) translateY(-2px); }
+            .nav-text { font-size: 11px; font-weight: 600; }
         }
 
         .sync-icon { font-size: 14px; color: var(--success); margin-left: 8px; opacity: 0; transition: opacity 0.5s; }
         .link-btn { text-align: center; margin-top: 20px; color: var(--gold); cursor: pointer; font-weight: 600; transition: opacity 0.3s; }
         .link-btn:active { opacity: 0.6; }
-        .label-text { font-size: 14px; color: var(--text-muted); margin: 10px 0 5px 5px; font-weight: 600; display: block; }
+        .label-text { font-size: 14px; color: var(--text-muted); margin: 10px 0 5px 5px; font-weight: 600; display: block; text-align: left; }
     </style>
 </head>
 <body class="dark"> 
@@ -233,8 +250,8 @@
 
     <!-- ВІКНО ЛОГІНЕННЯ -->
     <div class="screen" id="login-window">
-        <div class="app-window" style="max-width: 400px; flex-direction: column; margin-top: 150px;">
-            <div class="avatar-container"><div class="avatar-logo"></div></div>
+        <div class="app-window" style="max-width: 400px; flex-direction: column; margin-top: max(env(safe-area-inset-top), 60px);">
+            <div class="avatar-container" style="position: relative; margin: 20px auto; top: 0; left: 0; transform: none; width: 120px; height: 120px;"><div class="avatar-logo"></div></div>
             <div class="main-content">
                 <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Вхід в Achilles</h2>
                 <form onsubmit="event.preventDefault(); attemptLogin();">
@@ -250,7 +267,7 @@
     <!-- ВІКНО РЕЄСТРАЦІЇ -->
     <div class="screen" id="registration-window">
         <div class="app-window" style="max-width: 450px; flex-direction: column;">
-            <div class="avatar-container"><div class="avatar-logo"></div></div>
+            <div class="avatar-container" style="position: relative; margin: 20px auto; top: 0; left: 0; transform: none; width: 100px; height: 100px;"><div class="avatar-logo"></div></div>
             <div class="main-content">
                 <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Новий Воїн</h2>
                 
@@ -279,7 +296,7 @@
                     </div>
                     <input type="number" id="reg-weight" placeholder="Поточна вага (кг)" inputmode="decimal" required>
                     
-                    <span class="label-text">Твій графік (днів підряд):</span>
+                    <span class="label-text">Твій графік роботи (співвідношення днів):</span>
                     <div style="display: flex; gap: 12px; margin-bottom: 8px;">
                         <input type="number" id="reg-work-days" placeholder="Робочих (напр. 2)" inputmode="numeric" pattern="[0-9]*" value="2" required>
                         <input type="number" id="reg-rest-days" placeholder="Вихідних (напр. 2)" inputmode="numeric" pattern="[0-9]*" value="2" required>
@@ -321,8 +338,8 @@
             <div class="avatar-container" onclick="openProfileTab()"><div class="avatar-logo"></div></div>
 
             <div class="sidebar">
-                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-fire"></i> Статус</div>
-                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-book"></i> Раціон</div>
+                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-bolt"></i> Статус</div>
+                <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-utensils"></i> Раціон</div>
                 <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Зал</div>
                 <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
             </div>
@@ -332,12 +349,6 @@
                 <!-- ДЕШБОРД ТА ВАГА -->
                 <div id="tab-dashboard" class="tab-content active">
                     <h1 id="greeting-header">Привіт, <span id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
-                    
-                    <div class="day-mode-toggle">
-                        <div id="mode-rest-btn" class="day-mode-btn" onclick="setDayMode('rest')">🛋️ Вихідний</div>
-                        <div id="mode-work-btn" class="day-mode-btn" onclick="setDayMode('work')">👨‍🍳 Робоча зміна</div>
-                    </div>
-
                     <p id="user-goal-text" style="text-align: center; margin-bottom: 30px;">Аналізуємо...</p>
                     
                     <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
@@ -437,7 +448,7 @@
                             <input type="number" id="edit-height" placeholder="Зріст (см)" inputmode="numeric" pattern="[0-9]*">
                         </div>
                         
-                        <span class="label-text">Твій графік (днів підряд):</span>
+                        <span class="label-text">Твій графік (співвідношення днів):</span>
                         <div style="display: flex; gap: 12px; margin-bottom: 8px;">
                             <input type="number" id="edit-work-days" placeholder="Робочих (напр. 2)" inputmode="numeric" pattern="[0-9]*">
                             <input type="number" id="edit-rest-days" placeholder="Вихідних (напр. 2)" inputmode="numeric" pattern="[0-9]*">
@@ -462,7 +473,7 @@
                             <option value="maintain">Підтримка ваги</option>
                             <option value="gain">Набір маси (Профіцит 15%)</option>
                         </select>
-                        <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти налаштування</button>
+                        <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти (Перерахувати норму)</button>
                     </div>
 
                     <button class="danger" onclick="logout()" style="padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700;">Вийти з акаунту</button>
@@ -614,7 +625,6 @@
             const dataToSave = {
                 profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
                 appMode: localStorage.getItem('achilles_app_mode') || 'pro',
-                dayMode: localStorage.getItem('achilles_day_mode') || 'rest',
                 baseKcal: localStorage.getItem('achilles_base_kcal') || 2000,
                 goalText: localStorage.getItem('achilles_goal_text') || '',
                 targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
@@ -644,7 +654,6 @@
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    localStorage.setItem('achilles_day_mode', d.dayMode || 'rest');
                     localStorage.setItem('achilles_base_kcal', d.baseKcal);
                     localStorage.setItem('achilles_goal_text', d.goalText);
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros));
@@ -670,7 +679,6 @@
         };
 
         window.onload = async () => { 
-            document.documentElement.classList.add('dark');
             const userName = localStorage.getItem('achilles_user');
             
             if (userName) {
@@ -711,12 +719,8 @@
                         window.loadUserData();
                         window.renderWeightChart();
                         window.showScreen('main-app-window');
-                    } else {
-                        alert("Неправильний пароль!");
-                    }
-                } else {
-                    alert("Користувача не знайдено. Створіть профіль!");
-                }
+                    } else { alert("Неправильний пароль!"); }
+                } else { alert("Користувача не знайдено. Створіть профіль!"); }
             } catch(e) {
                 console.error(e);
                 const localUser = localStorage.getItem('achilles_user');
@@ -725,9 +729,7 @@
                     window.loadUserData();
                     window.renderWeightChart();
                     window.showScreen('main-app-window');
-                } else {
-                    alert("Помилка підключення до хмари.");
-                }
+                } else { alert("Помилка підключення до хмари."); }
             }
             btn.innerText = "Увійти";
         };
@@ -743,61 +745,22 @@
             else if (goal === 'gain') { targetKcal = tdee * 1.15; goalText = "Набір маси (Профіцит 15%)"; }
 
             targetKcal = Math.round(targetKcal);
-
             let p, f, c;
 
             if (diet === 'balanced') {
-                p = (targetKcal * 0.3) / 4;
-                f = (targetKcal * 0.3) / 9;
-                c = (targetKcal * 0.4) / 4;
+                p = (targetKcal * 0.3) / 4; f = (targetKcal * 0.3) / 9; c = (targetKcal * 0.4) / 4;
             } else if (diet === 'lowcarb') {
-                p = (targetKcal * 0.4) / 4;
-                f = (targetKcal * 0.4) / 9;
-                c = (targetKcal * 0.2) / 4;
+                p = (targetKcal * 0.4) / 4; f = (targetKcal * 0.4) / 9; c = (targetKcal * 0.2) / 4;
             } else if (diet === 'keto') {
-                p = (targetKcal * 0.2) / 4;
-                f = (targetKcal * 0.75) / 9;
-                c = (targetKcal * 0.05) / 4;
+                p = (targetKcal * 0.2) / 4; f = (targetKcal * 0.75) / 9; c = (targetKcal * 0.05) / 4;
             } else {
-                p = weight * 2.0;
-                f = weight * 1.0;
-                c = (targetKcal - (p * 4) - (f * 9)) / 4;
+                p = weight * 2.0; f = weight * 1.0; c = (targetKcal - (p * 4) - (f * 9)) / 4;
                 if(c < 0) { 
-                    c = 0; 
-                    let totalNeeded = (p*4) + (f*9);
-                    p = p * (targetKcal / totalNeeded);
-                    f = f * (targetKcal / totalNeeded);
+                    c = 0; let totalNeeded = (p*4) + (f*9);
+                    p = p * (targetKcal / totalNeeded); f = f * (targetKcal / totalNeeded);
                 }
             }
-
             return { kcal: targetKcal, goalText: goalText, p: Math.round(p), f: Math.round(f), c: Math.round(c) };
-        };
-
-        window.recalcAndSaveNorms = function(profile, dayMode) {
-            let activityMultiplier = dayMode === 'work' ? profile.activityWork : profile.activityRest;
-            const norms = window.calculateNorms(profile.gender, profile.weight, profile.height, profile.age, activityMultiplier, profile.goal, profile.diet || 'standard');
-            
-            localStorage.setItem('achilles_base_kcal', norms.kcal); 
-            localStorage.setItem('achilles_goal_text', norms.goalText);
-            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
-            
-            window.targetMacros = {p: norms.p, f: norms.f, c: norms.c};
-            document.getElementById('target-p').innerText = `/ ${norms.p}г`;
-            document.getElementById('target-f').innerText = `/ ${norms.f}г`;
-            document.getElementById('target-c').innerText = `/ ${norms.c}г`;
-            document.getElementById('user-goal-text').textContent = norms.goalText;
-            
-            window.updateGoalDisplay();
-            window.syncToCloud();
-        };
-
-        window.setDayMode = function(mode) {
-            localStorage.setItem('achilles_day_mode', mode);
-            document.getElementById('mode-rest-btn').classList.toggle('active', mode === 'rest');
-            document.getElementById('mode-work-btn').classList.toggle('active', mode === 'work');
-            
-            let profile = JSON.parse(localStorage.getItem('achilles_profile'));
-            if(profile) { window.recalcAndSaveNorms(profile, mode); }
         };
 
         window.completeRegistration = async function() {
@@ -807,8 +770,6 @@
             const age = parseInt(document.getElementById('reg-age').value);
             const height = parseFloat(document.getElementById('reg-height').value);
             const weight = parseFloat(document.getElementById('reg-weight').value);
-            const activityWork = document.getElementById('reg-activity-work').value;
-            const activityRest = document.getElementById('reg-activity-rest').value;
             const goal = document.getElementById('reg-goal').value;
             const appMode = document.getElementById('reg-app-mode').value;
             const diet = document.getElementById('reg-diet').value;
@@ -843,20 +804,28 @@
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_day_mode', 'rest');
+            localStorage.setItem('achilles_base_kcal', norms.kcal); 
+            localStorage.setItem('achilles_goal_text', norms.goalText);
+            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
 
             window.logNewWeight(weight);
-            window.recalcAndSaveNorms(profile, 'rest');
-            
             window.loadUserData(); 
             window.renderWeightChart(); 
+            await window.syncToCloud(); 
             window.showScreen('main-app-window');
         };
 
         window.loadUserData = function() {
             const uName = localStorage.getItem('achilles_user');
             document.getElementById('display-username').innerText = uName;
+            document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
             
+            let m = JSON.parse(localStorage.getItem('achilles_macros')) || {p: 0, f: 0, c: 0};
+            window.targetMacros = m;
+            document.getElementById('target-p').innerText = `/ ${m.p}г`;
+            document.getElementById('target-f').innerText = `/ ${m.f}г`;
+            document.getElementById('target-c').innerText = `/ ${m.c}г`;
+
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
                 document.getElementById('edit-name').value = prof.name;
@@ -874,12 +843,6 @@
             let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
             document.getElementById('edit-app-mode').value = savedAppMode;
 
-            let savedDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
-            document.getElementById('mode-rest-btn').classList.toggle('active', savedDayMode === 'rest');
-            document.getElementById('mode-work-btn').classList.toggle('active', savedDayMode === 'work');
-            
-            if(prof) window.recalcAndSaveNorms(prof, savedDayMode);
-
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
             
@@ -893,6 +856,7 @@
             }
 
             window.searchWorkout();
+            window.updateGoalDisplay();
         };
 
         window.saveProfile = function() {
@@ -912,16 +876,23 @@
 
             if(!name || !age || !height || !diet || !aWork || !aRest) { alert('Заповни всі поля!'); return; }
 
+            let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
+            let weight = history.length > 0 ? history[history.length - 1].weight : 80;
+
+            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
+            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
+
             let profile = JSON.parse(localStorage.getItem('achilles_profile')) || {};
-            profile = { ...profile, name, gender, age, height, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
+            profile = { ...profile, name, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
             
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
-            
-            let currentDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
-            window.recalcAndSaveNorms(profile, currentDayMode);
+            localStorage.setItem('achilles_base_kcal', norms.kcal); 
+            localStorage.setItem('achilles_goal_text', norms.goalText);
+            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
 
             window.loadUserData();
+            window.syncToCloud();
             alert('Профіль успішно оновлено!');
         };
 
@@ -941,11 +912,16 @@
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
                 prof.weight = w;
+                let avgAct = ((prof.activityWork * prof.workDays) + (prof.activityRest * prof.restDays)) / (prof.workDays + prof.restDays);
+                const norms = window.calculateNorms(prof.gender, w, prof.height, prof.age, avgAct, prof.goal, prof.diet || 'standard');
+                
                 localStorage.setItem('achilles_profile', JSON.stringify(prof));
-                let currentDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
-                window.recalcAndSaveNorms(prof, currentDayMode);
+                localStorage.setItem('achilles_base_kcal', norms.kcal); 
+                localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
+                window.loadUserData();
             }
             window.renderWeightChart();
+            window.syncToCloud();
         };
 
         window.renderWeightChart = function() {
@@ -1004,7 +980,6 @@
             list.appendChild(entry);
             window.updateGoalDisplay();
             window.syncToCloud();
-            document.querySelector('[data-target="tab-dashboard"]').click();
         };
 
         const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
@@ -1017,6 +992,7 @@
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(activeItem => { activeItem.classList.add('active'); });
                 tabContents.forEach(tc => { tc.classList.remove('active'); });
                 document.getElementById(targetId).classList.add('active');
+                window.scrollTo(0,0);
             });
         });
 
@@ -1025,6 +1001,7 @@
             document.querySelectorAll(`[data-target="tab-profile"]`).forEach(activeItem => { activeItem.classList.add('active'); });
             tabContents.forEach(tc => { tc.classList.remove('active'); });
             document.getElementById('tab-profile').classList.add('active');
+            window.scrollTo(0,0);
         };
 
         let searchTimeout;
@@ -1076,12 +1053,7 @@
             const index = favs.findIndex(f => f.name === item.name);
             let isFav = false;
             
-            if (index > -1) {
-                favs.splice(index, 1);
-            } else {
-                favs.push(item);
-                isFav = true;
-            }
+            if (index > -1) { favs.splice(index, 1); } else { favs.push(item); isFav = true; }
             
             localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
             window.syncToCloud();
@@ -1095,10 +1067,7 @@
                     event.target.classList.add('fa-regular');
                 }
             }
-            
-            if(window.currentFoodFilter === 'fav') {
-                window.renderFavFoods();
-            }
+            if(window.currentFoodFilter === 'fav') { window.renderFavFoods(); }
         };
 
         window.renderFavFoods = function() {
@@ -1109,13 +1078,11 @@
                 resultsBox.innerHTML = '<div class="list-item" style="color: var(--text-muted); text-align:center; padding: 20px; border: none;">Улюблених продуктів поки немає</div>';
                 return;
             }
-            
             resultsBox.innerHTML = favs.map((item, index) => window.generateFoodCardHtml(item, 'fav-' + index)).join('');
         };
 
         window.onSearchInput = function() {
             if(window.currentFoodFilter === 'fav') return;
-            
             clearTimeout(searchTimeout);
             const query = document.getElementById('food-search').value.toLowerCase().trim();
             if (currentAbortController) currentAbortController.abort();
@@ -1125,7 +1092,6 @@
                 document.getElementById('loading-spinner').style.display = 'none';
                 return;
             }
-            
             window.renderLocalFoodSearch(query);
             searchTimeout = setTimeout(() => window.searchOpenFoodFacts(query), 800);
         };
@@ -1199,10 +1165,8 @@
             window.syncToCloud();
             
             document.getElementById('custom-food-overlay').style.display = 'none';
-            document.getElementById('cf-name').value = '';
-            document.getElementById('cf-kcal').value = '';
-            document.getElementById('cf-p').value = '';
-            document.getElementById('cf-f').value = '';
+            document.getElementById('cf-name').value = ''; document.getElementById('cf-kcal').value = '';
+            document.getElementById('cf-p').value = ''; document.getElementById('cf-f').value = '';
             document.getElementById('cf-c').value = '';
 
             window.setFoodFilter('fav');
@@ -1225,8 +1189,13 @@
             
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
             if(window.currentFoodFilter === 'fav') window.renderFavFoods();
+            
+            document.querySelector('[data-target="tab-dashboard"]').click();
         };
 
+        // ==========================================
+        // ТРЕНУВАННЯ
+        // ==========================================
         window.setWorkoutMode = function(mode) {
             window.currentWorkoutMode = mode;
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
