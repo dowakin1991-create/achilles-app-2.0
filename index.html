@@ -581,7 +581,6 @@
             { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 }
         ];
 
-        // ГЛОБАЛЬНИЙ СТАН
         window.todayDate = new Date().toISOString().split('T')[0];
         window.consumedCalories = 0; 
         window.workoutBonus = 0;
@@ -656,6 +655,7 @@
             try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Cloud Sync Error", e); }
         };
 
+        // РОЗУМНА СИНХРОНІЗАЦІЯ (SMART MERGE)
         window.loadFromCloud = async function(userName) {
             if(!db) return false;
             try {
@@ -663,30 +663,64 @@
                 if (docSnap.exists()) {
                     const d = docSnap.data();
                     
-                    localStorage.setItem('achilles_profile', JSON.stringify(d.profile));
+                    // 1. Профіль завжди беремо з хмари (якщо є)
+                    localStorage.setItem('achilles_profile', JSON.stringify(d.profile || {}));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    localStorage.setItem('achilles_base_kcal', d.baseKcal);
-                    localStorage.setItem('achilles_goal_text', d.goalText);
-                    localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros));
-                    localStorage.setItem('achilles_weight_history', JSON.stringify(d.weightHistory || []));
-                    localStorage.setItem('achilles_fav_workouts', JSON.stringify(d.favWorkouts || []));
-                    localStorage.setItem('achilles_custom_foods', JSON.stringify(d.customFoods || []));
-                    localStorage.setItem('achilles_fav_foods', JSON.stringify(d.favFoods || []));
+                    localStorage.setItem('achilles_base_kcal', d.baseKcal || 2000);
+                    localStorage.setItem('achilles_goal_text', d.goalText || '');
+                    localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros || {p:0,f:0,c:0}));
                     
-                    if(d.daily && d.daily.date === window.todayDate) {
-                        window.consumedCalories = d.daily.consumedCalories || 0;
-                        window.workoutBonus = d.daily.workoutBonus || 0;
-                        window.macros = d.daily.macros || {p:0, f:0, c:0};
-                        window.dailyLog = d.daily.log || [];
+                    // 2. Масиви об'єднуємо по довжині (щоб уникнути втрати даних при швидкому оновленні)
+                    let localW = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
+                    let cloudW = d.weightHistory || [];
+                    localStorage.setItem('achilles_weight_history', JSON.stringify(localW.length >= cloudW.length ? localW : cloudW));
+
+                    let localFW = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
+                    let cloudFW = d.favWorkouts || [];
+                    localStorage.setItem('achilles_fav_workouts', JSON.stringify(localFW.length >= cloudFW.length ? localFW : cloudFW));
+
+                    let localCF = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
+                    let cloudCF = d.customFoods || [];
+                    localStorage.setItem('achilles_custom_foods', JSON.stringify(localCF.length >= cloudCF.length ? localCF : cloudCF));
+
+                    let localFF = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+                    let cloudFF = d.favFoods || [];
+                    localStorage.setItem('achilles_fav_foods', JSON.stringify(localFF.length >= cloudFF.length ? localFF : cloudFF));
+                    
+                    // 3. Синхронізація Щоденника
+                    let localDaily = JSON.parse(localStorage.getItem('achilles_daily_data'));
+                    let cloudDaily = d.daily;
+
+                    if (cloudDaily && cloudDaily.date === window.todayDate) {
+                        let cloudLogCount = cloudDaily.log ? cloudDaily.log.length : 0;
+                        let localLogCount = (localDaily && localDaily.date === window.todayDate && localDaily.log) ? localDaily.log.length : 0;
                         
-                        // Зберігаємо синхронізовані дані в пам'ять телефону
-                        localStorage.setItem('achilles_daily_data', JSON.stringify({
-                            date: window.todayDate,
-                            consumedCalories: window.consumedCalories,
-                            workoutBonus: window.workoutBonus,
-                            macros: window.macros,
-                            log: window.dailyLog
-                        }));
+                        if (localLogCount >= cloudLogCount && localLogCount > 0) {
+                            // Телефон має кращі дані. Заставляємо хмару оновитися.
+                            window.syncToCloud(); 
+                        } else {
+                            // Хмара має кращі дані. Забираємо собі.
+                            window.consumedCalories = cloudDaily.consumedCalories || 0;
+                            window.workoutBonus = cloudDaily.workoutBonus || 0;
+                            window.macros = cloudDaily.macros || {p:0, f:0, c:0};
+                            window.dailyLog = cloudDaily.log || [];
+                            
+                            localStorage.setItem('achilles_daily_data', JSON.stringify({
+                                date: window.todayDate,
+                                consumedCalories: window.consumedCalories,
+                                workoutBonus: window.workoutBonus,
+                                macros: window.macros,
+                                log: window.dailyLog
+                            }));
+                        }
+                    } else if (localDaily && localDaily.date === window.todayDate) {
+                        // У телефоні сьогоднішній день, у хмарі ще вчорашній.
+                        window.syncToCloud();
+                    } else {
+                        // Обидва старі (пройшла північ).
+                        window.consumedCalories = 0; window.workoutBonus = 0; window.macros = {p:0,f:0,c:0};
+                        window.dailyLog = [];
+                        window.saveDailyData();
                     }
                     return true;
                 }
@@ -1136,7 +1170,12 @@
             const index = favs.findIndex(f => f.name === item.name);
             let isFav = false;
             
-            if (index > -1) { favs.splice(index, 1); } else { favs.push(item); isFav = true; }
+            if (index > -1) {
+                favs.splice(index, 1);
+            } else {
+                favs.push(item);
+                isFav = true;
+            }
             
             localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
             window.syncToCloud();
@@ -1150,7 +1189,10 @@
                     event.target.classList.add('fa-regular');
                 }
             }
-            if(window.currentFoodFilter === 'fav') { window.renderFavFoods(); }
+            
+            if(window.currentFoodFilter === 'fav') {
+                window.renderFavFoods();
+            }
         };
 
         window.renderFavFoods = function() {
@@ -1161,11 +1203,13 @@
                 resultsBox.innerHTML = '<div class="list-item" style="color: var(--text-muted); text-align:center; padding: 20px; border: none;">Улюблених продуктів поки немає</div>';
                 return;
             }
+            
             resultsBox.innerHTML = favs.map((item, index) => window.generateFoodCardHtml(item, 'fav-' + index)).join('');
         };
 
         window.onSearchInput = function() {
             if(window.currentFoodFilter === 'fav') return;
+            
             clearTimeout(searchTimeout);
             const query = document.getElementById('food-search').value.toLowerCase().trim();
             if (currentAbortController) currentAbortController.abort();
@@ -1175,6 +1219,7 @@
                 document.getElementById('loading-spinner').style.display = 'none';
                 return;
             }
+            
             window.renderLocalFoodSearch(query);
             searchTimeout = setTimeout(() => window.searchOpenFoodFacts(query), 800);
         };
@@ -1246,6 +1291,7 @@
             localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
 
             window.syncToCloud();
+            
             window.closeCustomFood();
             
             document.getElementById('cf-name').value = '';
