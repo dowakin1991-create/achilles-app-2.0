@@ -198,7 +198,6 @@
             <div class="avatar-container"><div class="avatar-logo"></div></div>
             <div class="main-content">
                 <h2 style="text-align: center; margin-bottom: 25px; font-size: 28px; color: var(--text-main);">Вхід в Achilles</h2>
-                <!-- Форма потрібна для Face ID / збереження паролів в iOS -->
                 <form onsubmit="event.preventDefault(); attemptLogin();">
                     <input type="text" id="login-username" placeholder="Логін" autocomplete="username" required>
                     <input type="password" id="login-password" placeholder="Пароль" autocomplete="current-password" required>
@@ -454,39 +453,95 @@
             { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 }
         ];
 
+        // ==========================================
+        // БАЗА ТРЕНУВАНЬ (РОЗШИРЕНА, БЕЗ РОСІЙСЬКИХ)
+        // ==========================================
         window.workoutDB = [
-            { name: "Біг (вулиця / доріжка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 11.0 },
-            { name: "Велосипед / Велотренажер", desc: "Кардіо. Вводь час у хвилинах.", factor: 8.0 },
+            // --- КАРДІО ТА АКТИВНІСТЬ ---
+            { name: "Вільне тренування (Apple Watch)", desc: "Вводь час у хвилинах.", factor: 6.0 },
+            { name: "Біг (вулиця / доріжка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 11.5 },
+            { name: "Велосипед / Велотренажер", desc: "Кардіо. Вводь час у хвилинах.", factor: 8.5 },
             { name: "Еліпсоїд (Орбітрек)", desc: "Кардіо. Вводь час у хвилинах.", factor: 9.0 },
-            { name: "ВІІТ (HIIT)", desc: "Інтервальне. Вводь час у хвилинах.", factor: 12.0 },
+            { name: "Степпер / Сходи", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
+            { name: "Гребний тренажер", desc: "Кардіо/Спина. Вводь час у хвилинах.", factor: 11.0 },
+            { name: "ВІІТ (HIIT) / Табата", desc: "Інтервальне. Вводь час у хвилинах.", factor: 13.0 },
+            { name: "Кросфіт (WOD)", desc: "Інтенсив. Вводь час у хвилинах.", factor: 14.0 },
             { name: "Ходьба (швидка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 5.0 },
-            { name: "Плавання", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
+            { name: "Плавання (інтенсивне)", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
+            { name: "Стрибки на скакалці", desc: "Кардіо. Вводь час у хвилинах.", factor: 12.0 },
+            { name: "Йога / Пілатес / Розтяжка", desc: "Відновлення. Вводь час у хвилинах.", factor: 3.5 },
+            { name: "Футбол / Баскетбол / Теніс", desc: "Спорт. Вводь час у хвилинах.", factor: 10.0 },
+            { name: "Бокс / Робота по груші", desc: "Спорт. Вводь час у хвилинах.", factor: 11.0 },
+            
+            // --- ГРУДИ ---
             { name: "Віджимання від підлоги", desc: "Груди/Трицепс.", factor: 0.4 },
             { name: "Віджимання на брусах", desc: "Нижні грудні/Трицепс.", factor: 0.6 },
+            { name: "Віджимання з додатковою вагою", desc: "Груди/Трицепс.", factor: 0.7 },
             { name: "Жим штанги лежачи", desc: "Груди (База).", factor: 0.6 },
+            { name: "Жим штанги під кутом вгору", desc: "Верхні грудні.", factor: 0.6 },
             { name: "Жим гантелей лежачи", desc: "Груди.", factor: 0.5 },
-            { name: "Розведення гантелей лежачи", desc: "Груди.", factor: 0.3 },
+            { name: "Жим гантелей під кутом вгору", desc: "Верхні грудні.", factor: 0.5 },
+            { name: "Розведення гантелей лежачи (Розводка)", desc: "Груди.", factor: 0.3 },
+            { name: "Зведення рук в тренажері (Метелик)", desc: "Груди.", factor: 0.3 },
+            { name: "Кросовер (зведення в блоках)", desc: "Груди.", factor: 0.35 },
+            { name: "Пуловер з гантеллю", desc: "Груди/Спина.", factor: 0.4 },
+
+            // --- СПИНА ---
             { name: "Підтягування на турніку", desc: "Спина/Біцепс.", factor: 1.0 },
-            { name: "Тяга верхнього блоку", desc: "Спина.", factor: 0.4 },
-            { name: "Тяга нижнього блоку", desc: "Спина.", factor: 0.4 },
+            { name: "Підтягування з додатковою вагою", desc: "Спина/Біцепс.", factor: 1.3 },
+            { name: "Тяга верхнього блоку до грудей", desc: "Спина.", factor: 0.4 },
+            { name: "Тяга нижнього блоку до пояса", desc: "Спина.", factor: 0.4 },
             { name: "Тяга штанги в нахилі", desc: "Спина (База).", factor: 0.6 },
-            { name: "Тяга гантелі в нахилі", desc: "Спина.", factor: 0.5 },
+            { name: "Тяга гантелі в нахилі (однією рукою)", desc: "Спина.", factor: 0.5 },
+            { name: "Тяга Т-грифу", desc: "Спина.", factor: 0.6 },
+            { name: "Гіперекстензія", desc: "Поперек.", factor: 0.3 },
             { name: "Шраги з гантелями/штангою", desc: "Трапеція.", factor: 0.3 },
-            { name: "Жим штанги стоячи", desc: "Плечі (База).", factor: 0.5 },
+
+            // --- ПЛЕЧІ ---
+            { name: "Жим штанги стоячи (Армійський)", desc: "Плечі (База).", factor: 0.5 },
+            { name: "Жим Арнольда", desc: "Плечі.", factor: 0.4 },
             { name: "Жим гантелей сидячи", desc: "Плечі.", factor: 0.4 },
             { name: "Махи гантелями в сторони", desc: "Середні дельти.", factor: 0.3 },
-            { name: "Підйом штанги на біцепс", desc: "Біцепс.", factor: 0.4 },
-            { name: "Підйом гантелей на біцепс", desc: "Біцепс.", factor: 0.3 },
+            { name: "Махи гантелями перед собою", desc: "Передні дельти.", factor: 0.3 },
+            { name: "Розведення гантелей в нахилі", desc: "Задні дельти.", factor: 0.3 },
+            { name: "Тяга штанги до підборіддя", desc: "Дельти/Трапеція.", factor: 0.4 },
+            { name: "Зворотні розведення (тренажер)", desc: "Задні дельти.", factor: 0.3 },
+
+            // --- РУКИ (БІЦЕПС / ТРИЦЕПС) ---
+            { name: "Підйом штанги на біцепс стоячи", desc: "Біцепс.", factor: 0.4 },
+            { name: "Підйом гантелей на біцепс (супінація)", desc: "Біцепс.", factor: 0.3 },
             { name: "Молотки (Хаммери)", desc: "Брахіаліс.", factor: 0.3 },
-            { name: "Французький жим", desc: "Трицепс.", factor: 0.4 },
-            { name: "Присідання зі штангою", desc: "Ноги (База).", factor: 0.8 },
-            { name: "Присідання з гантелями", desc: "Ноги.", factor: 0.6 },
+            { name: "Концентровані згинання на біцепс", desc: "Біцепс.", factor: 0.2 },
+            { name: "Підйом на біцепс у блоці", desc: "Біцепс.", factor: 0.3 },
+            { name: "Французький жим лежачи", desc: "Трицепс.", factor: 0.4 },
+            { name: "Французький жим з гантеллю сидячи", desc: "Трицепс.", factor: 0.3 },
+            { name: "Розгинання рук на верхньому блоці", desc: "Трицепс.", factor: 0.3 },
+            { name: "Розгинання рук з канатом", desc: "Трицепс.", factor: 0.3 },
+            { name: "Віджимання від лави (задні)", desc: "Трицепс.", factor: 0.3 },
+
+            // --- НОГИ ТА СІДНИЦІ ---
+            { name: "Присідання зі штангою на плечах", desc: "Ноги (База).", factor: 0.8 },
+            { name: "Фронтальні присідання", desc: "Квадрицепс.", factor: 0.7 },
+            { name: "Присідання з гантелями (Гоблет)", desc: "Ноги.", factor: 0.6 },
             { name: "Жим ногами в тренажері", desc: "Ноги.", factor: 0.5 },
-            { name: "Випади з гантелями", desc: "Ноги/Сідниці.", factor: 0.6 },
-            { name: "Румунська тяга", desc: "Сідниці/Стегна.", factor: 0.6 },
-            { name: "Планка", desc: "Кори. Пиши секунди.", factor: 0.1 },
-            { name: "Скручування на прес", desc: "Верхній прес.", factor: 0.2 },
-            { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 }
+            { name: "Випади з гантелями/штангою", desc: "Ноги/Сідниці.", factor: 0.6 },
+            { name: "Болгарські спліт-присідання", desc: "Ноги/Сідниці.", factor: 0.6 },
+            { name: "Станова тяга (класика / сумо)", desc: "Спина/Ноги (База).", factor: 1.0 },
+            { name: "Румунська тяга (на прямих ногах)", desc: "Сідниці/Біцепс стегна.", factor: 0.6 },
+            { name: "Розгинання ніг у тренажері", desc: "Квадрицепс.", factor: 0.3 },
+            { name: "Згинання ніг у тренажері", desc: "Біцепс стегна.", factor: 0.3 },
+            { name: "Зведення / Розведення ніг", desc: "Внутрішня/Зовнішня стегна.", factor: 0.2 },
+            { name: "Сідничний місток (з вагою)", desc: "Сідниці.", factor: 0.4 },
+            { name: "Підйом на носки стоячи/сидячи", desc: "Ікри.", factor: 0.2 },
+
+            // --- ПРЕС ТА КОРИ ---
+            { name: "Планка (час в секундах)", desc: "Кори. Пиши секунди.", factor: 0.1 },
+            { name: "Планка бокова", desc: "Кори. Пиши секунди.", factor: 0.1 },
+            { name: "Скручування на прес (кранчі)", desc: "Верхній прес.", factor: 0.2 },
+            { name: "Підйом ніг лежачи/у висі", desc: "Нижній прес.", factor: 0.3 },
+            { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 },
+            { name: "Вправа 'Велосипед'", desc: "Прес/Косі.", factor: 0.2 },
+            { name: "Ролик для преса", desc: "Кори.", factor: 0.4 }
         ];
 
         // ГЛОБАЛЬНИЙ СТАН
@@ -624,7 +679,6 @@
                 }
             } catch(e) {
                 console.error(e);
-                // Офлайн фолбек
                 const localUser = localStorage.getItem('achilles_user');
                 const localProf = JSON.parse(localStorage.getItem('achilles_profile'));
                 if(localUser === user && localProf && localProf.password === pass) {
@@ -915,7 +969,7 @@
                             <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                         </div>
                         <div style="display: flex; width: 100%; gap: 10px;">
-                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" id="weight-${index}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
                             <button class="add-btn" onclick="addFood('${itemJson}', 'weight-${index}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
                         </div>
                     </div>`;
@@ -959,7 +1013,7 @@
                                         <span style="font-size: 13px; opacity: 0.8; color: var(--text-muted);">${item.kcal} ккал | Б:${item.p} Ж:${item.f} В:${item.c} (на 100г)</span>
                                     </div>
                                     <div style="display: flex; width: 100%; gap: 10px;">
-                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 14px; flex: 1;">
+                                        <input type="number" inputmode="numeric" pattern="[0-9]*" id="${uniqueId}" placeholder="Вага (г)" style="margin:0; padding: 16px; flex: 1;">
                                         <button class="add-btn" onclick="addFood('${itemJson}', '${uniqueId}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
                                     </div>
                                 </div>`;
