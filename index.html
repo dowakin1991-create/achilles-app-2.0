@@ -27,7 +27,7 @@
             --input-bg: rgba(255, 255, 255, 0.08);
             --danger: #FF453A;
             --success: #32D74B;
-            --bezier: cubic-bezier(0.25, 1, 0.4, 1);
+            --bezier: cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -38,13 +38,16 @@
             overflow: hidden; -webkit-font-smoothing: antialiased; color: var(--text-main);
         }
 
-        .nav-item, button, .filter-tab, .avatar-container { -webkit-user-select: none; user-select: none; }
+        /* Заборона виділення тексту */
+        .nav-item, button, .filter-tab, .avatar-container, .day-mode-btn { -webkit-user-select: none; user-select: none; }
 
-        /* === SPLASH ТА ГЛОБАЛЬНИЙ АВАТАР === */
+        /* === SPLASH ТА ГЛОБАЛЬНИЙ АВАТАР (120FPS GPU Оптимізація) === */
         #splash-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000000; z-index: 9998;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.4s var(--bezier);
+            will-change: opacity;
+            transform: translateZ(0);
         }
 
         .main-avatar {
@@ -57,28 +60,31 @@
             border: 1.5px solid var(--gold);
             background-color: #000; overflow: hidden; cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transform: translate3d(0, 0, 0) scale(1);
+            -webkit-backface-visibility: hidden;
+            will-change: transform, border-radius, box-shadow;
+            transition: transform 0.2s var(--bezier);
         }
         
+        /* Виключно GPU-анімація через transform3d */
         .main-avatar.splash-mode {
-            animation: splashToCorner 1.5s var(--bezier) forwards;
+            animation: splashToCorner120fps 1.2s var(--bezier) forwards;
         }
 
-        @keyframes splashToCorner {
-            0%, 30% { 
-                top: 50%; right: 50%; 
-                transform: translate(50%, -50%) scale(3.5); 
+        @keyframes splashToCorner120fps {
+            0%, 25% { 
+                transform: translate3d(calc(-50vw + 45px), calc(50vh - 45px), 0) scale(3.5); 
                 border-radius: 12px;
-                box-shadow: 0 10px 40px rgba(229,192,123,0.2);
+                box-shadow: 0 10px 40px rgba(229,192,123,0.3);
             }
             100% { 
-                top: max(env(safe-area-inset-top), 20px); right: 20px; 
-                transform: translate(0, 0) scale(1); 
+                transform: translate3d(0, 0, 0) scale(1); 
                 border-radius: 50%;
                 box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             }
         }
 
-        .main-avatar:active { transform: scale(0.9); }
+        .main-avatar:active { transform: scale(0.9) translate3d(0,0,0); }
         .avatar-logo { width: 100%; height: 100%; background-image: url('IMG_9302.jpeg'); background-size: cover; background-position: center; }
 
         /* === ЕКРАНИ ТА ВІКНА === */
@@ -86,7 +92,8 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
             display: none; overflow-y: auto; overflow-x: hidden; 
             -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
-            padding-bottom: calc(80px + env(safe-area-inset-bottom, 20px)); 
+            padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); 
+            will-change: opacity, transform;
         }
 
         .screen.active-block { display: block; z-index: 20; }
@@ -100,16 +107,22 @@
             flex-grow: 1; 
             padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px 40px 20px; 
             position: relative; width: 100%; 
+            opacity: 1; 
+            transform: translate3d(0,0,0);
         }
         
+        /* Плавна поява контенту після Splash */
         #main-app-window .main-content {
-            opacity: 0; transform: translateY(15px);
-            animation: contentFadeIn 0.5s 1s var(--bezier) forwards;
+            opacity: 0; transform: translate3d(0, 20px, 0);
+            animation: contentFadeIn120fps 0.5s 0.9s var(--bezier) forwards;
+            will-change: opacity, transform;
         }
-        @keyframes contentFadeIn { to { opacity: 1; transform: translateY(0); } }
+        @keyframes contentFadeIn120fps { to { opacity: 1; transform: translate3d(0,0,0); } }
 
-        .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s var(--bezier); }
-        .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
+        /* Вкладки */
+        .tab-content { display: none; opacity: 0; transform: translate3d(0, 15px, 0); will-change: opacity, transform; }
+        .tab-content.active { display: block; animation: tabFadeIn120fps 0.3s var(--bezier) forwards; }
+        @keyframes tabFadeIn120fps { to { opacity: 1; transform: translate3d(0, 0, 0); } }
 
         h1 { font-size: 34px; margin: 20px 0 25px 0; text-align: left; font-weight: 800; letter-spacing: -1px; color: var(--text-main); line-height: 1.1;} 
         h1 span { color: var(--gold); }
@@ -120,20 +133,37 @@
             width: 100%; padding: 18px 20px; margin: 8px 0; border-radius: 20px; 
             border: 1px solid rgba(255,255,255,0.08); background: var(--input-bg); 
             color: var(--text-main); font-size: 17px; font-weight: 500;
-            -webkit-appearance: none; appearance: none; transition: all 0.3s var(--bezier);
+            -webkit-appearance: none; appearance: none; transition: border-color 0.3s var(--bezier), background 0.3s var(--bezier);
         }
         input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
         input::placeholder { color: rgba(134, 134, 139, 0.7); }
         select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e5c07b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 18px center; background-size: 18px; }
         select option { background-color: #1c1c1e; color: var(--text-main); }
         
-        button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 8px 15px rgba(199, 154, 60, 0.2); }
-        button:active { transform: scale(0.96); }
+        button { 
+            background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; 
+            box-shadow: 0 8px 15px rgba(199, 154, 60, 0.2); 
+            transform: translate3d(0,0,0) scale(1);
+            transition: transform 0.2s var(--bezier), box-shadow 0.2s var(--bezier);
+            will-change: transform;
+        }
+        button:active { transform: translate3d(0,0,0) scale(0.94); box-shadow: 0 4px 10px rgba(199, 154, 60, 0.1); }
         button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
 
-        .progress-bar { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #c79a3c, var(--gold)); width: 0%; transition: width 1.2s var(--bezier); }
+        /* === 120FPS GPU PROGRESS BAR === */
+        .progress-bar { 
+            width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 15px; 
+            overflow: hidden; transform: translateZ(0); 
+        }
+        .progress-fill { 
+            height: 100%; width: 100%; 
+            background: linear-gradient(90deg, #c79a3c, var(--gold)); 
+            transform-origin: left center;
+            transform: scaleX(0); /* Магія тут: зміна scaleX не вантажить процесор */
+            transition: transform 1s var(--bezier); 
+            will-change: transform;
+        }
         
         .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; color: var(--text-main); border: 1px solid var(--glass-border); }
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
@@ -142,9 +172,18 @@
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
         .bonus-badge { display: inline-block; background: rgba(229, 192, 123, 0.15); color: var(--gold); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
 
+        /* === 120FPS GPU CHART BARS === */
         .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 160px; padding: 20px 10px 0; background: var(--input-bg); border-radius: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.03);}
         .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 14%; height: 100%; justify-content: flex-end;}
-        .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 6px 6px 0 0; min-height: 5px; transition: height 1s var(--bezier); }
+        .chart-bar { 
+            width: 100%; height: 100%; 
+            background: linear-gradient(to top, var(--gold), #9e7311); 
+            border-radius: 6px 6px 0 0; 
+            transform-origin: bottom center;
+            transform: scaleY(0.15); /* Замість height */
+            transition: transform 1s var(--bezier); 
+            will-change: transform;
+        }
         .chart-val { font-size: 13px; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
         
         .day-mode-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 25px; }
@@ -153,27 +192,29 @@
 
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; }
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
-        .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
+        .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);}
+        .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: transform 0.2s var(--bezier); padding: 5px; will-change: transform;}
+        .fav-btn:active { transform: scale(0.8); }
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
         /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
         .nav-bar { 
             position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
+            height: calc(65px + env(safe-area-inset-bottom, 0px));
+            padding-bottom: env(safe-area-inset-bottom, 0px); 
             display: flex; justify-content: space-around; align-items: center;
-            height: calc(65px + env(safe-area-inset-bottom, 20px));
-            padding-bottom: env(safe-area-inset-bottom, 20px); 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); 
-            border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
+            background: rgba(18, 18, 20, 0.92); 
+            backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
+            border-top: 1px solid rgba(255,255,255,0.08); z-index: 1000;
+            transform: translateZ(0); /* Захист від мерехтіння на iOS */
         }
         .nav-item { 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            flex: 1; height: 100%; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
+            flex: 1; height: 100%; opacity: 0.4; transition: opacity 0.3s var(--bezier), color 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
         }
         .nav-item.active { opacity: 1; color: var(--gold); }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); display: flex; align-items: center; justify-content: center;}
-        .nav-item.active .nav-icon { transform: scale(1.15) translateY(-2px); }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); display: flex; align-items: center; justify-content: center; will-change: transform;}
+        .nav-item.active .nav-icon { transform: scale(1.15) translate3d(0, -2px, 0); }
         .nav-text { font-size: 11px; font-weight: 600; }
 
         /* === LIVE WORKOUT OVERLAY === */
@@ -182,7 +223,7 @@
             background: rgba(0,0,0,0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             z-index: 9999; display: none; flex-direction: column;
             align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 45px) 25px calc(env(safe-area-inset-bottom) + 40px);
-            opacity: 0; transition: opacity 0.4s var(--bezier);
+            opacity: 0; transition: opacity 0.3s var(--bezier); will-change: opacity;
         }
         .live-header { text-align: center; margin-top: 60px; }
         .live-title { font-size: 34px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: -1px; text-align: center; padding: 0 20px;}
@@ -190,7 +231,7 @@
         .live-timer { font-size: 110px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -3px; transition: color 0.3s;}
         .live-timer.rest { color: var(--gold); }
         .live-controls { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center;}
-        .live-btn-main { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-size: 26px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 20px 50px rgba(212, 175, 55, 0.3); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; transition: all 0.3s var(--bezier); }
+        .live-btn-main { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-size: 26px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 20px 50px rgba(212, 175, 55, 0.3); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; transition: transform 0.2s var(--bezier); will-change: transform; }
         .live-btn-main:active { transform: scale(0.92); }
         .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
 
@@ -312,7 +353,7 @@
 
                     <select id="reg-goal" required>
                         <option value="" disabled selected>Твоя мета</option>
-                        <option value="lose">Схуднути (Дефіцит 20%)</option>
+                        <option value="lose">Схуднення (Дефіцит 20%)</option>
                         <option value="maintain">Підтримка ваги</option>
                         <option value="gain">Набір маси (Профіцит 15%)</option>
                     </select>
@@ -461,7 +502,7 @@
                             <option value="maintain">Підтримка ваги</option>
                             <option value="gain">Набір маси (Профіцит 15%)</option>
                         </select>
-                        <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти налаштування</button>
+                        <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти (Перерахувати норму)</button>
                     </div>
 
                     <button class="danger" onclick="logout()" style="padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700;">Вийти з акаунту</button>
@@ -473,7 +514,7 @@
     <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard">
-            <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+            <span class="nav-icon"><i class="fa-solid fa-bolt"></i></span>
             <span class="nav-text">Статус</span>
         </div>
         <div class="nav-item" data-target="tab-food">
@@ -596,8 +637,17 @@
         window.liveWorkout = null; 
 
         window.showScreen = function(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-block'));
-            document.getElementById(screenId).classList.add('active-block');
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active-block');
+                s.style.opacity = '0'; // Скидаємо opacity для правильних переходів
+            });
+            const activeScreen = document.getElementById(screenId);
+            activeScreen.classList.add('active-block');
+            
+            // Якщо це головний екран - плавно показуємо
+            if(screenId === 'main-app-window' || screenId === 'login-window' || screenId === 'registration-window') {
+                setTimeout(() => { activeScreen.style.opacity = '1'; }, 10);
+            }
         }
 
         window.syncToCloud = async function() {
@@ -627,7 +677,8 @@
                 }
             };
             
-            try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Sync Error", e); }
+            try { await setDoc(doc(db, "users", userName), dataToSave); } 
+            catch(e) { console.error("Cloud Sync Error", e); }
         };
 
         window.loadFromCloud = async function(userName) {
@@ -636,6 +687,7 @@
                 const docSnap = await getDoc(doc(db, "users", userName));
                 if (docSnap.exists()) {
                     const d = docSnap.data();
+                    
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
                     localStorage.setItem('achilles_day_mode', d.dayMode || 'rest');
@@ -663,36 +715,39 @@
             return false;
         };
 
-        // === ПРАВИЛЬНИЙ СТАРТ ДОДАТКУ ===
-        async function bootApp() {
+        document.addEventListener("DOMContentLoaded", () => {
             const avatar = document.getElementById('global-avatar');
             const splashBg = document.getElementById('splash-bg');
             
+            // Надійна активація сплешу
             setTimeout(() => {
-                avatar.classList.remove('splash-mode');
-                splashBg.style.opacity = '0';
-                setTimeout(() => splashBg.style.display = 'none', 600);
-            }, 800);
+                if(avatar) avatar.classList.remove('splash-mode');
+                if(splashBg) {
+                    splashBg.style.opacity = '0';
+                    setTimeout(() => splashBg.style.display = 'none', 400);
+                }
+            }, 600);
 
             const userName = localStorage.getItem('achilles_user');
+            
             if (userName) {
                 window.loadUserData();
                 window.renderWeightChart();
                 window.showScreen('main-app-window');
                 
-                const loaded = await window.loadFromCloud(userName);
-                if(loaded) {
-                    window.loadUserData();
-                    window.renderWeightChart();
-                    window.updateGoalDisplay();
-                    window.searchWorkout();
-                    if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
-                }
+                window.loadFromCloud(userName).then(loaded => {
+                    if(loaded) {
+                        window.loadUserData();
+                        window.renderWeightChart();
+                        window.updateGoalDisplay();
+                        window.searchWorkout();
+                        if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
+                    }
+                });
             } else { 
                 window.showScreen('login-window');
             }
-        }
-        bootApp(); // Запуск
+        });
 
         window.attemptLogin = async function() {
             const user = document.getElementById('login-username').value.trim();
@@ -923,11 +978,18 @@
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
                 prof.weight = w;
+                let avgAct = ((prof.activityWork * prof.workDays) + (prof.activityRest * prof.restDays)) / (prof.workDays + prof.restDays);
+                const norms = window.calculateNorms(prof.gender, w, prof.height, prof.age, avgAct, prof.goal, prof.diet || 'standard');
+                
                 localStorage.setItem('achilles_profile', JSON.stringify(prof));
-                let currentDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
-                window.recalcAndSaveNorms(prof, currentDayMode);
+                localStorage.setItem('achilles_base_kcal', norms.kcal); 
+                localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
+                window.loadUserData();
             }
+            
+            // Оновлюємо графік масштабуванням
             window.renderWeightChart();
+            window.syncToCloud();
         };
 
         window.renderWeightChart = function() {
@@ -944,7 +1006,7 @@
             chartData.forEach(d => {
                 let h = ((d.weight - minW) / range) * 100;
                 if(h < 15) h = 15;
-                html += `<div class="chart-bar-wrapper"><span class="chart-val">${d.weight}</span><div class="chart-bar" style="height: ${h}%;"></div><span class="chart-date">${d.date}</span></div>`;
+                html += `<div class="chart-bar-wrapper"><span class="chart-val">${d.weight}</span><div class="chart-bar" style="transform: scaleY(${h / 100});"></div><span class="chart-date">${d.date}</span></div>`;
             });
             html += '</div>';
             container.innerHTML = html;
@@ -961,7 +1023,8 @@
             if(percent > 100) percent = 100;
             
             requestAnimationFrame(() => {
-                document.getElementById('calorie-progress').style.width = percent + '%';
+                // Апаратне масштабування смуги прогресу
+                document.getElementById('calorie-progress').style.transform = `scaleX(${percent / 100})`;
                 document.getElementById('macro-p').innerText = Math.round(window.macros.p);
                 document.getElementById('macro-f').innerText = Math.round(window.macros.f);
                 document.getElementById('macro-c').innerText = Math.round(window.macros.c);
@@ -986,6 +1049,7 @@
             list.appendChild(entry);
             window.updateGoalDisplay();
             window.syncToCloud();
+            document.querySelector('[data-target="tab-dashboard"]').click();
         };
 
         const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
