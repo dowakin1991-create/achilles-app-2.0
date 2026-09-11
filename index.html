@@ -143,13 +143,9 @@
         .chart-bar { width: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 6px 6px 0 0; min-height: 5px; transition: height 1s var(--bezier); }
         .chart-val { font-size: 13px; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
         
-        .day-mode-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 25px; }
-        .day-mode-btn { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 700; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
-        .day-mode-btn.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; }
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
-        .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);}
         .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
@@ -328,11 +324,6 @@
                 <div id="tab-dashboard" class="tab-content active">
                     <h1 id="greeting-header">Привіт, <span id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
                     
-                    <div class="day-mode-toggle">
-                        <div id="mode-rest-btn" class="day-mode-btn" onclick="setDayMode('rest')">🛋️ Вихідний</div>
-                        <div id="mode-work-btn" class="day-mode-btn" onclick="setDayMode('work')">👨‍🍳 Робоча зміна</div>
-                    </div>
-
                     <p id="user-goal-text" style="text-align: left; margin-bottom: 25px; margin-top: -15px;">Аналізуємо...</p>
                     
                     <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px; border: 1px solid var(--glass-border);">
@@ -606,7 +597,6 @@
             const dataToSave = {
                 profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
                 appMode: localStorage.getItem('achilles_app_mode') || 'pro',
-                dayMode: localStorage.getItem('achilles_day_mode') || 'rest',
                 baseKcal: localStorage.getItem('achilles_base_kcal') || 2000,
                 goalText: localStorage.getItem('achilles_goal_text') || '',
                 targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
@@ -636,7 +626,6 @@
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    localStorage.setItem('achilles_day_mode', d.dayMode || 'rest');
                     localStorage.setItem('achilles_base_kcal', d.baseKcal);
                     localStorage.setItem('achilles_goal_text', d.goalText);
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros));
@@ -758,9 +747,16 @@
             return { kcal: targetKcal, goalText: goalText, p: Math.round(p), f: Math.round(f), c: Math.round(c) };
         };
 
-        window.recalcAndSaveNorms = function(profile, dayMode) {
-            let activityMultiplier = dayMode === 'work' ? profile.activityWork : profile.activityRest;
-            const norms = window.calculateNorms(profile.gender, profile.weight, profile.height, profile.age, activityMultiplier, profile.goal, profile.diet || 'standard');
+        window.recalcAndSaveNorms = function(profile) {
+            let wDays = parseInt(profile.workDays) || 2;
+            let rDays = parseInt(profile.restDays) || 2;
+            let aWork = parseFloat(profile.activityWork) || 1.725;
+            let aRest = parseFloat(profile.activityRest) || 1.2;
+            
+            if (wDays + rDays === 0) wDays = 1;
+            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
+            
+            const norms = window.calculateNorms(profile.gender, profile.weight, profile.height, profile.age, avgAct, profile.goal, profile.diet || 'standard');
             
             localStorage.setItem('achilles_base_kcal', norms.kcal); 
             localStorage.setItem('achilles_goal_text', norms.goalText);
@@ -774,14 +770,6 @@
             
             window.updateGoalDisplay();
             window.syncToCloud();
-        };
-
-        window.setDayMode = function(mode) {
-            localStorage.setItem('achilles_day_mode', mode);
-            document.getElementById('mode-rest-btn').classList.toggle('active', mode === 'rest');
-            document.getElementById('mode-work-btn').classList.toggle('active', mode === 'work');
-            let profile = JSON.parse(localStorage.getItem('achilles_profile'));
-            if(profile) { window.recalcAndSaveNorms(profile, mode); }
         };
 
         window.completeRegistration = async function() {
@@ -818,17 +806,13 @@
                 } catch(e) {}
             }
 
-            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
-            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
-
             let profile = { name, password: pass, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_day_mode', 'rest');
 
             window.logNewWeight(weight);
-            window.recalcAndSaveNorms(profile, 'rest');
+            window.recalcAndSaveNorms(profile);
             
             window.loadUserData(); 
             window.renderWeightChart(); 
@@ -856,11 +840,7 @@
             let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
             document.getElementById('edit-app-mode').value = savedAppMode;
 
-            let savedDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
-            document.getElementById('mode-rest-btn').classList.toggle('active', savedDayMode === 'rest');
-            document.getElementById('mode-work-btn').classList.toggle('active', savedDayMode === 'work');
-            
-            if(prof) window.recalcAndSaveNorms(prof, savedDayMode);
+            if(prof) window.recalcAndSaveNorms(prof);
 
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
@@ -900,8 +880,7 @@
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
             
-            let currentDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
-            window.recalcAndSaveNorms(profile, currentDayMode);
+            window.recalcAndSaveNorms(profile);
 
             window.loadUserData();
             alert('Профіль успішно оновлено!');
@@ -923,13 +902,8 @@
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
                 prof.weight = w;
-                let avgAct = ((prof.activityWork * prof.workDays) + (prof.activityRest * prof.restDays)) / (prof.workDays + prof.restDays);
-                const norms = window.calculateNorms(prof.gender, w, prof.height, prof.age, avgAct, prof.goal, prof.diet || 'standard');
-                
                 localStorage.setItem('achilles_profile', JSON.stringify(prof));
-                localStorage.setItem('achilles_base_kcal', norms.kcal); 
-                localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
-                window.loadUserData();
+                window.recalcAndSaveNorms(prof);
             }
             window.renderWeightChart();
         };
@@ -1230,9 +1204,6 @@
             document.querySelector('[data-target="tab-dashboard"]').click();
         };
 
-        // ==========================================
-        // ТРЕНУВАННЯ
-        // ==========================================
         window.setWorkoutMode = function(mode) {
             window.currentWorkoutMode = mode;
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
