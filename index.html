@@ -35,7 +35,7 @@
         
         html, body { 
             width: 100%; 
-            height: 100%; height: 100dvh; /* Ідеально для iOS */
+            height: 100%; height: 100dvh; 
             background-color: var(--bg-pure); 
             overflow: hidden; 
             -webkit-font-smoothing: antialiased; 
@@ -52,16 +52,11 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
             display: none; overflow-y: auto; overflow-x: hidden; 
             -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
-            padding-bottom: calc(100px + env(safe-area-inset-bottom)); /* Місце під меню */
+            padding-bottom: calc(100px + env(safe-area-inset-bottom)); 
         }
 
         .screen.active-block { 
             display: block; z-index: 20; 
-            animation: screenFadeIn 0.4s var(--bezier) forwards; 
-        }
-        @keyframes screenFadeIn { 
-            from { opacity: 0; transform: scale(0.98) translateY(10px); } 
-            to { opacity: 1; transform: scale(1) translateY(0); } 
         }
 
         /* === ГОЛОВНИЙ КОНТЕЙНЕР (ПК) === */
@@ -90,10 +85,10 @@
         .menu-item i { margin-right: 15px; font-size: 18px; color: var(--gold); opacity: 0.8; transition: transform 0.3s; }
         .menu-item.active { background: var(--gold-glow); color: var(--gold); box-shadow: inset 0 0 15px rgba(255,255,255,0.05); }
         .menu-item.active i { color: var(--gold); opacity: 1; transform: scale(1.1); }
+        .menu-item:hover { background: rgba(255,255,255,0.05); }
 
         .main-content { flex-grow: 1; padding: 60px 40px 40px; position: relative; width: 100%; }
         
-        /* Гарантоване відображення вкладок */
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: tabFadeIn 0.4s var(--bezier) forwards; }
         @keyframes tabFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -115,6 +110,7 @@
         select option { background-color: #1c1c1e; color: var(--text-main); }
         
         button { background: linear-gradient(135deg, #f3c969, #c79a3c); color: #000; font-weight: 700; border: none; cursor: pointer; box-shadow: 0 10px 20px rgba(199, 154, 60, 0.2); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(199, 154, 60, 0.3); }
         button:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(199, 154, 60, 0.2); }
         button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
@@ -124,6 +120,8 @@
         
         .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 12px; color: var(--text-main); }
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
+
+        .nav-bar { display: none; } 
 
         .macro-box { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; border: 1px solid rgba(255,255,255,0.03); }
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
@@ -158,9 +156,6 @@
         .live-btn-main:active { transform: scale(0.92); }
         .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
 
-        /* === НИЖНЯ НАВІГАЦІЯ (ДЕСКТОП) === */
-        .nav-bar { display: none; }
-
         /* === МЕДІА ЗАПИТ ДЛЯ ТЕЛЕФОНІВ (СПРАВЖНІЙ IOS ДОДАТОК) === */
         @media (max-width: 768px) {
             .sidebar { display: none; } 
@@ -173,31 +168,65 @@
             }
 
             /* Падінги з урахуванням чубчика iOS */
-            .main-content { padding: calc(env(safe-area-inset-top) + 20px) 20px 30px 20px; }
-            
-            /* Аватарка як кнопка профілю у правому куті (Apple Style) */
-            .avatar-container { 
-                position: absolute; top: max(env(safe-area-inset-top), 20px); right: 20px; left: auto; transform: none; 
-                width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); 
-                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            .main-content { 
+                padding: calc(env(safe-area-inset-top) + 20px) 20px 30px 20px; 
             }
-            .avatar-container:active { transform: scale(0.9); }
+            
+            /* Голлівудська Splash Анімація Логотипу */
+            .main-avatar { 
+                position: fixed; 
+                z-index: 9999;
+                width: 50px; height: 50px; 
+                border-radius: 50%; border: 2px solid var(--gold); 
+                animation: splashToCorner 2s var(--bezier) forwards;
+            }
+            @keyframes splashToCorner {
+                0%, 35% {
+                    top: 50%; right: 50%;
+                    transform: translate(50%, -50%) scale(3.5);
+                    border-radius: 16px;
+                    box-shadow: 0 20px 60px rgba(229,192,123,0.3);
+                }
+                100% {
+                    top: max(env(safe-area-inset-top), 20px); right: 20px;
+                    transform: translate(0, 0) scale(1);
+                    border-radius: 50%;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+                }
+            }
+
+            /* Плавна поява контенту після логотипу */
+            #main-app-window .main-content {
+                animation: contentFadeIn 2.2s var(--bezier) forwards;
+            }
+            @keyframes contentFadeIn {
+                0%, 50% { opacity: 0; transform: translateY(20px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
 
             /* Текст ліворуч на телефоні */
             h1 { text-align: left; font-size: 34px; margin-top: 50px; margin-bottom: 10px; line-height: 1.1;}
             p#user-goal-text { text-align: left !important; margin-bottom: 30px !important; }
 
-            /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
+            /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (БЕЗ ЛІНІЙ І ПРОБІЛІВ) === */
             .nav-bar { 
-                position: fixed; bottom: 0; left: 0; width: 100%; 
+                position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
                 display: flex; justify-content: space-around; align-items: center;
-                padding-top: 12px;
-                padding-bottom: calc(12px + env(safe-area-inset-bottom, 20px)); /* Враховує полосу свайпу */
-                background: rgba(18, 18, 20, 0.85); 
-                backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); 
-                border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000;
+                height: calc(65px + env(safe-area-inset-bottom));
+                padding: 0 10px env(safe-area-inset-bottom) 10px; 
+                background: rgba(18, 18, 20, 0.92); 
+                backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
+                border-top: 1px solid rgba(255,255,255,0.08); z-index: 1000;
+                animation: navFadeIn 2.2s var(--bezier) forwards;
             }
-            .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); }
+            @keyframes navFadeIn {
+                0%, 50% { transform: translateY(100%); opacity: 0;}
+                100% { transform: translateY(0); opacity: 1;}
+            }
+            .nav-item { 
+                display: flex; flex-direction: column; align-items: center; justify-content: center; 
+                flex: 1; height: 100%; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
+            }
             .nav-item.active { opacity: 1; color: var(--gold); }
             .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); }
             .nav-item.active .nav-icon { transform: scale(1.15) translateY(-2px); }
@@ -335,10 +364,10 @@
     <div class="screen" id="main-app-window">
         <div class="app-window">
             
-            <div class="avatar-container" onclick="openProfileTab()"><div class="avatar-logo"></div></div>
+            <div class="avatar-container main-avatar" onclick="openProfileTab()"><div class="avatar-logo"></div></div>
 
             <div class="sidebar">
-                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-bolt"></i> Статус</div>
+                <div class="menu-item active" data-target="tab-dashboard"><i class="fa-solid fa-bolt-lightning"></i> Статус</div>
                 <div class="menu-item" data-target="tab-food"><i class="fa-solid fa-utensils"></i> Раціон</div>
                 <div class="menu-item" data-target="tab-workout"><i class="fa-solid fa-dumbbell"></i> Зал</div>
                 <div class="menu-item" data-target="tab-profile"><i class="fa-solid fa-user-gear"></i> Профіль</div>
@@ -485,7 +514,7 @@
     <!-- НИЖНЯ НАВІГАЦІЯ (ДЛЯ МОБАЙЛУ) -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard">
-            <span class="nav-icon"><i class="fa-solid fa-bolt"></i></span>
+            <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
             <span class="nav-text">Статус</span>
         </div>
         <div class="nav-item" data-target="tab-food">
@@ -840,13 +869,13 @@
                 if(prof.diet) document.getElementById('edit-diet').value = prof.diet;
             }
             
-            let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
-            document.getElementById('edit-app-mode').value = savedAppMode;
+            let savedMode = localStorage.getItem('achilles_app_mode') || 'pro';
+            document.getElementById('edit-app-mode').value = savedMode;
 
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
             
-            if(savedAppMode === 'simple') {
+            if(savedMode === 'simple') {
                 if(modeTabs) modeTabs.style.display = 'none';
                 if(awContainer) awContainer.style.display = 'none';
                 window.currentWorkoutMode = 'manual';
@@ -876,17 +905,16 @@
 
             if(!name || !age || !height || !diet || !aWork || !aRest) { alert('Заповни всі поля!'); return; }
 
-            let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
-            let weight = history.length > 0 ? history[history.length - 1].weight : 80;
-
-            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
-            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
-
             let profile = JSON.parse(localStorage.getItem('achilles_profile')) || {};
-            profile = { ...profile, name, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
+            profile = { ...profile, name, gender, age, height, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
             
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
+            
+            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
+            let weight = profile.weight || 80;
+            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
+            
             localStorage.setItem('achilles_base_kcal', norms.kcal); 
             localStorage.setItem('achilles_goal_text', norms.goalText);
             localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
@@ -1053,7 +1081,12 @@
             const index = favs.findIndex(f => f.name === item.name);
             let isFav = false;
             
-            if (index > -1) { favs.splice(index, 1); } else { favs.push(item); isFav = true; }
+            if (index > -1) {
+                favs.splice(index, 1);
+            } else {
+                favs.push(item);
+                isFav = true;
+            }
             
             localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
             window.syncToCloud();
@@ -1067,7 +1100,10 @@
                     event.target.classList.add('fa-regular');
                 }
             }
-            if(window.currentFoodFilter === 'fav') { window.renderFavFoods(); }
+            
+            if(window.currentFoodFilter === 'fav') {
+                window.renderFavFoods();
+            }
         };
 
         window.renderFavFoods = function() {
@@ -1078,11 +1114,13 @@
                 resultsBox.innerHTML = '<div class="list-item" style="color: var(--text-muted); text-align:center; padding: 20px; border: none;">Улюблених продуктів поки немає</div>';
                 return;
             }
+            
             resultsBox.innerHTML = favs.map((item, index) => window.generateFoodCardHtml(item, 'fav-' + index)).join('');
         };
 
         window.onSearchInput = function() {
             if(window.currentFoodFilter === 'fav') return;
+            
             clearTimeout(searchTimeout);
             const query = document.getElementById('food-search').value.toLowerCase().trim();
             if (currentAbortController) currentAbortController.abort();
@@ -1092,6 +1130,7 @@
                 document.getElementById('loading-spinner').style.display = 'none';
                 return;
             }
+            
             window.renderLocalFoodSearch(query);
             searchTimeout = setTimeout(() => window.searchOpenFoodFacts(query), 800);
         };
@@ -1165,8 +1204,10 @@
             window.syncToCloud();
             
             document.getElementById('custom-food-overlay').style.display = 'none';
-            document.getElementById('cf-name').value = ''; document.getElementById('cf-kcal').value = '';
-            document.getElementById('cf-p').value = ''; document.getElementById('cf-f').value = '';
+            document.getElementById('cf-name').value = '';
+            document.getElementById('cf-kcal').value = '';
+            document.getElementById('cf-p').value = '';
+            document.getElementById('cf-f').value = '';
             document.getElementById('cf-c').value = '';
 
             window.setFoodFilter('fav');
