@@ -19,6 +19,14 @@
             --danger: #FF453A;
             --success: #32D74B;
             --bezier: cubic-bezier(0.25, 1, 0.4, 1);
+
+            /* Динамічний акцент теми */
+            --accent-1: #ffe7a3;
+            --accent-2: #f3c969;
+            --accent-3: #c79a3c;
+            --accent-text: #000000;
+            --accent-shadow: 229, 192, 123;
+            --theme-speed: 8s;
         }
 
         /* --- ТЕМНИЙ РЕЖИМ (БАЗА) --- */
@@ -49,41 +57,103 @@
             --option-bg: #ffffff;
         }
 
-        /* --- КОЛІРНА ПАЛІТРА: ЗОЛОТА --- */
+        /* --- ДИНАМІЧНА ТЕМА: ЗОЛОТА --- */
         [data-color="gold"] {
-            --primary: #E5C07B; --primary-rgb: 229, 192, 123; --primary-dark: #c79a3c;
-            --btn-grad-1: #f3c969; --btn-grad-2: #c79a3c; --btn-text: #000000;
+            --primary: #E5C07B;
+            --primary-rgb: 229, 192, 123;
+            --primary-dark: #c79a3c;
+            --accent-1: #fff0b8;
+            --accent-2: #f3c969;
+            --accent-3: #c79a3c;
+            --accent-text: #000000;
+            --accent-shadow: 229, 192, 123;
         }
         [data-theme="light"][data-color="gold"] {
-            --primary: #D4AF37; --primary-rgb: 212, 175, 55; --primary-dark: #A68A2B;
+            --primary: #D4AF37;
+            --primary-rgb: 212, 175, 55;
+            --primary-dark: #A68A2B;
+            --accent-1: #fff2b7;
+            --accent-2: #D4AF37;
+            --accent-3: #A67C00;
+            --accent-text: #17130a;
+            --accent-shadow: 212, 175, 55;
         }
 
-        /* --- КОЛІРНА ПАЛІТРА: КРИВАВА СПАРТА --- */
+        /* --- ДИНАМІЧНА ТЕМА: КРИВАВА СПАРТА --- */
         [data-color="blood"] {
-            --primary: #FF453A; --primary-rgb: 255, 69, 58; --primary-dark: #B32E27;
-            --btn-grad-1: #FF6A61; --btn-grad-2: #FF453A; --btn-text: #ffffff;
+            --primary: #FF453A;
+            --primary-rgb: 255, 69, 58;
+            --primary-dark: #B32E27;
+            --accent-1: #ffaaa5;
+            --accent-2: #FF453A;
+            --accent-3: #9f1710;
+            --accent-text: #ffffff;
+            --accent-shadow: 255, 69, 58;
         }
         [data-theme="light"][data-color="blood"] {
-            --primary: #D70015; --primary-rgb: 215, 0, 21; --primary-dark: #A60010;
-            --btn-grad-1: #FF3B30; --btn-grad-2: #D70015;
+            --primary: #D70015;
+            --primary-rgb: 215, 0, 21;
+            --primary-dark: #A60010;
+            --accent-1: #ff8b86;
+            --accent-2: #D70015;
+            --accent-3: #87000d;
+            --accent-text: #ffffff;
+            --accent-shadow: 215, 0, 21;
         }
 
-        /* --- КОЛІРНА ПАЛІТРА: НЕБЕСНО-БЛАКИТНА --- */
+        /* --- ДИНАМІЧНА ТЕМА: НЕБЕСНО-БЛАКИТНА --- */
         [data-color="sky"] {
-            --primary: #0A84FF; --primary-rgb: 10, 132, 255; --primary-dark: #0056B3;
-            --btn-grad-1: #3B9DFF; --btn-grad-2: #0A84FF; --btn-text: #ffffff;
+            --primary: #0A84FF;
+            --primary-rgb: 10, 132, 255;
+            --primary-dark: #0056B3;
+            --accent-1: #b7e0ff;
+            --accent-2: #3B9DFF;
+            --accent-3: #0056B3;
+            --accent-text: #ffffff;
+            --accent-shadow: 10, 132, 255;
         }
         [data-theme="light"][data-color="sky"] {
-            --primary: #007AFF; --primary-rgb: 0, 122, 255; --primary-dark: #0056B3;
-            --btn-grad-1: #3B9DFF; --btn-grad-2: #007AFF;
+            --primary: #007AFF;
+            --primary-rgb: 0, 122, 255;
+            --primary-dark: #0056B3;
+            --accent-1: #c7e8ff;
+            --accent-2: #3B9DFF;
+            --accent-3: #004fa6;
+            --accent-text: #ffffff;
+            --accent-shadow: 0, 122, 255;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        /* Плавне переливання всього основного акценту теми */
+        @keyframes themeFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes themeShine {
+            0% { filter: saturate(1) brightness(1); }
+            50% { filter: saturate(1.08) brightness(1.04); }
+            100% { filter: saturate(1) brightness(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
         
-        html, body { 
-            width: 100%; height: 100%; height: 100dvh; 
-            background-color: var(--bg-pure); 
-            overflow: hidden; -webkit-font-smoothing: antialiased; color: var(--text-main);
+        html, body {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            background-color: var(--bg-pure);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            color: var(--text-main);
             transition: background-color 0.4s var(--bezier), color 0.4s var(--bezier);
         }
 
@@ -124,10 +194,18 @@
 
         /* === ЕКРАНИ ТА ВІКНА === */
         .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
-            display: none; overflow-y: auto; overflow-x: hidden; 
-            -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
-            padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: none;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+            padding-bottom: 40px;
         }
 
         .screen.active-block { display: block; z-index: 20; }
@@ -143,8 +221,16 @@
         .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s var(--bezier); }
         .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
 
-        h1 { font-size: 34px; margin: 20px 0 25px 0; text-align: left; font-weight: 800; letter-spacing: -1px; color: var(--text-main); line-height: 1.1;} 
-        h1 span { color: var(--primary); transition: color 0.4s var(--bezier);}
+        h1 { font-size: 34px; margin: 20px 0 25px 0; text-align: left; font-weight: 800; letter-spacing: -1px; color: var(--text-main); line-height: 1.1;}
+        h1 span {
+            color: transparent;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+        }
         p { font-size: 15px; color: var(--text-muted); line-height: 1.5; font-weight: 500; }
 
         /* === ФОРМИ === */
@@ -159,29 +245,80 @@
         select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2386868B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 18px center; background-size: 18px; }
         select option { background-color: var(--option-bg); color: var(--text-main); }
         
-        button { background: linear-gradient(135deg, var(--btn-grad-1), var(--btn-grad-2)); color: var(--btn-text); font-weight: 700; border: none; cursor: pointer; box-shadow: 0 8px 15px rgba(var(--primary-rgb), 0.2); }
+        button {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            color: var(--accent-text);
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(var(--accent-shadow), 0.2);
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+        }
         button:active { transform: scale(0.96); }
         button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
 
         .progress-bar { width: 100%; height: 12px; background: var(--glass-border); border-radius: 6px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary-dark), var(--primary)); width: 0%; transition: width 1.2s var(--bezier); }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-3), var(--accent-2), var(--accent-1), var(--accent-2));
+            background-size: 300% 100%;
+            width: 0%;
+            transition: width 1.2s var(--bezier);
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+        }
         
         .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; color: var(--text-main); border: 1px solid var(--glass-border); transition: background-color 0.4s var(--bezier), border-color 0.4s var(--bezier);}
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
 
         .macro-box { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 18px; border: 1px solid var(--glass-border); }
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
-        .bonus-badge { display: inline-block; background: rgba(var(--primary-rgb), 0.15); color: var(--primary); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
+        .bonus-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(var(--accent-shadow), 0.14), rgba(var(--accent-shadow), 0.05));
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 15px;
+        }
 
         .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 160px; padding: 20px 10px 0; background: var(--input-bg); border-radius: 20px; margin-top: 15px; border: 1px solid var(--glass-border);}
         .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 14%; height: 100%; justify-content: flex-end;}
-        .chart-bar { width: 100%; background: linear-gradient(to top, var(--primary), var(--primary-dark)); border-radius: 6px 6px 0 0; min-height: 5px; transition: height 1s var(--bezier); }
-        .chart-val { font-size: 13px; color: var(--primary); margin-bottom: 6px; font-weight: 700; }
+        .chart-bar {
+            width: 100%;
+            background: linear-gradient(to top, var(--accent-3), var(--accent-2), var(--accent-1));
+            background-size: 100% 300%;
+            border-radius: 6px 6px 0 0;
+            min-height: 5px;
+            transition: height 1s var(--bezier);
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+        }
+        .chart-val {
+            font-size: 13px;
+            color: var(--primary);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
         
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; border: 1px solid var(--glass-border);}
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
-        .filter-tab.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 4px 15px var(--shadow-color); border: 1px solid var(--glass-border);}
+        .filter-tab.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            border: 1px solid var(--glass-border);
+        }
+        .filter-tab.active {
+            background-image: linear-gradient(var(--card-bg), var(--card-bg)), linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            border-color: transparent;
+            background-size: auto, 300% 300%;
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+        }
         .fav-btn { font-size: 24px; color: var(--text-muted); cursor: pointer; transition: 0.3s var(--bezier); padding: 5px;}
         .fav-btn.active { color: var(--danger); filter: drop-shadow(0 0 8px rgba(255,69,58,0.5)); transform: scale(1.1);}
 
@@ -189,23 +326,89 @@
         .delete-btn { color: var(--text-muted); font-size: 20px; padding: 10px; transition: color 0.3s var(--bezier), transform 0.3s var(--bezier); cursor: pointer; }
         .delete-btn:active { color: var(--danger); transform: scale(1.2); }
 
-        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (БЕЗ ЛІНІЙ) === */
-        .nav-bar { 
-            position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
-            display: flex; justify-content: space-around; align-items: flex-start;
-            height: calc(65px + env(safe-area-inset-bottom, 0px)); /* Висота разом з безпечною зоною */
+        /* === НИЖНЯ НАВІГАЦІЯ: LAYOUT-BASED, БЕЗ position: fixed === */
+        .screen#main-app-window {
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            padding-bottom: 0;
+        }
+
+        .screen#main-app-window.active-block {
+            display: flex;
+        }
+
+        .screen#main-app-window .app-window {
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .screen#main-app-window .main-content {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+            padding-bottom: 40px;
+        }
+
+        .nav-bar {
+            position: relative;
+            width: 100%;
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+
+            min-height: 65px;
+            height: calc(65px + env(safe-area-inset-bottom, 0px));
+
             padding-top: 10px;
-            padding-bottom: env(safe-area-inset-bottom, 0px); /* Матове скло заповнює все до самого низу */
-            background: var(--nav-bg); 
-            backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
-            border-top: 1px solid var(--glass-border); z-index: 1000;
+            padding-right: 0;
+            padding-left: 0;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+
+            background: var(--nav-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+
+            border-top: 1px solid var(--glass-border);
+            z-index: 1000;
+            isolation: isolate;
             transition: background-color 0.4s var(--bezier);
         }
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
-            flex: 1; height: 55px; opacity: 0.4; transition: all 0.3s var(--bezier); cursor: pointer; color: var(--text-main); 
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            flex: 1;
+            height: 55px;
+            opacity: 0.4;
+            transition: all 0.3s var(--bezier);
+            cursor: pointer;
+            color: var(--text-main);
         }
-        .nav-item.active { opacity: 1; color: var(--primary); }
+        .nav-item.active {
+            opacity: 1;
+            color: var(--primary);
+            position: relative;
+        }
+        .nav-item.active .nav-icon,
+        .nav-item.active .nav-text {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+        }
         .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.3s var(--bezier); display: flex; align-items: center; justify-content: center;}
         .nav-item.active .nav-icon { transform: scale(1.15) translateY(-2px); }
         .nav-text { font-size: 11px; font-weight: 600; }
@@ -215,21 +418,62 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             z-index: 9999; display: none; flex-direction: column;
-            align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 45px) 25px calc(env(safe-area-inset-bottom) + 40px);
+            align-items: center; justify-content: space-between; padding: env(safe-area-inset-top, 45px) 25px calc(env(safe-area-inset-bottom, 0px) + 40px);
             opacity: 0; transition: opacity 0.4s var(--bezier);
         }
         .live-header { text-align: center; margin-top: 60px; }
         .live-title { font-size: 34px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: -1px; text-align: center; padding: 0 20px;}
-        .live-subtitle { font-size: 20px; color: var(--primary); font-weight: 600; }
+        .live-subtitle {
+            font-size: 20px;
+            color: transparent;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+            font-weight: 600;
+        }
         .live-timer { font-size: 110px; font-weight: 800; color: var(--text-main); font-variant-numeric: tabular-nums; letter-spacing: -3px; transition: color 0.3s;}
         .live-timer.rest { color: var(--primary); }
         .live-controls { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center;}
-        .live-btn-main { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, var(--btn-grad-1), var(--btn-grad-2)); color: var(--btn-text); font-size: 26px; font-weight: 800; border: none; cursor: pointer; box-shadow: 0 20px 50px rgba(var(--primary-rgb), 0.3); display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; transition: all 0.3s var(--bezier); }
+        .live-btn-main {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            color: var(--accent-text);
+            font-size: 26px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 20px 50px rgba(var(--accent-shadow), 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.2;
+            transition: all 0.3s var(--bezier);
+            animation: themeFlow var(--theme-speed) ease-in-out infinite, themeShine 3s ease-in-out infinite;
+        }
         .live-btn-main:active { transform: scale(0.92); }
         .live-input-container { display: none; width: 100%; text-align: center; margin-bottom: 20px; }
 
         .sync-icon { font-size: 14px; color: var(--success); margin-left: 8px; opacity: 0; transition: opacity 0.5s; }
-        .link-btn { text-align: center; margin-top: 20px; color: var(--primary); cursor: pointer; font-weight: 600; }
+        .link-btn {
+            text-align: center;
+            margin-top: 20px;
+            color: transparent;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+            background-size: 300% 300%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: themeFlow var(--theme-speed) ease-in-out infinite;
+            cursor: pointer;
+            font-weight: 600;
+        }
         .label-text { font-size: 14px; color: var(--text-muted); margin: 10px 0 5px 5px; font-weight: 600; display: block; text-align: left; }
     </style>
 </head>
@@ -515,24 +759,25 @@
                     <button class="danger" onclick="logout()" style="padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700;">Вийти з акаунту</button>
                 </div>
             </div>
+
+        <!-- НИЖНЯ НАВІГАЦІЯ: ЧАСТИНА LAYOUT, БЕЗ position: fixed -->
+        <nav class="nav-bar" id="bottom-nav">
+            <div class="nav-item active" data-target="tab-dashboard">
+                <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+                <span class="nav-text">Статус</span>
+            </div>
+            <div class="nav-item" data-target="tab-food">
+                <span class="nav-icon"><i class="fa-solid fa-utensils"></i></span>
+                <span class="nav-text">Раціон</span>
+            </div>
+            <div class="nav-item" data-target="tab-workout">
+                <span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span>
+                <span class="nav-text">Зал</span>
+            </div>
+        </nav>
         </div>
     </div>
 
-    <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ -->
-    <nav class="nav-bar" id="bottom-nav">
-        <div class="nav-item active" data-target="tab-dashboard">
-            <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
-            <span class="nav-text">Статус</span>
-        </div>
-        <div class="nav-item" data-target="tab-food">
-            <span class="nav-icon"><i class="fa-solid fa-utensils"></i></span>
-            <span class="nav-text">Раціон</span>
-        </div>
-        <div class="nav-item" data-target="tab-workout">
-            <span class="nav-icon"><i class="fa-solid fa-dumbbell"></i></span>
-            <span class="nav-text">Зал</span>
-        </div>
-    </nav>
 
     <!-- FIREBASE MODULE SCRIPT -->
     <script type="module">
