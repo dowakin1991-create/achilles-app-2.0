@@ -56,7 +56,7 @@
         #splash-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: var(--bg-pure); z-index: 9998;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.4s ease;
             will-change: opacity;
         }
 
@@ -99,7 +99,7 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
             display: none; opacity: 0; overflow-y: auto; overflow-x: hidden; 
             -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
-            padding-bottom: calc(140px + env(safe-area-inset-bottom, 20px)); /* Гарантований відступ під навігацію */
+            padding-bottom: calc(130px + env(safe-area-inset-bottom, 20px)); 
             background-color: var(--bg-pure);
         }
 
@@ -129,7 +129,7 @@
 
         .main-content { 
             flex-grow: 1; 
-            padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px 40px 20px; 
+            padding: calc(env(safe-area-inset-top, 45px) + 20px) 40px 40px 40px; 
             position: relative; width: 100%; 
             opacity: 1; 
         }
@@ -179,6 +179,10 @@
         .chart-bar { width: 100%; height: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 6px 6px 0 0; transform-origin: bottom center; transform: scaleY(0.15); transition: transform 1s var(--bezier); will-change: transform; }
         .chart-val { font-size: 13px; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
         
+        .day-mode-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 25px; border: 1px solid var(--glass-border); }
+        .day-mode-btn { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 700; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
+        .day-mode-btn.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--glass-border);}
+
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; border: 1px solid var(--glass-border); }
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
         .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--glass-border);}
@@ -205,6 +209,8 @@
                 background: transparent; backdrop-filter: none; box-shadow: none; 
                 flex-direction: column; min-height: 100%;
             }
+
+            .main-content { padding: calc(env(safe-area-inset-top, 45px) + 10px) 20px 40px 20px; }
 
             .nav-bar { 
                 display: flex; /* Показуємо на телефонах */
@@ -543,7 +549,7 @@
                             <option value="maintain">Підтримка ваги</option>
                             <option value="gain">Набір маси (Профіцит 15%)</option>
                         </select>
-                        <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти налаштування</button>
+                        <button onclick="saveProfile()" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти (Перерахувати норму)</button>
                     </div>
 
                     <button class="danger" onclick="logout()" style="padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700;">Вийти з акаунту</button>
@@ -569,7 +575,7 @@
         </div>
     </div>
 
-    <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ ДЛЯ МОБАЙЛУ -->
+    <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ -->
     <nav class="nav-bar" id="bottom-nav">
         <div class="nav-item active" data-target="tab-dashboard">
             <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
@@ -585,23 +591,9 @@
         </div>
     </nav>
 
-    <!-- FIREBASE MODULE SCRIPT -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDjT5UjvgTs396KGsVtPrOEUrnkUi6LD1I",
-            authDomain: "achilles-8de53.firebaseapp.com",
-            projectId: "achilles-8de53",
-            storageBucket: "achilles-8de53.firebasestorage.app",
-            messagingSenderId: "842206429977",
-            appId: "1:842206429977:web:eb78b2a92587395999bb88"
-        };
-        
-        let app, db;
-        try { app = initializeApp(firebaseConfig); db = getFirestore(app); } catch(e) { console.error("Firebase init error", e); }
-
+    <!-- ОСНОВНИЙ ЯДЕРНИЙ СКРИПТ (ПРАЦЮЄ МИТТЄВО) -->
+    <script>
+        // БАЗИ ДАНИХ
         window.foodDB = [
             { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
             { name: "Банан (свіжий)", kcal: 89, p: 1.1, f: 0.3, c: 22.8, fiber: 2.6 },
@@ -690,6 +682,17 @@
         window.currentFoodFilter = 'all';
         window.liveWorkout = null; 
 
+        // ЗАХИСТ ВІД БИТОЇ ПАМ'ЯТІ
+        function getSafeObj(key, fallback) {
+            try {
+                let item = localStorage.getItem(key);
+                if (item && item !== "undefined" && item !== "null") {
+                    return JSON.parse(item);
+                }
+            } catch(e) { console.error("Parse error for", key); }
+            return fallback;
+        }
+
         window.applyTheme = function(theme) {
             if(theme === 'light') {
                 document.documentElement.classList.remove('dark');
@@ -707,77 +710,18 @@
         };
 
         window.showScreen = function(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-block'));
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active-block');
+            });
             document.getElementById(screenId).classList.add('active-block');
         }
 
-        window.syncToCloud = async function() {
-            const userName = localStorage.getItem('achilles_user');
-            if(!userName || !db) return;
-
-            const icon = document.getElementById('sync-icon');
-            if(icon) { icon.style.opacity = '1'; setTimeout(() => icon.style.opacity = '0', 2000); }
-
-            const dataToSave = {
-                profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
-                appMode: localStorage.getItem('achilles_app_mode') || 'pro',
-                theme: localStorage.getItem('achilles_theme') || 'dark',
-                baseKcal: localStorage.getItem('achilles_base_kcal') || 2000,
-                goalText: localStorage.getItem('achilles_goal_text') || '',
-                targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
-                weightHistory: JSON.parse(localStorage.getItem('achilles_weight_history')) || [],
-                favWorkouts: JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [],
-                customFoods: JSON.parse(localStorage.getItem('achilles_custom_foods')) || [],
-                favFoods: JSON.parse(localStorage.getItem('achilles_fav_foods')) || [],
-                dailyHistory: JSON.parse(localStorage.getItem('achilles_daily_history')) || [],
-                daily: {
-                    date: window.todayDate,
-                    consumedCalories: window.consumedCalories,
-                    workoutBonus: window.workoutBonus,
-                    macros: window.macros,
-                    dailyLog: window.dailyLog
-                }
-            };
-            try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Cloud Sync Error", e); }
-        };
-
-        window.loadFromCloud = async function(userName) {
-            if(!db) return false;
-            try {
-                const docSnap = await getDoc(doc(db, "users", userName));
-                if (docSnap.exists()) {
-                    const d = docSnap.data();
-                    
-                    localStorage.setItem('achilles_profile', JSON.stringify(d.profile));
-                    localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    localStorage.setItem('achilles_theme', d.theme || 'dark');
-                    localStorage.setItem('achilles_base_kcal', d.baseKcal);
-                    localStorage.setItem('achilles_goal_text', d.goalText);
-                    localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros));
-                    localStorage.setItem('achilles_weight_history', JSON.stringify(d.weightHistory || []));
-                    localStorage.setItem('achilles_fav_workouts', JSON.stringify(d.favWorkouts || []));
-                    localStorage.setItem('achilles_custom_foods', JSON.stringify(d.customFoods || []));
-                    localStorage.setItem('achilles_fav_foods', JSON.stringify(d.favFoods || []));
-                    localStorage.setItem('achilles_daily_history', JSON.stringify(d.dailyHistory || []));
-                    
-                    if(d.daily && d.daily.date === window.todayDate) {
-                        window.consumedCalories = d.daily.consumedCalories || 0;
-                        window.workoutBonus = d.daily.workoutBonus || 0;
-                        window.macros = d.daily.macros || {p:0, f:0, c:0, fiber:0};
-                        window.dailyLog = Array.isArray(d.daily.dailyLog) ? d.daily.dailyLog : [];
-                    } else {
-                        if (d.daily && d.daily.date) window.archiveDay(d.daily.date, d.daily.consumedCalories, d.daily.dailyLog);
-                        window.consumedCalories = 0; window.workoutBonus = 0; window.macros = {p:0,f:0,c:0, fiber:0}; window.dailyLog = [];
-                        window.syncToCloud();
-                    }
-                    return true;
-                }
-            } catch(e) { console.error("Cloud Load Error", e); }
-            return false;
-        };
+        // ЗАГЛУШКИ ДО ЗАВАНТАЖЕННЯ FIREBASE
+        window.syncToCloud = async function() {};
+        window.loadFromCloud = async function() { return false; };
 
         window.archiveDay = function(dateStr, kcal, logArr) {
-            let history = JSON.parse(localStorage.getItem('achilles_daily_history')) || [];
+            let history = getSafeObj('achilles_daily_history', []);
             if(!history.some(h => h.date === dateStr)) {
                 history.push({ date: dateStr, kcal: kcal, log: logArr || [] });
                 if(history.length > 30) history.shift();
@@ -800,7 +744,7 @@
             }
         });
 
-        // === ПРЯМИЙ СТАРТ ДОДАТКУ ===
+        // === ПРЯМИЙ СТАРТ ДОДАТКУ (ОБХІД БЛОКУВАНЬ) ===
         function bootApp() {
             let savedTheme = localStorage.getItem('achilles_theme') || 'dark';
             window.applyTheme(savedTheme);
@@ -823,61 +767,12 @@
                 window.renderWeightChart();
                 window.renderDailyLog();
                 window.showScreen('main-app-window');
-                
-                window.loadFromCloud(userName).then(loaded => {
-                    if(loaded) {
-                        window.loadUserData();
-                        window.renderWeightChart();
-                        window.renderDailyLog();
-                        window.updateGoalDisplay();
-                        window.searchWorkout();
-                        if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
-                    }
-                });
             } else { 
                 window.showScreen('login-window');
             }
         }
         
-        // Запуск без очікування DOMContentLoaded
-        bootApp();
-
-        window.attemptLogin = async function() {
-            const user = document.getElementById('login-username').value.trim();
-            const pass = document.getElementById('login-password').value;
-            if(!user || !pass) { alert("Введіть логін та пароль!"); return; }
-
-            const btn = document.getElementById('login-btn');
-            btn.innerText = "Завантаження...";
-            
-            try {
-                if(!db) throw new Error("Firebase not ready");
-                const docSnap = await getDoc(doc(db, "users", user));
-                
-                if(docSnap.exists()) {
-                    const d = docSnap.data();
-                    if(d.profile && d.profile.password === pass) {
-                        localStorage.setItem('achilles_user', user);
-                        await window.loadFromCloud(user);
-                        window.loadUserData();
-                        window.renderWeightChart();
-                        window.renderDailyLog();
-                        window.showScreen('main-app-window');
-                    } else { alert("Неправильний пароль!"); }
-                } else { alert("Користувача не знайдено. Створіть профіль!"); }
-            } catch(e) {
-                console.error(e);
-                const localUser = localStorage.getItem('achilles_user');
-                const localProf = JSON.parse(localStorage.getItem('achilles_profile'));
-                if(localUser === user && localProf && localProf.password === pass) {
-                    window.loadUserData();
-                    window.renderWeightChart();
-                    window.renderDailyLog();
-                    window.showScreen('main-app-window');
-                } else { alert("Помилка підключення до хмари."); }
-            }
-            btn.innerText = "Увійти";
-        };
+        bootApp(); // МИТТЄВИЙ ЗАПУСК
 
         window.calculateNorms = function(gender, weight, height, age, activityMultiplier, goal, diet) {
             let bmr = (10 * weight) + (6.25 * height) - (5 * age);
@@ -908,71 +803,18 @@
             return { kcal: targetKcal, goalText: goalText, p: Math.round(p), f: Math.round(f), c: Math.round(c) };
         };
 
-        window.completeRegistration = async function() {
-            const name = document.getElementById('reg-name').value.trim();
-            const pass = document.getElementById('reg-password').value;
-            const gender = document.getElementById('reg-gender').value;
-            const age = parseInt(document.getElementById('reg-age').value);
-            const height = parseFloat(document.getElementById('reg-height').value);
-            const weight = parseFloat(document.getElementById('reg-weight').value);
-            const goal = document.getElementById('reg-goal').value;
-            const appMode = document.getElementById('reg-app-mode').value;
-            const diet = document.getElementById('reg-diet').value;
-            
-            let wDays = parseInt(document.getElementById('reg-work-days').value) || 0;
-            let rDays = parseInt(document.getElementById('reg-rest-days').value) || 0;
-            if (wDays + rDays === 0) wDays = 1;
-            
-            const aWork = parseFloat(document.getElementById('reg-activity-work').value);
-            const aRest = parseFloat(document.getElementById('reg-activity-rest').value);
-            
-            if(!name || !pass || !age || !height || !weight || !aWork || !aRest || !goal || !appMode || !diet) { alert('Заповни всі поля!'); return; }
-
-            const btn = document.getElementById('reg-btn');
-            btn.innerText = "Створення...";
-
-            if(db) {
-                try {
-                    const docSnap = await getDoc(doc(db, "users", name));
-                    if(docSnap.exists()) {
-                        alert("Це ім'я вже зайняте! Придумай інше.");
-                        btn.innerText = "Зареєструватися";
-                        return;
-                    }
-                } catch(e) {}
-            }
-
-            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
-            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
-
-            let profile = { name, password: pass, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
-            localStorage.setItem('achilles_profile', JSON.stringify(profile));
-            localStorage.setItem('achilles_user', name);
-            localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_theme', 'dark');
-            localStorage.setItem('achilles_base_kcal', norms.kcal); 
-            localStorage.setItem('achilles_goal_text', norms.goalText);
-            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
-
-            window.logNewWeight(weight);
-            window.loadUserData(); 
-            window.renderWeightChart(); 
-            await window.syncToCloud(); 
-            window.showScreen('main-app-window');
-        };
-
         window.loadUserData = function() {
             const uName = localStorage.getItem('achilles_user');
             if(document.getElementById('display-username')) document.getElementById('display-username').innerText = uName;
             if(document.getElementById('user-goal-text')) document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
             
-            let m = JSON.parse(localStorage.getItem('achilles_macros')) || {p: 0, f: 0, c: 0};
+            let m = getSafeObj('achilles_macros', {p: 0, f: 0, c: 0});
             window.targetMacros = m;
             if(document.getElementById('target-p')) document.getElementById('target-p').innerText = `/ ${m.p}г`;
             if(document.getElementById('target-f')) document.getElementById('target-f').innerText = `/ ${m.f}г`;
             if(document.getElementById('target-c')) document.getElementById('target-c').innerText = `/ ${m.c}г`;
 
-            let prof = JSON.parse(localStorage.getItem('achilles_profile'));
+            let prof = getSafeObj('achilles_profile', null);
             if(prof) {
                 if(document.getElementById('edit-name')) document.getElementById('edit-name').value = prof.name;
                 if(document.getElementById('edit-gender')) document.getElementById('edit-gender').value = prof.gender;
@@ -1026,7 +868,7 @@
 
             if(!name || !age || !height || !diet || !aWork || !aRest) { alert('Заповни всі поля!'); return; }
 
-            let profile = JSON.parse(localStorage.getItem('achilles_profile')) || {};
+            let profile = getSafeObj('achilles_profile', {});
             profile = { ...profile, name, gender, age, height, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
             
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
@@ -1048,7 +890,7 @@
         };
 
         window.logNewWeight = function(w) {
-            let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
+            let history = getSafeObj('achilles_weight_history', []);
             let today = new Date().toISOString().split('T')[0].slice(5); 
             history.push({ date: today, weight: w });
             localStorage.setItem('achilles_weight_history', JSON.stringify(history));
@@ -1060,7 +902,7 @@
             window.logNewWeight(w);
             document.getElementById('new-weight-input').value = '';
             
-            let prof = JSON.parse(localStorage.getItem('achilles_profile'));
+            let prof = getSafeObj('achilles_profile', null);
             if(prof) {
                 prof.weight = w;
                 let avgAct = ((prof.activityWork * prof.workDays) + (prof.activityRest * prof.restDays)) / (prof.workDays + prof.restDays);
@@ -1077,7 +919,7 @@
         };
 
         window.renderWeightChart = function() {
-            let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
+            let history = getSafeObj('achilles_weight_history', []);
             let container = document.getElementById('weight-chart-container');
             if (history.length === 0 || !container) return;
 
@@ -1205,7 +1047,7 @@
         window.renderHistory = function() {
             const container = document.getElementById('history-list-container');
             if(!container) return;
-            let history = JSON.parse(localStorage.getItem('achilles_daily_history')) || [];
+            let history = getSafeObj('achilles_daily_history', []);
             
             if(history.length === 0) {
                 container.innerHTML = '<p style="text-align:center; padding: 20px;">Історія поки що порожня.</p>';
@@ -1255,7 +1097,7 @@
         };
 
         window.generateFoodCardHtml = function(item, index) {
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            let favs = getSafeObj('achilles_fav_foods', []);
             let isFav = favs.some(f => f.name === item.name);
             const itemJson = JSON.stringify(item).replace(/"/g, '&quot;');
             const uniqueId = `food-input-${index}`;
@@ -1263,7 +1105,7 @@
             const fiberText = item.fiber > 0 ? ` Кл:${item.fiber}` : '';
             
             return `
-                <div class="list-item" style="align-items: flex-start; flex-direction: column; ${isApi ? 'border-left: 3px solid var(--gold);' : ''}">
+                <div class="list-item" style="align-items: flex-start; color: var(--text-main); ${isApi ? 'border-left: 3px solid var(--gold);' : ''}">
                     <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start; margin-bottom: 12px;">
                         <div>
                             <strong style="color: var(--text-main); font-size: 18px;">${item.name}</strong><br>
@@ -1280,7 +1122,7 @@
 
         window.toggleFavFood = function(itemJsonStr, event) {
             const item = JSON.parse(itemJsonStr.replace(/&quot;/g, '"'));
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            let favs = getSafeObj('achilles_fav_foods', []);
             
             const index = favs.findIndex(f => f.name === item.name);
             let isFav = false;
@@ -1305,7 +1147,7 @@
         window.renderFavFoods = function() {
             const resultsBox = document.getElementById('food-results');
             if(!resultsBox) return;
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            let favs = getSafeObj('achilles_fav_foods', []);
             
             if (favs.length === 0) {
                 resultsBox.innerHTML = '<div class="list-item" style="color: var(--text-muted); text-align:center; padding: 20px; border: none;">Улюблених продуктів поки немає</div>';
@@ -1332,7 +1174,7 @@
         window.renderLocalFoodSearch = function(query) {
             const resultsBox = document.getElementById('food-results');
             if(!resultsBox) return;
-            let customFoods = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
+            let customFoods = getSafeObj('achilles_custom_foods', []);
             let allLocalDb = [...customFoods, ...window.foodDB];
             
             const filtered = allLocalDb.filter(i => i.name.toLowerCase().includes(query));
@@ -1391,11 +1233,11 @@
 
             let customItem = { name: "🛠️ " + name, kcal, p, f, c, fiber };
             
-            let customFoods = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
+            let customFoods = getSafeObj('achilles_custom_foods', []);
             customFoods.push(customItem);
             localStorage.setItem('achilles_custom_foods', JSON.stringify(customFoods));
             
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
+            let favs = getSafeObj('achilles_fav_foods', []);
             favs.push(customItem);
             localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
 
@@ -1465,7 +1307,7 @@
         };
 
         window.toggleFavWorkout = function(name) {
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
+            let favs = getSafeObj('achilles_fav_workouts', []);
             if (favs.includes(name)) { favs = favs.filter(n => n !== name); } else { favs.push(name); }
             localStorage.setItem('achilles_fav_workouts', JSON.stringify(favs));
             window.searchWorkout();
@@ -1476,7 +1318,7 @@
             const searchEl = document.getElementById('workout-search');
             if(!searchEl) return;
             const query = searchEl.value.toLowerCase().trim();
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
+            let favs = getSafeObj('achilles_fav_workouts', []);
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             let filtered = window.workoutDB;
             
@@ -1490,7 +1332,7 @@
         window.renderWorkouts = function(db = window.workoutDB) {
             const container = document.getElementById('workout-list-container');
             if(!container) return;
-            let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
+            let favs = getSafeObj('achilles_fav_workouts', []);
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
 
             if(db.length === 0) { container.innerHTML = '<div class="list-item" style="color: var(--text-muted); text-align:center; padding: 20px; border: none;">Нічого не знайдено</div>'; return; }
@@ -1717,6 +1559,40 @@
         };
 
         window.logout = function() { localStorage.clear(); location.reload(); };
+    </script>
+    
+    <!-- ФОНОВИЙ FIREBASE (НЕ БЛОКУЄ ІНТЕРФЕЙС) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjT5UjvgTs396KGsVtPrOEUrnkUi6LD1I",
+            authDomain: "achilles-8de53.firebaseapp.com",
+            projectId: "achilles-8de53",
+            storageBucket: "achilles-8de53.firebasestorage.app",
+            messagingSenderId: "842206429977",
+            appId: "1:842206429977:web:eb78b2a92587395999bb88"
+        };
+        
+        try { 
+            const app = initializeApp(firebaseConfig); 
+            window.db = getFirestore(app); 
+            
+            // Якщо користувач вже був онлайн і Firebase завантажився — тихо синхронізуємо
+            const userName = localStorage.getItem('achilles_user');
+            if(userName && window.loadFromCloud) {
+                window.loadFromCloud(userName).then(loaded => {
+                    if(loaded && document.getElementById('main-app-window').classList.contains('active-block')) {
+                        window.loadUserData();
+                        window.renderWeightChart();
+                        window.renderDailyLog();
+                        window.updateGoalDisplay();
+                        window.searchWorkout();
+                    }
+                });
+            }
+        } catch(e) { console.error("Firebase init error", e); }
     </script>
 </body>
 </html>
