@@ -39,7 +39,7 @@
         }
 
         /* Заборона виділення тексту */
-        .nav-item, button, .filter-tab, .avatar-container, .day-mode-btn { -webkit-user-select: none; user-select: none; }
+        .nav-item, button, .filter-tab, .avatar-container { -webkit-user-select: none; user-select: none; }
 
         /* === SPLASH ТА ГЛОБАЛЬНИЙ АВАТАР (120FPS GPU Оптимізація) === */
         #splash-bg {
@@ -53,7 +53,8 @@
         .main-avatar {
             position: fixed; 
             z-index: 9999;
-            top: max(env(safe-area-inset-top), 20px);
+            /* Ідеальний відступ для iPhone 15 Pro Max з Dynamic Island */
+            top: calc(env(safe-area-inset-top, 45px) + 10px);
             right: 20px;
             width: 50px; height: 50px;
             border-radius: 50%;
@@ -66,7 +67,6 @@
             transition: transform 0.2s var(--bezier);
         }
         
-        /* Виключно GPU-анімація через transform3d */
         .main-avatar.splash-mode {
             animation: splashToCorner120fps 1.2s var(--bezier) forwards;
         }
@@ -92,7 +92,8 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10;
             display: none; overflow-y: auto; overflow-x: hidden; 
             -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; 
-            padding-bottom: calc(90px + env(safe-area-inset-bottom, 20px)); 
+            /* Гігантський відступ знизу, щоб контент не ховався за навігацією */
+            padding-bottom: calc(130px + env(safe-area-inset-bottom, 20px)); 
             will-change: opacity, transform;
         }
 
@@ -111,7 +112,6 @@
             transform: translate3d(0,0,0);
         }
         
-        /* Плавна поява контенту після Splash */
         #main-app-window .main-content {
             opacity: 0; transform: translate3d(0, 20px, 0);
             animation: contentFadeIn120fps 0.5s 0.9s var(--bezier) forwards;
@@ -151,19 +151,8 @@
         button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); }
 
-        /* === 120FPS GPU PROGRESS BAR === */
-        .progress-bar { 
-            width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 15px; 
-            overflow: hidden; transform: translateZ(0); 
-        }
-        .progress-fill { 
-            height: 100%; width: 100%; 
-            background: linear-gradient(90deg, #c79a3c, var(--gold)); 
-            transform-origin: left center;
-            transform: scaleX(0); /* Магія тут: зміна scaleX не вантажить процесор */
-            transition: transform 1s var(--bezier); 
-            will-change: transform;
-        }
+        .progress-bar { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 15px; overflow: hidden; transform: translateZ(0); }
+        .progress-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #c79a3c, var(--gold)); transform-origin: left center; transform: scaleX(0); transition: transform 1s var(--bezier); will-change: transform; }
         
         .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; color: var(--text-main); border: 1px solid var(--glass-border); }
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; }
@@ -172,24 +161,11 @@
         .macro-item strong { display: block; font-size: 24px; color: var(--text-main); margin-bottom: 4px; font-weight: 700;}
         .bonus-badge { display: inline-block; background: rgba(229, 192, 123, 0.15); color: var(--gold); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
 
-        /* === 120FPS GPU CHART BARS === */
         .chart-container { display: flex; align-items: flex-end; justify-content: space-between; height: 160px; padding: 20px 10px 0; background: var(--input-bg); border-radius: 20px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.03);}
         .chart-bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 14%; height: 100%; justify-content: flex-end;}
-        .chart-bar { 
-            width: 100%; height: 100%; 
-            background: linear-gradient(to top, var(--gold), #9e7311); 
-            border-radius: 6px 6px 0 0; 
-            transform-origin: bottom center;
-            transform: scaleY(0.15); /* Замість height */
-            transition: transform 1s var(--bezier); 
-            will-change: transform;
-        }
+        .chart-bar { width: 100%; height: 100%; background: linear-gradient(to top, var(--gold), #9e7311); border-radius: 6px 6px 0 0; transform-origin: bottom center; transform: scaleY(0.15); transition: transform 1s var(--bezier); will-change: transform; }
         .chart-val { font-size: 13px; color: var(--gold); margin-bottom: 6px; font-weight: 700; }
         
-        .day-mode-toggle { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 25px; }
-        .day-mode-btn { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 700; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
-        .day-mode-btn.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-
         .filter-tabs { display: flex; background: var(--input-bg); border-radius: 20px; padding: 6px; margin-bottom: 20px; }
         .filter-tab { flex: 1; text-align: center; padding: 14px; font-size: 15px; font-weight: 600; color: var(--text-muted); border-radius: 16px; cursor: pointer; transition: all 0.3s var(--bezier); }
         .filter-tab.active { background: var(--card-bg); color: var(--gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);}
@@ -200,13 +176,14 @@
         /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
         .nav-bar { 
             position: fixed; bottom: 0; left: 0; right: 0; width: 100%; 
-            height: calc(65px + env(safe-area-inset-bottom, 0px));
+            height: calc(75px + env(safe-area-inset-bottom, 0px));
             padding-bottom: env(safe-area-inset-bottom, 0px); 
             display: flex; justify-content: space-around; align-items: center;
-            background: rgba(18, 18, 20, 0.92); 
-            backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); 
-            border-top: 1px solid rgba(255,255,255,0.08); z-index: 1000;
-            transform: translateZ(0); /* Захист від мерехтіння на iOS */
+            background: rgba(18, 18, 20, 0.85); 
+            backdrop-filter: blur(25px) saturate(200%); -webkit-backdrop-filter: blur(25px) saturate(200%); 
+            box-shadow: 0 -0.5px 0 rgba(255,255,255,0.1); /* Тонка ідеальна лінія замість border */
+            z-index: 1000;
+            transform: translateZ(0); 
         }
         .nav-item { 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
@@ -329,7 +306,7 @@
                     </div>
                     <input type="number" id="reg-weight" placeholder="Поточна вага (кг)" inputmode="decimal" required>
                     
-                    <span class="label-text">Твій графік (днів підряд):</span>
+                    <span class="label-text">Графік (співвідношення днів):</span>
                     <div style="display: flex; gap: 12px; margin-bottom: 8px;">
                         <input type="number" id="reg-work-days" placeholder="Робочих (напр. 2)" inputmode="numeric" pattern="[0-9]*" value="2" required>
                         <input type="number" id="reg-rest-days" placeholder="Вихідних (напр. 2)" inputmode="numeric" pattern="[0-9]*" value="2" required>
@@ -353,7 +330,7 @@
 
                     <select id="reg-goal" required>
                         <option value="" disabled selected>Твоя мета</option>
-                        <option value="lose">Схуднення (Дефіцит 20%)</option>
+                        <option value="lose">Схуднути (Дефіцит 20%)</option>
                         <option value="maintain">Підтримка ваги</option>
                         <option value="gain">Набір маси (Профіцит 15%)</option>
                     </select>
@@ -373,11 +350,6 @@
                 <div id="tab-dashboard" class="tab-content active">
                     <h1 id="greeting-header">Привіт, <span id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
                     
-                    <div class="day-mode-toggle">
-                        <div id="mode-rest-btn" class="day-mode-btn" onclick="setDayMode('rest')">🛋️ Вихідний</div>
-                        <div id="mode-work-btn" class="day-mode-btn" onclick="setDayMode('work')">👨‍🍳 Робоча зміна</div>
-                    </div>
-
                     <p id="user-goal-text" style="text-align: left; margin-bottom: 25px; margin-top: -15px;">Аналізуємо...</p>
                     
                     <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px; border: 1px solid var(--glass-border);">
@@ -430,7 +402,7 @@
                     
                     <div class="filter-tabs" id="workout-mode-tabs">
                         <div id="btn-mode-extended" class="filter-tab active" onclick="setWorkoutMode('extended')">Розширене (Live)</div>
-                        <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')">Ручний ввід / Годинник</div>
+                        <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')">Ручний ввід</div>
                     </div>
 
                     <div id="simple-aw-container" style="display: none;">
@@ -477,7 +449,7 @@
                             <input type="number" id="edit-height" placeholder="Зріст (см)" inputmode="numeric" pattern="[0-9]*">
                         </div>
                         
-                        <span class="label-text">Твій графік (співвідношення днів):</span>
+                        <span class="label-text">Графік (співвідношення днів):</span>
                         <div style="display: flex; gap: 12px; margin-bottom: 8px;">
                             <input type="number" id="edit-work-days" placeholder="Робочих (напр. 2)" inputmode="numeric" pattern="[0-9]*">
                             <input type="number" id="edit-rest-days" placeholder="Вихідних (напр. 2)" inputmode="numeric" pattern="[0-9]*">
@@ -544,86 +516,87 @@
         let app, db;
         try { app = initializeApp(firebaseConfig); db = getFirestore(app); } catch(e) { console.error("Firebase init error", e); }
 
-        window.foodDB = [
-            { name: "Яблуко (свіже)", kcal: 52, p: 0.3, f: 0.2, c: 14, fiber: 2.4 },
-            { name: "Банан (свіжий)", kcal: 89, p: 1.1, f: 0.3, c: 22.8, fiber: 2.6 },
-            { name: "Авокадо (Хаас)", kcal: 160, p: 2, f: 14.7, c: 8.5, fiber: 7.0 },
-            { name: "Груша", kcal: 57, p: 0.4, f: 0.1, c: 15, fiber: 3.1 },
-            { name: "Персик", kcal: 39, p: 0.9, f: 0.3, c: 10, fiber: 1.5 },
-            { name: "Кавун", kcal: 30, p: 0.6, f: 0.2, c: 8, fiber: 0.4 },
-            { name: "Помідор (свіжий)", kcal: 18, p: 0.9, f: 0.2, c: 3.9, fiber: 1.2 },
-            { name: "Огірок (свіжий)", kcal: 15, p: 0.8, f: 0.1, c: 2.8, fiber: 0.5 },
-            { name: "Броколі (варена)", kcal: 35, p: 2.4, f: 0.4, c: 7.2, fiber: 3.3 },
-            { name: "Картопля (сира)", kcal: 77, p: 2, f: 0.1, c: 17, fiber: 2.2 },
-            { name: "Картопля (варена)", kcal: 86, p: 2, f: 0.1, c: 20, fiber: 1.8 },
-            { name: "Кабачки (смажені в борошні)", kcal: 85, p: 1.5, f: 5, c: 9, fiber: 1.2 },
-            { name: "Куряче філе (сире)", kcal: 110, p: 23, f: 1.2, c: 0, fiber: 0 },
-            { name: "Куряче філе (варене/запечене)", kcal: 165, p: 31, f: 3.6, c: 0, fiber: 0 },
-            { name: "Свинина (вирізка, пісна)", kcal: 143, p: 26, f: 4, c: 0, fiber: 0 },
-            { name: "Яловичина (вирізка, пісна)", kcal: 187, p: 28, f: 8, c: 0, fiber: 0 },
-            { name: "Сало (солоне)", kcal: 797, p: 1.4, f: 89, c: 0, fiber: 0 },
-            { name: "Лосось (сирий)", kcal: 208, p: 20, f: 13, c: 0, fiber: 0 },
-            { name: "Яйце куряче (1 шт ~50г)", kcal: 78, p: 6, f: 5, c: 0.6, fiber: 0 },
-            { name: "Гречка (суха)", kcal: 343, p: 13, f: 3.4, c: 71.5, fiber: 10.0 },
-            { name: "Гречка (варена)", kcal: 110, p: 4.2, f: 1.1, c: 21, fiber: 2.7 },
-            { name: "Рис білий (сухий)", kcal: 360, p: 7, f: 0.6, c: 79, fiber: 1.3 },
-            { name: "Рис білий (варений)", kcal: 130, p: 2.7, f: 0.3, c: 28, fiber: 0.4 },
-            { name: "Вівсянка (суха)", kcal: 389, p: 16.9, f: 6.9, c: 66, fiber: 10.0 },
-            { name: "Макарони твердих сортів (сухі)", kcal: 350, p: 12, f: 1.5, c: 71, fiber: 3.2 },
-            { name: "Борщ український", kcal: 65, p: 3, f: 4, c: 5, fiber: 1.8 },
-            { name: "Вареники з картоплею", kcal: 180, p: 5, f: 4, c: 31, fiber: 1.5 },
-            { name: "Деруни (смажені)", kcal: 230, p: 4, f: 15, c: 20, fiber: 2.0 },
-            { name: "Сирники (смажені)", kcal: 220, p: 14, f: 11, c: 16, fiber: 0.5 },
-            { name: "Піца Маргарита", kcal: 266, p: 11, f: 10, c: 33, fiber: 2.5 },
-            { name: "Бургер з яловичиною", kcal: 254, p: 13, f: 10, c: 30, fiber: 1.5 },
-            { name: "Картопля фрі", kcal: 312, p: 3.4, f: 15, c: 41, fiber: 3.8 },
-            { name: "Шаурма (курка)", kcal: 220, p: 9, f: 10, c: 22, fiber: 1.5 },
-            { name: "Суші (Філадельфія)", kcal: 175, p: 6.5, f: 5.3, c: 25, fiber: 0.5 },
-            { name: "Суші (Каліфорнія)", kcal: 150, p: 5.5, f: 3.2, c: 26, fiber: 0.8 },
-            { name: "Сир кисломолочний 5%", kcal: 121, p: 17, f: 5, c: 1.8, fiber: 0 },
-            { name: "Сметана 15%", kcal: 162, p: 2.6, f: 15, c: 3, fiber: 0 },
-            { name: "Молоко 2.5%", kcal: 52, p: 2.8, f: 2.5, c: 4.7, fiber: 0 },
-            { name: "Твердий сир", kcal: 350, p: 26, f: 27, c: 0, fiber: 0 },
-            { name: "Еспресо / Американо", kcal: 2, p: 0.1, f: 0, c: 0, fiber: 0 },
-            { name: "Капучино (без цукру)", kcal: 75, p: 3.4, f: 3.6, c: 7.4, fiber: 0 },
-            { name: "Протеїн (Whey)", kcal: 380, p: 80, f: 4, c: 6, fiber: 0 },
-            { name: "Шоколад чорний (70%+)", kcal: 598, p: 7.8, f: 42.6, c: 36, fiber: 10.9 },
-            { name: "Кола Zero", kcal: 0, p: 0, f: 0, c: 0, fiber: 0 }
-        ];
-
+        // РОЗУМНА БАЗА ТРЕНУВАНЬ: type 'c_min' (кардіо хв), 'c_sec' (час сек), 'bw_reps' (тільки повтори), 'w_reps' (повтори + вага)
         window.workoutDB = [
-            { name: "Біг (вулиця / доріжка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 11.0 },
-            { name: "Велосипед / Велотренажер", desc: "Кардіо. Вводь час у хвилинах.", factor: 8.0 },
-            { name: "Еліпсоїд (Орбітрек)", desc: "Кардіо. Вводь час у хвилинах.", factor: 9.0 },
-            { name: "ВІІТ (HIIT)", desc: "Інтервальне. Вводь час у хвилинах.", factor: 12.0 },
-            { name: "Ходьба (швидка)", desc: "Кардіо. Вводь час у хвилинах.", factor: 5.0 },
-            { name: "Плавання", desc: "Кардіо. Вводь час у хвилинах.", factor: 10.0 },
-            { name: "Віджимання від підлоги", desc: "Груди/Трицепс.", factor: 0.4 },
-            { name: "Віджимання на брусах", desc: "Нижні грудні/Трицепс.", factor: 0.6 },
-            { name: "Жим штанги лежачи", desc: "Груди (База).", factor: 0.6 },
-            { name: "Жим гантелей лежачи", desc: "Груди.", factor: 0.5 },
-            { name: "Розведення гантелей лежачи", desc: "Груди.", factor: 0.3 },
-            { name: "Підтягування на турніку", desc: "Спина/Біцепс.", factor: 1.0 },
-            { name: "Тяга верхнього блоку", desc: "Спина.", factor: 0.4 },
-            { name: "Тяга нижнього блоку", desc: "Спина.", factor: 0.4 },
-            { name: "Тяга штанги в нахилі", desc: "Спина (База).", factor: 0.6 },
-            { name: "Тяга гантелі в нахилі", desc: "Спина.", factor: 0.5 },
-            { name: "Шраги з гантелями/штангою", desc: "Трапеція.", factor: 0.3 },
-            { name: "Жим штанги стоячи", desc: "Плечі (База).", factor: 0.5 },
-            { name: "Жим гантелей сидячи", desc: "Плечі.", factor: 0.4 },
-            { name: "Махи гантелями в сторони", desc: "Середні дельти.", factor: 0.3 },
-            { name: "Підйом штанги на біцепс", desc: "Біцепс.", factor: 0.4 },
-            { name: "Підйом гантелей на біцепс", desc: "Біцепс.", factor: 0.3 },
-            { name: "Молотки (Хаммери)", desc: "Брахіаліс.", factor: 0.3 },
-            { name: "Французький жим", desc: "Трицепс.", factor: 0.4 },
-            { name: "Присідання зі штангою", desc: "Ноги (База).", factor: 0.8 },
-            { name: "Присідання з гантелями", desc: "Ноги.", factor: 0.6 },
-            { name: "Жим ногами в тренажері", desc: "Ноги.", factor: 0.5 },
-            { name: "Випади з гантелями", desc: "Ноги/Сідниці.", factor: 0.6 },
-            { name: "Румунська тяга", desc: "Сідниці/Стегна.", factor: 0.6 },
-            { name: "Планка", desc: "Кори. Пиши секунди.", factor: 0.1 },
-            { name: "Скручування на прес", desc: "Верхній прес.", factor: 0.2 },
-            { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 }
+            // Кардіо (хв)
+            { name: "Біг (вулиця / доріжка)", desc: "Кардіо. Вводь час у хвилинах.", type: 'c_min', factor: 11.5 },
+            { name: "Велосипед / Велотренажер", desc: "Кардіо. Вводь час у хвилинах.", type: 'c_min', factor: 8.5 },
+            { name: "Еліпсоїд (Орбітрек)", desc: "Кардіо. Вводь час у хвилинах.", type: 'c_min', factor: 9.0 },
+            { name: "Степпер / Сходи", desc: "Кардіо. Вводь час у хвилинах.", type: 'c_min', factor: 10.0 },
+            { name: "Гребний тренажер", desc: "Кардіо/Спина. Вводь час у хвилинах.", type: 'c_min', factor: 11.0 },
+            { name: "ВІІТ (HIIT) / Табата", desc: "Інтервальне. Вводь час у хвилинах.", type: 'c_min', factor: 13.0 },
+            { name: "Кросфіт (WOD)", desc: "Інтенсив. Вводь час у хвилинах.", type: 'c_min', factor: 14.0 },
+            { name: "Ходьба (швидка)", desc: "Кардіо. Вводь час у хвилинах.", type: 'c_min', factor: 5.0 },
+            { name: "Плавання (інтенсивне)", desc: "Кардіо. Вводь час у хвилинах.", type: 'c_min', factor: 10.0 },
+            { name: "Стрибки на скакалці", desc: "Кардіо. Вводь час у хвилинах.", type: 'c_min', factor: 12.0 },
+            { name: "Йога / Пілатес", desc: "Відновлення. Вводь час у хвилинах.", type: 'c_min', factor: 3.5 },
+            { name: "Спорт (Футбол, Теніс)", desc: "Активність. Вводь час у хвилинах.", type: 'c_min', factor: 10.0 },
+            { name: "Бокс / Робота по груші", desc: "Інтенсив. Вводь час у хвилинах.", type: 'c_min', factor: 11.0 },
+
+            // Власна вага (тільки повторення)
+            { name: "Віджимання від підлоги", desc: "Власна вага. Пиши тільки повторення.", type: 'bw_reps', factor: 0.4 },
+            { name: "Підтягування на турніку", desc: "Власна вага. Пиши тільки повторення.", type: 'bw_reps', factor: 1.0 },
+            { name: "Віджимання на брусах (без ваги)", desc: "Власна вага. Пиши тільки повторення.", type: 'bw_reps', factor: 0.6 },
+            { name: "Присідання (без ваги)", desc: "Власна вага. Пиши тільки повторення.", type: 'bw_reps', factor: 0.4 },
+            { name: "Гіперекстензія", desc: "Поперек. Пиши тільки повторення.", type: 'bw_reps', factor: 0.3 },
+            { name: "Скручування на прес (кранчі)", desc: "Верхній прес. Пиши тільки повторення.", type: 'bw_reps', factor: 0.2 },
+            { name: "Підйом ніг лежачи/у висі", desc: "Нижній прес. Пиши тільки повторення.", type: 'bw_reps', factor: 0.3 },
+            { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи. Пиши тільки повторення.", type: 'bw_reps', factor: 0.25 },
+            { name: "Вправа 'Велосипед'", desc: "Прес/Косі. Пиши тільки повторення.", type: 'bw_reps', factor: 0.2 },
+            { name: "Ролик для преса", desc: "Кори. Пиши тільки повторення.", type: 'bw_reps', factor: 0.4 },
+            { name: "Віджимання від лави (задні)", desc: "Трицепс. Пиши тільки повторення.", type: 'bw_reps', factor: 0.3 }, 
+
+            // З вагою (Повторення + Вага)
+            { name: "Віджимання на брусах (з вагою)", desc: "Пиши повторення та додаткову вагу.", type: 'w_reps', factor: 0.7 },
+            { name: "Підтягування (з вагою)", desc: "Пиши повторення та додаткову вагу.", type: 'w_reps', factor: 1.3 },
+            { name: "Жим штанги лежачи", desc: "Груди (База).", type: 'w_reps', factor: 0.6 },
+            { name: "Жим штанги під кутом вгору", desc: "Верхні грудні.", type: 'w_reps', factor: 0.6 },
+            { name: "Жим гантелей лежачи", desc: "Груди.", type: 'w_reps', factor: 0.5 },
+            { name: "Жим гантелей під кутом вгору", desc: "Верхні грудні.", type: 'w_reps', factor: 0.5 },
+            { name: "Розведення гантелей лежачи", desc: "Груди.", type: 'w_reps', factor: 0.3 },
+            { name: "Зведення рук (Метелик)", desc: "Груди.", type: 'w_reps', factor: 0.3 },
+            { name: "Кросовер (зведення в блоках)", desc: "Груди.", type: 'w_reps', factor: 0.35 },
+            { name: "Пуловер з гантеллю", desc: "Груди/Спина.", type: 'w_reps', factor: 0.4 },
+            { name: "Тяга верхнього блоку до грудей", desc: "Спина.", type: 'w_reps', factor: 0.4 },
+            { name: "Тяга нижнього блоку до пояса", desc: "Спина.", type: 'w_reps', factor: 0.4 },
+            { name: "Тяга штанги в нахилі", desc: "Спина (База).", type: 'w_reps', factor: 0.6 },
+            { name: "Тяга гантелі в нахилі", desc: "Спина.", type: 'w_reps', factor: 0.5 },
+            { name: "Тяга Т-грифу", desc: "Спина.", type: 'w_reps', factor: 0.6 },
+            { name: "Шраги з гантелями/штангою", desc: "Трапеція.", type: 'w_reps', factor: 0.3 },
+            { name: "Жим штанги стоячи (Армійський)", desc: "Плечі (База).", type: 'w_reps', factor: 0.5 },
+            { name: "Жим Арнольда", desc: "Плечі.", type: 'w_reps', factor: 0.4 },
+            { name: "Жим гантелей сидячи", desc: "Плечі.", type: 'w_reps', factor: 0.4 },
+            { name: "Махи гантелями в сторони", desc: "Середні дельти.", type: 'w_reps', factor: 0.3 },
+            { name: "Махи гантелями перед собою", desc: "Передні дельти.", type: 'w_reps', factor: 0.3 },
+            { name: "Розведення гантелей в нахилі", desc: "Задні дельти.", type: 'w_reps', factor: 0.3 },
+            { name: "Тяга штанги до підборіддя", desc: "Дельти/Трапеція.", type: 'w_reps', factor: 0.4 },
+            { name: "Зворотні розведення (тренажер)", desc: "Задні дельти.", type: 'w_reps', factor: 0.3 },
+            { name: "Підйом штанги на біцепс стоячи", desc: "Біцепс.", type: 'w_reps', factor: 0.4 },
+            { name: "Підйом гантелей на біцепс", desc: "Біцепс.", type: 'w_reps', factor: 0.3 },
+            { name: "Молотки (Хаммери)", desc: "Брахіаліс.", type: 'w_reps', factor: 0.3 },
+            { name: "Концентровані згинання на біцепс", desc: "Біцепс.", type: 'w_reps', factor: 0.2 },
+            { name: "Підйом на біцепс у блоці", desc: "Біцепс.", type: 'w_reps', factor: 0.3 },
+            { name: "Французький жим лежачи", desc: "Трицепс.", type: 'w_reps', factor: 0.4 },
+            { name: "Французький жим з гантеллю сидячи", desc: "Трицепс.", type: 'w_reps', factor: 0.3 },
+            { name: "Розгинання рук на верхньому блоці", desc: "Трицепс.", type: 'w_reps', factor: 0.3 },
+            { name: "Розгинання рук з канатом", desc: "Трицепс.", type: 'w_reps', factor: 0.3 },
+            { name: "Присідання зі штангою на плечах", desc: "Ноги (База).", type: 'w_reps', factor: 0.8 },
+            { name: "Фронтальні присідання", desc: "Квадрицепс.", type: 'w_reps', factor: 0.7 },
+            { name: "Присідання з гантелями (Гоблет)", desc: "Ноги.", type: 'w_reps', factor: 0.6 },
+            { name: "Жим ногами в тренажері", desc: "Ноги.", type: 'w_reps', factor: 0.5 },
+            { name: "Випади з гантелями/штангою", desc: "Ноги/Сідниці.", type: 'w_reps', factor: 0.6 },
+            { name: "Болгарські спліт-присідання", desc: "Ноги/Сідниці.", type: 'w_reps', factor: 0.6 },
+            { name: "Станова тяга (класика / сумо)", desc: "Спина/Ноги (База).", type: 'w_reps', factor: 1.0 },
+            { name: "Румунська тяга (на прямих ногах)", desc: "Сідниці/Біцепс стегна.", type: 'w_reps', factor: 0.6 },
+            { name: "Розгинання ніг у тренажері", desc: "Квадрицепс.", type: 'w_reps', factor: 0.3 },
+            { name: "Згинання ніг у тренажері", desc: "Біцепс стегна.", type: 'w_reps', factor: 0.3 },
+            { name: "Зведення / Розведення ніг", desc: "Внутрішня/Зовнішня стегна.", type: 'w_reps', factor: 0.2 },
+            { name: "Сідничний місток (з вагою)", desc: "Сідниці.", type: 'w_reps', factor: 0.4 },
+            { name: "Підйом на носки стоячи/сидячи", desc: "Ікри.", type: 'w_reps', factor: 0.2 },
+
+            // Час (секунди)
+            { name: "Планка", desc: "Кори. Пиши секунди.", type: 'c_sec', factor: 0.1 },
+            { name: "Планка бокова", desc: "Кори. Пиши секунди.", type: 'c_sec', factor: 0.1 }
         ];
 
         window.todayDate = new Date().toISOString().split('T')[0];
@@ -639,15 +612,8 @@
         window.showScreen = function(screenId) {
             document.querySelectorAll('.screen').forEach(s => {
                 s.classList.remove('active-block');
-                s.style.opacity = '0'; // Скидаємо opacity для правильних переходів
             });
-            const activeScreen = document.getElementById(screenId);
-            activeScreen.classList.add('active-block');
-            
-            // Якщо це головний екран - плавно показуємо
-            if(screenId === 'main-app-window' || screenId === 'login-window' || screenId === 'registration-window') {
-                setTimeout(() => { activeScreen.style.opacity = '1'; }, 10);
-            }
+            document.getElementById(screenId).classList.add('active-block');
         }
 
         window.syncToCloud = async function() {
@@ -660,7 +626,6 @@
             const dataToSave = {
                 profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
                 appMode: localStorage.getItem('achilles_app_mode') || 'pro',
-                dayMode: localStorage.getItem('achilles_day_mode') || 'rest',
                 baseKcal: localStorage.getItem('achilles_base_kcal') || 2000,
                 goalText: localStorage.getItem('achilles_goal_text') || '',
                 targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
@@ -690,7 +655,6 @@
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    localStorage.setItem('achilles_day_mode', d.dayMode || 'rest');
                     localStorage.setItem('achilles_base_kcal', d.baseKcal);
                     localStorage.setItem('achilles_goal_text', d.goalText);
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros));
@@ -813,32 +777,6 @@
             return { kcal: targetKcal, goalText: goalText, p: Math.round(p), f: Math.round(f), c: Math.round(c) };
         };
 
-        window.recalcAndSaveNorms = function(profile, dayMode) {
-            let activityMultiplier = dayMode === 'work' ? profile.activityWork : profile.activityRest;
-            const norms = window.calculateNorms(profile.gender, profile.weight, profile.height, profile.age, activityMultiplier, profile.goal, profile.diet || 'standard');
-            
-            localStorage.setItem('achilles_base_kcal', norms.kcal); 
-            localStorage.setItem('achilles_goal_text', norms.goalText);
-            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
-            
-            window.targetMacros = {p: norms.p, f: norms.f, c: norms.c};
-            document.getElementById('target-p').innerText = `/ ${norms.p}г`;
-            document.getElementById('target-f').innerText = `/ ${norms.f}г`;
-            document.getElementById('target-c').innerText = `/ ${norms.c}г`;
-            document.getElementById('user-goal-text').textContent = norms.goalText;
-            
-            window.updateGoalDisplay();
-            window.syncToCloud();
-        };
-
-        window.setDayMode = function(mode) {
-            localStorage.setItem('achilles_day_mode', mode);
-            document.getElementById('mode-rest-btn').classList.toggle('active', mode === 'rest');
-            document.getElementById('mode-work-btn').classList.toggle('active', mode === 'work');
-            let profile = JSON.parse(localStorage.getItem('achilles_profile'));
-            if(profile) { window.recalcAndSaveNorms(profile, mode); }
-        };
-
         window.completeRegistration = async function() {
             const name = document.getElementById('reg-name').value.trim();
             const pass = document.getElementById('reg-password').value;
@@ -880,20 +818,28 @@
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
-            localStorage.setItem('achilles_day_mode', 'rest');
+            localStorage.setItem('achilles_base_kcal', norms.kcal); 
+            localStorage.setItem('achilles_goal_text', norms.goalText);
+            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
 
             window.logNewWeight(weight);
-            window.recalcAndSaveNorms(profile, 'rest');
-            
             window.loadUserData(); 
             window.renderWeightChart(); 
+            await window.syncToCloud(); 
             window.showScreen('main-app-window');
         };
 
         window.loadUserData = function() {
             const uName = localStorage.getItem('achilles_user');
             document.getElementById('display-username').innerText = uName;
+            document.getElementById('user-goal-text').textContent = localStorage.getItem('achilles_goal_text');
             
+            let m = JSON.parse(localStorage.getItem('achilles_macros')) || {p: 0, f: 0, c: 0};
+            window.targetMacros = m;
+            document.getElementById('target-p').innerText = `/ ${m.p}г`;
+            document.getElementById('target-f').innerText = `/ ${m.f}г`;
+            document.getElementById('target-c').innerText = `/ ${m.c}г`;
+
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
                 document.getElementById('edit-name').value = prof.name;
@@ -911,12 +857,6 @@
             let savedAppMode = localStorage.getItem('achilles_app_mode') || 'pro';
             document.getElementById('edit-app-mode').value = savedAppMode;
 
-            let savedDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
-            document.getElementById('mode-rest-btn').classList.toggle('active', savedDayMode === 'rest');
-            document.getElementById('mode-work-btn').classList.toggle('active', savedDayMode === 'work');
-            
-            if(prof) window.recalcAndSaveNorms(prof, savedDayMode);
-
             const modeTabs = document.getElementById('workout-mode-tabs');
             const awContainer = document.getElementById('simple-aw-container');
             
@@ -930,6 +870,7 @@
             }
 
             window.searchWorkout();
+            window.updateGoalDisplay();
         };
 
         window.saveProfile = function() {
@@ -955,10 +896,16 @@
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
             
-            let currentDayMode = localStorage.getItem('achilles_day_mode') || 'rest';
-            window.recalcAndSaveNorms(profile, currentDayMode);
+            let avgAct = ((aWork * wDays) + (aRest * rDays)) / (wDays + rDays);
+            let weight = profile.weight || 80;
+            const norms = window.calculateNorms(gender, weight, height, age, avgAct, goal, diet);
+            
+            localStorage.setItem('achilles_base_kcal', norms.kcal); 
+            localStorage.setItem('achilles_goal_text', norms.goalText);
+            localStorage.setItem('achilles_macros', JSON.stringify({p: norms.p, f: norms.f, c: norms.c}));
 
             window.loadUserData();
+            window.syncToCloud();
             alert('Профіль успішно оновлено!');
         };
 
@@ -987,7 +934,6 @@
                 window.loadUserData();
             }
             
-            // Оновлюємо графік масштабуванням
             window.renderWeightChart();
             window.syncToCloud();
         };
@@ -1023,7 +969,6 @@
             if(percent > 100) percent = 100;
             
             requestAnimationFrame(() => {
-                // Апаратне масштабування смуги прогресу
                 document.getElementById('calorie-progress').style.transform = `scaleX(${percent / 100})`;
                 document.getElementById('macro-p').innerText = Math.round(window.macros.p);
                 document.getElementById('macro-f').innerText = Math.round(window.macros.f);
@@ -1332,18 +1277,25 @@
                 if (appMode === 'pro' && window.currentWorkoutMode === 'extended') {
                     actionArea = `<button class="add-btn" onclick="openLiveWorkout('${w.name}', ${w.factor})" style="margin:0; padding: 16px; width: 100%; border-radius: 16px; font-size: 16px;">▶ Почати Live</button>`;
                 } else {
-                    if (w.desc.includes('хвилинах') || w.desc.includes('секундах')) {
-                        let placeholder = w.desc.includes('хвилинах') ? 'Час (хв)' : 'Час (сек)';
+                    if (w.type === 'c_min' || w.type === 'c_sec') {
+                        let placeholder = w.type === 'c_min' ? 'Час (хв)' : 'Час (сек)';
                         actionArea = `
                             <div style="display: flex; gap: 10px;">
                                 <input type="number" inputmode="numeric" pattern="[0-9]*" id="simp-time-${index}" placeholder="${placeholder}" style="margin:0; padding: 16px; flex: 1;">
                                 <button class="add-btn" onclick="logSimpleCardio('${w.name}', 'simp-time-${index}', ${w.factor}, '${placeholder}')" style="margin:0; padding: 0 25px; border-radius: 16px;">+</button>
                             </div>
                         `;
-                    } else {
+                    } else if (w.type === 'bw_reps') {
                         actionArea = `
                             <div style="display: flex; gap: 8px;">
-                                <input type="text" inputmode="decimal" id="simp-reps-${index}" placeholder="Повтори (15,12)" style="margin:0; padding: 16px; flex: 1; font-size: 15px;">
+                                <input type="text" inputmode="decimal" id="simp-reps-${index}" placeholder="Повтори (напр. 15,12)" style="margin:0; padding: 16px; flex: 1; font-size: 15px;">
+                                <button class="add-btn" onclick="logSimpleStrength('${w.name}', 'simp-reps-${index}', '', ${w.factor})" style="margin:0; padding: 0 20px; border-radius: 16px;">+</button>
+                            </div>
+                        `;
+                    } else { // w_reps
+                        actionArea = `
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" inputmode="decimal" id="simp-reps-${index}" placeholder="Повтори (напр. 15,12)" style="margin:0; padding: 16px; flex: 1; font-size: 15px;">
                                 <input type="text" inputmode="decimal" id="simp-weight-${index}" placeholder="Вага (кг)" style="margin:0; padding: 16px; flex: 1; font-size: 15px;">
                                 <button class="add-btn" onclick="logSimpleStrength('${w.name}', 'simp-reps-${index}', 'simp-weight-${index}', ${w.factor})" style="margin:0; padding: 0 20px; border-radius: 16px;">+</button>
                             </div>
@@ -1365,8 +1317,8 @@
 
         window.logSimpleStrength = function(name, repsId, weightId, factor) {
             let repsStr = document.getElementById(repsId).value.trim();
-            let weightStr = document.getElementById(weightId).value.trim();
-            if(!repsStr) { alert("Введіть повторення!"); return; }
+            let weightStr = weightId ? document.getElementById(weightId).value.trim() : '';
+            if(!repsStr) { alert("Введіть кількість повторень!"); return; }
             
             let repsArr = repsStr.split(/[.,\s]+/).map(s => parseInt(s.trim())).filter(s => !isNaN(s));
             let weightArr = weightStr ? weightStr.split(/[.,\s]+/).map(s => parseFloat(s.trim())).filter(s => !isNaN(s)) : [];
@@ -1377,8 +1329,12 @@
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             
             let setsDetails = repsArr.map((r, i) => {
-                let w = weightArr[i] !== undefined ? weightArr[i] : (weightArr.length > 0 ? weightArr[weightArr.length - 1] : 0);
-                return w > 0 ? `${r}x${w}кг` : `${r} разів`;
+                if(!weightId || weightStr === '') {
+                    return `${r} разів`;
+                } else {
+                    let w = weightArr[i] !== undefined ? weightArr[i] : (weightArr.length > 0 ? weightArr[weightArr.length - 1] : 0);
+                    return w > 0 ? `${r}x${w}кг` : `${r} разів`;
+                }
             }).join(', ');
             
             let logHtml = `🏋️ <strong style="color: var(--text-main);">${name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${repsArr.length} підходів: ${setsDetails}</span>`;
@@ -1389,7 +1345,8 @@
             }
 
             window.addLogEntry(logHtml);
-            document.getElementById(repsId).value = ''; document.getElementById(weightId).value = '';
+            document.getElementById(repsId).value = ''; 
+            if(weightId) document.getElementById(weightId).value = '';
         };
 
         window.logSimpleCardio = function(name, timeId, factor, placeholder) {
