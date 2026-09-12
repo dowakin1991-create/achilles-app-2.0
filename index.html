@@ -115,7 +115,7 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* === БРОНЕБІЙНИЙ LAYOUT (БЕЗ ПОЛОС ЗНИЗУ) === */
+        /* === БРОНЕБІЙНИЙ LAYOUT === */
         html, body { 
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
             width: 100%; height: 100%; 
@@ -206,22 +206,21 @@
 
         .bonus-badge { display: inline-block; background: var(--input-bg); color: var(--primary); padding: 8px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; margin-top: 15px; }
 
-        /* ІДЕАЛЬНИЙ ГРАФІК ВАГИ */
+        /* ВІДРЕМОНТОВАНИЙ ГРАФІК ВАГИ */
         .chart-container { 
-            display: flex; align-items: stretch; justify-content: space-around; 
+            display: flex; flex-direction: row; align-items: stretch; justify-content: space-around; 
             height: 160px; padding: 15px 5px 10px 5px; 
             background: var(--input-bg); border-radius: 20px; margin-top: 15px; border: 1px solid var(--glass-border);
         }
         .chart-bar-wrapper { 
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end; 
-            height: 130px; 
-            flex: 1;
+            flex: 1; height: 100%;
         }
         .chart-bar { 
-            width: 24px; border-radius: 6px 6px 0 0; min-height: 4px; 
-            transition: height 1.2s var(--bezier); flex-shrink: 0;
+            width: 24px; border-radius: 6px 6px 0 0; min-height: 4px; flex-shrink: 0;
             background: linear-gradient(to top, var(--accent-3), var(--accent-2), var(--accent-1)); 
             background-size: 100% 300%; animation: themeFlow var(--theme-speed) ease-in-out infinite;
+            transition: height 1s var(--bezier); 
         }
         .chart-val { font-size: 12px; color: var(--primary); margin-bottom: 4px; font-weight: 700; transition: color 0.4s ease; flex-shrink: 0;}
         .chart-date { font-size: 10px; color: var(--text-muted); margin-top: 4px; flex-shrink: 0;}
@@ -236,7 +235,15 @@
         .delete-btn { color: var(--text-muted); font-size: 20px; padding: 10px; cursor: pointer; transition: transform 0.2s; }
         .delete-btn:active { color: var(--danger); transform: scale(1.2); }
 
-        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (Без Полос) === */
+        /* НАВІГАЦІЯ ДАТ */
+        .date-navigator {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; 
+            background: var(--card-bg); border-radius: 20px; padding: 5px; border: 1px solid var(--glass-border);
+        }
+        .date-btn { width: 50px; padding: 10px; border-radius: 16px; margin: 0; border: none; background: transparent; color: var(--text-main); font-size: 18px; cursor: pointer;}
+        .date-btn:active { transform: scale(0.9); }
+
+        /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
         .nav-bar { 
             position: absolute; bottom: 0; left: 0; right: 0;
             display: flex; justify-content: space-around; align-items: flex-start;
@@ -247,9 +254,7 @@
             backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); 
             border-top: 1px solid var(--glass-border); z-index: 1000;
         }
-        .nav-bar::after {
-            content: ''; position: absolute; top: 100%; left: 0; right: 0; height: 100px; background: inherit;
-        }
+        .nav-bar::after { content: ''; position: absolute; top: 100%; left: 0; right: 0; height: 100px; background: inherit; }
         
         .nav-item { 
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
@@ -298,12 +303,7 @@
 </head>
 <body> 
 
-    <!-- СПРАВЖНІЙ 120FPS SPLASH SCREEN -->
-    <div id="splash-screen">
-        <div class="splash-logo"></div>
-    </div>
-
-    <!-- АВАТАРКА В КУТКУ -->
+    <div id="splash-screen"><div class="splash-logo"></div></div>
     <div id="global-avatar" class="main-avatar" onclick="openProfileTab()"></div>
 
     <!-- LIVE WORKOUT OVERLAY -->
@@ -427,14 +427,17 @@
         <div class="app-window">
             <div class="main-content">
                 
-                <!-- ДЕШБОРД ТА ВАГА -->
+                <!-- ДЕШБОРД -->
                 <div id="tab-dashboard" class="tab-content active">
-                    <h1 id="greeting-header">Привіт, <span class="gradient-text" id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
-                    
-                    <p id="user-goal-text" style="text-align: left; margin-bottom: 25px; margin-top: -15px;">Аналізуємо...</p>
-                    
+                    <!-- Навігація Дат -->
+                    <div class="date-navigator">
+                        <button class="date-btn" onclick="changeDate(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 id="date-display" class="gradient-text" style="margin: 0; font-size: 20px; font-weight: 800;">Сьогодні</h2>
+                        <button id="btn-next-date" class="date-btn" style="visibility: hidden;" onclick="changeDate(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+
                     <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px; border: 1px solid var(--glass-border);">
-                        <span style="font-size: 16px; font-weight: 600; color: var(--text-muted);">Спожито сьогодні:</span>
+                        <span style="font-size: 16px; font-weight: 600; color: var(--text-muted);">Спожито:</span>
                         <div style="font-size: 48px; font-weight: 800; margin: 5px 0; letter-spacing: -2px;">
                             <span class="gradient-text" id="calories-consumed" style="animation: none;">0</span> <span style="font-size: 24px; color: var(--text-muted); font-weight: 600;">/ <span id="calories-goal">2000</span> ккал</span>
                         </div>
@@ -454,12 +457,17 @@
                             <input type="number" id="new-weight-input" inputmode="decimal" placeholder="Вага (кг)" style="margin:0; flex: 2;">
                             <button onclick="logWeight()" class="gradient-bg primary-btn" style="margin:0; flex: 1; border-radius: 16px;">OK</button>
                         </div>
-                        <div id="weight-chart-container"></div>
+                        <div id="weight-chart-container" class="chart-container"></div>
                     </div>
 
-                    <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Щоденник:</h3>
-                    <div id="eaten-list" style="margin-top: 15px; font-size: 16px; background: var(--card-bg); padding: 10px 25px; border-radius: 30px; border: 1px solid var(--glass-border); line-height: 1.6;">
-                        Поки що нічого. Час підкріпитися або потренуватися!
+                    <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">🍏 Харчування:</h3>
+                    <div id="food-list" style="margin-top: 15px; font-size: 16px; background: var(--card-bg); padding: 10px 25px; border-radius: 30px; border: 1px solid var(--glass-border); line-height: 1.6;">
+                        Поки що нічого.
+                    </div>
+
+                    <h3 style="margin-top: 25px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">💪 Тренування:</h3>
+                    <div id="workout-list" style="margin-top: 15px; font-size: 16px; background: var(--card-bg); padding: 10px 25px; border-radius: 30px; border: 1px solid var(--glass-border); line-height: 1.6;">
+                        Тренувань ще не було.
                     </div>
                 </div>
 
@@ -580,7 +588,7 @@
                 </div>
             </div>
 
-            <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (4 Вкладки) -->
+            <!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ -->
             <nav class="nav-bar" id="bottom-nav">
                 <div class="nav-item active" data-target="tab-dashboard">
                     <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
@@ -702,12 +710,15 @@
             { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 }
         ];
 
+        // ГЛОБАЛЬНИЙ СТАН З ПІДТРИМКОЮ ІСТОРІЇ
         window.todayDate = new Date().toISOString().split('T')[0];
+        window.currentDate = window.todayDate;
         window.consumedCalories = 0; 
         window.workoutBonus = 0;
         window.macros = { p: 0, f: 0, c: 0 }; 
         window.targetMacros = { p: 0, f: 0, c: 0 };
         window.dailyLog = []; 
+        window.dailyHistory = JSON.parse(localStorage.getItem('achilles_daily_history')) || {};
 
         window.currentWorkoutMode = 'extended'; 
         window.currentWorkoutFilter = 'all';
@@ -719,62 +730,42 @@
             document.getElementById(screenId).classList.add('active-block');
         }
 
-        window.previewTheme = function() {
-            let color = document.getElementById('edit-theme-color') ? document.getElementById('edit-theme-color').value : 'gold';
-            let mode = document.getElementById('edit-theme-mode') ? document.getElementById('edit-theme-mode').value : 'auto';
-            
-            localStorage.setItem('achilles_theme_color', color);
-            localStorage.setItem('achilles_theme_mode', mode);
-            
-            window.applyTheme(color, mode);
+        window.changeDate = function(offset) {
+            let d = new Date(window.currentDate);
+            d.setDate(d.getDate() + offset);
+            window.currentDate = d.toISOString().split('T')[0];
+            window.loadDataForDate(window.currentDate);
         };
 
-        window.applyTheme = function(colorStr, modeStr) {
-            let color = colorStr || localStorage.getItem('achilles_theme_color') || 'gold';
-            let mode = modeStr || localStorage.getItem('achilles_theme_mode') || 'auto';
+        window.loadDataForDate = function(dateStr) {
+            let data = window.dailyHistory[dateStr] || { consumedCalories: 0, workoutBonus: 0, macros: {p:0, f:0, c:0}, log: [] };
+            window.consumedCalories = data.consumedCalories || 0;
+            window.workoutBonus = data.workoutBonus || 0;
+            window.macros = data.macros || {p:0, f:0, c:0};
+            window.dailyLog = data.log || [];
             
-            let actualMode = mode;
-            if (mode === 'auto') {
-                actualMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-            }
-            
-            document.documentElement.setAttribute('data-color', color);
-            document.documentElement.setAttribute('data-theme', actualMode);
-            
-            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-            if (metaThemeColor) {
-                metaThemeColor.setAttribute("content", actualMode === 'light' ? "#F2F2F7" : "#000000");
-            }
-        };
-
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            if ((localStorage.getItem('achilles_theme_mode') || 'auto') === 'auto') { window.applyTheme(); }
-        });
-
-        window.loadDailyData = function() {
-            let saved = JSON.parse(localStorage.getItem('achilles_daily_data'));
-            if (saved && saved.date === window.todayDate) {
-                window.consumedCalories = saved.consumedCalories || 0;
-                window.workoutBonus = saved.workoutBonus || 0;
-                window.macros = saved.macros || {p:0, f:0, c:0};
-                window.dailyLog = saved.log || [];
+            let displayDate = dateStr;
+            if (dateStr === window.todayDate) {
+                displayDate = "Сьогодні";
             } else {
-                window.consumedCalories = 0; window.workoutBonus = 0; window.macros = {p:0, f:0, c:0};
-                window.dailyLog = [];
-                localStorage.setItem('achilles_daily_data', JSON.stringify({
-                    date: window.todayDate, consumedCalories: 0, workoutBonus: 0, macros: {p:0,f:0,c:0}, log: []
-                }));
+                let parts = dateStr.split('-');
+                displayDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
             }
+            document.getElementById('date-display').innerText = displayDate;
+            document.getElementById('btn-next-date').style.visibility = (dateStr === window.todayDate) ? "hidden" : "visible";
+            
             window.updateGoalDisplay();
             window.renderDiary();
         };
 
         window.saveDailyData = function() {
-            let dailyData = {
-                date: window.todayDate, consumedCalories: window.consumedCalories,
-                workoutBonus: window.workoutBonus, macros: window.macros, log: window.dailyLog
+            window.dailyHistory[window.currentDate] = {
+                consumedCalories: window.consumedCalories,
+                workoutBonus: window.workoutBonus,
+                macros: window.macros,
+                log: window.dailyLog
             };
-            localStorage.setItem('achilles_daily_data', JSON.stringify(dailyData));
+            localStorage.setItem('achilles_daily_history', JSON.stringify(window.dailyHistory));
             window.syncToCloud(); 
         };
 
@@ -797,10 +788,7 @@
                 favWorkouts: JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [],
                 customFoods: JSON.parse(localStorage.getItem('achilles_custom_foods')) || [],
                 favFoods: JSON.parse(localStorage.getItem('achilles_fav_foods')) || [],
-                daily: {
-                    date: window.todayDate, consumedCalories: window.consumedCalories,
-                    workoutBonus: window.workoutBonus, macros: window.macros, log: window.dailyLog
-                }
+                dailyHistory: window.dailyHistory
             };
             try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Cloud Sync Error", e); }
         };
@@ -814,8 +802,12 @@
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile || {}));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    if(d.themeColor) localStorage.setItem('achilles_theme_color', d.themeColor);
-                    if(d.themeMode) localStorage.setItem('achilles_theme_mode', d.themeMode);
+                    
+                    if(!localStorage.getItem('achilles_theme_color') && d.themeColor) {
+                        localStorage.setItem('achilles_theme_color', d.themeColor);
+                        localStorage.setItem('achilles_theme_mode', d.themeMode || 'auto');
+                    }
+                    
                     localStorage.setItem('achilles_base_kcal', d.baseKcal || 2000);
                     localStorage.setItem('achilles_goal_text', d.goalText || '');
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros || {p:0,f:0,c:0}));
@@ -836,62 +828,74 @@
                     let cloudFF = d.favFoods || [];
                     if(cloudFF.length > localFF.length) localStorage.setItem('achilles_fav_foods', JSON.stringify(cloudFF));
                     
-                    let localDaily = JSON.parse(localStorage.getItem('achilles_daily_data'));
-                    let cloudDaily = d.daily;
-
-                    if (cloudDaily && cloudDaily.date === window.todayDate) {
-                        let cCount = cloudDaily.log ? cloudDaily.log.length : 0;
-                        let lCount = (localDaily && localDaily.date === window.todayDate && localDaily.log) ? localDaily.log.length : 0;
-                        
-                        if (cCount > lCount) {
-                            window.consumedCalories = cloudDaily.consumedCalories || 0;
-                            window.workoutBonus = cloudDaily.workoutBonus || 0;
-                            window.macros = cloudDaily.macros || {p:0, f:0, c:0};
-                            window.dailyLog = cloudDaily.log || [];
-                            
-                            localStorage.setItem('achilles_daily_data', JSON.stringify({
-                                date: window.todayDate, consumedCalories: window.consumedCalories,
-                                workoutBonus: window.workoutBonus, macros: window.macros, log: window.dailyLog
-                            }));
-                        } else if (lCount > cCount) { window.syncToCloud(); }
-                    } else if (localDaily && localDaily.date === window.todayDate) {
-                        window.syncToCloud(); 
+                    // МІГРАЦІЯ СТАРИХ ДАНИХ ТА РОЗУМНА СИНХРОНІЗАЦІЯ ІСТОРІЇ
+                    let cloudHistory = d.dailyHistory || {};
+                    if (d.daily && d.daily.date && !cloudHistory[d.daily.date]) {
+                        cloudHistory[d.daily.date] = {
+                            consumedCalories: d.daily.consumedCalories || 0,
+                            workoutBonus: d.daily.workoutBonus || 0,
+                            macros: d.daily.macros || {p:0, f:0, c:0},
+                            log: d.daily.log || []
+                        };
                     }
+
+                    let needsSyncToCloud = false;
+                    for (let date in cloudHistory) {
+                        let cLog = cloudHistory[date].log || [];
+                        let lLog = (window.dailyHistory[date] && window.dailyHistory[date].log) ? window.dailyHistory[date].log : [];
+                        if (cLog.length > lLog.length) {
+                            window.dailyHistory[date] = cloudHistory[date];
+                        } else if (lLog.length > cLog.length) {
+                            needsSyncToCloud = true;
+                        }
+                    }
+                    for (let date in window.dailyHistory) {
+                        if (!cloudHistory[date]) needsSyncToCloud = true;
+                    }
+
+                    localStorage.setItem('achilles_daily_history', JSON.stringify(window.dailyHistory));
+                    if (needsSyncToCloud) window.syncToCloud();
                     
-                    window.applyTheme();
                     return true;
                 }
             } catch(e) { console.error("Cloud Load Error", e); }
             return false;
         };
 
+        // Запуск додатку
         document.addEventListener("DOMContentLoaded", () => {
-            window.applyTheme(); 
             const splash = document.getElementById('splash-screen');
-            const avatar = document.getElementById('global-avatar');
-            
             setTimeout(() => {
                 if(splash) {
                     splash.classList.add('hidden');
                     setTimeout(() => splash.style.display = 'none', 500);
                 }
             }, 800);
-            
-            setTimeout(() => {
-                if(avatar) { avatar.classList.add('visible'); }
-            }, 1200);
+
+            // Міграція старого формату localStorage
+            let oldDaily = JSON.parse(localStorage.getItem('achilles_daily_data'));
+            if (oldDaily && oldDaily.date) {
+                window.dailyHistory[oldDaily.date] = {
+                    consumedCalories: oldDaily.consumedCalories || 0,
+                    workoutBonus: oldDaily.workoutBonus || 0,
+                    macros: oldDaily.macros || {p:0,f:0,c:0},
+                    log: oldDaily.log || []
+                };
+                localStorage.removeItem('achilles_daily_data');
+                localStorage.setItem('achilles_daily_history', JSON.stringify(window.dailyHistory));
+            }
 
             const userName = localStorage.getItem('achilles_user');
             if (userName) {
                 window.loadUserData();
-                window.loadDailyData(); 
+                window.loadDataForDate(window.todayDate);
                 window.renderWeightChart();
                 window.showScreen('main-app-window');
                 
                 window.loadFromCloud(userName).then(loaded => {
                     if(loaded) {
                         window.loadUserData();
-                        window.loadDailyData(); 
+                        window.loadDataForDate(window.todayDate);
                         window.renderWeightChart();
                         window.searchWorkout();
                         if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
@@ -920,7 +924,7 @@
                         localStorage.setItem('achilles_user', user);
                         await window.loadFromCloud(user);
                         window.loadUserData();
-                        window.loadDailyData();
+                        window.loadDataForDate(window.todayDate);
                         window.renderWeightChart();
                         window.showScreen('main-app-window');
                     } else { alert("Неправильний пароль!"); }
@@ -931,7 +935,7 @@
                 const localProf = JSON.parse(localStorage.getItem('achilles_profile'));
                 if(localUser === user && localProf && localProf.password === pass) {
                     window.loadUserData();
-                    window.loadDailyData();
+                    window.loadDataForDate(window.todayDate);
                     window.renderWeightChart();
                     window.showScreen('main-app-window');
                 } else { alert("Помилка підключення до хмари."); }
@@ -1038,9 +1042,12 @@
             window.logNewWeight(weight);
             window.recalcAndSaveNorms(profile, false); 
             
-            window.applyTheme();
+            let actualMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-color', 'gold');
+            document.documentElement.setAttribute('data-theme', actualMode);
+
             window.loadUserData(); 
-            window.loadDailyData();
+            window.loadDataForDate(window.todayDate);
             window.renderWeightChart(); 
             window.showScreen('main-app-window');
         };
@@ -1114,9 +1121,13 @@
             localStorage.setItem('achilles_theme_color', themeColor);
             localStorage.setItem('achilles_theme_mode', themeMode);
             
-            window.applyTheme(themeColor, themeMode);
+            let actualMode = themeMode === 'auto' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : themeMode;
+            document.documentElement.setAttribute('data-color', themeColor);
+            document.documentElement.setAttribute('data-theme', actualMode);
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) { metaThemeColor.setAttribute("content", actualMode === 'light' ? "#F2F2F7" : "#000000"); }
+            
             window.recalcAndSaveNorms(profile, false); 
-
             window.loadUserData();
             alert('Профіль успішно оновлено!');
         };
@@ -1146,19 +1157,21 @@
         window.renderWeightChart = function() {
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let container = document.getElementById('weight-chart-container');
-            if (history.length === 0) return;
+            if (history.length === 0) { container.innerHTML = ''; return; }
 
             let chartData = history.slice(-7);
             let minW = Math.min(...chartData.map(d => d.weight)) - 2;
             let maxW = Math.max(...chartData.map(d => d.weight)) + 2;
             let range = maxW - minW === 0 ? 10 : (maxW - minW);
 
-            let html = '';
+            // ФІКС САФАРІ: Повертаємо обгортку <div class="chart-container">
+            let html = '<div style="display: flex; flex-direction: row; align-items: stretch; justify-content: space-around; height: 100%; width: 100%;">';
             chartData.forEach(d => {
                 let h = ((d.weight - minW) / range) * 100;
                 if(h < 15) h = 15;
                 html += `<div class="chart-bar-wrapper"><span class="chart-val">${d.weight}</span><div class="chart-bar" style="height: ${h}%;"></div><span class="chart-date">${d.date}</span></div>`;
             });
+            html += '</div>';
             container.innerHTML = html;
         };
 
@@ -1189,26 +1202,37 @@
             });
         };
 
+        // РОЗДІЛЕНІ ЩОДЕННИКИ ХАРЧУВАННЯ ТА ТРЕНУВАНЬ
         window.renderDiary = function() {
-            const list = document.getElementById('eaten-list');
-            if (!window.dailyLog || window.dailyLog.length === 0) {
-                list.style.padding = "25px";
-                list.innerHTML = 'Поки що нічого. Час підкріпитися або потренуватися!';
-                return;
-            }
+            const foodList = document.getElementById('food-list');
+            const workoutList = document.getElementById('workout-list');
             
-            list.style.padding = "10px 20px";
-            list.innerHTML = window.dailyLog.map(entry => {
-                return `
-                <div style="padding: 15px 0; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
-                    <div style="flex-grow: 1; padding-right: 10px;">
-                        ${entry.html}
-                    </div>
-                    <div class="delete-btn" onclick="deleteLogEntry(${entry.id})">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </div>
-                </div>`;
-            }).join('');
+            const foods = window.dailyLog.filter(e => e.type === 'food');
+            const workouts = window.dailyLog.filter(e => e.type === 'workout');
+            
+            if (foods.length === 0) {
+                foodList.style.padding = "25px";
+                foodList.innerHTML = 'Поки що нічого не з\'їдено.';
+            } else {
+                foodList.style.padding = "10px 20px";
+                foodList.innerHTML = foods.map(entry => `
+                    <div style="padding: 15px 0; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex-grow: 1; padding-right: 10px;">${entry.html}</div>
+                        <div class="delete-btn" onclick="deleteLogEntry(${entry.id})"><i class="fa-solid fa-trash-can"></i></div>
+                    </div>`).join('');
+            }
+
+            if (workouts.length === 0) {
+                workoutList.style.padding = "25px";
+                workoutList.innerHTML = 'Тренувань ще не було.';
+            } else {
+                workoutList.style.padding = "10px 20px";
+                workoutList.innerHTML = workouts.map(entry => `
+                    <div style="padding: 15px 0; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex-grow: 1; padding-right: 10px;">${entry.html}</div>
+                        <div class="delete-btn" onclick="deleteLogEntry(${entry.id})"><i class="fa-solid fa-trash-can"></i></div>
+                    </div>`).join('');
+            }
         };
 
         window.deleteLogEntry = function(id) {
@@ -1249,15 +1273,6 @@
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(activeItem => { activeItem.classList.add('active'); });
                 tabContents.forEach(tc => { tc.classList.remove('active'); });
                 document.getElementById(targetId).classList.add('active');
-                
-                const av = document.getElementById('global-avatar');
-                if(av && targetId === 'tab-profile') {
-                    av.style.opacity = '0';
-                    av.style.pointerEvents = 'none';
-                } else if(av) {
-                    av.style.opacity = '1';
-                    av.style.pointerEvents = 'auto';
-                }
                 
                 const mc = document.querySelector('.screen.active-block .main-content');
                 if(mc) mc.scrollTop = 0;
