@@ -7,9 +7,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Achilles">
     <meta name="theme-color" content="#000000">
+    <meta name="description" content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку.">
+    <meta name="format-detection" content="telephone=no">
     
     <link rel="apple-touch-icon" href="IMG_9302.jpeg">
+    <link rel="manifest" href="manifest.webmanifest">
     <title>Achilles OS</title>
+    <meta name="achilles-build" content="10.0">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -633,6 +637,355 @@
 .exercise-v9-next i { font-size: 11px; }
 
     </style>
+<style id="achilles-v10-ui">
+/* Achilles OS V10 — Training Intelligence + Analytics V2 + product polish */
+:root {
+    --v10-good: #32D74B;
+    --v10-warn: #FF9F0A;
+    --v10-bad: #FF453A;
+}
+
+/* ---------- Analytics V2 ---------- */
+.analytics-v2-shell {
+    border-radius: var(--radius-xl, 30px);
+    padding: 24px;
+    overflow: hidden;
+    position: relative;
+}
+.analytics-v2-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 48%;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(var(--primary-rgb), .75), transparent);
+    pointer-events: none;
+}
+.analytics-v2-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+.analytics-v2-head h3 { margin: 3px 0 0; font-size: 22px; letter-spacing: -.035em; }
+.analytics-v2-score {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+}
+.analytics-v2-score strong { font-size: 36px; line-height: 1; letter-spacing: -.055em; }
+.analytics-v2-score span { color: var(--text-muted); font-size: 12px; font-weight: 750; }
+.analytics-range-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 5px;
+    margin-bottom: 18px;
+    border-radius: 16px;
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+}
+.analytics-range-btn {
+    appearance: none;
+    border: 0;
+    min-height: 38px;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 780;
+    cursor: pointer;
+    transition: background 180ms ease, color 180ms ease, transform 120ms ease;
+}
+.analytics-range-btn.active {
+    background: rgba(var(--primary-rgb), .15);
+    color: var(--primary);
+    box-shadow: inset 0 0 0 1px rgba(var(--primary-rgb), .18);
+}
+.analytics-range-btn:active { transform: scale(.97); }
+.analytics-breakdown { display: grid; gap: 11px; }
+.analytics-metric {
+    display: grid;
+    grid-template-columns: minmax(120px, 1fr) minmax(110px, 1.4fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+}
+.analytics-metric-copy { min-width: 0; }
+.analytics-metric-copy strong { display: block; font-size: 13px; font-weight: 780; }
+.analytics-metric-copy span { display: block; color: var(--text-muted); font-size: 10px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.analytics-meter {
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+}
+.analytics-meter > span {
+    display: block;
+    height: 100%;
+    width: var(--meter, 0%);
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--primary), var(--accent-3));
+    transition: width 700ms cubic-bezier(.22,1,.36,1);
+}
+.analytics-metric-value { min-width: 46px; text-align: right; font-size: 12px; font-weight: 820; }
+.analytics-metric.pending .analytics-meter > span { width: 0 !important; }
+.analytics-metric.pending .analytics-metric-value { color: var(--text-muted); }
+.analytics-v2-note { margin-top: 14px; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+
+/* ---------- Coach V2 ---------- */
+.coach-primary-action {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.coach-primary-action button {
+    width: auto !important;
+    min-height: 44px;
+    margin: 0 !important;
+    padding: 0 15px !important;
+    border-radius: 14px !important;
+    font-size: 12px !important;
+}
+.coach-confidence {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 30px;
+    padding: 0 9px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 760;
+}
+
+/* ---------- Training Intelligence ---------- */
+.training-intel-card { border-radius: var(--radius-xl, 30px); padding: 22px; }
+.training-intel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+.training-intel-stat {
+    min-height: 92px;
+    padding: 14px;
+    border-radius: 18px;
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.training-intel-stat span { color: var(--text-muted); font-size: 10px; font-weight: 760; text-transform: uppercase; letter-spacing: .05em; }
+.training-intel-stat strong { font-size: 22px; line-height: 1.05; letter-spacing: -.04em; overflow-wrap: anywhere; }
+.training-intel-stat small { color: var(--text-muted); font-size: 10px; line-height: 1.35; }
+.training-intel-recent {
+    margin-top: 14px;
+    display: grid;
+    gap: 8px;
+}
+.training-recent-row {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 13px;
+    border-radius: 16px;
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+}
+.training-recent-row strong { font-size: 13px; display:block; }
+.training-recent-row span { display:block; margin-top:3px; color:var(--text-muted); font-size:10px; line-height:1.35; }
+.training-recent-row button {
+    width: auto !important;
+    margin: 0 !important;
+    min-height: 38px;
+    padding: 0 11px !important;
+    border-radius: 12px !important;
+    font-size: 11px !important;
+}
+
+/* ---------- Exercise card V10 ---------- */
+.exercise-v10-tools {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+.exercise-v10-tools button {
+    width: 100% !important;
+    min-height: 42px;
+    margin: 0 !important;
+    padding: 0 9px !important;
+    border-radius: 13px !important;
+    font-size: 10px !important;
+    font-weight: 780 !important;
+    box-shadow: none !important;
+}
+.exercise-v10-tools button i { margin-right: 5px; }
+.exercise-v10-summary {
+    margin-top: 10px;
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+.exercise-v10-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 9px;
+    border-radius: 999px;
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 760;
+}
+.exercise-v10-chip.positive { color: var(--v10-good); }
+.exercise-v10-chip.plateau { color: var(--v10-warn); }
+.exercise-card.v10-flash { animation: v10CardFlash 900ms cubic-bezier(.22,1,.36,1); }
+@keyframes v10CardFlash { 0% { box-shadow: 0 0 0 0 rgba(var(--primary-rgb), .5); } 55% { box-shadow: 0 0 0 7px rgba(var(--primary-rgb), .08); } 100% { box-shadow: none; } }
+
+/* ---------- Exercise history sheet ---------- */
+.v10-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 10050;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+    background: rgba(0,0,0,.62);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 0;
+    transition: opacity 220ms ease;
+}
+.v10-sheet.open { opacity: 1; }
+.v10-sheet-panel {
+    width: min(760px, 100%);
+    max-height: min(88vh, 860px);
+    overflow: auto;
+    overscroll-behavior: contain;
+    border-radius: 28px 28px 22px 22px;
+    padding: 18px;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 -22px 80px rgba(0,0,0,.34);
+    transform: translateY(28px) scale(.985);
+    transition: transform 280ms cubic-bezier(.22,1,.36,1);
+}
+.v10-sheet.open .v10-sheet-panel { transform: translateY(0) scale(1); }
+.v10-sheet-grabber { width: 44px; height: 5px; border-radius: 99px; margin: 0 auto 14px; background: var(--glass-border); }
+.v10-sheet-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:14px; }
+.v10-sheet-head h2 { margin:3px 0 4px; font-size:24px; letter-spacing:-.04em; }
+.v10-sheet-head p { margin:0; color:var(--text-muted); font-size:11px; line-height:1.4; }
+.v10-sheet-close {
+    width: 42px !important; height:42px; min-height:42px !important; padding:0 !important; margin:0 !important;
+    border-radius: 50% !important; flex:0 0 auto;
+}
+.v10-history-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:12px; }
+.v10-history-stat { padding:12px; border-radius:16px; background:var(--input-bg); border:1px solid var(--glass-border); }
+.v10-history-stat span { display:block; color:var(--text-muted); font-size:9px; font-weight:760; text-transform:uppercase; }
+.v10-history-stat strong { display:block; margin-top:5px; font-size:17px; letter-spacing:-.03em; }
+.v10-sparkline { height:130px; border-radius:18px; padding:10px; background:var(--input-bg); border:1px solid var(--glass-border); margin-bottom:12px; }
+.v10-sparkline svg { width:100%; height:100%; overflow:visible; }
+.v10-sparkline path { fill:none; stroke:var(--primary); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
+.v10-sparkline circle { fill:var(--primary); }
+.v10-history-list { display:grid; gap:8px; }
+.v10-history-row { padding:12px 13px; border-radius:16px; background:var(--input-bg); border:1px solid var(--glass-border); }
+.v10-history-row-head { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+.v10-history-row-head strong { font-size:12px; }
+.v10-history-row-head span { color:var(--text-muted); font-size:10px; }
+.v10-history-row p { margin:6px 0 0; color:var(--text-muted); font-size:11px; line-height:1.45; }
+.v10-history-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+.v10-history-actions button { margin:0 !important; min-height:48px; border-radius:15px !important; }
+
+/* ---------- Toast / feedback ---------- */
+.v10-toast-host {
+    position: fixed;
+    z-index: 12000;
+    left: 50%;
+    bottom: calc(86px + env(safe-area-inset-bottom));
+    width: min(92vw, 440px);
+    transform: translateX(-50%);
+    pointer-events: none;
+    display: grid;
+    gap: 8px;
+}
+.v10-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(28,28,30,.92);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 12px 40px rgba(0,0,0,.28);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0;
+    transform: translateY(10px) scale(.98);
+    transition: opacity 180ms ease, transform 220ms cubic-bezier(.22,1,.36,1);
+}
+.v10-toast.show { opacity:1; transform:translateY(0) scale(1); }
+.v10-toast i { color:var(--primary); }
+html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1C1C1E; border-color:rgba(0,0,0,.08); }
+
+/* ---------- Empty / loading polish ---------- */
+.v10-empty { padding: 22px; text-align:center; color:var(--text-muted); font-size:12px; border:1px dashed var(--glass-border); border-radius:18px; }
+.v10-empty i { display:block; font-size:20px; color:var(--primary); margin-bottom:8px; }
+.v10-skeleton { position:relative; overflow:hidden; }
+.v10-skeleton::after {
+    content:""; position:absolute; inset:0; transform:translateX(-110%);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
+    animation:v10Shimmer 1.4s infinite;
+}
+@keyframes v10Shimmer { 100% { transform:translateX(110%); } }
+
+.v10-build-badge {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: var(--input-bg);
+    color: var(--text-muted);
+    font-size: 9px;
+    font-weight: 760;
+}
+
+@media (max-width: 760px) {
+    .training-intel-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .analytics-v2-head { align-items:center; }
+    .analytics-v2-score strong { font-size:32px; }
+}
+@media (max-width: 560px) {
+    .analytics-v2-shell, .training-intel-card { padding:18px; border-radius:26px; }
+    .analytics-metric { grid-template-columns: minmax(100px,1fr) minmax(70px,.9fr) auto; gap:8px; }
+    .analytics-metric-copy span { display:none; }
+    .exercise-v10-tools { grid-template-columns:1fr; }
+    .v10-history-stats { grid-template-columns:1fr 1fr 1fr; }
+    .v10-sheet-panel { padding:16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .analytics-meter > span, .v10-sheet, .v10-sheet-panel, .v10-toast { transition:none !important; animation:none !important; }
+}
+</style>
+
 </head>
 <body> 
 
@@ -6522,6 +6875,740 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
     else bootstrapV92();
 })(window);
     </script>
+
+<script id="achilles-v10-core">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    A.core = A.core || {};
+    A.core.version = '10.0';
+
+    const clamp = (n, min = 0, max = 1) => Math.max(min, Math.min(max, Number(n) || 0));
+    const round = (n, digits = 0) => {
+        const p = 10 ** digits;
+        return Math.round((Number(n) || 0) * p) / p;
+    };
+    const esc = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+    const fmtDate = date => {
+        try { return new Date(`${date}T12:00:00`).toLocaleDateString('uk-UA', { day:'numeric', month:'short' }); }
+        catch (_) { return date || ''; }
+    };
+
+    A.haptics = {
+        tap() {
+            try { if (navigator.vibrate) navigator.vibrate(8); } catch (_) {}
+        },
+        success() {
+            try { if (navigator.vibrate) navigator.vibrate([12, 35, 18]); } catch (_) {}
+        }
+    };
+
+    A.toast = function (message, icon = 'fa-bolt', duration = 2300) {
+        let host = document.getElementById('v10-toast-host');
+        if (!host) {
+            host = document.createElement('div');
+            host.id = 'v10-toast-host';
+            host.className = 'v10-toast-host';
+            document.body.appendChild(host);
+        }
+        const item = document.createElement('div');
+        item.className = 'v10-toast';
+        item.innerHTML = `<i class="fa-solid ${esc(icon)}"></i><span>${esc(message)}</span>`;
+        host.appendChild(item);
+        requestAnimationFrame(() => item.classList.add('show'));
+        setTimeout(() => {
+            item.classList.remove('show');
+            setTimeout(() => item.remove(), 240);
+        }, duration);
+    };
+
+    /* -------------------- Training metrics / history -------------------- */
+    function sessionSets(session) {
+        return Array.isArray(session?.metrics?.sets) ? session.metrics.sets : [];
+    }
+
+    function sessionMetric(session) {
+        if (!session) return { value: 0, label: '—', higherBetter: true, unit: '' };
+        const type = session.exerciseType;
+        const m = session.metrics || {};
+        const sets = sessionSets(session);
+
+        if (type === A.training?.types?.STRENGTH_WEIGHTED) {
+            let e1rm = Number(m.estimated1RMKg || 0);
+            if (!e1rm && sets.length) {
+                e1rm = Math.max(...sets.map(s => Number(s.weightKg || 0) * (1 + Number(s.reps || 0) / 30)), 0);
+            }
+            return { value: e1rm, label: `${round(e1rm,1)} кг e1RM`, higherBetter:true, unit:'кг' };
+        }
+
+        if (type === A.training?.types?.STRENGTH_BODYWEIGHT_OPTIONAL) {
+            const maxAdded = Math.max(...sets.map(s => Number(s.addedWeightKg || 0)), 0);
+            const reps = sets.reduce((sum, s) => sum + Number(s.reps || 0), 0);
+            if (maxAdded > 0) return { value: maxAdded * 1000 + reps, label: `+${round(maxAdded,1)} кг · ${reps} повт.`, higherBetter:true, unit:'' };
+            return { value: reps, label: `${reps} повт.`, higherBetter:true, unit:'повт.' };
+        }
+
+        if (type === A.training?.types?.STRENGTH_BODYWEIGHT) {
+            const reps = sets.reduce((sum, s) => sum + Number(s.reps || 0), 0);
+            return { value: reps, label: `${reps} повт.`, higherBetter:true, unit:'повт.' };
+        }
+
+        if (type === A.training?.types?.STATIC_TIME) {
+            const sec = Number(m.durationSec || 0);
+            return { value: sec, label: `${Math.round(sec)} сек`, higherBetter:true, unit:'сек' };
+        }
+
+        if (type === A.training?.types?.CARDIO_TIME_DISTANCE) {
+            const sec = Number(m.durationSec || 0);
+            const dist = Number(m.distance || 0);
+            const unit = m.distanceUnit || '';
+            if (sec > 0 && dist > 0 && unit === 'км') {
+                const pace = sec / dist;
+                const mm = Math.floor(pace / 60);
+                const ss = Math.round(pace % 60).toString().padStart(2,'0');
+                return { value: pace, label: `${mm}:${ss}/км`, higherBetter:false, unit:'сек/км' };
+            }
+            if (sec > 0 && dist > 0 && unit === 'м') {
+                const pace100 = sec / Math.max(dist / 100, .01);
+                const mm = Math.floor(pace100 / 60);
+                const ss = Math.round(pace100 % 60).toString().padStart(2,'0');
+                return { value: pace100, label: `${mm}:${ss}/100м`, higherBetter:false, unit:'сек/100м' };
+            }
+            return { value: dist || sec, label: dist ? `${round(dist,2)} ${unit}` : `${round(sec/60,1)} хв`, higherBetter:true, unit };
+        }
+
+        if (type === A.training?.types?.CARDIO_TIME) {
+            const sec = Number(m.durationSec || 0);
+            return { value: sec, label: `${round(sec/60,1)} хв`, higherBetter:true, unit:'сек' };
+        }
+
+        return { value: 0, label:'—', higherBetter:true, unit:'' };
+    }
+
+    function improvementRatio(current, previous) {
+        if (!current || !previous || !Number.isFinite(current.value) || !Number.isFinite(previous.value) || previous.value <= 0) return null;
+        return current.higherBetter === false ? previous.value / current.value : current.value / previous.value;
+    }
+
+    function historyFor(idOrName) {
+        return A.training?.history?.forExercise?.(idOrName) || [];
+    }
+
+    function trainingSummary(idOrName) {
+        const sessions = historyFor(idOrName);
+        const metrics = sessions.map(s => ({ session:s, metric:sessionMetric(s) })).filter(x => x.metric.value > 0);
+        const latest = metrics[0] || null;
+        const previous = metrics[1] || null;
+        const ratio = latest && previous ? improvementRatio(latest.metric, previous.metric) : null;
+        let best = null;
+        metrics.forEach(item => {
+            if (!best) best = item;
+            else if (item.metric.higherBetter === false ? item.metric.value < best.metric.value : item.metric.value > best.metric.value) best = item;
+        });
+
+        let plateau = false;
+        if (metrics.length >= 3) {
+            const recent = metrics.slice(0,3).map(x => x.metric.value).filter(v => v > 0);
+            if (recent.length === 3) {
+                const max = Math.max(...recent);
+                const min = Math.min(...recent);
+                plateau = min > 0 && (max / min) <= 1.02;
+            }
+        }
+
+        return { sessions, metrics, latest, previous, ratio, best, plateau };
+    }
+
+    A.training = A.training || {};
+    A.training.v10 = {
+        sessionMetric,
+        summary: trainingSummary,
+        metricLabel(session) { return sessionMetric(session).label; },
+        trendLabel(summary) {
+            if (!summary?.ratio) return 'Ще немає тренду';
+            const pct = (summary.ratio - 1) * 100;
+            if (pct > 1) return `+${round(pct,1)}% до минулої сесії`;
+            if (pct < -1) return `${round(pct,1)}% до минулої сесії`;
+            return 'Рівень стабільний';
+        }
+    };
+
+    function detailedSuggestion(idOrName) {
+        const exercise = A.training?.model?.byId?.(idOrName) || A.training?.model?.byName?.(idOrName);
+        const last = A.training?.history?.last?.(idOrName);
+        if (!exercise || !last) return null;
+        const sets = sessionSets(last);
+        const type = exercise.type;
+
+        if (type === A.training.types.STRENGTH_WEIGHTED && sets.length) {
+            const valid = sets.filter(s => Number(s.reps) > 0 && Number(s.weightKg) > 0);
+            if (!valid.length) return null;
+            const minReps = Math.min(...valid.map(s => Number(s.reps)));
+            const topWeight = Math.max(...valid.map(s => Number(s.weightKg)));
+            const nextSets = valid.map(s => ({ reps:Number(s.reps), weightKg:Number(s.weightKg) }));
+            if (minReps >= 12) {
+                const nextWeight = round(topWeight + 2.5, 1);
+                nextSets.forEach(s => { s.weightKg = nextWeight; s.reps = Math.min(s.reps, 10); });
+                return { label:`${nextWeight} кг · ціль 8–10 повторів`, reason:'усі робочі підходи вже ≥12 повторів', nextSets };
+            }
+            const weakestIndex = nextSets.reduce((best, s, i, arr) => Number(s.reps) < Number(arr[best].reps) ? i : best, 0);
+            nextSets[weakestIndex].reps += 1;
+            return { label:`+1 повтор у найслабшому підході`, reason:'зберігаємо робочу вагу й додаємо обсяг', nextSets };
+        }
+
+        if ((type === A.training.types.STRENGTH_BODYWEIGHT || type === A.training.types.STRENGTH_BODYWEIGHT_OPTIONAL) && sets.length) {
+            const nextSets = sets.map(s => ({ ...s }));
+            const weakestIndex = nextSets.reduce((best, s, i, arr) => Number(s.reps) < Number(arr[best].reps) ? i : best, 0);
+            nextSets[weakestIndex].reps = Number(nextSets[weakestIndex].reps || 0) + 1;
+            return { label:'+1 повтор у найслабшому підході', reason:'м’яка прогресія без різкого стрибка', nextSets };
+        }
+
+        if ((type === A.training.types.CARDIO_TIME || type === A.training.types.CARDIO_TIME_DISTANCE) && Number(last.metrics?.durationSec) > 0) {
+            return { label:`${round(last.metrics.durationSec/60 + 2, 1)} хв`, reason:'+2 хв до попередньої тривалості', durationSec:Number(last.metrics.durationSec)+120, distance:Number(last.metrics?.distance || 0) };
+        }
+
+        if (type === A.training.types.STATIC_TIME && Number(last.metrics?.durationSec) > 0) {
+            return { label:`${Math.round(Number(last.metrics.durationSec)+5)} сек`, reason:'+5 секунд до утримання', durationSec:Number(last.metrics.durationSec)+5 };
+        }
+        return null;
+    }
+
+    A.training.progression = A.training.progression || {};
+    A.training.progression.suggestDetailed = detailedSuggestion;
+
+    function findExerciseCard(id) {
+        return Array.from(document.querySelectorAll('.exercise-card[data-exercise-id]')).find(card => card.dataset.exerciseId === String(id));
+    }
+
+    function fillCard(id, payload) {
+        const card = findExerciseCard(id);
+        if (!card) return false;
+        const kind = card.dataset.kind || '';
+        const inputs = Array.from(card.querySelectorAll('input'));
+        const bySuffix = suffix => inputs.find(input => input.id?.endsWith(suffix));
+
+        if (kind === 'strength_weighted') {
+            const sets = payload.nextSets || payload.sets || [];
+            const reps = bySuffix('-reps');
+            const weight = bySuffix('-weight');
+            if (reps) reps.value = sets.map(s => Number(s.reps || 0)).filter(Boolean).join(',');
+            if (weight) weight.value = sets.map(s => Number(s.weightKg ?? s.weight ?? 0)).filter(v => v > 0).join(';');
+        } else if (kind === 'bodyweight' || kind === 'bodyweight_optional') {
+            const sets = payload.nextSets || payload.sets || [];
+            const reps = bySuffix('-reps');
+            const weight = bySuffix('-weight');
+            if (reps) reps.value = sets.map(s => Number(s.reps || 0)).filter(Boolean).join(',');
+            const added = Math.max(...sets.map(s => Number(s.addedWeightKg ?? s.weight ?? 0)), 0);
+            if (weight && added > 0) { weight.style.display = 'block'; weight.value = String(added); }
+        } else if (kind === 'cardio_time' || kind === 'cardio_distance') {
+            const time = bySuffix('-time');
+            const dist = bySuffix('-distance');
+            if (time) time.value = String(round(Number(payload.durationSec || 0) / 60, 1));
+            if (dist && Number(payload.distance || 0) > 0) dist.value = String(payload.distance);
+        } else if (kind === 'static_time') {
+            const seconds = bySuffix('-seconds');
+            if (seconds) seconds.value = String(Math.round(Number(payload.durationSec || 0)));
+        }
+
+        card.classList.remove('v10-flash');
+        void card.offsetWidth;
+        card.classList.add('v10-flash');
+        card.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'center' });
+        A.haptics.tap();
+        return true;
+    }
+
+    root.repeatLastExercise = function (id) {
+        const last = A.training?.history?.last?.(id);
+        if (!last) return A.toast('Ще немає попереднього тренування', 'fa-clock-rotate-left');
+        const payload = { sets:sessionSets(last), durationSec:Number(last.metrics?.durationSec || 0), distance:Number(last.metrics?.distance || 0) };
+        if (fillCard(id, payload)) A.toast('Минуле тренування підставлено', 'fa-rotate-left');
+    };
+
+    root.applyExerciseProgression = function (id) {
+        const suggestion = detailedSuggestion(id);
+        if (!suggestion) return A.toast('Поки недостатньо даних для прогресії', 'fa-chart-line');
+        if (fillCard(id, suggestion)) A.toast(`План: ${suggestion.label}`, 'fa-arrow-trend-up', 2800);
+    };
+
+    function sparklinePath(values, width = 560, height = 104) {
+        const clean = values.filter(v => Number.isFinite(v));
+        if (!clean.length) return { path:'', points:[] };
+        const min = Math.min(...clean), max = Math.max(...clean), range = Math.max(max-min, .0001);
+        const points = clean.map((v,i) => {
+            const x = clean.length === 1 ? width/2 : (i/(clean.length-1))*width;
+            const y = height - ((v-min)/range)*(height-18) - 9;
+            return [round(x,1), round(y,1)];
+        });
+        return { path:points.map((p,i)=>`${i?'L':'M'}${p[0]} ${p[1]}`).join(' '), points };
+    }
+
+    function ensureHistorySheet() {
+        let sheet = document.getElementById('v10-history-sheet');
+        if (sheet) return sheet;
+        sheet = document.createElement('div');
+        sheet.id = 'v10-history-sheet';
+        sheet.className = 'v10-sheet';
+        sheet.setAttribute('role','dialog');
+        sheet.setAttribute('aria-modal','true');
+        sheet.innerHTML = `<div class="v10-sheet-panel"><div class="v10-sheet-grabber"></div><div id="v10-history-content"></div></div>`;
+        sheet.addEventListener('click', e => { if (e.target === sheet) root.closeExerciseHistory(); });
+        document.body.appendChild(sheet);
+        return sheet;
+    }
+
+    root.closeExerciseHistory = function () {
+        const sheet = document.getElementById('v10-history-sheet');
+        if (!sheet) return;
+        sheet.classList.remove('open');
+        setTimeout(() => { sheet.style.display = 'none'; }, 230);
+    };
+
+    root.openExerciseHistory = function (id) {
+        const exercise = A.training?.model?.byId?.(id);
+        if (!exercise) return;
+        const summary = trainingSummary(id);
+        const sessions = summary.sessions.slice(0, 12);
+        const content = ensureHistorySheet().querySelector('#v10-history-content');
+        const chronological = [...summary.metrics].reverse().slice(-12);
+        const rawValues = chronological.map(x => x.metric.value);
+        const higherBetter = chronological[0]?.metric?.higherBetter !== false;
+        const plotValues = higherBetter ? rawValues : rawValues.map(v => v > 0 ? 1/v : 0);
+        const spark = sparklinePath(plotValues);
+        const latestLabel = summary.latest?.metric?.label || '—';
+        const bestLabel = summary.best?.metric?.label || '—';
+        const trend = A.training.v10.trendLabel(summary);
+
+        content.innerHTML = `
+            <div class="v10-sheet-head">
+                <div><span class="eyebrow">ІСТОРІЯ ВПРАВИ</span><h2>${esc(exercise.name)}</h2><p>${esc(exercise.description || '')}</p></div>
+                <button class="secondary v10-sheet-close" onclick="closeExerciseHistory()" aria-label="Закрити"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="v10-history-stats">
+                <div class="v10-history-stat"><span>Сесій</span><strong>${summary.sessions.length}</strong></div>
+                <div class="v10-history-stat"><span>Найкраще</span><strong>${esc(bestLabel)}</strong></div>
+                <div class="v10-history-stat"><span>Останнє</span><strong>${esc(latestLabel)}</strong></div>
+            </div>
+            ${spark.path ? `<div class="v10-sparkline"><svg viewBox="0 0 560 104" preserveAspectRatio="none" aria-label="Графік прогресу"><path d="${spark.path}"></path>${spark.points.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3"></circle>`).join('')}</svg></div>` : ''}
+            <div class="exercise-v10-summary">
+                <span class="exercise-v10-chip ${summary.ratio && summary.ratio>1.01?'positive':''}"><i class="fa-solid fa-chart-line"></i>&nbsp;${esc(trend)}</span>
+                ${summary.plateau ? `<span class="exercise-v10-chip plateau"><i class="fa-solid fa-equals"></i>&nbsp;3 сесії без помітного росту</span>` : ''}
+            </div>
+            <div class="v10-history-list">
+                ${sessions.length ? sessions.map(s => `<div class="v10-history-row"><div class="v10-history-row-head"><strong>${esc(fmtDate(s.date))}</strong><span>${esc(sessionMetric(s).label)}</span></div><p>${esc(A.training.history.format(s))}</p></div>`).join('') : `<div class="v10-empty"><i class="fa-solid fa-clock-rotate-left"></i>Історія цієї вправи ще порожня.</div>`}
+            </div>
+            <div class="v10-history-actions">
+                <button class="secondary" onclick="closeExerciseHistory(); repeatLastExercise('${esc(id)}')"><i class="fa-solid fa-rotate-left"></i> Повторити минуле</button>
+                <button class="gradient-bg primary-btn" onclick="closeExerciseHistory(); applyExerciseProgression('${esc(id)}')"><i class="fa-solid fa-arrow-trend-up"></i> План прогресії</button>
+            </div>`;
+
+        const sheet = ensureHistorySheet();
+        sheet.style.display = 'flex';
+        requestAnimationFrame(() => sheet.classList.add('open'));
+        A.haptics.tap();
+    };
+
+    function decorateWorkoutCardsV10() {
+        document.querySelectorAll('.exercise-card[data-exercise-id]').forEach(card => {
+            card.querySelector('.exercise-v10-tools')?.remove();
+            card.querySelector('.exercise-v10-summary')?.remove();
+            const id = card.dataset.exerciseId;
+            const summary = trainingSummary(id);
+            if (!summary.sessions.length) return;
+            const suggestion = detailedSuggestion(id);
+            const tools = document.createElement('div');
+            tools.className = 'exercise-v10-tools';
+            tools.innerHTML = `
+                <button class="secondary" type="button" onclick="openExerciseHistory('${esc(id)}')"><i class="fa-solid fa-chart-line"></i>Історія</button>
+                <button class="secondary" type="button" onclick="repeatLastExercise('${esc(id)}')"><i class="fa-solid fa-rotate-left"></i>Повторити</button>
+                <button class="secondary" type="button" onclick="applyExerciseProgression('${esc(id)}')"><i class="fa-solid fa-arrow-trend-up"></i>Прогресія</button>`;
+            const summaryRow = document.createElement('div');
+            summaryRow.className = 'exercise-v10-summary';
+            const trend = A.training.v10.trendLabel(summary);
+            summaryRow.innerHTML = `
+                <span class="exercise-v10-chip ${summary.ratio && summary.ratio>1.01?'positive':''}">${esc(trend)}</span>
+                ${summary.plateau ? `<span class="exercise-v10-chip plateau">Плато ×3</span>` : ''}
+                ${suggestion ? `<span class="exercise-v10-chip">Далі: ${esc(suggestion.label)}</span>` : ''}`;
+            card.append(summaryRow, tools);
+        });
+    }
+
+    function wrapWorkoutRendererV10() {
+        if (typeof root.renderWorkouts !== 'function' || root.renderWorkouts.__v10Wrapped) return;
+        const prev = root.renderWorkouts;
+        const wrapped = function (...args) {
+            const result = prev.apply(this,args);
+            requestAnimationFrame(decorateWorkoutCardsV10);
+            requestAnimationFrame(renderTrainingIntelligence);
+            return result;
+        };
+        wrapped.__v10Wrapped = true;
+        root.renderWorkouts = wrapped;
+    }
+
+    /* -------------------- Training workspace summary -------------------- */
+    function insertTrainingIntelligence() {
+        if (document.getElementById('training-intel-card')) return;
+        const workoutTab = document.getElementById('tab-workout');
+        if (!workoutTab) return;
+        const blocks = Array.from(workoutTab.querySelectorAll('.workspace-block'));
+        const library = blocks.find(block => block.textContent.includes('БІБЛІОТЕКА'));
+        if (!library) return;
+        const section = document.createElement('section');
+        section.className = 'workspace-block premium-section';
+        section.id = 'training-intel-section';
+        section.innerHTML = `
+            <div class="workspace-block-head"><div><span class="eyebrow">30 ДНІВ</span><h2>Прогрес тренувань</h2></div><span class="section-note">історія + PR + тренд</span></div>
+            <div class="training-intel-card premium-surface" id="training-intel-card">
+                <div class="training-intel-grid">
+                    <div class="training-intel-stat"><span>Сесії</span><strong id="v10-train-sessions">0</strong><small>за 30 днів</small></div>
+                    <div class="training-intel-stat"><span>Вправи</span><strong id="v10-train-exercises">0</strong><small>різних вправ</small></div>
+                    <div class="training-intel-stat"><span>PR</span><strong id="v10-train-prs">0</strong><small>вправ із силовим PR</small></div>
+                    <div class="training-intel-stat"><span>Фокус</span><strong id="v10-train-focus">—</strong><small>найчастіша вправа</small></div>
+                </div>
+                <div class="training-intel-recent" id="v10-training-recent"></div>
+            </div>`;
+        workoutTab.insertBefore(section, library);
+    }
+
+    function renderTrainingIntelligence() {
+        insertTrainingIntelligence();
+        const history = A.training?.history?.all?.() || [];
+        const cutoff = Date.now() - 30*86400000;
+        const recent = history.filter(s => Number(s.createdAt || new Date(`${s.date}T12:00:00`).getTime()) >= cutoff);
+        const counts = new Map();
+        recent.forEach(s => counts.set(s.exerciseName, (counts.get(s.exerciseName)||0)+1));
+        const focus = [...counts.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+        const prs = A.storage?.json?.('achilles_prs', {}) || {};
+        const setText = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=String(value); };
+        setText('v10-train-sessions', recent.length);
+        setText('v10-train-exercises', counts.size);
+        setText('v10-train-prs', Object.keys(prs).length);
+        setText('v10-train-focus', focus === '—' ? focus : (focus.length > 15 ? `${focus.slice(0,14)}…` : focus));
+        const list = document.getElementById('v10-training-recent');
+        if (!list) return;
+        const unique = [];
+        const seen = new Set();
+        history.forEach(s => { if (!seen.has(s.exerciseId)) { seen.add(s.exerciseId); unique.push(s); } });
+        list.innerHTML = unique.length ? unique.slice(0,3).map(s => {
+            const summary = trainingSummary(s.exerciseId);
+            return `<div class="training-recent-row"><div><strong>${esc(s.exerciseName)}</strong><span>${esc(fmtDate(s.date))} · ${esc(A.training.history.format(s))}${summary.plateau?' · плато ×3':''}</span></div><button class="secondary" onclick="openExerciseHistory('${esc(s.exerciseId)}')">Історія</button></div>`;
+        }).join('') : `<div class="v10-empty"><i class="fa-solid fa-dumbbell"></i>Після першого тренування тут з’явиться прогрес.</div>`;
+    }
+
+    /* -------------------- Analytics V2 -------------------- */
+    function datesForRange(days) {
+        if (typeof root.getLastNDates === 'function') return root.getLastNDates(days);
+        const out=[]; const base=new Date();
+        for(let i=days-1;i>=0;i--){ const d=new Date(base); d.setDate(base.getDate()-i); out.push(d.toISOString().slice(0,10)); }
+        return out;
+    }
+
+    function weightTrend(days) {
+        const history = (A.storage?.json?.('achilles_weight_history', []) || [])
+            .filter(x => x?.date && Number(x?.weight)>0)
+            .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+        const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - days + 1); cutoff.setHours(0,0,0,0);
+        const inRange = history.filter(x => new Date(`${x.date}T12:00:00`) >= cutoff);
+        if (inRange.length < 2) return null;
+        const first=inRange[0], last=inRange[inRange.length-1];
+        const span = Math.max(1, (new Date(`${last.date}T12:00:00`) - new Date(`${first.date}T12:00:00`))/86400000);
+        const delta = Number(last.weight)-Number(first.weight);
+        return { delta:round(delta,1), weekly:round(delta/span*7,2), first:Number(first.weight), last:Number(last.weight), points:inRange.length };
+    }
+
+    function strengthMomentum(days) {
+        const cutoff = Date.now() - days*86400000;
+        const all = (A.training?.history?.all?.() || []).filter(s => Number(s.createdAt||0)>=cutoff && s.exerciseType===A.training?.types?.STRENGTH_WEIGHTED);
+        const grouped = new Map();
+        all.forEach(s => { if(!grouped.has(s.exerciseId)) grouped.set(s.exerciseId,[]); grouped.get(s.exerciseId).push(s); });
+        const ratios=[];
+        grouped.forEach(list => {
+            if(list.length<2) return;
+            const latest=sessionMetric(list[0]), prev=sessionMetric(list[1]);
+            const ratio=improvementRatio(latest,prev); if(ratio) ratios.push(ratio);
+        });
+        if(!ratios.length) return null;
+        const avg=ratios.reduce((a,b)=>a+b,0)/ratios.length;
+        return { ratio:avg, exercises:ratios.length };
+    }
+
+    function rangeSnapshot(days = 7) {
+        const dates=datesForRange(days);
+        const daysData=A.storage?.days?.() || root.allDaysData || {};
+        const targets=A.storage?.macroTargets?.() || {p:0,f:0,c:0};
+        const baseKcal=Number(A.storage?.get?.('achilles_base_kcal',2000) || 2000);
+        const appMode=A.storage?.get?.('achilles_app_mode','pro') || 'pro';
+        const profile=A.storage?.profile?.() || {};
+        let loggedDays=0, kcalTotal=0, proteinHit=0, calorieHit=0, workouts=0;
+        const rows=[];
+
+        dates.forEach(date => {
+            const d=daysData?.[date];
+            const log=Array.isArray(d?.log)?d.log:[];
+            const consumed=Number(d?.consumedCalories||0);
+            const hasNutrition=consumed>0 || log.some(x=>x?.type==='food');
+            const goal=baseKcal + (appMode==='pro'?Number(d?.workoutBonus||0):0);
+            const p=Number(d?.macros?.p||0);
+            const pHit=hasNutrition && Number(targets.p)>0 && p>=Number(targets.p)*.9;
+            const kHit=hasNutrition && goal>0 && Math.abs(consumed-goal)/goal<=.10;
+            const dayWorkouts=log.filter(x=>x?.type==='workout').length;
+            if(hasNutrition){ loggedDays++; kcalTotal+=consumed; if(pHit) proteinHit++; if(kHit) calorieHit++; }
+            workouts+=dayWorkouts;
+            rows.push({date,consumed,goal,pHit,kHit,workouts:dayWorkouts,hasNutrition});
+        });
+
+        const proteinRate=loggedDays?proteinHit/loggedDays:0;
+        const calorieRate=loggedDays?calorieHit/loggedDays:0;
+        const expectedWorkouts=Math.max(1,Math.round(days/7*3));
+        const weight=weightTrend(days);
+        const strength=strengthMomentum(days);
+
+        const metrics=[];
+        const push=(key,label,max,available,ratio,detail)=>metrics.push({key,label,max,available,points:available?Math.round(clamp(ratio)*max):null,ratio:available?clamp(ratio):null,detail});
+        push('calories','Калорії',25,loggedDays>=2,calorieRate,loggedDays?`${calorieHit}/${loggedDays} днів у ±10%`:'немає даних');
+        push('protein','Білок',20,loggedDays>=2 && Number(targets.p)>0,proteinRate,loggedDays?`${proteinHit}/${loggedDays} днів ≥90%`:'немає даних');
+        push('workouts','Тренування',20,true,workouts/expectedWorkouts,`${workouts}/${expectedWorkouts} цільових сесій`);
+
+        let weightRatio=null, weightDetail='потрібно ≥2 зважувань';
+        if(weight){
+            const goal=profile.goal||'maintain';
+            if(goal==='lose') weightRatio=weight.weekly<-.1?1:weight.weekly<=.1?.65:.2;
+            else if(goal==='gain') weightRatio=weight.weekly>.1?1:weight.weekly>=-.1?.65:.2;
+            else weightRatio=Math.abs(weight.weekly)<=.5?1:Math.abs(weight.weekly)<=1?.55:.2;
+            weightDetail=`${weight.delta>0?'+':''}${weight.delta.toFixed(1)} кг за період`;
+        }
+        push('weight','Вага',15,!!weight,weightRatio||0,weightDetail);
+        push('consistency','Регулярність',10,true,loggedDays/days,`${loggedDays}/${days} днів з харчуванням`);
+        push('strength','Силовий прогрес',10,!!strength,strength?clamp(.65 + (strength.ratio-1)*8,0,1):0,strength?`${strength.exercises} вправ із порівнянням`:'потрібно ≥2 силових сесій');
+
+        const available=metrics.filter(m=>m.available);
+        const earned=available.reduce((s,m)=>s+Number(m.points||0),0);
+        const maxAvailable=available.reduce((s,m)=>s+Number(m.max||0),0);
+        const score=maxAvailable?Math.round(earned/maxAvailable*100):0;
+
+        return {days,rows,loggedDays,kcalTotal,avgKcal:loggedDays?Math.round(kcalTotal/loggedDays):0,proteinHit,proteinRate,calorieHit,calorieRate,workouts,expectedWorkouts,weight,strength,metrics,score,coverage:maxAvailable/100};
+    }
+
+    A.analytics = A.analytics || {};
+    A.analytics.rangeSnapshot = rangeSnapshot;
+    A.analytics.weekSnapshot = () => rangeSnapshot(7);
+
+    function insertAnalyticsV2() {
+        if (document.getElementById('analytics-v2-shell')) return;
+        const coachSection=document.querySelector('#tab-dashboard .coach-section');
+        if(!coachSection) return;
+        const section=document.createElement('section');
+        section.className='premium-section analytics-v2-section';
+        section.innerHTML=`
+            <div class="section-heading-row"><div><span class="eyebrow">АНАЛІТИКА</span><h2>Що формує Score</h2></div><span class="section-note">прозорий розрахунок</span></div>
+            <div class="analytics-v2-shell premium-surface" id="analytics-v2-shell">
+                <div class="analytics-v2-head"><div><span class="eyebrow">ACHILLES SCORE V2</span><h3 id="v10-analytics-title">Баланс прогресу</h3></div><div class="analytics-v2-score"><strong class="gradient-text" id="v10-analytics-score">0</strong><span>/ 100</span></div></div>
+                <div class="analytics-range-tabs" id="v10-range-tabs">
+                    <button class="analytics-range-btn active" data-days="7">7 днів</button>
+                    <button class="analytics-range-btn" data-days="30">30 днів</button>
+                    <button class="analytics-range-btn" data-days="90">90 днів</button>
+                    <button class="analytics-range-btn" data-days="365">365</button>
+                </div>
+                <div class="analytics-breakdown" id="v10-analytics-breakdown"></div>
+                <div class="analytics-v2-note" id="v10-analytics-note">Категорії без достатньої кількості даних не знижують загальний Score.</div>
+            </div>`;
+        coachSection.parentNode.insertBefore(section, coachSection);
+        section.querySelectorAll('.analytics-range-btn').forEach(btn=>btn.addEventListener('click',()=>{
+            section.querySelectorAll('.analytics-range-btn').forEach(x=>x.classList.toggle('active',x===btn));
+            localStorage.setItem('achilles_analytics_range',btn.dataset.days);
+            renderAnalyticsV2(Number(btn.dataset.days));
+            A.haptics.tap();
+        }));
+        const saved=Number(localStorage.getItem('achilles_analytics_range')||7);
+        const target=section.querySelector(`.analytics-range-btn[data-days="${saved}"]`);
+        if(target){ section.querySelectorAll('.analytics-range-btn').forEach(x=>x.classList.toggle('active',x===target)); }
+    }
+
+    function renderAnalyticsV2(days = Number(localStorage.getItem('achilles_analytics_range')||7)) {
+        insertAnalyticsV2();
+        const snap=rangeSnapshot(days);
+        const score=document.getElementById('v10-analytics-score'); if(score) score.textContent=String(snap.score);
+        const title=document.getElementById('v10-analytics-title');
+        if(title) title.textContent=snap.score>=85?'Сильний баланс':snap.score>=70?'Стабільний прогрес':snap.score>=50?'Є запас для росту':'Потрібно більше стабільності';
+        const box=document.getElementById('v10-analytics-breakdown');
+        if(box) box.innerHTML=snap.metrics.map(m=>`<div class="analytics-metric ${m.available?'':'pending'}"><div class="analytics-metric-copy"><strong>${esc(m.label)}</strong><span>${esc(m.detail)}</span></div><div class="analytics-meter"><span style="--meter:${m.available?Math.round(m.ratio*100):0}%"></span></div><div class="analytics-metric-value">${m.available?`${m.points}/${m.max}`:`—/${m.max}`}</div></div>`).join('');
+        const note=document.getElementById('v10-analytics-note'); if(note) note.textContent=`Період: ${days} днів · покриття оцінки ${Math.round(snap.coverage*100)}%. Категорії без достатніх даних не штрафують Score.`;
+        return snap;
+    }
+
+    /* -------------------- Coach V2 -------------------- */
+    function plateauCandidate() {
+        const seen=new Set();
+        for(const s of (A.training?.history?.all?.()||[])){
+            if(seen.has(s.exerciseId)) continue;
+            seen.add(s.exerciseId);
+            const sum=trainingSummary(s.exerciseId);
+            if(sum.plateau) return {session:s,summary:sum};
+        }
+        return null;
+    }
+
+    function coachPlan() {
+        const snap=rangeSnapshot(7);
+        const targets=A.storage?.macroTargets?.()||{p:0,f:0,c:0};
+        const remainingProtein=Math.max(0,Math.round(Number(targets.p||0)-Number(root.macros?.p||0)));
+        const calorieGoal=Number(A.storage?.get?.('achilles_base_kcal',2000)||2000)+(A.storage?.get?.('achilles_app_mode','pro')==='pro'?Number(root.workoutBonus||0):0);
+        const plateau=plateauCandidate();
+        const coverage=Math.round(snap.coverage*100);
+        const confidence=coverage>=80&&snap.loggedDays>=5?'висока':coverage>=55&&snap.loggedDays>=3?'середня':'низька';
+
+        if(snap.loggedDays<3) return {status:'Потрібно більше даних',message:'Заповни харчування хоча б за 3 дні — тоді Coach зможе відрізняти випадковий день від тренду.',sub:`Зараз є ${snap.loggedDays}/7 днів із харчуванням.`,action:'Відкрити раціон',target:'tab-food',confidence};
+        if(snap.proteinRate<.6) return {status:'Фокус: білок',message:remainingProtein>0?`Сьогодні добери приблизно ${remainingProtein} г білка до своєї цілі.`:'Наступні кілька днів тримай білок ближче до цілі — це найслабше місце тижня.',sub:`Білок ≥90% виконано у ${snap.proteinHit} з ${snap.loggedDays} днів.`,action:'Додати їжу',target:'tab-food',confidence};
+        if(snap.calorieRate<.5) return {status:'Фокус: калорії',message:`Сьогодні орієнтир — близько ${Math.round(calorieGoal)} ккал. Намагайся тримати день у коридорі ±10%.`,sub:`За останні 7 днів у коридор потрапило ${snap.calorieHit} з ${snap.loggedDays} днів.`,action:'Відкрити раціон',target:'tab-food',confidence};
+        if(snap.workouts<Math.max(1,Math.ceil(snap.expectedWorkouts*.66))) return {status:'Фокус: тренування',message:'Додай одну якісну сесію замість спроби «наздогнати» весь тиждень одразу.',sub:`Записано ${snap.workouts} тренувань; орієнтир для Score — ${snap.expectedWorkouts}.`,action:'Відкрити зал',target:'tab-workout',confidence};
+        if(plateau) return {status:'Фокус: прогресія',message:`${plateau.session.exerciseName}: три останні сесії майже без росту. Спробуй малий крок прогресії, а не різкий стрибок ваги.`,sub:detailedSuggestion(plateau.session.exerciseId)?.reason||'Зміни лише один параметр: повтори, вагу або тривалість.',action:'Показати вправу',target:'tab-workout',exerciseId:plateau.session.exerciseId,confidence};
+        return {status:'Система стабільна',message:'Головні показники тижня збалансовані. Зараз найкраща стратегія — повторити цей ритм ще один тиждень.',sub:`Score ${snap.score}/100 · білок ${Math.round(snap.proteinRate*100)}% · калорійний коридор ${Math.round(snap.calorieRate*100)}% · тренувань ${snap.workouts}.`,action:'Переглянути аналітику',target:'tab-dashboard',confidence};
+    }
+
+    function renderCoachV2() {
+        const plan=coachPlan();
+        const status=document.getElementById('coach-status'); if(status) status.textContent=plan.status;
+        const msg=document.getElementById('coach-message'); if(msg) msg.textContent=plan.message;
+        const sub=document.getElementById('coach-submessage'); if(sub) sub.textContent=plan.sub;
+        const card=document.querySelector('.coach-card'); if(!card) return;
+        let actions=card.querySelector('.coach-primary-action');
+        if(!actions){ actions=document.createElement('div'); actions.className='coach-primary-action'; card.appendChild(actions); }
+        actions.innerHTML=`<button class="gradient-bg primary-btn" id="v10-coach-action"><i class="fa-solid fa-bolt"></i> ${esc(plan.action)}</button><span class="coach-confidence"><i class="fa-solid fa-signal"></i> Впевненість: ${esc(plan.confidence)}</span>`;
+        actions.querySelector('#v10-coach-action')?.addEventListener('click',()=>{
+            if(plan.target && A.router?.go) A.router.go(plan.target,{source:document.querySelector(`.nav-item[data-target="${plan.target}"]`)});
+            if(plan.exerciseId) setTimeout(()=>{
+                const card=findExerciseCard(plan.exerciseId);
+                card?.scrollIntoView({behavior:'smooth',block:'center'});
+                card?.classList.add('v10-flash');
+            },180);
+            A.haptics.tap();
+        });
+    }
+
+    /* -------------------- Dashboard bridge -------------------- */
+    const oldWeeklyRender = A.weekly?.render?.bind(A.weekly);
+    if (A.weekly) {
+        A.weekly.render = function (animate=false) {
+            if (oldWeeklyRender) oldWeeklyRender(animate);
+            const snap=rangeSnapshot(7);
+            A.motion?.circle?.(document.getElementById('week-score-progress'),snap.score/100,animate,1250);
+            const badge=document.getElementById('progress-score-badge'); if(badge) badge.textContent=`${snap.score} / 100`;
+            const title=document.getElementById('week-score-title'); if(title) title.textContent=snap.loggedDays<3?'Збираємо дані':snap.score>=85?'Сильний тиждень':snap.score>=70?'Хороший ритм':snap.score>=50?'Є запас':'Потрібна стабільність';
+            const caption=document.getElementById('week-score-caption'); if(caption) caption.textContent=snap.loggedDays<3?`Дані є за ${snap.loggedDays} із 7 днів.`:`Score V2 · білок ${Math.round(snap.proteinRate*100)}% · ккал ${Math.round(snap.calorieRate*100)}% · тренувань ${snap.workouts}.`;
+            const wt=document.getElementById('stat-weight-trend'); if(wt) wt.textContent=snap.weight?`${snap.weight.delta>0?'+':''}${snap.weight.delta.toFixed(1)} кг`:'—';
+            renderAnalyticsV2();
+            renderCoachV2();
+        };
+    }
+
+    /* old global hook still gets called from weight logging and diary updates */
+    const legacyProgressInsights = root.renderProgressInsights;
+    root.renderProgressInsights = function (...args) {
+        let result;
+        try { result = typeof legacyProgressInsights==='function' ? legacyProgressInsights.apply(this,args) : undefined; } catch (error) { console.warn('[Achilles V10 legacy insights]',error); }
+        requestAnimationFrame(()=>{
+            try { A.weekly?.render?.(false); } catch (error) { console.warn('[Achilles V10 weekly]',error); }
+            renderTrainingIntelligence();
+        });
+        return result;
+    };
+
+    /* General PRs for non-weighted exercises + refresh after every workout */
+    function generalizedPR(name, metadata) {
+        const exercise=A.training?.model?.byId?.(metadata.exerciseId) || A.training?.model?.byName?.(name);
+        if(!exercise) return null;
+        if(metadata.pr?.isPR) return metadata.pr;
+        const prior=historyFor(exercise.id);
+        if(!prior.length) return null;
+        const fake=A.training.model.entryFromLegacy({id:Date.now(),createdAt:Date.now(),exercise:name,...metadata},exercise.raw);
+        if(!fake) return null;
+        const current=sessionMetric(fake);
+        if(!(current.value>0)) return null;
+        const bestPrior=prior.map(sessionMetric).filter(x=>x.value>0).sort((a,b)=> current.higherBetter===false ? a.value-b.value : b.value-a.value)[0];
+        if(!bestPrior) return null;
+        const improved=current.higherBetter===false ? current.value<bestPrior.value*.995 : current.value>bestPrior.value*1.005;
+        if(!improved) return null;
+        return {isPR:true,label:`Новий PR: ${current.label}`};
+    }
+
+    function wrapWorkoutLoggerV10() {
+        if(typeof root.logWorkoutEntry!=='function' || root.logWorkoutEntry.__v10Wrapped) return;
+        const prev=root.logWorkoutEntry;
+        const wrapped=function(name,burned,details,metadata={}){
+            const exercise=A.training?.model?.byId?.(metadata.exerciseId) || A.training?.model?.byName?.(name);
+            const enriched={...metadata,exerciseId:metadata.exerciseId||exercise?.id||null,exerciseType:metadata.exerciseType||exercise?.type||null};
+            if(!enriched.pr?.isPR){ const gpr=generalizedPR(name,enriched); if(gpr) enriched.pr=gpr; }
+            const result=prev.call(this,name,burned,details,enriched);
+            if(enriched.pr?.isPR){
+                localStorage.setItem('achilles_last_pr',JSON.stringify({name,label:enriched.pr.label,date:root.todayDate,updatedAt:Date.now()}));
+                A.haptics.success(); A.toast(enriched.pr.label,'fa-trophy',3200);
+            } else { A.haptics.tap(); }
+            setTimeout(()=>{ renderTrainingIntelligence(); renderAnalyticsV2(); renderCoachV2(); root.searchWorkout?.(); },80);
+            return result;
+        };
+        wrapped.__v10Wrapped=true;
+        root.logWorkoutEntry=wrapped;
+    }
+
+    function addBuildBadge() {
+        const hero=document.querySelector('#tab-profile .profile-hero-copy');
+        if(hero && !hero.querySelector('.v10-build-badge')) hero.insertAdjacentHTML('beforeend','<span class="v10-build-badge"><i class="fa-solid fa-code-branch"></i> Achilles OS 10.0 · local-first</span>');
+    }
+
+    function installPolish() {
+        document.addEventListener('keydown',e=>{ if(e.key==='Escape') root.closeExerciseHistory?.(); });
+        document.addEventListener('pointerdown',e=>{
+            if(e.target.closest('button,.filter-tab,.nav-item')) A.haptics.tap();
+        },{passive:true});
+        root.addEventListener('unhandledrejection',e=>console.warn('[Achilles async]',e.reason));
+    }
+
+    function bootstrapV10() {
+        wrapWorkoutRendererV10();
+        wrapWorkoutLoggerV10();
+        insertTrainingIntelligence();
+        insertAnalyticsV2();
+        addBuildBadge();
+        installPolish();
+        root.searchWorkout?.();
+        renderTrainingIntelligence();
+        renderAnalyticsV2();
+        renderCoachV2();
+        if(A.dashboard?.refresh){
+            const old=A.dashboard.refresh.bind(A.dashboard);
+            A.dashboard.refresh=function(opts={}){ const r=old(opts); requestAnimationFrame(()=>{renderAnalyticsV2();renderCoachV2();}); return r; };
+        }
+        console.info('[Achilles OS] V10.0 Training Intelligence + Analytics V2 + Coach V2 ready');
+    }
+
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bootstrapV10,{once:true});
+    else bootstrapV10();
+})(window);
+</script>
+
+<script id="achilles-v10-pwa">
+(function(){
+    if (!('serviceWorker' in navigator)) return;
+    window.addEventListener('load', async () => {
+        try {
+            const reg = await navigator.serviceWorker.register('./sw.js', { scope: './' });
+            reg.addEventListener('updatefound', () => {
+                const worker = reg.installing;
+                if (!worker) return;
+                worker.addEventListener('statechange', () => {
+                    if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+                        window.Achilles?.toast?.('Оновлення Achilles готове — відкрий додаток ще раз', 'fa-arrows-rotate', 3600);
+                    }
+                });
+            });
+        } catch (error) {
+            console.info('[Achilles PWA] service worker unavailable', error);
+        }
+    }, { once:true });
+})();
+</script>
 
 </body>
 </html>
