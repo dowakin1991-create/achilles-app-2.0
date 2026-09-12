@@ -356,6 +356,243 @@
         #main-app-window .nav-bar::after {
             display: none;
         }
+
+
+        /* === ACHILLES OS 2.0: АНАЛІТИКА ТА COACH === */
+        .os-section-head {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; margin-top: 32px; margin-bottom: 14px;
+        }
+        .os-section-head h3 { margin: 0; font-size: 22px; font-weight: 750; letter-spacing: -0.5px; }
+        .os-score-badge {
+            flex: 0 0 auto; padding: 7px 11px; border-radius: 999px;
+            background: var(--input-bg); border: 1px solid var(--glass-border);
+            color: var(--primary); font-size: 13px; font-weight: 800;
+        }
+        .insight-grid {
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;
+        }
+        .insight-tile {
+            min-width: 0; padding: 17px 16px; border-radius: 22px;
+            background: var(--card-bg); border: 1px solid var(--glass-border);
+        }
+        .insight-value {
+            display: block; font-size: 25px; line-height: 1.05; font-weight: 820;
+            letter-spacing: -0.7px; color: var(--text-main); overflow-wrap: anywhere;
+        }
+        .insight-label { display: block; margin-top: 7px; color: var(--text-muted); font-size: 12px; font-weight: 650; }
+        .coach-card {
+            position: relative; overflow: hidden; margin-top: 12px; padding: 20px;
+            border-radius: 26px; background: var(--card-bg); border: 1px solid var(--glass-border);
+        }
+        .coach-card::before {
+            content: ''; position: absolute; inset: 0 auto 0 0; width: 4px;
+            background: linear-gradient(180deg, var(--accent-1), var(--accent-2), var(--accent-3));
+        }
+        .coach-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+        .coach-title { font-weight: 850; font-size: 14px; letter-spacing: .5px; }
+        .coach-status { color: var(--primary); font-size: 12px; font-weight: 750; text-align: right; }
+        .coach-message { color: var(--text-main); font-size: 16px; line-height: 1.45; font-weight: 650; }
+        .coach-submessage { color: var(--text-muted); font-size: 13px; line-height: 1.4; margin-top: 8px; }
+        .pr-chip {
+            display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+            padding: 6px 9px; border-radius: 999px; background: var(--input-bg);
+            border: 1px solid var(--glass-border); color: var(--primary); font-size: 12px; font-weight: 800;
+        }
+        @media (max-width: 360px) {
+            .insight-grid { grid-template-columns: 1fr; }
+        }
+
+    
+
+        /* === ACHILLES UI FIX: PROFILE LOGO + NATIVE-LIKE iOS TAB BAR === */
+        :root {
+            --app-height: 100dvh;
+        }
+
+        /* Реальна висота PWA задається ще й JS через window.innerHeight. */
+        html,
+        body {
+            width: 100% !important;
+            height: var(--app-height, 100dvh) !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            background: var(--bg-pure) !important;
+        }
+
+        /* Головний екран займає саме видиму висоту iPhone — без мертвої смуги знизу. */
+        #main-app-window {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: var(--app-height, 100dvh) !important;
+            min-height: 0 !important;
+            overflow: hidden !important;
+            background: var(--bg-pure) !important;
+        }
+
+        #main-app-window.active-block {
+            display: block !important;
+        }
+
+        #main-app-window > .app-window {
+            position: relative !important;
+            inset: auto !important;
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            display: grid !important;
+            grid-template-rows: minmax(0, 1fr) auto !important;
+            overflow: hidden !important;
+            background: var(--bg-pure) !important;
+        }
+
+        #main-app-window > .app-window > .main-content {
+            position: relative !important;
+            inset: auto !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+            padding-top: max(env(safe-area-inset-top, 0px), 20px) !important;
+            padding-right: 20px !important;
+            padding-bottom: 24px !important;
+            padding-left: 20px !important;
+            background: var(--bg-pure) !important;
+        }
+
+        /* Лого профілю: app-icon, тому rounded-square замість круглого crop. */
+        #tab-profile .profile-avatar-large {
+            width: 88px !important;
+            height: 88px !important;
+            border-radius: 22px !important;
+            border: 1.5px solid var(--primary) !important;
+            margin: 2px auto 18px !important;
+            background-image: url('IMG_9302.jpeg');
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            box-shadow:
+                0 8px 22px rgba(var(--primary-rgb), 0.14),
+                0 1px 2px rgba(0, 0, 0, 0.10) !important;
+        }
+
+        #tab-profile > h1 {
+            font-size: clamp(29px, 8vw, 34px) !important;
+            line-height: 1.05 !important;
+            letter-spacing: -1.2px !important;
+            margin: 0 0 28px !important;
+            text-align: center !important;
+        }
+
+        /* Нативніша нижня навігація: без псевдо-хвоста і без порожньої зони під нею. */
+        #main-app-window .nav-bar {
+            position: relative !important;
+            inset: auto !important;
+            width: 100% !important;
+            height: auto !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding:
+                7px
+                10px
+                max(env(safe-area-inset-bottom, 0px), 8px)
+                10px !important;
+            display: flex !important;
+            align-items: stretch !important;
+            justify-content: space-around !important;
+            flex: none !important;
+            background: var(--nav-bg) !important;
+            border-top: 1px solid var(--glass-border) !important;
+            box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.035) !important;
+            -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+            backdrop-filter: blur(28px) saturate(180%) !important;
+            z-index: 1000 !important;
+        }
+
+        #main-app-window .nav-bar::after,
+        #main-app-window .nav-bar::before {
+            content: none !important;
+            display: none !important;
+        }
+
+        #main-app-window .nav-item {
+            position: relative;
+            flex: 1 1 0 !important;
+            width: auto !important;
+            height: 52px !important;
+            min-height: 52px !important;
+            padding: 2px 0 0 !important;
+            margin: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 3px !important;
+            color: var(--text-muted) !important;
+            opacity: 0.72 !important;
+            transition: color .18s ease, opacity .18s ease, transform .18s ease !important;
+        }
+
+        #main-app-window .nav-item.active {
+            color: var(--primary) !important;
+            opacity: 1 !important;
+        }
+
+        #main-app-window .nav-icon {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: 25px !important;
+            margin: 0 !important;
+            font-size: 21px !important;
+            line-height: 1 !important;
+            transition: transform .18s var(--bezier) !important;
+        }
+
+        #main-app-window .nav-item.active .nav-icon {
+            transform: translateY(-1px) scale(1.06) !important;
+            color: var(--primary) !important;
+            text-shadow: none !important;
+        }
+
+        #main-app-window .nav-text {
+            display: block !important;
+            margin: 0 !important;
+            font-size: 11px !important;
+            line-height: 1.05 !important;
+            font-weight: 650 !important;
+            color: currentColor !important;
+        }
+
+        /* Прибираємо градієнтний текст у активного tab: solid виглядає ближче до iOS. */
+        #main-app-window .nav-item.active .nav-text {
+            background: none !important;
+            -webkit-background-clip: border-box !important;
+            background-clip: border-box !important;
+            -webkit-text-fill-color: currentColor !important;
+            animation: none !important;
+        }
+
+        /* Трохи компактніше на невисоких екранах. */
+        @media (max-height: 720px) {
+            #tab-profile .profile-avatar-large {
+                width: 78px !important;
+                height: 78px !important;
+                border-radius: 20px !important;
+                margin-bottom: 14px !important;
+            }
+
+            #tab-profile > h1 {
+                margin-bottom: 22px !important;
+            }
+        }
+
     </style>
 </head>
 <body> 
@@ -513,6 +750,40 @@
                             <div class="macro-item"><strong id="macro-f" class="c-f">0</strong><span id="target-f" style="color: var(--text-muted);">/ 0г</span><br>Жири</div>
                             <div class="macro-item"><strong id="macro-c" class="c-c">0</strong><span id="target-c" style="color: var(--text-muted);">/ 0г</span><br>Вугл.</div>
                         </div>
+                    </div>
+
+                    <!-- ACHILLES OS 2.0: 7-ДЕННА АНАЛІТИКА -->
+                    <div class="os-section-head">
+                        <h3>Огляд 7 днів</h3>
+                        <span class="os-score-badge" id="progress-score-badge">— / 100</span>
+                    </div>
+                    <div class="insight-grid">
+                        <div class="insight-tile">
+                            <span class="insight-value" id="stat-avg-kcal">—</span>
+                            <span class="insight-label">Середні ккал / день</span>
+                        </div>
+                        <div class="insight-tile">
+                            <span class="insight-value" id="stat-protein-hit">—</span>
+                            <span class="insight-label">Білок ≥ 90% цілі</span>
+                        </div>
+                        <div class="insight-tile">
+                            <span class="insight-value" id="stat-workouts">—</span>
+                            <span class="insight-label">Тренувань за 7 днів</span>
+                        </div>
+                        <div class="insight-tile">
+                            <span class="insight-value" id="stat-weight-trend">—</span>
+                            <span class="insight-label">Тренд ваги</span>
+                        </div>
+                    </div>
+
+                    <div class="coach-card">
+                        <div class="coach-head">
+                            <div class="coach-title gradient-text">ACHILLES COACH</div>
+                            <div class="coach-status" id="coach-status">Аналізую...</div>
+                        </div>
+                        <div class="coach-message" id="coach-message">Додай кілька днів даних — я зберу картину прогресу.</div>
+                        <div class="coach-submessage" id="coach-submessage"></div>
+                        <div class="pr-chip" id="last-pr-chip" style="display:none;"><i class="fa-solid fa-trophy"></i><span id="last-pr-text"></span></div>
                     </div>
 
                     <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Трекер ваги:</h3>
@@ -831,11 +1102,13 @@
         };
 
         window.changeDate = function(offsetDays) {
+            const currentStoredDay = window.allDaysData[window.currentViewDate] || {};
             window.allDaysData[window.currentViewDate] = {
                 consumedCalories: window.consumedCalories,
                 workoutBonus: window.workoutBonus,
                 macros: window.macros,
-                log: window.dailyLog
+                log: window.dailyLog,
+                updatedAt: currentStoredDay.updatedAt || 0
             };
             
             let d = new Date(window.currentViewDate);
@@ -853,6 +1126,7 @@
             
             window.updateGoalDisplay();
             window.renderDiary();
+            window.renderProgressInsights();
         };
 
         window.loadDailyData = function() {
@@ -883,12 +1157,14 @@
             
             window.allDaysData[window.currentViewDate] = {
                 consumedCalories: window.consumedCalories, workoutBonus: window.workoutBonus,
-                macros: window.macros, log: window.dailyLog
+                macros: window.macros, log: window.dailyLog,
+                updatedAt: dayData.updatedAt || 0
             };
             localStorage.setItem('achilles_all_days', JSON.stringify(window.allDaysData));
             
             window.updateGoalDisplay();
             window.renderDiary();
+            window.renderProgressInsights();
         };
 
         window.saveDailyData = function() {
@@ -896,9 +1172,11 @@
                 consumedCalories: window.consumedCalories,
                 workoutBonus: window.workoutBonus,
                 macros: window.macros,
-                log: window.dailyLog
+                log: window.dailyLog,
+                updatedAt: Date.now()
             };
             localStorage.setItem('achilles_all_days', JSON.stringify(window.allDaysData));
+            window.renderProgressInsights();
             window.syncToCloud(); 
         };
 
@@ -921,7 +1199,11 @@
                 favWorkouts: JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [],
                 customFoods: JSON.parse(localStorage.getItem('achilles_custom_foods')) || [],
                 favFoods: JSON.parse(localStorage.getItem('achilles_fav_foods')) || [],
-                allDaysData: window.allDaysData
+                prs: JSON.parse(localStorage.getItem('achilles_prs')) || {},
+                lastPR: JSON.parse(localStorage.getItem('achilles_last_pr')) || null,
+                allDaysData: window.allDaysData,
+                dataVersion: 2,
+                syncedAt: Date.now()
             };
             try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Cloud Sync Error", e); }
         };
@@ -947,7 +1229,18 @@
                     
                     let localW = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
                     let cloudW = d.weightHistory || [];
-                    if(cloudW.length > localW.length) localStorage.setItem('achilles_weight_history', JSON.stringify(cloudW));
+                    let mergedW = [...cloudW];
+                    localW.forEach(localItem => {
+                        const idx = mergedW.findIndex(cloudItem => cloudItem?.date === localItem?.date);
+                        if(idx === -1) {
+                            mergedW.push(localItem);
+                            return;
+                        }
+                        const lUpdated = Number(localItem?.updatedAt || 0);
+                        const cUpdated = Number(mergedW[idx]?.updatedAt || 0);
+                        if(lUpdated >= cUpdated) mergedW[idx] = localItem;
+                    });
+                    localStorage.setItem('achilles_weight_history', JSON.stringify(mergedW));
 
                     let localFW = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
                     let cloudFW = d.favWorkouts || [];
@@ -960,6 +1253,26 @@
                     let localFF = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
                     let cloudFF = d.favFoods || [];
                     if(cloudFF.length > localFF.length) localStorage.setItem('achilles_fav_foods', JSON.stringify(cloudFF));
+
+                    const localPRs = JSON.parse(localStorage.getItem('achilles_prs')) || {};
+                    const cloudPRs = d.prs || {};
+                    const mergedPRs = { ...cloudPRs };
+                    Object.keys(localPRs).forEach(name => {
+                        const l = localPRs[name] || {};
+                        const c = cloudPRs[name] || {};
+                        mergedPRs[name] = {
+                            maxWeight: Math.max(Number(l.maxWeight || 0), Number(c.maxWeight || 0)),
+                            est1RM: Math.max(Number(l.est1RM || 0), Number(c.est1RM || 0)),
+                            volume: Math.max(Number(l.volume || 0), Number(c.volume || 0)),
+                            updatedAt: Math.max(Number(l.updatedAt || 0), Number(c.updatedAt || 0))
+                        };
+                    });
+                    localStorage.setItem('achilles_prs', JSON.stringify(mergedPRs));
+
+                    const localLastPR = JSON.parse(localStorage.getItem('achilles_last_pr') || 'null');
+                    if(d.lastPR && (!localLastPR || Number(d.lastPR.updatedAt || 0) > Number(localLastPR.updatedAt || 0))) {
+                        localStorage.setItem('achilles_last_pr', JSON.stringify(d.lastPR));
+                    }
                     
                     // Злиття історії днів
                     let cloudAllDays = d.allDaysData || {};
@@ -970,11 +1283,24 @@
                     }
 
                     for (let date in cloudAllDays) {
-                        let cCount = cloudAllDays[date].log ? cloudAllDays[date].log.length : 0;
-                        let lCount = (localAllDays[date] && localAllDays[date].log) ? localAllDays[date].log.length : 0;
-                        if (cCount > lCount) {
-                            localAllDays[date] = cloudAllDays[date];
+                        const cloudDay = cloudAllDays[date] || {};
+                        const localDay = localAllDays[date] || null;
+                        if(!localDay) {
+                            localAllDays[date] = cloudDay;
+                            continue;
                         }
+
+                        const cUpdated = Number(cloudDay.updatedAt || 0);
+                        const lUpdated = Number(localDay.updatedAt || 0);
+                        if(cUpdated || lUpdated) {
+                            if(cUpdated > lUpdated) localAllDays[date] = cloudDay;
+                            continue;
+                        }
+
+                        // Старі записи без updatedAt: сумісний fallback.
+                        const cCount = cloudDay.log ? cloudDay.log.length : 0;
+                        const lCount = localDay.log ? localDay.log.length : 0;
+                        if (cCount > lCount) localAllDays[date] = cloudDay;
                     }
                     
                     window.allDaysData = localAllDays;
@@ -987,6 +1313,7 @@
                     window.dailyLog = dayData.log || [];
                     
                     window.applyTheme();
+                    window.renderProgressInsights();
                     return true;
                 }
             } catch(e) { console.error("Cloud Load Error", e); }
@@ -1014,6 +1341,7 @@
                 window.loadUserData();
                 window.loadDailyData(); 
                 window.renderWeightChart();
+                window.renderProgressInsights();
                 window.showScreen('main-app-window');
                 
                 window.loadFromCloud(userName).then(loaded => {
@@ -1252,15 +1580,24 @@
         };
 
         window.logNewWeight = function(w) {
+            const weight = Number(w);
+            if(!Number.isFinite(weight) || weight <= 0) return;
+
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
-            let today = new Date().toISOString().split('T')[0].slice(5); 
-            history.push({ date: today, weight: w });
+            const date = window.todayDate;
+            const now = Date.now();
+
+            const sameDayIndex = history.findIndex(item => item && item.date === date);
+            const entry = { date, weight: Math.round(weight * 10) / 10, updatedAt: now };
+            if(sameDayIndex >= 0) history[sameDayIndex] = entry;
+            else history.push(entry);
+
             localStorage.setItem('achilles_weight_history', JSON.stringify(history));
         };
 
         window.logWeight = function() {
             const w = parseFloat(document.getElementById('new-weight-input').value);
-            if(!w) return;
+            if(!Number.isFinite(w) || w <= 0) return;
             window.logNewWeight(w);
             document.getElementById('new-weight-input').value = '';
             
@@ -1271,26 +1608,161 @@
                 window.recalcAndSaveNorms(prof, false);
             }
             window.renderWeightChart();
+            window.renderProgressInsights();
+        };
+
+        window.formatWeightDate = function(dateStr) {
+            if(!dateStr) return '';
+            return dateStr.length >= 10 ? dateStr.slice(5) : dateStr;
         };
 
         window.renderWeightChart = function() {
             let history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
             let container = document.getElementById('weight-chart-container');
-            if (history.length === 0) return;
+            if (!container) return;
+            if (history.length === 0) {
+                container.innerHTML = '<div style="width:100%; text-align:center; color:var(--text-muted); font-size:13px;">Додай перше зважування</div>';
+                window.renderProgressInsights();
+                return;
+            }
 
             let chartData = history.slice(-7);
-            let minW = Math.min(...chartData.map(d => d.weight)) - 2;
-            let maxW = Math.max(...chartData.map(d => d.weight)) + 2;
+            let minW = Math.min(...chartData.map(d => Number(d.weight) || 0)) - 1;
+            let maxW = Math.max(...chartData.map(d => Number(d.weight) || 0)) + 1;
             let range = maxW - minW === 0 ? 10 : (maxW - minW);
 
             let html = '';
             chartData.forEach(d => {
-                let h = ((d.weight - minW) / range) * 100;
+                const weight = Number(d.weight) || 0;
+                let h = ((weight - minW) / range) * 100;
                 if(h < 15) h = 15;
-                html += `<div class="chart-bar-wrapper"><span class="chart-val">${d.weight}</span><div class="chart-bar" style="height: ${h}%;"></div><span class="chart-date">${d.date}</span></div>`;
+                html += `<div class="chart-bar-wrapper"><span class="chart-val">${weight.toFixed(1)}</span><div class="chart-bar" style="height: ${h}%;"></div><span class="chart-date">${window.formatWeightDate(d.date)}</span></div>`;
             });
             container.innerHTML = html;
             container.classList.add('chart-container');
+            window.renderProgressInsights();
+        };
+
+        window.getLastNDates = function(n = 7) {
+            const dates = [];
+            const base = new Date(`${window.todayDate}T12:00:00`);
+            for(let i = n - 1; i >= 0; i--) {
+                const d = new Date(base);
+                d.setDate(base.getDate() - i);
+                dates.push(d.toISOString().slice(0, 10));
+            }
+            return dates;
+        };
+
+        window.getWeightTrend = function() {
+            const history = JSON.parse(localStorage.getItem('achilles_weight_history')) || [];
+            const valid = history.filter(x => Number.isFinite(Number(x?.weight)) && Number(x.weight) > 0).slice(-7);
+            if(valid.length < 2) return null;
+            const first = Number(valid[0].weight);
+            const last = Number(valid[valid.length - 1].weight);
+            return Math.round((last - first) * 10) / 10;
+        };
+
+        window.renderProgressInsights = function() {
+            const avgKcalEl = document.getElementById('stat-avg-kcal');
+            if(!avgKcalEl) return;
+
+            const daysData = window.allDaysData || JSON.parse(localStorage.getItem('achilles_all_days')) || {};
+            const dates = window.getLastNDates(7);
+            const target = JSON.parse(localStorage.getItem('achilles_macros')) || {p:0,f:0,c:0};
+            const baseKcal = Number(localStorage.getItem('achilles_base_kcal')) || 2000;
+            const appMode = localStorage.getItem('achilles_app_mode') || 'pro';
+            const profile = JSON.parse(localStorage.getItem('achilles_profile')) || {};
+
+            let loggedDays = 0;
+            let kcalTotal = 0;
+            let proteinHit = 0;
+            let calorieHit = 0;
+            let workoutCount = 0;
+
+            dates.forEach(date => {
+                const d = daysData[date];
+                if(!d) return;
+                const hasNutrition = Number(d.consumedCalories || 0) > 0 || (d.log || []).some(e => e.type === 'food');
+                if(hasNutrition) {
+                    loggedDays++;
+                    kcalTotal += Number(d.consumedCalories || 0);
+                    const dayGoal = baseKcal + (appMode === 'pro' ? Number(d.workoutBonus || 0) : 0);
+                    if(dayGoal > 0 && Math.abs(Number(d.consumedCalories || 0) - dayGoal) / dayGoal <= 0.10) calorieHit++;
+                    if(Number(target.p || 0) > 0 && Number(d.macros?.p || 0) >= Number(target.p) * 0.9) proteinHit++;
+                }
+                workoutCount += (d.log || []).filter(e => e.type === 'workout').length;
+            });
+
+            const avgKcal = loggedDays ? Math.round(kcalTotal / loggedDays) : 0;
+            const weightTrend = window.getWeightTrend();
+            const proteinRate = loggedDays ? proteinHit / loggedDays : 0;
+            const calorieRate = loggedDays ? calorieHit / loggedDays : 0;
+
+            let score = 0;
+            score += Math.round(Math.min(loggedDays / 7, 1) * 20);
+            score += Math.round(proteinRate * 30);
+            score += Math.round(calorieRate * 30);
+            score += Math.round(Math.min(workoutCount / 3, 1) * 20);
+            score = Math.max(0, Math.min(100, score));
+
+            document.getElementById('stat-avg-kcal').textContent = loggedDays ? avgKcal : '—';
+            document.getElementById('stat-protein-hit').textContent = loggedDays ? `${proteinHit}/${loggedDays}` : '—';
+            document.getElementById('stat-workouts').textContent = String(workoutCount);
+            document.getElementById('stat-weight-trend').textContent = weightTrend === null ? '—' : `${weightTrend > 0 ? '+' : ''}${weightTrend.toFixed(1)} кг`;
+            document.getElementById('progress-score-badge').textContent = `${score} / 100`;
+
+            const coachStatus = document.getElementById('coach-status');
+            const coachMessage = document.getElementById('coach-message');
+            const coachSub = document.getElementById('coach-submessage');
+            const messages = [];
+
+            if(loggedDays < 3) {
+                coachStatus.textContent = 'Мало даних';
+                coachMessage.textContent = 'Занеси харчування хоча б за 3 дні — тоді рекомендації стануть значно точнішими.';
+                coachSub.textContent = `Зараз є дані за ${loggedDays} із 7 днів.`;
+            } else {
+                if(proteinRate < 0.6) messages.push(`білок виконано лише у ${proteinHit} з ${loggedDays} днів`);
+                if(calorieRate < 0.5) messages.push('калорії часто виходять за коридор ±10% від цілі');
+                if(workoutCount === 0) messages.push('за 7 днів немає записаних тренувань');
+
+                const goal = profile.goal || 'maintain';
+                let trendMessage = '';
+                if(weightTrend !== null) {
+                    if(goal === 'lose') {
+                        if(weightTrend < -1.2) trendMessage = 'Вага падає дуже швидко; перевір дефіцит і відновлення.';
+                        else if(weightTrend < -0.2) trendMessage = 'Вага рухається вниз у правильному напрямку.';
+                        else if(weightTrend >= 0.2) trendMessage = 'Вага поки росте — перевір середню калорійність і точність порцій.';
+                        else trendMessage = 'Вага майже стабільна; оцінюй тренд ще 1–2 тижні, не один день.';
+                    } else if(goal === 'gain') {
+                        if(weightTrend > 0.2 && weightTrend <= 1.0) trendMessage = 'Маса росте помірно — напрямок нормальний.';
+                        else if(weightTrend > 1.0) trendMessage = 'Маса росте швидко; частина приросту може бути не м’язовою.';
+                        else trendMessage = 'Для набору маси темп поки слабкий — перевір профіцит калорій.';
+                    } else {
+                        trendMessage = Math.abs(weightTrend) <= 0.5 ? 'Вага близька до стабільної.' : 'Вага помітно змінюється відносно режиму підтримки.';
+                    }
+                }
+
+                if(messages.length === 0) {
+                    coachStatus.textContent = score >= 80 ? 'Система стабільна' : 'Нормальний темп';
+                    coachMessage.textContent = trendMessage || 'Харчування й тренування виглядають стабільно. Продовжуй збирати дані без різких змін.';
+                    coachSub.textContent = `Виконання: білок ${Math.round(proteinRate*100)}%, калорійний коридор ${Math.round(calorieRate*100)}%, тренувань ${workoutCount}.`;
+                } else {
+                    coachStatus.textContent = 'Є що покращити';
+                    coachMessage.textContent = `Головне зараз: ${messages[0]}.`;
+                    coachSub.textContent = [trendMessage, messages.slice(1).join('; ')].filter(Boolean).join(' ');
+                }
+            }
+
+            const lastPR = JSON.parse(localStorage.getItem('achilles_last_pr'));
+            const prChip = document.getElementById('last-pr-chip');
+            const prText = document.getElementById('last-pr-text');
+            if(lastPR && prChip && prText) {
+                prChip.style.display = 'inline-flex';
+                prText.textContent = `${lastPR.name}: ${lastPR.label.replace('Новий PR: ', '')}`;
+            } else if(prChip) {
+                prChip.style.display = 'none';
+            }
         };
 
         window.updateGoalDisplay = function() {
@@ -1374,6 +1846,7 @@
             window.saveDailyData();
             window.updateGoalDisplay();
             window.renderDiary();
+            window.renderProgressInsights();
         };
 
         const allNavItems = document.querySelectorAll('.menu-item, .nav-item');
@@ -1710,7 +2183,45 @@
             `}).join('');
         };
 
-        window.logWorkoutEntry = function(name, burnedKcal, detailsHtml) {
+        window.evaluateStrengthPR = function(name, sets) {
+            const weightedSets = (sets || []).filter(s => Number(s.weight) > 0 && Number(s.reps) > 0);
+            if(weightedSets.length === 0) return { isPR: false, label: '' };
+
+            const maxWeight = Math.max(...weightedSets.map(s => Number(s.weight)));
+            const volume = Math.round(weightedSets.reduce((sum, s) => sum + Number(s.weight) * Number(s.reps), 0) * 10) / 10;
+            const est1RM = Math.round(Math.max(...weightedSets.map(s => Number(s.weight) * (1 + Number(s.reps) / 30))) * 10) / 10;
+
+            const allPRs = JSON.parse(localStorage.getItem('achilles_prs')) || {};
+            const previous = allPRs[name];
+            let label = '';
+            let isPR = false;
+
+            if(previous) {
+                const gains = [];
+                if(maxWeight > Number(previous.maxWeight || 0)) gains.push(`вага ${maxWeight} кг`);
+                if(est1RM > Number(previous.est1RM || 0) + 0.05) gains.push(`e1RM ${est1RM} кг`);
+                if(volume > Number(previous.volume || 0) + 0.05) gains.push(`обсяг ${volume} кг`);
+                if(gains.length) {
+                    isPR = true;
+                    label = `Новий PR: ${gains.join(' · ')}`;
+                }
+            }
+
+            allPRs[name] = {
+                maxWeight: Math.max(maxWeight, Number(previous?.maxWeight || 0)),
+                est1RM: Math.max(est1RM, Number(previous?.est1RM || 0)),
+                volume: Math.max(volume, Number(previous?.volume || 0)),
+                updatedAt: Date.now()
+            };
+            localStorage.setItem('achilles_prs', JSON.stringify(allPRs));
+
+            if(isPR) {
+                localStorage.setItem('achilles_last_pr', JSON.stringify({ name, label, date: window.todayDate, updatedAt: Date.now() }));
+            }
+            return { isPR, label, maxWeight, volume, est1RM };
+        };
+
+        window.logWorkoutEntry = function(name, burnedKcal, detailsHtml, metadata = {}) {
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             let htmlStr = `🏋️ <strong style="color: var(--text-main);">${name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${detailsHtml}</span>`;
             
@@ -1718,19 +2229,28 @@
                 window.workoutBonus += burnedKcal;
                 htmlStr += `<span style="font-size: 15px; margin-top: 5px; display:block; color: var(--text-main);">Спалено: <strong class="gradient-text">${burnedKcal} ккал</strong></span>`;
             }
+
+            if(metadata.pr?.isPR) {
+                htmlStr += `<span class="pr-chip"><i class="fa-solid fa-trophy"></i>${metadata.pr.label}</span>`;
+            }
             
             const entry = {
                 id: Date.now(),
                 type: 'workout',
                 burned: appMode === 'pro' ? burnedKcal : 0,
-                html: htmlStr
+                html: htmlStr,
+                exercise: name,
+                createdAt: Date.now(),
+                ...metadata
             };
             
             window.dailyLog.push(entry);
             window.saveDailyData();
             window.updateGoalDisplay();
             window.renderDiary();
-            document.querySelector('.nav-item[data-target="tab-dashboard"]').click();
+            window.renderProgressInsights();
+            const dashboardNav = document.querySelector('.nav-item[data-target="tab-dashboard"]');
+            if(dashboardNav) dashboardNav.click();
         };
 
         window.logSimpleStrength = function(name, repsId, weightId, factor) {
@@ -1738,19 +2258,29 @@
             let weightStr = document.getElementById(weightId).value.trim();
             if(!repsStr) { alert("Введіть повторення!"); return; }
             
-            let repsArr = repsStr.split(/[.,\s]+/).map(s => parseInt(s.trim())).filter(s => !isNaN(s));
-            let weightArr = weightStr ? weightStr.split(/[.,\s]+/).map(s => parseFloat(s.trim())).filter(s => !isNaN(s)) : [];
+            let repsArr = repsStr.split(/[.,\s]+/).map(s => parseInt(s.trim())).filter(s => !isNaN(s) && s > 0);
+            let weightArr = weightStr ? weightStr.split(/[;\s]+/).map(s => parseFloat(s.trim().replace(',', '.'))).filter(s => !isNaN(s) && s >= 0) : [];
             if(repsArr.length === 0) return;
 
             let totalReps = repsArr.reduce((a,b) => a+b, 0);
             let burnedKcal = Math.round(totalReps * factor);
+            const sets = repsArr.map((r, i) => ({
+                reps: r,
+                weight: weightArr[i] !== undefined ? weightArr[i] : (weightArr.length > 0 ? weightArr[weightArr.length - 1] : 0)
+            }));
+            const pr = window.evaluateStrengthPR(name, sets);
+            const volume = Math.round(sets.reduce((sum, s) => sum + s.reps * s.weight, 0) * 10) / 10;
             
-            let setsDetails = repsArr.map((r, i) => {
-                let w = weightArr[i] !== undefined ? weightArr[i] : (weightArr.length > 0 ? weightArr[weightArr.length - 1] : 0);
-                return w > 0 ? `${r}x${w}кг` : `${r} разів`;
-            }).join(', ');
+            let setsDetails = sets.map(s => s.weight > 0 ? `${s.reps}×${s.weight} кг` : `${s.reps} разів`).join(', ');
             
-            window.logWorkoutEntry(name, burnedKcal, `${repsArr.length} підходів: ${setsDetails}`);
+            window.logWorkoutEntry(name, burnedKcal, `${sets.length} підходів: ${setsDetails}`, {
+                kind: 'strength',
+                sets,
+                totalReps,
+                volume,
+                estimated1RM: pr.est1RM || 0,
+                pr
+            });
             document.getElementById(repsId).value = ''; document.getElementById(weightId).value = '';
         };
 
@@ -1762,7 +2292,7 @@
             let burnedKcal = Math.round(tForCalc * factor);
             let unit = placeholder.includes('сек') ? 'сек' : 'хв';
             
-            window.logWorkoutEntry(name, burnedKcal, `Час: ${time} ${unit}`);
+            window.logWorkoutEntry(name, burnedKcal, `Час: ${time} ${unit}`, { kind: 'cardio', duration: time, durationUnit: unit });
             document.getElementById(timeId).value = '';
         };
 
@@ -1771,7 +2301,7 @@
             let k = parseInt(document.getElementById('simp-aw-kcal').value);
             if(!t || !k) { alert("Введіть час та калорії!"); return; }
             
-            window.logWorkoutEntry("Тренування Apple Watch", k, `Тривалість: ${t} хв`);
+            window.logWorkoutEntry("Тренування Apple Watch", k, `Тривалість: ${t} хв`, { kind: 'cardio', source: 'apple-watch', duration: t, durationUnit: 'хв' });
             document.getElementById('simp-aw-time').value = ''; document.getElementById('simp-aw-kcal').value = '';
         };
 
@@ -1845,7 +2375,11 @@
             if(window.liveWorkout.sets.length > 0) {
                 let totalReps = window.liveWorkout.sets.reduce((a,b) => a+b, 0);
                 let burnedKcal = Math.round(totalReps * window.liveWorkout.factor);
-                window.logWorkoutEntry(window.liveWorkout.name, burnedKcal, `${window.liveWorkout.sets.length} підходів (${window.liveWorkout.sets.join(', ')})`);
+                window.logWorkoutEntry(window.liveWorkout.name, burnedKcal, `${window.liveWorkout.sets.length} підходів (${window.liveWorkout.sets.join(', ')})`, {
+                    kind: 'strength',
+                    sets: window.liveWorkout.sets.map(reps => ({ reps, weight: 0 })),
+                    totalReps
+                });
             }
         };
 
@@ -1862,5 +2396,33 @@
 
         window.logout = function() { localStorage.clear(); location.reload(); };
     </script>
+
+    <script>
+        /* iOS standalone/PWA: синхронізує CSS-висоту з реальною видимою висотою екрана. */
+        (function () {
+            let lastHeight = 0;
+            let rafId = 0;
+
+            function applyAppHeight() {
+                cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(function () {
+                    const h = Math.round(window.innerHeight || document.documentElement.clientHeight || 0);
+                    if (h > 0 && h !== lastHeight) {
+                        lastHeight = h;
+                        document.documentElement.style.setProperty('--app-height', h + 'px');
+                    }
+                });
+            }
+
+            applyAppHeight();
+            window.addEventListener('resize', applyAppHeight, { passive: true });
+            window.addEventListener('orientationchange', function () {
+                setTimeout(applyAppHeight, 120);
+                setTimeout(applyAppHeight, 420);
+            }, { passive: true });
+            window.addEventListener('pageshow', applyAppHeight, { passive: true });
+        })();
+    </script>
+
 </body>
 </html>
