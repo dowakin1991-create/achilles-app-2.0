@@ -1,0 +1,19 @@
+{
+  "name": "Achilles OS",
+  "short_name": "Achilles",
+  "description": "Харчування, тренування, прогрес і Achilles Coach.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "uk",
+  "icons": [
+    {
+      "src": "./IMG_9302.jpeg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
