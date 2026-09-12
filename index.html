@@ -191,11 +191,19 @@
         button.secondary { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; animation: none;}
         button.danger { background: var(--input-bg); color: var(--danger); box-shadow: none; border: 1px solid rgba(255,69,58,0.3); animation: none;}
 
+        /* НАВІГАЦІЯ ДАТ (МАШИНА ЧАСУ) */
+        .date-navigator {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; 
+            background: var(--card-bg); border-radius: 20px; padding: 5px; border: 1px solid var(--glass-border);
+        }
+        .date-btn { width: 50px; padding: 10px; border-radius: 16px; margin: 0; border: none; background: transparent; color: var(--text-main); font-size: 18px; cursor: pointer; box-shadow: none;}
+        .date-btn:active { transform: scale(0.9); }
+
         /* === ВІДЖЕТИ === */
         .progress-bar { width: 100%; height: 12px; background: var(--glass-border); border-radius: 6px; margin-top: 15px; overflow: hidden; }
         .progress-fill { height: 100%; width: 0%; border-radius: 6px; transition: width 1s var(--bezier); }
         
-        .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; color: var(--text-main); border: 1px solid var(--glass-border); transition: background-color 0.4s ease, border-color 0.4s ease;}
+        .list-item { padding: 20px; background: var(--card-bg); border-radius: 24px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--glass-border); transition: background-color 0.4s ease, border-color 0.4s ease;}
         .add-btn { width: auto; padding: 12px 24px; margin: 0; border-radius: 16px; box-shadow: none;}
 
         .macro-box { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 13px; background: var(--input-bg); border-radius: 20px; padding: 15px; border: 1px solid var(--glass-border); }
@@ -234,14 +242,6 @@
 
         .delete-btn { color: var(--text-muted); font-size: 20px; padding: 10px; cursor: pointer; transition: transform 0.2s; }
         .delete-btn:active { color: var(--danger); transform: scale(1.2); }
-
-        /* НАВІГАЦІЯ ДАТ */
-        .date-navigator {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; 
-            background: var(--card-bg); border-radius: 20px; padding: 5px; border: 1px solid var(--glass-border);
-        }
-        .date-btn { width: 50px; padding: 10px; border-radius: 16px; margin: 0; border: none; background: transparent; color: var(--text-main); font-size: 18px; cursor: pointer;}
-        .date-btn:active { transform: scale(0.9); }
 
         /* === ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ === */
         .nav-bar { 
@@ -303,7 +303,12 @@
 </head>
 <body> 
 
-    <div id="splash-screen"><div class="splash-logo"></div></div>
+    <!-- СПРАВЖНІЙ 120FPS SPLASH SCREEN -->
+    <div id="splash-screen">
+        <div class="splash-logo"></div>
+    </div>
+
+    <!-- АВАТАРКА В КУТКУ -->
     <div id="global-avatar" class="main-avatar" onclick="openProfileTab()"></div>
 
     <!-- LIVE WORKOUT OVERLAY -->
@@ -429,7 +434,8 @@
                 
                 <!-- ДЕШБОРД -->
                 <div id="tab-dashboard" class="tab-content active">
-                    <!-- Навігація Дат -->
+                    
+                    <!-- Навігація Дат (МАШИНА ЧАСУ) -->
                     <div class="date-navigator">
                         <button class="date-btn" onclick="changeDate(-1)"><i class="fa-solid fa-chevron-left"></i></button>
                         <h2 id="date-display" class="gradient-text" style="margin: 0; font-size: 20px; font-weight: 800;">Сьогодні</h2>
@@ -710,7 +716,7 @@
             { name: "Діагональні скручування (Твісти)", desc: "Косі м'язи.", factor: 0.25 }
         ];
 
-        // ГЛОБАЛЬНИЙ СТАН З ПІДТРИМКОЮ ІСТОРІЇ
+        // ГЛОБАЛЬНИЙ СТАН: МАШИНА ЧАСУ ТА ІСТОРІЯ
         window.todayDate = new Date().toISOString().split('T')[0];
         window.currentDate = window.todayDate;
         window.consumedCalories = 0; 
@@ -730,6 +736,7 @@
             document.getElementById(screenId).classList.add('active-block');
         }
 
+        // НАВІГАЦІЯ ПО ДНЯХ
         window.changeDate = function(offset) {
             let d = new Date(window.currentDate);
             d.setDate(d.getDate() + offset);
@@ -751,8 +758,12 @@
                 let parts = dateStr.split('-');
                 displayDate = `${parts[2]}.${parts[1]}.${parts[0]}`;
             }
-            document.getElementById('date-display').innerText = displayDate;
-            document.getElementById('btn-next-date').style.visibility = (dateStr === window.todayDate) ? "hidden" : "visible";
+            
+            const dateDisplayEl = document.getElementById('date-display');
+            if(dateDisplayEl) dateDisplayEl.innerText = displayDate;
+            
+            const btnNext = document.getElementById('btn-next-date');
+            if(btnNext) btnNext.style.visibility = (dateStr === window.todayDate) ? "hidden" : "visible";
             
             window.updateGoalDisplay();
             window.renderDiary();
@@ -802,12 +813,8 @@
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile || {}));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
-                    
-                    if(!localStorage.getItem('achilles_theme_color') && d.themeColor) {
-                        localStorage.setItem('achilles_theme_color', d.themeColor);
-                        localStorage.setItem('achilles_theme_mode', d.themeMode || 'auto');
-                    }
-                    
+                    if(d.themeColor) localStorage.setItem('achilles_theme_color', d.themeColor);
+                    if(d.themeMode) localStorage.setItem('achilles_theme_mode', d.themeMode);
                     localStorage.setItem('achilles_base_kcal', d.baseKcal || 2000);
                     localStorage.setItem('achilles_goal_text', d.goalText || '');
                     localStorage.setItem('achilles_macros', JSON.stringify(d.targetMacros || {p:0,f:0,c:0}));
@@ -828,7 +835,6 @@
                     let cloudFF = d.favFoods || [];
                     if(cloudFF.length > localFF.length) localStorage.setItem('achilles_fav_foods', JSON.stringify(cloudFF));
                     
-                    // МІГРАЦІЯ СТАРИХ ДАНИХ ТА РОЗУМНА СИНХРОНІЗАЦІЯ ІСТОРІЇ
                     let cloudHistory = d.dailyHistory || {};
                     if (d.daily && d.daily.date && !cloudHistory[d.daily.date]) {
                         cloudHistory[d.daily.date] = {
@@ -856,23 +862,30 @@
                     localStorage.setItem('achilles_daily_history', JSON.stringify(window.dailyHistory));
                     if (needsSyncToCloud) window.syncToCloud();
                     
+                    window.applyTheme();
                     return true;
                 }
             } catch(e) { console.error("Cloud Load Error", e); }
             return false;
         };
 
-        // Запуск додатку
         document.addEventListener("DOMContentLoaded", () => {
+            window.applyTheme(); 
             const splash = document.getElementById('splash-screen');
+            const avatar = document.getElementById('global-avatar');
+            
             setTimeout(() => {
                 if(splash) {
                     splash.classList.add('hidden');
                     setTimeout(() => splash.style.display = 'none', 500);
                 }
             }, 800);
+            
+            setTimeout(() => {
+                if(avatar) { avatar.classList.add('visible'); }
+            }, 1200);
 
-            // Міграція старого формату localStorage
+            // МІГРАЦІЯ СТАРИХ ДАНИХ (Безпечний запуск)
             let oldDaily = JSON.parse(localStorage.getItem('achilles_daily_data'));
             if (oldDaily && oldDaily.date) {
                 window.dailyHistory[oldDaily.date] = {
@@ -888,14 +901,14 @@
             const userName = localStorage.getItem('achilles_user');
             if (userName) {
                 window.loadUserData();
-                window.loadDataForDate(window.todayDate);
+                window.loadDataForDate(window.todayDate); 
                 window.renderWeightChart();
                 window.showScreen('main-app-window');
                 
                 window.loadFromCloud(userName).then(loaded => {
                     if(loaded) {
                         window.loadUserData();
-                        window.loadDataForDate(window.todayDate);
+                        window.loadDataForDate(window.todayDate); 
                         window.renderWeightChart();
                         window.searchWorkout();
                         if(window.currentFoodFilter === 'all') window.onSearchInput(); else window.renderFavFoods();
@@ -1042,10 +1055,7 @@
             window.logNewWeight(weight);
             window.recalcAndSaveNorms(profile, false); 
             
-            let actualMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-color', 'gold');
-            document.documentElement.setAttribute('data-theme', actualMode);
-
+            window.applyTheme();
             window.loadUserData(); 
             window.loadDataForDate(window.todayDate);
             window.renderWeightChart(); 
@@ -1121,13 +1131,9 @@
             localStorage.setItem('achilles_theme_color', themeColor);
             localStorage.setItem('achilles_theme_mode', themeMode);
             
-            let actualMode = themeMode === 'auto' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : themeMode;
-            document.documentElement.setAttribute('data-color', themeColor);
-            document.documentElement.setAttribute('data-theme', actualMode);
-            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-            if (metaThemeColor) { metaThemeColor.setAttribute("content", actualMode === 'light' ? "#F2F2F7" : "#000000"); }
-            
+            window.applyTheme(themeColor, themeMode);
             window.recalcAndSaveNorms(profile, false); 
+
             window.loadUserData();
             alert('Профіль успішно оновлено!');
         };
@@ -1164,7 +1170,6 @@
             let maxW = Math.max(...chartData.map(d => d.weight)) + 2;
             let range = maxW - minW === 0 ? 10 : (maxW - minW);
 
-            // ФІКС САФАРІ: Повертаємо обгортку <div class="chart-container">
             let html = '<div style="display: flex; flex-direction: row; align-items: stretch; justify-content: space-around; height: 100%; width: 100%;">';
             chartData.forEach(d => {
                 let h = ((d.weight - minW) / range) * 100;
@@ -1202,11 +1207,12 @@
             });
         };
 
-        // РОЗДІЛЕНІ ЩОДЕННИКИ ХАРЧУВАННЯ ТА ТРЕНУВАНЬ
         window.renderDiary = function() {
             const foodList = document.getElementById('food-list');
             const workoutList = document.getElementById('workout-list');
             
+            if(!foodList || !workoutList) return;
+
             const foods = window.dailyLog.filter(e => e.type === 'food');
             const workouts = window.dailyLog.filter(e => e.type === 'workout');
             
@@ -1273,6 +1279,15 @@
                 document.querySelectorAll(`[data-target="${targetId}"]`).forEach(activeItem => { activeItem.classList.add('active'); });
                 tabContents.forEach(tc => { tc.classList.remove('active'); });
                 document.getElementById(targetId).classList.add('active');
+                
+                const av = document.getElementById('global-avatar');
+                if(av && targetId === 'tab-profile') {
+                    av.style.opacity = '0';
+                    av.style.pointerEvents = 'none';
+                } else if(av) {
+                    av.style.opacity = '1';
+                    av.style.pointerEvents = 'auto';
+                }
                 
                 const mc = document.querySelector('.screen.active-block .main-content');
                 if(mc) mc.scrollTop = 0;
@@ -1467,6 +1482,10 @@
         };
 
         window.addFood = function(itemJsonStr, weightId) {
+            if (window.currentDate !== window.todayDate) {
+                if (!confirm("Ви записуєте дані за минулий день. Продовжити?")) return;
+            }
+
             const item = JSON.parse(itemJsonStr.replace(/&quot;/g, '"'));
             let weightInput = document.getElementById(weightId).value;
             let weight = parseFloat(weightInput);
@@ -1589,6 +1608,10 @@
         };
 
         window.logWorkoutEntry = function(name, burnedKcal, detailsHtml) {
+            if (window.currentDate !== window.todayDate) {
+                if (!confirm("Ви записуєте дані за минулий день. Продовжити?")) return;
+            }
+
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
             let htmlStr = `🏋️ <strong style="color: var(--text-main);">${name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${detailsHtml}</span>`;
             
