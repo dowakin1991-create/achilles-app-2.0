@@ -598,8 +598,15 @@
 <body> 
 
     <!-- СПРАВЖНІЙ 120FPS SPLASH SCREEN -->
-    <div id="splash-screen">
-        <div class="splash-logo"></div>
+    <div id="splash-screen" aria-hidden="true">
+        <div class="splash-ambient-mark"></div>
+        <div class="splash-brand">
+            <div class="splash-logo"></div>
+            <div class="splash-wordmark">
+                <span class="splash-wordmark-top">ACHILLES</span>
+                <span class="splash-wordmark-bottom">OS</span>
+            </div>
+        </div>
     </div>
 
     <!-- LIVE WORKOUT OVERLAY -->
@@ -2811,5 +2818,349 @@ select,
     }
 }
 </style>
+
+<style id="achilles-premium-unify">
+/* =========================================================
+   ACHILLES PREMIUM UNIFY + SPLASH REVEAL + HARMONY PASS
+   ========================================================= */
+
+body {
+    position: relative;
+}
+
+body.app-booting {
+    overflow: hidden !important;
+}
+
+.screen .app-window {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: opacity 760ms cubic-bezier(0.22, 1, 0.36, 1), transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.app-booting .screen.active-block .app-window {
+    opacity: 0.001;
+    transform: translateY(18px) scale(0.992);
+}
+
+body.app-ready .screen.active-block .app-window,
+body.boot-finished .screen.active-block .app-window {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+#splash-screen {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 100000 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 26px;
+    overflow: hidden;
+    pointer-events: none;
+    background: transparent !important;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1), visibility 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#splash-screen.hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+#splash-screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 46%, rgba(var(--primary-rgb), 0.20), transparent 28%),
+        radial-gradient(circle at 50% 54%, rgba(var(--primary-rgb), 0.09), transparent 42%);
+    opacity: 0.95;
+}
+
+#splash-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.splash-ambient-mark {
+    position: absolute;
+    width: min(64vw, 420px);
+    height: min(64vw, 420px);
+    border-radius: 28%;
+    background-image: url('IMG_9302.jpeg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.10;
+    filter: blur(12px) saturate(1.05);
+    transform: scale(1.18);
+    box-shadow: 0 0 80px rgba(var(--primary-rgb), 0.18);
+}
+
+.splash-brand {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    animation: splashReveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.splash-logo {
+    width: 122px !important;
+    height: 122px !important;
+    border-radius: 30px !important;
+    border: 1.5px solid rgba(var(--primary-rgb), 0.82) !important;
+    box-shadow:
+        0 22px 65px rgba(0,0,0,0.28),
+        0 0 0 1px rgba(255,255,255,0.04) inset,
+        0 0 38px rgba(var(--primary-rgb), 0.20) !important;
+    animation: splashFloat 3.2s ease-in-out infinite;
+}
+
+.splash-wordmark {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+}
+
+.splash-wordmark-top {
+    font-size: 14px;
+    letter-spacing: 0.5em;
+    text-indent: 0.5em;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.splash-wordmark-bottom {
+    font-size: 28px;
+    letter-spacing: 0.16em;
+    text-indent: 0.16em;
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+@keyframes splashReveal {
+    0% { opacity: 0; transform: translateY(16px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (min-width: 900px) {
+    #main-app-window > .app-window > .main-content,
+    #login-window .main-content,
+    #registration-window .main-content {
+        max-width: 1024px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    #main-app-window .nav-bar {
+        max-width: 1024px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        border-radius: 24px 24px 0 0;
+    }
+}
+
+#main-app-window > .app-window > .main-content {
+    padding-top: max(env(safe-area-inset-top, 0px), 18px) !important;
+    padding-left: clamp(18px, 4vw, 26px) !important;
+    padding-right: clamp(18px, 4vw, 26px) !important;
+    padding-bottom: 32px !important;
+}
+
+#tab-dashboard h1,
+#tab-food h1,
+#tab-workout h1,
+#tab-profile h1 {
+    margin-bottom: 16px !important;
+    letter-spacing: -1.3px;
+}
+
+#tab-dashboard > div[style*='display: flex; justify-content: center; align-items: center; gap: 15px;'] {
+    margin-top: 12px !important;
+    margin-bottom: 24px !important;
+}
+
+.list-item,
+.insight-tile,
+.coach-card,
+.macro-box,
+.chart-container,
+.filter-tabs,
+#food-list,
+#workout-list {
+    border-radius: 26px !important;
+    box-shadow: 0 16px 38px var(--shadow-color);
+}
+
+input,
+select {
+    min-height: 60px;
+    border-radius: 20px !important;
+    font-weight: 600;
+}
+
+button,
+.primary-btn,
+.secondary,
+.danger {
+    border-radius: 18px !important;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.secondary {
+    background: rgba(255,255,255,0.07) !important;
+}
+
+.os-section-head {
+    margin-top: 30px !important;
+    margin-bottom: 14px !important;
+}
+
+.os-section-head h3 {
+    font-size: 24px !important;
+    letter-spacing: -0.6px;
+}
+
+.insight-grid {
+    gap: 12px !important;
+}
+
+.insight-value {
+    font-size: clamp(22px, 5vw, 28px) !important;
+}
+
+.profile-avatar-large {
+    box-shadow:
+        0 18px 46px rgba(0,0,0,0.18),
+        0 0 0 1px rgba(255,255,255,0.06) inset,
+        0 0 32px rgba(var(--primary-rgb), 0.18) !important;
+}
+
+#main-app-window .nav-bar {
+    padding-top: 8px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 10px) !important;
+    background: color-mix(in srgb, var(--nav-bg) 84%, transparent) !important;
+}
+
+#main-app-window .nav-item {
+    min-height: 56px !important;
+    gap: 2px !important;
+}
+
+#main-app-window .nav-icon {
+    font-size: 20px !important;
+}
+
+#main-app-window .nav-text {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+}
+
+#sync-icon {
+    vertical-align: middle;
+}
+
+@media (max-width: 560px) {
+    .splash-logo {
+        width: 108px !important;
+        height: 108px !important;
+        border-radius: 26px !important;
+    }
+
+    .splash-wordmark-bottom {
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .splash-brand,
+    .splash-logo,
+    .screen .app-window {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+
+<script id="achilles-premium-boot">
+(function () {
+    const body = document.body;
+    if (body) body.classList.add('app-booting');
+
+    function finishBoot() {
+        const splash = document.getElementById('splash-screen');
+        if (body) {
+            body.classList.add('app-ready');
+        }
+        setTimeout(() => {
+            if (body) {
+                body.classList.remove('app-booting');
+                body.classList.add('boot-finished');
+            }
+            if (splash) splash.style.display = 'none';
+        }, 560);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const splash = document.getElementById('splash-screen');
+        if (!splash) {
+            finishBoot();
+            return;
+        }
+        splash.style.display = 'flex';
+        splash.classList.remove('hidden');
+        setTimeout(() => {
+            if (body) body.classList.add('app-ready');
+        }, 720);
+        setTimeout(() => {
+            splash.classList.add('hidden');
+            finishBoot();
+        }, 980);
+
+        splash.addEventListener('transitionend', (e) => {
+            if (e.propertyName === 'opacity' && splash.classList.contains('hidden')) {
+                splash.style.display = 'none';
+            }
+        }, { passive: true });
+    }, { once: true });
+
+    const originalShowScreen = window.showScreen;
+    if (typeof originalShowScreen === 'function') {
+        window.showScreen = function(screenId) {
+            originalShowScreen(screenId);
+            const screen = document.getElementById(screenId);
+            const pane = screen ? screen.querySelector('.app-window') : null;
+            if (pane) {
+                pane.style.opacity = '0.001';
+                pane.style.transform = 'translateY(10px) scale(0.995)';
+                requestAnimationFrame(() => {
+                    pane.style.opacity = '1';
+                    pane.style.transform = 'translateY(0) scale(1)';
+                });
+            }
+        };
+    }
+})();
+</script>
+
 </body>
 </html>
