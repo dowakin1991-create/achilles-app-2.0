@@ -737,126 +737,202 @@
             <div class="main-content">
                 
                 <!-- ДЕШБОРД ТА ВАГА -->
-                <div id="tab-dashboard" class="tab-content active">
-                    <h1 id="greeting-header">Привіт, <span class="gradient-text" id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
-                    
-                    <!-- ІСТОРІЯ (ПЕРЕКЛЮЧЕННЯ ДНІВ) -->
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 25px; margin-top: 10px;">
-                        <button onclick="changeDate(-1)" class="secondary" style="width: 40px; height: 40px; padding: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-chevron-left"></i></button>
-                        <strong id="display-date" class="gradient-text" style="font-size: 18px; width: 120px; text-align: center;">Сьогодні</strong>
-                        <button onclick="changeDate(1)" class="secondary" id="btn-next-date" style="width: 40px; height: 40px; padding: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center;" disabled><i class="fa-solid fa-chevron-right"></i></button>
-                    </div>
-                    
-                    <div class="nutrition-hero-card">
-                        <div class="nutrition-hero-topline">
-                            <span class="nutrition-hero-label">Спожито:</span>
+                <div id="tab-dashboard" class="tab-content active premium-dashboard">
+                    <!-- BLOCK 01: DASHBOARD HEADER -->
+                    <section class="dash-header-block premium-surface premium-surface-ghost">
+                        <div class="dash-greeting-wrap">
+                            <span class="eyebrow">ACHILLES OS</span>
+                            <h1 id="greeting-header">Привіт, <span class="gradient-text" id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
+                            <span class="dash-subtitle">Твій стан, прогрес і наступний крок — в одному місці.</span>
+                        </div>
+
+                        <div class="date-switcher premium-control">
+                            <button onclick="changeDate(-1)" class="secondary date-arrow" aria-label="Попередній день"><i class="fa-solid fa-chevron-left"></i></button>
+                            <div class="date-switcher-center">
+                                <span class="date-caption">ДЕНЬ</span>
+                                <strong id="display-date" class="gradient-text">Сьогодні</strong>
+                            </div>
+                            <button onclick="changeDate(1)" class="secondary date-arrow" id="btn-next-date" aria-label="Наступний день" disabled><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </section>
+
+                    <!-- BLOCK 02: TODAY / ACTIVITY RINGS -->
+                    <section class="premium-section today-section">
+                        <div class="section-heading-row">
+                            <div>
+                                <span class="eyebrow">СЬОГОДНІ</span>
+                                <h2>Харчування</h2>
+                            </div>
                             <div id="bonus-kcal-msg" class="bonus-badge" style="display: none;"></div>
                         </div>
 
-                        <div class="nutrition-hero-body">
-                            <div class="nutrition-rings-wrap">
-                                <div class="nutrition-rings-widget" id="nutrition-rings-widget" aria-label="Поживні кільця">
-                                    <svg class="nutrition-rings-svg" viewBox="0 0 240 240" role="img" aria-hidden="true">
-                                        <circle class="ring-track ring-track-kcal" cx="120" cy="120" r="92"></circle>
-                                        <circle class="ring-progress ring-kcal gradient-ring" id="ring-kcal" cx="120" cy="120" r="92"></circle>
+                        <div class="nutrition-hero-card premium-surface">
+                            <div class="nutrition-hero-body">
+                                <div class="nutrition-rings-wrap">
+                                    <div class="nutrition-rings-widget" id="nutrition-rings-widget" aria-label="Поживні кільця">
+                                        <svg class="nutrition-rings-svg" viewBox="0 0 240 240" role="img" aria-hidden="true">
+                                            <circle class="ring-track ring-track-kcal" cx="120" cy="120" r="92"></circle>
+                                            <circle class="ring-progress ring-kcal gradient-ring" id="ring-kcal" cx="120" cy="120" r="92"></circle>
+                                            <circle class="ring-track ring-track-protein" cx="120" cy="120" r="72"></circle>
+                                            <circle class="ring-progress ring-protein" id="ring-protein" cx="120" cy="120" r="72"></circle>
+                                            <circle class="ring-track ring-track-fat" cx="120" cy="120" r="54"></circle>
+                                            <circle class="ring-progress ring-fat" id="ring-fat" cx="120" cy="120" r="54"></circle>
+                                            <circle class="ring-track ring-track-carb" cx="120" cy="120" r="38"></circle>
+                                            <circle class="ring-progress ring-carb" id="ring-carb" cx="120" cy="120" r="38"></circle>
+                                        </svg>
 
-                                        <circle class="ring-track ring-track-protein" cx="120" cy="120" r="72"></circle>
-                                        <circle class="ring-progress ring-protein" id="ring-protein" cx="120" cy="120" r="72"></circle>
-
-                                        <circle class="ring-track ring-track-fat" cx="120" cy="120" r="54"></circle>
-                                        <circle class="ring-progress ring-fat" id="ring-fat" cx="120" cy="120" r="54"></circle>
-
-                                        <circle class="ring-track ring-track-carb" cx="120" cy="120" r="38"></circle>
-                                        <circle class="ring-progress ring-carb" id="ring-carb" cx="120" cy="120" r="38"></circle>
-                                    </svg>
-
-                                    <div class="nutrition-rings-center">
-                                        <span class="nutrition-rings-title">Ккал</span>
-                                        <div class="nutrition-rings-kcal-line">
-                                            <span class="nutrition-rings-kcal-value gradient-text" id="calories-consumed" style="animation: none;">0</span>
-                                            <span class="nutrition-rings-kcal-goal">/ <span id="calories-goal">2000</span></span>
+                                        <div class="nutrition-rings-center">
+                                            <span class="nutrition-rings-title">Ккал</span>
+                                            <div class="nutrition-rings-kcal-line">
+                                                <span class="nutrition-rings-kcal-value gradient-text" id="calories-consumed" style="animation: none;">0</span>
+                                                <span class="nutrition-rings-kcal-goal">/ <span id="calories-goal">2000</span></span>
+                                            </div>
+                                            <span class="nutrition-rings-kcal-unit">ккал</span>
                                         </div>
-                                        <span class="nutrition-rings-kcal-unit">ккал</span>
+                                    </div>
+                                </div>
+
+                                <div class="nutrition-macro-cards">
+                                    <div class="nutrition-macro-card protein">
+                                        <div class="macro-icon"><i class="fa-solid fa-dumbbell"></i></div>
+                                        <div class="nutrition-macro-copy">
+                                            <span class="nutrition-macro-name">Білки</span>
+                                            <div class="nutrition-macro-value-line"><strong id="macro-p" class="c-p">0</strong><span id="target-p">/ 0г</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="nutrition-macro-card fat">
+                                        <div class="macro-icon"><i class="fa-solid fa-droplet"></i></div>
+                                        <div class="nutrition-macro-copy">
+                                            <span class="nutrition-macro-name">Жири</span>
+                                            <div class="nutrition-macro-value-line"><strong id="macro-f" class="c-f">0</strong><span id="target-f">/ 0г</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="nutrition-macro-card carb">
+                                        <div class="macro-icon"><i class="fa-solid fa-bolt"></i></div>
+                                        <div class="nutrition-macro-copy">
+                                            <span class="nutrition-macro-name">Вуглеводи</span>
+                                            <div class="nutrition-macro-value-line"><strong id="macro-c" class="c-c">0</strong><span id="target-c">/ 0г</span></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </section>
 
-                            <div class="nutrition-macro-cards">
-                                <div class="nutrition-macro-card protein">
-                                    <span class="nutrition-macro-dot"></span>
-                                    <div class="nutrition-macro-copy">
-                                        <span class="nutrition-macro-name">Білки</span>
-                                        <div class="nutrition-macro-value-line"><strong id="macro-p" class="c-p">0</strong><span id="target-p">/ 0г</span></div>
+                    <!-- BLOCK 03: 7-DAY INTELLIGENCE -->
+                    <section class="premium-section weekly-section">
+                        <div class="section-heading-row">
+                            <div>
+                                <span class="eyebrow">7 ДНІВ</span>
+                                <h2>Прогрес</h2>
+                            </div>
+                            <span class="section-note">Тренд, не один день</span>
+                        </div>
+
+                        <div class="weekly-premium-panel premium-surface">
+                            <div class="weekly-top-grid">
+                                <div class="weekly-score-card">
+                                    <div class="week-score-ring" aria-label="Загальна оцінка прогресу">
+                                        <svg viewBox="0 0 180 180" aria-hidden="true">
+                                            <circle class="week-score-track" cx="90" cy="90" r="69"></circle>
+                                            <circle class="week-score-progress" id="week-score-progress" cx="90" cy="90" r="69"></circle>
+                                        </svg>
+                                        <div class="week-score-center">
+                                            <span class="week-score-label">SCORE</span>
+                                            <span id="progress-score-badge">0 / 100</span>
+                                        </div>
+                                    </div>
+                                    <div class="weekly-score-copy">
+                                        <strong id="week-score-title">Збираємо дані</strong>
+                                        <span id="week-score-caption">Що більше стабільних днів — то точніша оцінка.</span>
                                     </div>
                                 </div>
 
-                                <div class="nutrition-macro-card fat">
-                                    <span class="nutrition-macro-dot"></span>
-                                    <div class="nutrition-macro-copy">
-                                        <span class="nutrition-macro-name">Жири</span>
-                                        <div class="nutrition-macro-value-line"><strong id="macro-f" class="c-f">0</strong><span id="target-f">/ 0г</span></div>
+                                <div class="weekly-chart-card">
+                                    <div class="weekly-chart-head">
+                                        <div>
+                                            <span class="weekly-chart-kicker">КАЛОРІЇ / ЦІЛЬ</span>
+                                            <strong>Ритм тижня</strong>
+                                        </div>
+                                        <span class="weekly-chart-legend"><i></i> білок ≥ 90%</span>
                                     </div>
+                                    <div class="week-bars" id="week-bars" aria-label="Калорійність за останні 7 днів"></div>
                                 </div>
+                            </div>
 
-                                <div class="nutrition-macro-card carb">
-                                    <span class="nutrition-macro-dot"></span>
-                                    <div class="nutrition-macro-copy">
-                                        <span class="nutrition-macro-name">Вуглеводи</span>
-                                        <div class="nutrition-macro-value-line"><strong id="macro-c" class="c-c">0</strong><span id="target-c">/ 0г</span></div>
-                                    </div>
+                            <div class="weekly-kpi-grid">
+                                <div class="weekly-kpi-card" id="kpi-calories" style="--kpi-color: var(--primary); --kpi-pct: 0deg;">
+                                    <div class="mini-progress-ring"><i class="fa-solid fa-fire"></i></div>
+                                    <div><span>Середні ккал</span><strong id="stat-avg-kcal">—</strong></div>
+                                </div>
+                                <div class="weekly-kpi-card" id="kpi-protein" style="--kpi-color: var(--ring-green); --kpi-pct: 0deg;">
+                                    <div class="mini-progress-ring"><i class="fa-solid fa-dumbbell"></i></div>
+                                    <div><span>Білок ≥90%</span><strong id="stat-protein-hit">—</strong></div>
+                                </div>
+                                <div class="weekly-kpi-card" id="kpi-workouts" style="--kpi-color: var(--ring-blue); --kpi-pct: 0deg;">
+                                    <div class="mini-progress-ring"><i class="fa-solid fa-person-running"></i></div>
+                                    <div><span>Тренування</span><strong id="stat-workouts">0</strong></div>
+                                </div>
+                                <div class="weekly-kpi-card" id="kpi-weight" style="--kpi-color: var(--ring-yellow); --kpi-pct: 0deg;">
+                                    <div class="mini-progress-ring"><i class="fa-solid fa-scale-balanced"></i></div>
+                                    <div><span>Тренд ваги</span><strong id="stat-weight-trend">—</strong></div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- ACHILLES OS 2.0: 7-ДЕННА АНАЛІТИКА -->
-                    <div class="os-section-head">
-                        <h3>Огляд 7 днів</h3>
-                        <span class="os-score-badge" id="progress-score-badge">— / 100</span>
-                    </div>
-                    <div class="insight-grid">
-                        <div class="insight-tile">
-                            <span class="insight-value" id="stat-avg-kcal">—</span>
-                            <span class="insight-label">Середні ккал / день</span>
+                    <!-- BLOCK 04: COACH -->
+                    <section class="premium-section coach-section">
+                        <div class="coach-card premium-surface premium-accent-edge">
+                            <div class="coach-head">
+                                <div>
+                                    <span class="eyebrow">РОЗУМНИЙ АНАЛІЗ</span>
+                                    <div class="coach-title gradient-text">ACHILLES COACH</div>
+                                </div>
+                                <div class="coach-status" id="coach-status">Аналізую...</div>
+                            </div>
+                            <div class="coach-message" id="coach-message">Додай кілька днів даних — я зберу картину прогресу.</div>
+                            <div class="coach-submessage" id="coach-submessage"></div>
+                            <div class="pr-chip" id="last-pr-chip" style="display:none;"><i class="fa-solid fa-trophy"></i><span id="last-pr-text"></span></div>
                         </div>
-                        <div class="insight-tile">
-                            <span class="insight-value" id="stat-protein-hit">—</span>
-                            <span class="insight-label">Білок ≥ 90% цілі</span>
-                        </div>
-                        <div class="insight-tile">
-                            <span class="insight-value" id="stat-workouts">—</span>
-                            <span class="insight-label">Тренувань за 7 днів</span>
-                        </div>
-                        <div class="insight-tile">
-                            <span class="insight-value" id="stat-weight-trend">—</span>
-                            <span class="insight-label">Тренд ваги</span>
-                        </div>
-                    </div>
+                    </section>
 
-                    <div class="coach-card">
-                        <div class="coach-head">
-                            <div class="coach-title gradient-text">ACHILLES COACH</div>
-                            <div class="coach-status" id="coach-status">Аналізую...</div>
+                    <!-- BLOCK 05: BODY / WEIGHT -->
+                    <section class="premium-section body-section">
+                        <div class="section-heading-row">
+                            <div><span class="eyebrow">ТІЛО</span><h2>Вага</h2></div>
                         </div>
-                        <div class="coach-message" id="coach-message">Додай кілька днів даних — я зберу картину прогресу.</div>
-                        <div class="coach-submessage" id="coach-submessage"></div>
-                        <div class="pr-chip" id="last-pr-chip" style="display:none;"><i class="fa-solid fa-trophy"></i><span id="last-pr-text"></span></div>
-                    </div>
-
-                    <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Трекер ваги:</h3>
-                    <div style="background: var(--card-bg); padding: 25px 20px; border-radius: 30px; margin-top: 15px; border: 1px solid var(--glass-border);">
-                        <div style="display: flex; gap: 12px;">
-                            <input type="number" id="new-weight-input" inputmode="decimal" placeholder="Вага (кг)" style="margin:0; flex: 2;">
-                            <button onclick="logWeight()" class="gradient-bg primary-btn" style="margin:0; flex: 1; border-radius: 16px;">OK</button>
+                        <div class="weight-premium-card premium-surface">
+                            <div class="weight-entry-row">
+                                <div class="weight-entry-copy">
+                                    <strong>Нове зважування</strong>
+                                    <span>Дивимось на тренд, а не на випадковий стрибок.</span>
+                                </div>
+                                <div class="weight-entry-controls">
+                                    <input type="number" id="new-weight-input" inputmode="decimal" placeholder="Вага (кг)">
+                                    <button onclick="logWeight()" class="gradient-bg primary-btn">Записати</button>
+                                </div>
+                            </div>
+                            <div id="weight-chart-container" class="chart-container premium-weight-chart"></div>
                         </div>
-                        <div id="weight-chart-container" class="chart-container"></div>
-                    </div>
+                    </section>
 
-                    <h3 style="margin-top: 35px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Журнал харчування:</h3>
-                    <div id="food-list" style="margin-top: 15px; font-size: 16px; background: var(--card-bg); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden;"></div>
-
-                    <h3 style="margin-top: 25px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-main);">Журнал тренувань:</h3>
-                    <div id="workout-list" style="margin-top: 15px; font-size: 16px; background: var(--card-bg); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden;"></div>
+                    <!-- BLOCK 06: JOURNAL -->
+                    <section class="premium-section journal-section">
+                        <div class="section-heading-row">
+                            <div><span class="eyebrow">СЬОГОДНІ</span><h2>Журнал</h2></div>
+                        </div>
+                        <div class="journal-grid">
+                            <div class="journal-panel premium-surface">
+                                <div class="journal-panel-head"><span><i class="fa-solid fa-utensils"></i> Харчування</span></div>
+                                <div id="food-list" class="journal-list"></div>
+                            </div>
+                            <div class="journal-panel premium-surface">
+                                <div class="journal-panel-head"><span><i class="fa-solid fa-dumbbell"></i> Тренування</span></div>
+                                <div id="workout-list" class="journal-list"></div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
                 <!-- ЇЖА -->
@@ -3928,6 +4004,498 @@ body::after {
             }, { passive: true });
         });
     }, { once: true });
+})();
+</script>
+
+
+<style id="achilles-v6-premium-architecture">
+/* =========================================================
+   ACHILLES OS V6 — PREMIUM BLOCK ARCHITECTURE
+   Tokens -> Surfaces -> Layout -> Components -> Motion
+   ========================================================= */
+:root {
+    --space-1: 6px;
+    --space-2: 10px;
+    --space-3: 14px;
+    --space-4: 18px;
+    --space-5: 24px;
+    --space-6: 30px;
+    --space-7: 38px;
+    --radius-s: 14px;
+    --radius-m: 20px;
+    --radius-l: 28px;
+    --radius-xl: 34px;
+    --surface-border: color-mix(in srgb, var(--glass-border) 92%, transparent);
+    --surface-shadow: 0 24px 70px rgba(0,0,0,.12);
+    --premium-ease: cubic-bezier(.22,1,.36,1);
+    --quick-ease: cubic-bezier(.2,.8,.2,1);
+}
+
+/* Performance: animate compositor-friendly properties, not filters. */
+body::before {
+    filter: none !important;
+    animation: achillesPremiumBackdrop 24s var(--premium-ease) infinite !important;
+    will-change: transform, opacity !important;
+}
+body::after {
+    animation: achillesPremiumGlow 18s ease-in-out infinite !important;
+    will-change: transform, opacity !important;
+}
+@keyframes achillesPremiumBackdrop {
+    0%,100% { transform: scale(1.05) translate3d(0,0,0); opacity: .98; }
+    35% { transform: scale(1.10) translate3d(-1.6%, -1.1%, 0); opacity: 1; }
+    70% { transform: scale(1.08) translate3d(1.5%, 1.3%, 0); opacity: .96; }
+}
+@keyframes achillesPremiumGlow {
+    0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.42; }
+    50% { transform: translate3d(-1.3%,1%,0) scale(1.035); opacity:.58; }
+}
+
+.premium-dashboard {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding-bottom: 12px;
+}
+
+.premium-section { margin-top: var(--space-7); }
+
+@keyframes premiumBlockIn {
+    from { opacity: 0; transform: translate3d(0, 14px, 0) scale(.995); }
+    to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+.premium-dashboard.dashboard-enter .dash-header-block,
+.premium-dashboard.dashboard-enter .premium-section {
+    animation: premiumBlockIn 620ms var(--premium-ease) both;
+}
+.premium-dashboard.dashboard-enter .today-section { animation-delay: 45ms; }
+.premium-dashboard.dashboard-enter .weekly-section { animation-delay: 90ms; }
+.premium-dashboard.dashboard-enter .coach-section { animation-delay: 130ms; }
+.premium-dashboard.dashboard-enter .body-section { animation-delay: 165ms; }
+.premium-dashboard.dashboard-enter .journal-section { animation-delay: 200ms; }
+
+.premium-surface {
+    position: relative;
+    border: 1px solid var(--surface-border) !important;
+    background: color-mix(in srgb, var(--card-bg) 84%, transparent) !important;
+    box-shadow: var(--surface-shadow);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    backdrop-filter: blur(18px) saturate(145%);
+    overflow: hidden;
+}
+.premium-surface::after {
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    border-radius:inherit;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.045);
+}
+.premium-surface-ghost {
+    background: color-mix(in srgb, var(--glass-bg) 48%, transparent) !important;
+    box-shadow: 0 18px 55px rgba(0,0,0,.07);
+}
+.premium-accent-edge::before {
+    content:"";
+    position:absolute;
+    left:0; top:20px; bottom:20px;
+    width:4px;
+    border-radius:0 6px 6px 0;
+    background:linear-gradient(180deg,var(--accent-1),var(--accent-2),var(--accent-3));
+    box-shadow:0 0 22px rgba(var(--primary-rgb),.28);
+}
+
+.eyebrow {
+    display:block;
+    margin-bottom:5px;
+    color:var(--text-muted);
+    font-size:11px;
+    line-height:1;
+    letter-spacing:.18em;
+    font-weight:850;
+}
+.section-heading-row {
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:14px;
+}
+.section-heading-row h2 {
+    margin:0;
+    font-size:clamp(25px,4vw,32px);
+    line-height:1;
+    letter-spacing:-.045em;
+    font-weight:850;
+}
+.section-note { color:var(--text-muted); font-size:12px; font-weight:650; }
+
+/* BLOCK 01 */
+.dash-header-block {
+    border-radius:var(--radius-xl);
+    padding:24px 26px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+}
+.dash-greeting-wrap h1 { margin:0 !important; font-size:clamp(30px,5vw,46px) !important; }
+.dash-subtitle { display:block; margin-top:8px; color:var(--text-muted); font-size:14px; line-height:1.45; }
+.premium-control { border:1px solid var(--glass-border); background:var(--input-bg); }
+.date-switcher {
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:46px minmax(116px,1fr) 46px;
+    align-items:center;
+    gap:8px;
+    padding:7px;
+    border-radius:22px;
+}
+.date-switcher-center { text-align:center; min-width:110px; }
+.date-caption { display:block; font-size:9px; letter-spacing:.18em; color:var(--text-muted); font-weight:850; margin-bottom:2px; }
+.date-switcher-center strong { display:block; width:auto !important; font-size:16px !important; }
+.date-arrow { width:46px !important; height:46px !important; min-height:46px !important; margin:0 !important; padding:0 !important; border-radius:16px !important; display:grid !important; place-items:center; }
+
+/* BLOCK 02 */
+.nutrition-hero-card { border-radius:var(--radius-xl) !important; padding:30px !important; }
+.nutrition-hero-body { grid-template-columns:minmax(290px,360px) minmax(0,1fr) !important; gap:34px !important; }
+.nutrition-rings-widget { width:min(76vw,340px) !important; }
+.nutrition-macro-cards { gap:12px !important; }
+.nutrition-macro-card {
+    position:relative;
+    min-height:92px !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    padding:18px 20px !important;
+    border-radius:22px !important;
+    background:color-mix(in srgb,var(--input-bg) 76%,transparent) !important;
+    transition:transform 220ms var(--quick-ease), border-color 240ms ease, background 240ms ease;
+}
+.nutrition-macro-card:active { transform:scale(.988); }
+.macro-icon {
+    width:42px; height:42px; flex:0 0 42px;
+    display:grid; place-items:center;
+    border-radius:15px;
+    color:currentColor;
+    background:color-mix(in srgb,currentColor 11%,transparent);
+    border:1px solid color-mix(in srgb,currentColor 20%,transparent);
+}
+.nutrition-macro-value-line strong { font-size:32px !important; }
+
+/* BLOCK 03 */
+.weekly-premium-panel { border-radius:var(--radius-xl); padding:26px; }
+.weekly-top-grid { display:grid; grid-template-columns:320px minmax(0,1fr); gap:18px; }
+.weekly-score-card, .weekly-chart-card {
+    border-radius:26px;
+    border:1px solid var(--glass-border);
+    background:color-mix(in srgb,var(--input-bg) 62%,transparent);
+}
+.weekly-score-card { padding:22px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.week-score-ring { width:184px; height:184px; position:relative; display:grid; place-items:center; }
+.week-score-ring svg { width:100%; height:100%; overflow:visible; transform:rotate(-90deg); }
+.week-score-track,.week-score-progress { fill:none; stroke-linecap:round; stroke-width:15; }
+.week-score-track { stroke:rgba(127,127,127,.16); }
+.week-score-progress {
+    stroke:var(--primary);
+    filter:drop-shadow(0 0 7px rgba(var(--primary-rgb),.30));
+    transition:stroke-dashoffset 1300ms var(--premium-ease);
+}
+.week-score-center { position:absolute; inset:0; display:grid; place-content:center; text-align:center; }
+.week-score-label { color:var(--text-muted); font-size:10px; letter-spacing:.18em; font-weight:850; margin-bottom:4px; }
+#progress-score-badge { color:var(--text-main); font-size:27px; font-weight:900; letter-spacing:-.05em; background:none; border:0; padding:0; }
+.weekly-score-copy { margin-top:8px; }
+.weekly-score-copy strong { display:block; font-size:17px; }
+.weekly-score-copy span { display:block; max-width:240px; margin-top:5px; color:var(--text-muted); font-size:12px; line-height:1.4; }
+.weekly-chart-card { padding:22px 22px 16px; min-height:284px; display:flex; flex-direction:column; }
+.weekly-chart-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.weekly-chart-kicker { display:block; color:var(--text-muted); font-size:10px; letter-spacing:.14em; font-weight:800; margin-bottom:4px; }
+.weekly-chart-head strong { font-size:19px; letter-spacing:-.02em; }
+.weekly-chart-legend { color:var(--text-muted); font-size:11px; font-weight:650; white-space:nowrap; }
+.weekly-chart-legend i { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--ring-green); margin-right:5px; box-shadow:0 0 10px rgba(57,211,83,.45); }
+.week-bars { flex:1; display:grid; grid-template-columns:repeat(7,1fr); align-items:end; gap:10px; min-height:185px; padding-top:18px; }
+.week-day { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:7px; min-width:0; }
+.week-bar-track { position:relative; width:min(42px,78%); height:138px; border-radius:16px; background:rgba(127,127,127,.11); overflow:hidden; border:1px solid rgba(127,127,127,.08); }
+.week-bar-target { position:absolute; left:4px; right:4px; bottom:80%; border-top:1px dashed rgba(127,127,127,.35); z-index:2; }
+.week-bar-fill { position:absolute; inset:auto 0 0; height:100%; transform-origin:center bottom; transform:scaleY(0); border-radius:15px; background:linear-gradient(180deg,var(--accent-3),var(--accent-2),var(--accent-1)); box-shadow:0 0 18px rgba(var(--primary-rgb),.18); transition:transform 900ms var(--premium-ease); }
+.week-day.is-protein-hit .week-bar-track::after { content:""; position:absolute; top:8px; right:8px; width:7px; height:7px; border-radius:50%; background:var(--ring-green); box-shadow:0 0 10px rgba(57,211,83,.58); z-index:3; }
+.week-day-label { color:var(--text-muted); font-size:10px; font-weight:750; }
+.week-day-value { color:var(--text-main); font-size:10px; font-weight:750; white-space:nowrap; }
+.week-day.empty .week-bar-fill { opacity:.22; }
+
+.weekly-kpi-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:16px; }
+.weekly-kpi-card {
+    min-width:0;
+    padding:14px 15px;
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    background:color-mix(in srgb,var(--input-bg) 56%,transparent);
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.mini-progress-ring {
+    position:relative;
+    flex:0 0 46px;
+    width:46px; height:46px;
+    display:grid; place-items:center;
+    border-radius:50%;
+    background:conic-gradient(var(--kpi-color) var(--kpi-pct), rgba(127,127,127,.14) 0deg);
+}
+.mini-progress-ring::before { content:""; position:absolute; inset:5px; border-radius:50%; background:color-mix(in srgb,var(--card-bg) 90%,transparent); }
+.mini-progress-ring i { position:relative; z-index:2; color:var(--kpi-color); font-size:14px; }
+.weekly-kpi-card > div:last-child { min-width:0; }
+.weekly-kpi-card span { display:block; color:var(--text-muted); font-size:10px; font-weight:700; margin-bottom:3px; }
+.weekly-kpi-card strong { display:block; overflow:hidden; text-overflow:ellipsis; color:var(--text-main); font-size:19px; line-height:1.05; letter-spacing:-.04em; white-space:nowrap; }
+
+/* BLOCK 04 */
+.coach-card { border-radius:var(--radius-xl) !important; padding:26px !important; margin-top:0 !important; }
+.coach-head { align-items:flex-start !important; }
+.coach-title { font-size:24px !important; letter-spacing:-.04em; }
+.coach-status { border-radius:999px !important; padding:7px 11px !important; }
+.coach-message { font-size:17px !important; line-height:1.5 !important; }
+.coach-submessage { line-height:1.55 !important; }
+
+/* BLOCK 05 */
+.weight-premium-card { border-radius:var(--radius-xl); padding:24px; }
+.weight-entry-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,420px); align-items:center; gap:22px; }
+.weight-entry-copy strong { display:block; font-size:17px; }
+.weight-entry-copy span { display:block; margin-top:5px; color:var(--text-muted); font-size:12px; line-height:1.45; }
+.weight-entry-controls { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; }
+.weight-entry-controls input,.weight-entry-controls button { margin:0 !important; min-height:54px !important; }
+.weight-entry-controls button { padding:0 20px !important; }
+.premium-weight-chart { height:230px !important; margin-top:24px !important; padding:20px 12px 0 !important; border-radius:24px !important; background:color-mix(in srgb,var(--input-bg) 45%,transparent) !important; border:1px solid var(--glass-border) !important; }
+.chart-bar { border-radius:999px 999px 6px 6px !important; box-shadow:0 0 18px rgba(var(--primary-rgb),.18); }
+
+/* BLOCK 06 */
+.journal-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.journal-panel { border-radius:var(--radius-xl); min-width:0; }
+.journal-panel-head { padding:18px 20px 12px; font-size:15px; font-weight:800; }
+.journal-panel-head i { color:var(--primary); margin-right:7px; }
+.journal-list { font-size:15px; overflow:hidden; min-height:68px; }
+.journal-list .list-item { margin:0 !important; border-radius:0 !important; border-left:0 !important; border-right:0 !important; border-bottom:0 !important; box-shadow:none !important; background:transparent !important; }
+
+/* Global premium harmony */
+#tab-food > h1,#tab-workout > h1,#tab-profile > h1 { font-size:clamp(30px,5vw,42px) !important; margin-bottom:22px !important; }
+.filter-tabs { padding:5px !important; border-radius:19px !important; background:color-mix(in srgb,var(--input-bg) 70%,transparent) !important; }
+.filter-tab { border-radius:15px !important; font-weight:750 !important; }
+.filter-tab.active { box-shadow:0 8px 20px rgba(0,0,0,.08); }
+#food-list-container .list-item,#workout-list-container .list-item { border-radius:24px !important; padding:20px !important; }
+input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !important; }
+.live-overlay { background:color-mix(in srgb,var(--glass-bg) 90%,transparent) !important; }
+
+/* Avoid wasting compositor memory on every static card. */
+.list-item,.insight-tile,.coach-card,.macro-box,.chart-container,.os-score-badge { will-change:auto !important; }
+.week-score-progress,.week-bar-fill,.ring-progress { will-change:stroke-dashoffset,transform; }
+
+@media (max-width: 920px) {
+    .dash-header-block { flex-direction:column; align-items:stretch; }
+    .date-switcher { width:100%; grid-template-columns:46px 1fr 46px; }
+    .nutrition-hero-body { grid-template-columns:1fr !important; }
+    .nutrition-macro-cards { grid-template-columns:repeat(3,minmax(0,1fr)) !important; width:100%; }
+    .weekly-top-grid { grid-template-columns:1fr; }
+    .weekly-score-card { flex-direction:row; justify-content:flex-start; text-align:left; gap:22px; }
+    .week-score-ring { flex:0 0 150px; width:150px; height:150px; }
+    .weekly-score-copy { margin:0; }
+    .weekly-kpi-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .weight-entry-row { grid-template-columns:1fr; }
+}
+
+@media (max-width: 640px) {
+    .premium-dashboard { padding-left:0; padding-right:0; }
+    .premium-section { margin-top:30px; }
+    .dash-header-block { padding:20px; border-radius:28px; }
+    .dash-subtitle { font-size:13px; }
+    .nutrition-hero-card,.weekly-premium-panel,.coach-card,.weight-premium-card { padding:20px !important; border-radius:28px !important; }
+    .nutrition-macro-cards { grid-template-columns:1fr !important; }
+    .nutrition-macro-card { min-height:78px !important; }
+    .weekly-score-card { flex-direction:column; text-align:center; }
+    .week-score-ring { width:156px; height:156px; }
+    .weekly-chart-card { padding:18px 12px 14px; min-height:260px; }
+    .weekly-chart-legend { display:none; }
+    .week-bars { gap:5px; }
+    .week-bar-track { width:min(30px,84%); }
+    .week-day-value { font-size:9px; }
+    .weekly-kpi-grid { grid-template-columns:1fr 1fr; gap:9px; }
+    .weekly-kpi-card { padding:11px; gap:9px; }
+    .mini-progress-ring { width:40px; height:40px; flex-basis:40px; }
+    .weekly-kpi-card strong { font-size:17px; }
+    .weight-entry-controls { grid-template-columns:1fr; }
+    .weight-entry-controls button { width:100%; }
+    .journal-grid { grid-template-columns:1fr; }
+    .section-note { display:none; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+    body::before,body::after,.week-score-progress,.week-bar-fill { animation:none !important; transition-duration:.01ms !important; }
+}
+</style>
+
+<script id="achilles-v6-premium-modules">
+(function(){
+    'use strict';
+    window.Achilles = window.Achilles || {};
+
+    const A = window.Achilles;
+
+    /* DATA/ANALYTICS BLOCK */
+    A.analytics = A.analytics || {};
+    A.analytics.weekSnapshot = function(){
+        const daysData = window.allDaysData || JSON.parse(localStorage.getItem('achilles_all_days')) || {};
+        const dates = typeof window.getLastNDates === 'function' ? window.getLastNDates(7) : [];
+        const targets = JSON.parse(localStorage.getItem('achilles_macros')) || {p:0,f:0,c:0};
+        const baseKcal = Number(localStorage.getItem('achilles_base_kcal')) || 2000;
+        const appMode = localStorage.getItem('achilles_app_mode') || 'pro';
+        let loggedDays=0,kcalTotal=0,proteinHit=0,calorieHit=0,workouts=0;
+        const rows = dates.map((date) => {
+            const d = daysData[date] || null;
+            const consumed = Number(d?.consumedCalories || 0);
+            const dayGoal = baseKcal + (appMode === 'pro' ? Number(d?.workoutBonus || 0) : 0);
+            const protein = Number(d?.macros?.p || 0);
+            const hasNutrition = consumed > 0 || (d?.log || []).some(e => e.type === 'food');
+            const pHit = hasNutrition && Number(targets.p || 0) > 0 && protein >= Number(targets.p) * .9;
+            const kcalHit = hasNutrition && dayGoal > 0 && Math.abs(consumed-dayGoal)/dayGoal <= .10;
+            const dayWorkouts = (d?.log || []).filter(e => e.type === 'workout').length;
+            if(hasNutrition){ loggedDays++; kcalTotal += consumed; if(pHit) proteinHit++; if(kcalHit) calorieHit++; }
+            workouts += dayWorkouts;
+            return {date, consumed, goal:dayGoal, pHit, kcalHit, workouts:dayWorkouts, hasNutrition};
+        });
+        const proteinRate = loggedDays ? proteinHit/loggedDays : 0;
+        const calorieRate = loggedDays ? calorieHit/loggedDays : 0;
+        let score = 0;
+        score += Math.round(Math.min(loggedDays/7,1)*20);
+        score += Math.round(proteinRate*30);
+        score += Math.round(calorieRate*30);
+        score += Math.round(Math.min(workouts/3,1)*20);
+        score = Math.max(0,Math.min(100,score));
+        return {rows,loggedDays,kcalTotal,avgKcal:loggedDays?Math.round(kcalTotal/loggedDays):0,proteinHit,proteinRate,calorieHit,calorieRate,workouts,score};
+    };
+
+    /* MOTION BLOCK */
+    A.motion = A.motion || {};
+    A.motion.circle = function(el, percent, animate=true){
+        if(!el) return;
+        const r = Number(el.getAttribute('r')) || 1;
+        const circumference = 2*Math.PI*r;
+        const pct = Math.max(0,Math.min(1,Number(percent)||0));
+        const target = circumference*(1-pct);
+        el.style.strokeDasharray = String(circumference);
+        if(animate){
+            el.style.transition='none';
+            el.style.strokeDashoffset=String(circumference);
+            el.getBoundingClientRect();
+            requestAnimationFrame(()=>{
+                el.style.transition='stroke-dashoffset 1300ms cubic-bezier(.22,1,.36,1)';
+                el.style.strokeDashoffset=String(target);
+            });
+        } else el.style.strokeDashoffset=String(target);
+    };
+
+    /* WEEKLY UI BLOCK */
+    A.weekly = A.weekly || {};
+    A.weekly.render = function(animate=false){
+        const snap = A.analytics.weekSnapshot();
+        A.motion.circle(document.getElementById('week-score-progress'), snap.score/100, animate);
+
+        const title = document.getElementById('week-score-title');
+        const caption = document.getElementById('week-score-caption');
+        if(title){
+            title.textContent = snap.loggedDays < 3 ? 'Збираємо дані' : snap.score >= 85 ? 'Сильний тиждень' : snap.score >= 65 ? 'Хороший ритм' : snap.score >= 45 ? 'Є запас' : 'Потрібна стабільність';
+        }
+        if(caption){
+            caption.textContent = snap.loggedDays < 3 ? `Дані є за ${snap.loggedDays} із 7 днів.` : `Білок ${Math.round(snap.proteinRate*100)}% · коридор ккал ${Math.round(snap.calorieRate*100)}% · тренувань ${snap.workouts}.`;
+        }
+
+        const bars = document.getElementById('week-bars');
+        if(bars){
+            const fmt = new Intl.DateTimeFormat('uk-UA',{weekday:'short'});
+            bars.innerHTML = snap.rows.map(row=>{
+                const raw = row.goal>0 ? row.consumed/row.goal : 0;
+                const visual = row.hasNutrition ? Math.max(.05,Math.min(raw/1.25,1)) : .035;
+                const kcal = row.hasNutrition ? Math.round(row.consumed) : '—';
+                const label = fmt.format(new Date(`${row.date}T12:00:00`)).replace('.','');
+                return `<div class="week-day ${row.pHit?'is-protein-hit':''} ${row.hasNutrition?'':'empty'}">
+                    <span class="week-day-value">${kcal}</span>
+                    <div class="week-bar-track"><span class="week-bar-target"></span><span class="week-bar-fill" style="--bar-scale:${visual};"></span></div>
+                    <span class="week-day-label">${label}</span>
+                </div>`;
+            }).join('');
+            requestAnimationFrame(()=>{
+                bars.querySelectorAll('.week-bar-fill').forEach((el,i)=>{
+                    const scale = el.style.getPropertyValue('--bar-scale') || '0';
+                    if(animate){
+                        el.style.transition='none'; el.style.transform='scaleY(0)'; el.getBoundingClientRect();
+                        requestAnimationFrame(()=>{el.style.transition=`transform ${820+i*55}ms cubic-bezier(.22,1,.36,1)`; el.style.transform=`scaleY(${scale})`;});
+                    } else el.style.transform=`scaleY(${scale})`;
+                });
+            });
+        }
+
+        const setKpi=(id,pct)=>{const el=document.getElementById(id); if(el) el.style.setProperty('--kpi-pct',`${Math.round(Math.max(0,Math.min(1,pct))*360)}deg`);};
+        setKpi('kpi-calories',snap.loggedDays/7);
+        setKpi('kpi-protein',snap.proteinRate);
+        setKpi('kpi-workouts',Math.min(snap.workouts/3,1));
+        const wt = typeof window.getWeightTrend==='function' ? window.getWeightTrend() : null;
+        setKpi('kpi-weight', wt===null ? 0 : Math.min(Math.abs(wt)/1.2,1));
+    };
+
+    /* DASHBOARD CONTROLLER BLOCK */
+    A.dashboard = A.dashboard || {};
+    A.dashboard.refresh = function(animate=false){
+        if(typeof window.renderNutritionRings==='function') window.renderNutritionRings(animate);
+        A.weekly.render(animate);
+    };
+    A.dashboard.enter = function(){
+        const dash=document.getElementById('tab-dashboard');
+        if(!dash) return;
+        dash.classList.remove('dashboard-enter');
+        void dash.offsetWidth;
+        dash.classList.add('dashboard-enter');
+        setTimeout(()=>A.dashboard.refresh(true),70);
+    };
+
+    A.hooks = A.hooks || {};
+    A.hooks.install = function(){
+        if(A.hooks.installed) return;
+
+        if(typeof window.renderProgressInsights === 'function'){
+            const oldInsights = window.renderProgressInsights;
+            window.renderProgressInsights = function(){
+                const result = oldInsights.apply(this, arguments);
+                A.weekly.render(false);
+                return result;
+            };
+        }
+
+        if(typeof window.updateGoalDisplay === 'function'){
+            const oldGoal = window.updateGoalDisplay;
+            window.updateGoalDisplay = function(){
+                const result = oldGoal.apply(this, arguments);
+                requestAnimationFrame(()=>A.dashboard.refresh(false));
+                return result;
+            };
+        }
+
+        if(typeof window.applyTheme === 'function'){
+            const oldTheme = window.applyTheme;
+            window.applyTheme = function(){
+                const result = oldTheme.apply(this, arguments);
+                requestAnimationFrame(()=>A.dashboard.refresh(false));
+                return result;
+            };
+        }
+
+        A.hooks.installed = true;
+    };
+
+    document.addEventListener('DOMContentLoaded',()=>{
+        A.hooks.install();
+        const scoreCircle=document.getElementById('week-score-progress');
+        if(scoreCircle){ const r=Number(scoreCircle.getAttribute('r')); const c=2*Math.PI*r; scoreCircle.style.strokeDasharray=String(c); scoreCircle.style.strokeDashoffset=String(c); }
+        setTimeout(()=>A.dashboard.enter(),220);
+
+        document.querySelectorAll('[data-target="tab-dashboard"]').forEach(item=>{
+            item.addEventListener('click',()=>setTimeout(()=>A.dashboard.enter(),45),{passive:true});
+        });
+    },{once:true});
 })();
 </script>
 
