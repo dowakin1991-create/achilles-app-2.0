@@ -2609,5 +2609,207 @@
             }, { passive: true });
         })();
     </script>
+<style id="achilles-theme-background-upgrade">
+/* =========================================================
+   ACHILLES THEME BACKGROUND UPGRADE
+   ЧОРНО-ЗОЛОТА / ЧОРНО-КРОВАВА / ЧОРНО-БЛАКИТНА
+   + АНАЛОГІЧНІ СВІТЛІ ТЕМИ
+   ========================================================= */
+
+html[data-theme="dark"][data-color="gold"] {
+    --bg-base: #060606;
+    --card-bg: rgba(24, 24, 28, 0.82);
+    --glass-bg: rgba(18, 18, 22, 0.72);
+    --nav-bg: rgba(10, 10, 12, 0.76);
+    --input-bg: rgba(255, 255, 255, 0.065);
+    --glass-border: rgba(255, 235, 186, 0.10);
+    --shadow-color: rgba(0,0,0,0.40);
+    --bg-gradient:
+        radial-gradient(900px 500px at 12% -8%, rgba(229, 192, 123, 0.18) 0%, rgba(229, 192, 123, 0.08) 28%, transparent 62%),
+        radial-gradient(1100px 700px at 110% 14%, rgba(255, 240, 184, 0.12) 0%, rgba(199, 154, 60, 0.06) 30%, transparent 64%),
+        radial-gradient(800px 520px at 50% 100%, rgba(199, 154, 60, 0.08) 0%, transparent 58%),
+        linear-gradient(180deg, #050505 0%, #09090b 46%, #050505 100%);
+}
+
+html[data-theme="dark"][data-color="blood"] {
+    --bg-base: #040405;
+    --card-bg: rgba(25, 22, 24, 0.84);
+    --glass-bg: rgba(20, 16, 18, 0.74);
+    --nav-bg: rgba(11, 8, 9, 0.78);
+    --input-bg: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 120, 120, 0.10);
+    --shadow-color: rgba(0,0,0,0.42);
+    --bg-gradient:
+        radial-gradient(920px 560px at 8% -10%, rgba(255, 69, 58, 0.18) 0%, rgba(179, 46, 39, 0.08) 30%, transparent 62%),
+        radial-gradient(1000px 680px at 108% 18%, rgba(255, 170, 165, 0.11) 0%, rgba(166, 0, 16, 0.06) 32%, transparent 66%),
+        radial-gradient(850px 540px at 50% 100%, rgba(125, 0, 20, 0.10) 0%, transparent 58%),
+        linear-gradient(180deg, #040405 0%, #09080a 44%, #040405 100%);
+}
+
+html[data-theme="dark"][data-color="sky"] {
+    --bg-base: #040608;
+    --card-bg: rgba(20, 24, 28, 0.83);
+    --glass-bg: rgba(14, 18, 23, 0.72);
+    --nav-bg: rgba(9, 12, 15, 0.77);
+    --input-bg: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(114, 187, 255, 0.12);
+    --shadow-color: rgba(0,0,0,0.42);
+    --bg-gradient:
+        radial-gradient(940px 560px at 10% -10%, rgba(10, 132, 255, 0.18) 0%, rgba(0, 86, 179, 0.08) 30%, transparent 62%),
+        radial-gradient(1060px 700px at 110% 20%, rgba(183, 224, 255, 0.12) 0%, rgba(10, 132, 255, 0.05) 34%, transparent 68%),
+        radial-gradient(860px 550px at 50% 100%, rgba(0, 86, 179, 0.10) 0%, transparent 60%),
+        linear-gradient(180deg, #040608 0%, #070b10 46%, #040608 100%);
+}
+
+html[data-theme="light"][data-color="gold"] {
+    --bg-base: #f8f5ee;
+    --card-bg: rgba(255, 255, 255, 0.80);
+    --glass-bg: rgba(255, 255, 255, 0.70);
+    --nav-bg: rgba(252, 249, 243, 0.78);
+    --input-bg: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(166, 138, 43, 0.10);
+    --shadow-color: rgba(76, 56, 8, 0.08);
+    --bg-gradient:
+        radial-gradient(900px 520px at 8% -10%, rgba(212, 175, 55, 0.14) 0%, rgba(255, 242, 183, 0.25) 26%, transparent 60%),
+        radial-gradient(1020px 620px at 108% 18%, rgba(166, 138, 43, 0.10) 0%, rgba(255, 248, 220, 0.26) 30%, transparent 64%),
+        radial-gradient(820px 500px at 50% 100%, rgba(212, 175, 55, 0.08) 0%, transparent 56%),
+        linear-gradient(180deg, #fcfaf4 0%, #f7f4ec 48%, #f9f6ef 100%);
+}
+
+html[data-theme="light"][data-color="blood"] {
+    --bg-base: #faf4f4;
+    --card-bg: rgba(255, 255, 255, 0.80);
+    --glass-bg: rgba(255, 255, 255, 0.70);
+    --nav-bg: rgba(255, 249, 249, 0.80);
+    --input-bg: rgba(255, 255, 255, 0.56);
+    --glass-border: rgba(166, 0, 16, 0.10);
+    --shadow-color: rgba(88, 16, 20, 0.08);
+    --bg-gradient:
+        radial-gradient(920px 540px at 8% -12%, rgba(215, 0, 21, 0.11) 0%, rgba(255, 139, 134, 0.22) 28%, transparent 60%),
+        radial-gradient(1040px 640px at 108% 18%, rgba(166, 0, 16, 0.09) 0%, rgba(255, 225, 225, 0.26) 32%, transparent 66%),
+        radial-gradient(820px 500px at 50% 100%, rgba(215, 0, 21, 0.07) 0%, transparent 56%),
+        linear-gradient(180deg, #fdf7f7 0%, #f8f1f1 48%, #fdf8f8 100%);
+}
+
+html[data-theme="light"][data-color="sky"] {
+    --bg-base: #f2f8fd;
+    --card-bg: rgba(255, 255, 255, 0.82);
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --nav-bg: rgba(248, 252, 255, 0.80);
+    --input-bg: rgba(255, 255, 255, 0.56);
+    --glass-border: rgba(0, 86, 179, 0.10);
+    --shadow-color: rgba(12, 72, 128, 0.08);
+    --bg-gradient:
+        radial-gradient(940px 540px at 8% -10%, rgba(0, 122, 255, 0.11) 0%, rgba(199, 232, 255, 0.25) 28%, transparent 60%),
+        radial-gradient(1060px 640px at 108% 18%, rgba(0, 86, 179, 0.09) 0%, rgba(230, 246, 255, 0.28) 32%, transparent 66%),
+        radial-gradient(820px 500px at 50% 100%, rgba(0, 122, 255, 0.07) 0%, transparent 56%),
+        linear-gradient(180deg, #f7fbff 0%, #eef6fb 48%, #f6fbff 100%);
+}
+
+html,
+body {
+    background-color: var(--bg-base, var(--bg-pure)) !important;
+    background-image: none !important;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background: var(--bg-gradient, var(--bg-pure));
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 18%, rgba(0,0,0,0.05) 100%);
+}
+
+#splash-screen,
+.screen,
+#main-app-window,
+#main-app-window > .app-window,
+#main-app-window > .app-window > .main-content {
+    background: transparent !important;
+}
+
+#login-window .main-content,
+#registration-window .main-content {
+    background: transparent !important;
+}
+
+.list-item,
+.insight-tile,
+.coach-card,
+.macro-box,
+.chart-container,
+.filter-tabs,
+button.secondary,
+button.danger,
+input,
+select,
+#food-list,
+#workout-list,
+#main-app-window .nav-bar,
+.os-score-badge,
+.bonus-badge,
+.profile-avatar-large {
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+#main-app-window .nav-bar {
+    box-shadow:
+        0 -10px 28px rgba(0,0,0,0.08),
+        0 -1px 0 rgba(255,255,255,0.03) !important;
+}
+
+.progress-bar {
+    background: rgba(127, 127, 127, 0.16) !important;
+}
+
+#tab-dashboard .list-item,
+#tab-dashboard .coach-card,
+#tab-dashboard .insight-tile {
+    box-shadow: 0 14px 34px var(--shadow-color);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .list-item,
+    .insight-tile,
+    .coach-card,
+    .macro-box,
+    .chart-container,
+    .filter-tabs,
+    button.secondary,
+    button.danger,
+    input,
+    select,
+    #food-list,
+    #workout-list,
+    #main-app-window .nav-bar,
+    .os-score-badge,
+    .bonus-badge,
+    .profile-avatar-large {
+        background: var(--card-bg) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before,
+    body::after {
+        background-attachment: initial;
+    }
+}
+</style>
 </body>
 </html>
