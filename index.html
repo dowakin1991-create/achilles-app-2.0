@@ -4695,10 +4695,16 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
             svg.prepend(defs);
         },
         targets(){
-            const parse=(id)=>parseFloat((document.getElementById(id)?.textContent||'').replace(/[^\\d.]/g,''))||0;
+            const parse=(id)=>{
+                const raw = document.getElementById(id)?.textContent || '';
+                const match = raw.match(/[0-9]+(?:[.,][0-9]+)?/);
+                return match ? Number(match[0].replace(',', '.')) : 0;
+            };
             return {
-                kcal: parseFloat(document.getElementById('calories-goal')?.textContent||'0')||0,
-                p: parse('target-p'), f: parse('target-f'), c: parse('target-c')
+                kcal: parse('calories-goal'),
+                p: parse('target-p'),
+                f: parse('target-f'),
+                c: parse('target-c')
             };
         },
         renderRings(animate=false){
@@ -4955,6 +4961,234 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
     document.addEventListener('DOMContentLoaded',()=>A.bootstrap.start(),{once:true});
 })();
 </script>
+
+
+<style id="achilles-v8-1-ring-fix">
+/* V8.1 — правильна геометрія SVG-кілець.
+   У V8 transform-box: fill-box ламав центр обертання внутрішніх дуг. */
+.nutrition-rings-svg .ring-track,
+.nutrition-rings-svg .ring-progress {
+    transform-box: view-box !important;
+    transform-origin: 120px 120px !important;
+    transform: rotate(-90deg) !important;
+}
+
+.nutrition-rings-svg .ring-track {
+    opacity: 1 !important;
+}
+
+.nutrition-rings-svg .ring-track-kcal {
+    stroke: rgba(var(--primary-rgb), 0.13) !important;
+    stroke-width: 15 !important;
+}
+.nutrition-rings-svg .ring-kcal {
+    stroke-width: 15 !important;
+    filter: drop-shadow(0 0 7px rgba(var(--primary-rgb), .22));
+}
+
+.nutrition-rings-svg .ring-track-protein {
+    stroke: rgba(57, 211, 83, 0.13) !important;
+    stroke-width: 13 !important;
+}
+.nutrition-rings-svg .ring-protein {
+    stroke: #39D353 !important;
+    stroke-width: 13 !important;
+    filter: drop-shadow(0 0 6px rgba(57, 211, 83, .20));
+}
+
+.nutrition-rings-svg .ring-track-fat {
+    stroke: rgba(242, 201, 76, 0.14) !important;
+    stroke-width: 11 !important;
+}
+.nutrition-rings-svg .ring-fat {
+    stroke: #F2C94C !important;
+    stroke-width: 11 !important;
+    filter: drop-shadow(0 0 6px rgba(242, 201, 76, .19));
+}
+
+.nutrition-rings-svg .ring-track-carb {
+    stroke: rgba(40, 147, 255, 0.14) !important;
+    stroke-width: 9 !important;
+}
+.nutrition-rings-svg .ring-carb {
+    stroke: #2893FF !important;
+    stroke-width: 9 !important;
+    filter: drop-shadow(0 0 6px rgba(40, 147, 255, .20));
+}
+
+/* Прибираємо правило V8, яке змінювало систему координат progress-кіл. */
+.ring-progress {
+    transform-box: view-box !important;
+}
+
+/* Компактніша та візуально щільніша композиція. */
+.nutrition-calorie-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.nutrition-rings-wrap {
+    width: 100%;
+    min-height: 320px;
+    display: grid !important;
+    place-items: center !important;
+}
+.nutrition-rings-widget {
+    width: min(62vw, 300px) !important;
+    margin-inline: auto;
+}
+.nutrition-rings-svg {
+    overflow: visible !important;
+    filter: drop-shadow(0 16px 28px rgba(0,0,0,.16));
+}
+
+/* Калорії лишаються над кільцями — великі та читабельні. */
+.calorie-summary {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 4px;
+}
+.calorie-summary-line {
+    justify-content: center !important;
+}
+.calorie-summary-note {
+    margin-top: 6px;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .nutrition-rings-wrap { min-height: 300px; }
+    .nutrition-rings-widget { width: min(70vw, 292px) !important; }
+}
+@media (max-width: 640px) {
+    .nutrition-rings-wrap { min-height: 282px; }
+    .nutrition-rings-widget { width: min(74vw, 278px) !important; }
+}
+</style>
+
+
+<script id="achilles-v8-2-ring-refresh">
+(function () {
+    function refreshRings() {
+        if (window.Achilles?.nutrition?.renderRings) {
+            window.Achilles.nutrition.renderRings(false);
+        }
+    }
+
+    const ids = ['calories-goal', 'target-p', 'target-f', 'target-c'];
+    const observer = new MutationObserver(() => {
+        requestAnimationFrame(refreshRings);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el, { childList: true, characterData: true, subtree: true });
+        });
+        requestAnimationFrame(refreshRings);
+    }, { once: true });
+})();
+</script>
+
+
+<style id="achilles-v8-3-color-text-fix">
+/* V8.3 — виправлення обрізання числа калорій + нова палітра кілець
+   Білки = червоне, Жири = рожеве, Вуглеводи = зелене */
+
+:root {
+    --ring-protein-red: #FF4D57;
+    --ring-fat-pink: #FF66B7;
+    --ring-carb-green: #39D353;
+}
+
+/* Фікс обрізання останньої цифри у великому числі калорій */
+.calorie-summary-block,
+.calorie-summary-line,
+.calorie-summary-line > strong,
+.calorie-summary-line > span {
+    overflow: visible !important;
+}
+
+.calorie-summary-line {
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+}
+
+.calorie-summary-line > strong {
+    display: inline-block !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.035em !important;
+    padding-right: 0.08em !important; /* запас, щоб остання цифра не різалась */
+    margin-right: 2px !important;
+    white-space: nowrap !important;
+    text-rendering: geometricPrecision;
+}
+
+.calorie-summary-line > span {
+    display: inline-block !important;
+    line-height: 1.02 !important;
+    white-space: nowrap !important;
+}
+
+/* Нова кольорова логіка кілець */
+.nutrition-rings-svg .ring-track-protein {
+    stroke: rgba(255, 77, 87, 0.14) !important;
+}
+.nutrition-rings-svg .ring-protein {
+    stroke: var(--ring-protein-red) !important;
+    filter: drop-shadow(0 0 6px rgba(255, 77, 87, .22));
+}
+
+.nutrition-rings-svg .ring-track-fat {
+    stroke: rgba(255, 102, 183, 0.14) !important;
+}
+.nutrition-rings-svg .ring-fat {
+    stroke: var(--ring-fat-pink) !important;
+    filter: drop-shadow(0 0 6px rgba(255, 102, 183, .22));
+}
+
+.nutrition-rings-svg .ring-track-carb {
+    stroke: rgba(57, 211, 83, 0.14) !important;
+}
+.nutrition-rings-svg .ring-carb {
+    stroke: var(--ring-carb-green) !important;
+    filter: drop-shadow(0 0 6px rgba(57, 211, 83, .22));
+}
+
+/* Ті ж кольори на картках та числах */
+.nutrition-macro-card.protein,
+.nutrition-macro-card.protein .nutrition-macro-dot,
+.c-p {
+    color: var(--ring-protein-red) !important;
+}
+
+.nutrition-macro-card.fat,
+.nutrition-macro-card.fat .nutrition-macro-dot,
+.c-f {
+    color: var(--ring-fat-pink) !important;
+}
+
+.nutrition-macro-card.carb,
+.nutrition-macro-card.carb .nutrition-macro-dot,
+.c-c {
+    color: var(--ring-carb-green) !important;
+}
+
+.nutrition-macro-card .nutrition-macro-dot {
+    background: currentColor !important;
+    box-shadow: 0 0 16px currentColor !important;
+}
+
+@media (max-width: 640px) {
+    .calorie-summary-line > strong {
+        font-size: clamp(40px, 12vw, 58px) !important;
+    }
+    .calorie-summary-line > span {
+        font-size: 18px !important;
+    }
+}
+</style>
 
 </body>
 </html>
