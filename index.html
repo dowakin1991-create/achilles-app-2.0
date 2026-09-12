@@ -594,6 +594,45 @@
         }
 
     </style>
+    <style id="achilles-v9-css">
+/* Achilles OS V9.1 — architecture-facing UI additions only. */
+.exercise-v9-history {
+    display: grid;
+    gap: 9px;
+    padding: 13px 14px;
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--input-bg) 82%, transparent);
+}
+.exercise-v9-history-row {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+.exercise-v9-kicker {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+.exercise-v9-history-row strong {
+    color: var(--text-main);
+    font-size: 13px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+.exercise-v9-next {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 800;
+}
+.exercise-v9-next i { font-size: 11px; }
+
+    </style>
 </head>
 <body> 
 
@@ -2507,7 +2546,7 @@
                        </div>`
                     : inputUI;
 
-                return `<div class="list-item exercise-card" data-kind="${w.kind}">
+                return `<div class="list-item exercise-card" data-kind="${w.kind}" data-exercise-id="${w.id}">
                     <div class="exercise-card-head">
                         <div>
                             <h4>${w.name}</h4>
@@ -5189,6 +5228,688 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
     }
 }
 </style>
+
+
+    <!-- Achilles OS V9.1 architecture -->
+    <script id="js-core-storage">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    const LEGACY = A.storage || {};
+
+    const KEYS = Object.freeze({
+        schemaVersion: 'achilles_schema_version',
+        user: 'achilles_user',
+        profile: 'achilles_profile',
+        allDays: 'achilles_all_days',
+        legacyDaily: 'achilles_daily_data',
+        macros: 'achilles_macros',
+        baseKcal: 'achilles_base_kcal',
+        appMode: 'achilles_app_mode',
+        themeColor: 'achilles_theme_color',
+        themeMode: 'achilles_theme_mode',
+        weightHistory: 'achilles_weight_history',
+        favFoods: 'achilles_fav_foods',
+        customFoods: 'achilles_custom_foods',
+        foodCache: 'achilles_food_cache_v1',
+        favWorkouts: 'achilles_fav_workouts',
+        prs: 'achilles_prs',
+        lastPR: 'achilles_last_pr'
+    });
+
+    function clone(value) {
+        if (value === undefined) return undefined;
+        try { return structuredClone(value); }
+        catch (_) { return JSON.parse(JSON.stringify(value)); }
+    }
+
+    function safeJSON(raw, fallback) {
+        if (raw === null || raw === undefined || raw === '') return clone(fallback);
+        try { return JSON.parse(raw); }
+        catch (error) {
+            console.warn('[Achilles.storage] invalid JSON', error);
+            return clone(fallback);
+        }
+    }
+
+    function normalizeMacros(value) {
+        const m = value && typeof value === 'object' ? value : {};
+        return {
+            p: Number(m.p || 0),
+            f: Number(m.f || 0),
+            c: Number(m.c || 0)
+        };
+    }
+
+    function normalizeDay(value) {
+        const d = value && typeof value === 'object' ? value : {};
+        return {
+            consumedCalories: Number(d.consumedCalories || 0),
+            workoutBonus: Number(d.workoutBonus || 0),
+            macros: normalizeMacros(d.macros),
+            log: Array.isArray(d.log) ? d.log : [],
+            updatedAt: Number(d.updatedAt || 0)
+        };
+    }
+
+    A.storage = {
+        ...LEGACY,
+        version: '9.1',
+        schemaVersion: 3,
+        keys: KEYS,
+
+        get(key, fallback = null) {
+            const raw = localStorage.getItem(key);
+            return raw === null ? fallback : raw;
+        },
+
+        set(key, value) {
+            localStorage.setItem(key, String(value));
+            return value;
+        },
+
+        json(key, fallback = null) {
+            return safeJSON(localStorage.getItem(key), fallback);
+        },
+
+        setJSON(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+            return value;
+        },
+
+        remove(key) {
+            localStorage.removeItem(key);
+        },
+
+        transaction(key, fallback, updater) {
+            const current = this.json(key, fallback);
+            const next = updater(clone(current));
+            this.setJSON(key, next);
+            return next;
+        },
+
+        profile() {
+            return this.json(KEYS.profile, {});
+        },
+
+        macroTargets() {
+            return normalizeMacros(this.json(KEYS.macros, { p: 0, f: 0, c: 0 }));
+        },
+
+        days() {
+            const raw = this.json(KEYS.allDays, {});
+            const result = {};
+            Object.entries(raw || {}).forEach(([date, day]) => { result[date] = normalizeDay(day); });
+            return result;
+        },
+
+        setDays(days) {
+            const result = {};
+            Object.entries(days || {}).forEach(([date, day]) => { result[date] = normalizeDay(day); });
+            this.setJSON(KEYS.allDays, result);
+            return result;
+        },
+
+        getDay(date) {
+            return normalizeDay(this.days()[date]);
+        },
+
+        putDay(date, day) {
+            return this.transaction(KEYS.allDays, {}, days => {
+                days[date] = normalizeDay(day);
+                return days;
+            })[date];
+        },
+
+        migrate() {
+            const currentVersion = Number(this.get(KEYS.schemaVersion, 0)) || 0;
+            let days = this.days();
+
+            const oldDaily = this.json(KEYS.legacyDaily, null);
+            if (oldDaily && oldDaily.date && !days[oldDaily.date]) {
+                days[oldDaily.date] = normalizeDay(oldDaily);
+                this.remove(KEYS.legacyDaily);
+            }
+
+            days = this.setDays(days);
+            this.set(KEYS.schemaVersion, this.schemaVersion);
+
+            return {
+                from: currentVersion,
+                to: this.schemaVersion,
+                migrated: currentVersion !== this.schemaVersion,
+                days: Object.keys(days).length
+            };
+        }
+    };
+})(window);
+
+    </script>
+    <script id="js-core-state">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    const existing = A.state || {};
+    const listeners = new Map();
+
+    const runtime = {
+        selectedDate: root.currentViewDate || root.todayDate || null,
+        nutrition: {
+            consumedCalories: Number(root.consumedCalories || 0),
+            workoutBonus: Number(root.workoutBonus || 0),
+            macros: { ...(root.macros || { p: 0, f: 0, c: 0 }) },
+            targets: { ...(root.targetMacros || { p: 0, f: 0, c: 0 }) }
+        },
+        dailyLog: Array.isArray(root.dailyLog) ? [...root.dailyLog] : [],
+        profile: A.storage?.profile?.() || {},
+        settings: {
+            appMode: A.storage?.get?.('achilles_app_mode', 'pro') || 'pro',
+            themeColor: A.storage?.get?.('achilles_theme_color', 'gold') || 'gold',
+            themeMode: A.storage?.get?.('achilles_theme_mode', 'auto') || 'auto'
+        },
+        sync: { status: 'idle', lastAt: 0, error: null }
+    };
+
+    function emit(topic, payload) {
+        const direct = listeners.get(topic) || [];
+        const any = listeners.get('*') || [];
+        [...direct, ...any].forEach(fn => {
+            try { fn(payload, topic); } catch (error) { console.error('[Achilles.state listener]', error); }
+        });
+    }
+
+    A.state = {
+        ...existing,
+        runtime,
+
+        snapshot() {
+            try { return structuredClone(runtime); }
+            catch (_) { return JSON.parse(JSON.stringify(runtime)); }
+        },
+
+        hydrateFromLegacy() {
+            runtime.selectedDate = root.currentViewDate || root.todayDate || runtime.selectedDate;
+            runtime.nutrition.consumedCalories = Number(root.consumedCalories || 0);
+            runtime.nutrition.workoutBonus = Number(root.workoutBonus || 0);
+            runtime.nutrition.macros = { ...(root.macros || { p: 0, f: 0, c: 0 }) };
+            runtime.nutrition.targets = { ...(root.targetMacros || A.storage.macroTargets()) };
+            runtime.dailyLog = Array.isArray(root.dailyLog) ? [...root.dailyLog] : [];
+            runtime.profile = A.storage.profile();
+            runtime.settings.appMode = A.storage.get('achilles_app_mode', 'pro');
+            runtime.settings.themeColor = A.storage.get('achilles_theme_color', 'gold');
+            runtime.settings.themeMode = A.storage.get('achilles_theme_mode', 'auto');
+            emit('hydrate', this.snapshot());
+            return runtime;
+        },
+
+        setNutrition(patch, options = {}) {
+            runtime.nutrition = {
+                ...runtime.nutrition,
+                ...patch,
+                macros: patch.macros ? { ...patch.macros } : runtime.nutrition.macros,
+                targets: patch.targets ? { ...patch.targets } : runtime.nutrition.targets
+            };
+            if (options.syncLegacy !== false) {
+                root.consumedCalories = runtime.nutrition.consumedCalories;
+                root.workoutBonus = runtime.nutrition.workoutBonus;
+                root.macros = runtime.nutrition.macros;
+                root.targetMacros = runtime.nutrition.targets;
+            }
+            emit('nutrition', { ...runtime.nutrition });
+            return runtime.nutrition;
+        },
+
+        setDailyLog(log, options = {}) {
+            runtime.dailyLog = Array.isArray(log) ? [...log] : [];
+            if (options.syncLegacy !== false) root.dailyLog = runtime.dailyLog;
+            emit('dailyLog', [...runtime.dailyLog]);
+            return runtime.dailyLog;
+        },
+
+        setSelectedDate(date) {
+            runtime.selectedDate = date;
+            root.currentViewDate = date;
+            emit('date', date);
+            return date;
+        },
+
+        setSync(status, extra = {}) {
+            runtime.sync = { ...runtime.sync, status, ...extra };
+            emit('sync', { ...runtime.sync });
+        },
+
+        subscribe(topic, fn) {
+            if (!listeners.has(topic)) listeners.set(topic, []);
+            listeners.get(topic).push(fn);
+            return () => {
+                const list = listeners.get(topic) || [];
+                listeners.set(topic, list.filter(x => x !== fn));
+            };
+        }
+    };
+})(window);
+
+    </script>
+    <script id="js-core-daily">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+
+    function emptyDay() {
+        return { consumedCalories: 0, workoutBonus: 0, macros: { p: 0, f: 0, c: 0 }, log: [], updatedAt: 0 };
+    }
+
+    function dateLabel(date) {
+        if (date === root.todayDate) return 'Сьогодні';
+        const d = new Date(`${date}T12:00:00`);
+        return d.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
+    }
+
+    function applyDay(date, day, { render = true } = {}) {
+        const safe = { ...emptyDay(), ...(day || {}), macros: { ...emptyDay().macros, ...(day?.macros || {}) }, log: Array.isArray(day?.log) ? day.log : [] };
+        root.allDaysData = A.storage.days();
+        root.currentViewDate = date;
+        root.consumedCalories = Number(safe.consumedCalories || 0);
+        root.workoutBonus = Number(safe.workoutBonus || 0);
+        root.macros = { ...safe.macros };
+        root.dailyLog = [...safe.log];
+
+        A.state.setSelectedDate(date);
+        A.state.setNutrition({
+            consumedCalories: root.consumedCalories,
+            workoutBonus: root.workoutBonus,
+            macros: root.macros,
+            targets: root.targetMacros || A.storage.macroTargets()
+        }, { syncLegacy: false });
+        A.state.setDailyLog(root.dailyLog, { syncLegacy: false });
+
+        const label = document.getElementById('display-date');
+        if (label) label.textContent = dateLabel(date);
+        const next = document.getElementById('btn-next-date');
+        if (next) next.disabled = date >= root.todayDate;
+
+        if (render) {
+            root.updateGoalDisplay?.();
+            root.renderDiary?.();
+            root.renderProgressInsights?.();
+        }
+        return safe;
+    }
+
+    A.daily = {
+        empty: emptyDay,
+
+        currentSnapshot() {
+            return {
+                consumedCalories: Number(root.consumedCalories || 0),
+                workoutBonus: Number(root.workoutBonus || 0),
+                macros: { ...(root.macros || { p: 0, f: 0, c: 0 }) },
+                log: Array.isArray(root.dailyLog) ? [...root.dailyLog] : [],
+                updatedAt: Date.now()
+            };
+        },
+
+        load(date = root.todayDate) {
+            const days = A.storage.days();
+            root.allDaysData = days;
+            const day = days[date] || emptyDay();
+            return applyDay(date, day, { render: true });
+        },
+
+        save({ sync = true, touch = true } = {}) {
+            const date = root.currentViewDate || root.todayDate;
+            const previous = A.storage.getDay(date);
+            const snapshot = this.currentSnapshot();
+            if (!touch) snapshot.updatedAt = previous.updatedAt || 0;
+            A.storage.putDay(date, snapshot);
+            root.allDaysData = A.storage.days();
+            A.state.hydrateFromLegacy();
+            root.renderProgressInsights?.();
+            if (sync) A.sync?.push?.();
+            return snapshot;
+        },
+
+        switch(offsetDays) {
+            this.save({ sync: false, touch: false });
+            const current = new Date(`${root.currentViewDate || root.todayDate}T12:00:00`);
+            current.setDate(current.getDate() + Number(offsetDays || 0));
+            const date = current.toISOString().slice(0, 10);
+            if (date > root.todayDate) return false;
+            this.load(date);
+            return true;
+        },
+
+        installLegacyAPI() {
+            root.loadDailyData = () => this.load(root.todayDate);
+            root.saveDailyData = () => this.save({ sync: true, touch: true });
+            root.changeDate = offset => this.switch(offset);
+        }
+    };
+
+    A.daily.installLegacyAPI();
+})(window);
+
+    </script>
+    <script id="js-training-model">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    A.training = A.training || {};
+
+    const TYPES = Object.freeze({
+        STRENGTH_WEIGHTED: 'strength_weighted',
+        STRENGTH_BODYWEIGHT: 'strength_bodyweight',
+        STRENGTH_BODYWEIGHT_OPTIONAL: 'strength_bodyweight_optional_weight',
+        CARDIO_TIME: 'cardio_time',
+        CARDIO_TIME_DISTANCE: 'cardio_time_distance',
+        STATIC_TIME: 'static_time'
+    });
+
+    const legacyTypeMap = Object.freeze({
+        strength_weighted: TYPES.STRENGTH_WEIGHTED,
+        bodyweight: TYPES.STRENGTH_BODYWEIGHT,
+        bodyweight_optional: TYPES.STRENGTH_BODYWEIGHT_OPTIONAL,
+        cardio_time: TYPES.CARDIO_TIME,
+        cardio_distance: TYPES.CARDIO_TIME_DISTANCE,
+        static_time: TYPES.STATIC_TIME
+    });
+
+    function normalizeExercise(exercise) {
+        if (!exercise) return null;
+        const type = legacyTypeMap[exercise.type || exercise.kind] || exercise.type || exercise.kind || TYPES.STRENGTH_BODYWEIGHT;
+        return Object.freeze({
+            id: String(exercise.id || exercise.name || '').trim(),
+            name: exercise.name || exercise.id || 'Вправа',
+            description: exercise.desc || exercise.description || '',
+            type,
+            factor: Number(exercise.factor || 0),
+            distanceUnit: exercise.distanceUnit || null,
+            raw: exercise
+        });
+    }
+
+    function requiredMetrics(exercise) {
+        const ex = normalizeExercise(exercise);
+        if (!ex) return [];
+        switch (ex.type) {
+            case TYPES.STRENGTH_WEIGHTED: return ['sets.reps', 'sets.weightKg'];
+            case TYPES.STRENGTH_BODYWEIGHT: return ['sets.reps'];
+            case TYPES.STRENGTH_BODYWEIGHT_OPTIONAL: return ['sets.reps', 'sets.addedWeightKg?'];
+            case TYPES.CARDIO_TIME: return ['durationSec'];
+            case TYPES.CARDIO_TIME_DISTANCE: return ['durationSec', 'distance'];
+            case TYPES.STATIC_TIME: return ['durationSec'];
+            default: return [];
+        }
+    }
+
+    function normalizeSets(sets, type) {
+        if (!Array.isArray(sets)) return [];
+        return sets.map(set => {
+            const reps = Number(set.reps || 0);
+            const weight = Number(set.weightKg ?? set.weight ?? set.addedWeightKg ?? 0);
+            if (type === TYPES.STRENGTH_BODYWEIGHT_OPTIONAL) {
+                return { reps, addedWeightKg: weight > 0 ? weight : 0 };
+            }
+            if (type === TYPES.STRENGTH_WEIGHTED) return { reps, weightKg: weight };
+            return { reps };
+        }).filter(set => set.reps > 0);
+    }
+
+    function entryFromLegacy(logEntry, exercise) {
+        const ex = normalizeExercise(exercise || (root.workoutDB || []).find(x => x.name === logEntry?.exercise));
+        if (!logEntry || !ex) return null;
+        const durationRaw = Number(logEntry.duration || 0);
+        const durationSec = logEntry.durationUnit === 'хв' ? durationRaw * 60 : durationRaw;
+        const metrics = {
+            sets: normalizeSets(logEntry.sets, ex.type),
+            durationSec: durationSec || 0,
+            distance: Number(logEntry.distance || 0),
+            distanceUnit: logEntry.distanceUnit || ex.distanceUnit || null,
+            volumeKg: Number(logEntry.volume || 0),
+            estimated1RMKg: Number(logEntry.estimated1RM || logEntry.pr?.est1RM || 0),
+            burnedKcal: Number(logEntry.burned || 0)
+        };
+        return {
+            schemaVersion: 3,
+            id: logEntry.id || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            exerciseId: ex.id,
+            exerciseName: ex.name,
+            exerciseType: ex.type,
+            createdAt: Number(logEntry.createdAt || logEntry.id || Date.now()),
+            metrics
+        };
+    }
+
+    A.training.types = TYPES;
+    A.training.model = {
+        normalizeExercise,
+        requiredMetrics,
+        entryFromLegacy,
+        all() { return (root.workoutDB || []).map(normalizeExercise).filter(Boolean); },
+        byId(id) {
+            const raw = (root.workoutDB || []).find(x => x.id === id);
+            return normalizeExercise(raw);
+        },
+        byName(name) {
+            const raw = (root.workoutDB || []).find(x => x.name === name);
+            return normalizeExercise(raw);
+        }
+    };
+
+    A.training.byId = id => A.training.model.byId(id);
+})(window);
+
+    </script>
+    <script id="js-training-history">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    A.training = A.training || {};
+
+    function allEntries() {
+        const days = A.storage.days();
+        const out = [];
+        Object.entries(days).forEach(([date, day]) => {
+            (day.log || []).forEach(item => {
+                if (item?.type !== 'workout') return;
+                const exercise = A.training.model.byId(item.exerciseId) || A.training.model.byName(item.exercise);
+                const normalized = item.trainingSession?.schemaVersion === 3
+                    ? item.trainingSession
+                    : A.training.model.entryFromLegacy(item, exercise?.raw || exercise);
+                if (normalized) out.push({ ...normalized, date, legacy: item });
+            });
+        });
+        return out.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+    }
+
+    function formatEntry(entry) {
+        if (!entry) return '';
+        const m = entry.metrics || {};
+        const sets = m.sets || [];
+        if (sets.length) {
+            return sets.map(s => {
+                if (Number(s.weightKg || 0) > 0) return `${s.reps}×${s.weightKg} кг`;
+                if (Number(s.addedWeightKg || 0) > 0) return `${s.reps}×+${s.addedWeightKg} кг`;
+                return `${s.reps} повт.`;
+            }).join(' · ');
+        }
+        if (m.durationSec) {
+            const min = Math.round(m.durationSec / 60);
+            const dist = m.distance > 0 ? ` · ${m.distance} ${m.distanceUnit || ''}` : '';
+            return `${min} хв${dist}`;
+        }
+        return 'Записане тренування';
+    }
+
+    A.training.history = {
+        all: allEntries,
+        forExercise(idOrName) {
+            return allEntries().filter(x => x.exerciseId === idOrName || x.exerciseName === idOrName);
+        },
+        last(idOrName) {
+            return this.forExercise(idOrName)[0] || null;
+        },
+        format: formatEntry
+    };
+
+    A.training.progression = {
+        suggest(idOrName) {
+            const exercise = A.training.model.byId(idOrName) || A.training.model.byName(idOrName);
+            const last = A.training.history.last(idOrName);
+            if (!exercise || !last) return null;
+
+            const sets = last.metrics?.sets || [];
+            const type = exercise.type;
+
+            if (type === A.training.types.STRENGTH_WEIGHTED && sets.length) {
+                const valid = sets.filter(s => Number(s.weightKg) > 0 && Number(s.reps) > 0);
+                if (!valid.length) return null;
+                const minReps = Math.min(...valid.map(s => Number(s.reps)));
+                const maxWeight = Math.max(...valid.map(s => Number(s.weightKg)));
+                if (minReps >= 12) {
+                    const nextWeight = Math.round((maxWeight + 2.5) * 2) / 2;
+                    return { label: `Орієнтир: ${nextWeight} кг`, reason: 'усі робочі підходи ≥12 повторів' };
+                }
+                const weakest = Math.min(...valid.map(s => Number(s.reps)));
+                return { label: `Орієнтир: +1 повтор у підході з ${weakest}`, reason: 'залишаємо робочу вагу' };
+            }
+
+            if ((type === A.training.types.STRENGTH_BODYWEIGHT || type === A.training.types.STRENGTH_BODYWEIGHT_OPTIONAL) && sets.length) {
+                const total = sets.reduce((sum, s) => sum + Number(s.reps || 0), 0);
+                return { label: `Орієнтир: ${total + 1} сумарних повторів`, reason: 'м’яка прогресія без зміни техніки' };
+            }
+
+            if ((type === A.training.types.CARDIO_TIME || type === A.training.types.CARDIO_TIME_DISTANCE) && last.metrics?.durationSec) {
+                const minutes = Math.max(1, Math.round(last.metrics.durationSec / 60));
+                return { label: `Орієнтир: ${minutes + 2} хв`, reason: 'невелике збільшення тривалості' };
+            }
+
+            if (type === A.training.types.STATIC_TIME && last.metrics?.durationSec) {
+                return { label: `Орієнтир: ${Math.round(last.metrics.durationSec + 5)} сек`, reason: '+5 секунд до утримання' };
+            }
+
+            return null;
+        }
+    };
+})(window);
+
+    </script>
+    <script id="js-app-v9">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    A.core = A.core || {};
+    A.core.version = '9.1';
+
+    function trainingSessionFromMetadata(name, metadata) {
+        const exercise = A.training.model.byId(metadata.exerciseId) || A.training.model.byName(name);
+        if (!exercise) return null;
+        return A.training.model.entryFromLegacy({
+            id: Date.now(),
+            createdAt: Date.now(),
+            exercise: name,
+            burned: metadata.burned || 0,
+            ...metadata
+        }, exercise.raw);
+    }
+
+    function installWorkoutEntryAdapter() {
+        if (typeof root.logWorkoutEntry !== 'function' || root.logWorkoutEntry.__v9Wrapped) return;
+        const legacy = root.logWorkoutEntry;
+        const wrapped = function (name, burnedKcal, details, metadata = {}) {
+            const session = trainingSessionFromMetadata(name, { ...metadata, burned: burnedKcal });
+            const enriched = {
+                ...metadata,
+                exerciseId: session?.exerciseId || metadata.exerciseId || null,
+                exerciseType: session?.exerciseType || metadata.kind || null,
+                trainingSession: session
+            };
+            return legacy.call(this, name, burnedKcal, details, enriched);
+        };
+        wrapped.__v9Wrapped = true;
+        root.logWorkoutEntry = wrapped;
+    }
+
+    function decorateWorkoutCards() {
+        document.querySelectorAll('.exercise-card[data-exercise-id]').forEach(card => {
+            card.querySelector('.exercise-v9-history')?.remove();
+            const id = card.dataset.exerciseId;
+            const last = A.training.history.last(id);
+            if (!last) return;
+
+            const progression = A.training.progression.suggest(id);
+            const box = document.createElement('div');
+            box.className = 'exercise-v9-history';
+            const date = new Date(`${last.date}T12:00:00`).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
+            box.innerHTML = `
+                <div class="exercise-v9-history-row">
+                    <span class="exercise-v9-kicker">Останнє · ${date}</span>
+                    <strong>${A.training.history.format(last)}</strong>
+                </div>
+                ${progression ? `<div class="exercise-v9-next"><i class="fa-solid fa-arrow-trend-up"></i><span>${progression.label}</span></div>` : ''}
+            `;
+            const actions = card.querySelector('.exercise-actions');
+            if (actions) card.insertBefore(box, actions);
+            else card.appendChild(box);
+        });
+    }
+
+    function wrapWorkoutRenderer() {
+        if (typeof root.renderWorkouts !== 'function' || root.renderWorkouts.__v9Wrapped) return;
+        const legacy = root.renderWorkouts;
+        const wrapped = function (...args) {
+            const result = legacy.apply(this, args);
+            requestAnimationFrame(decorateWorkoutCards);
+            return result;
+        };
+        wrapped.__v9Wrapped = true;
+        root.renderWorkouts = wrapped;
+    }
+
+    function wrapSyncStatus() {
+        if (typeof root.syncToCloud !== 'function' || root.syncToCloud.__v9Wrapped) return;
+        const legacy = root.syncToCloud;
+        const wrapped = async function (...args) {
+            A.state.setSync('syncing', { error: null });
+            try {
+                const result = await legacy.apply(this, args);
+                A.state.setSync('synced', { lastAt: Date.now(), error: null });
+                return result;
+            } catch (error) {
+                A.state.setSync('error', { error: String(error?.message || error) });
+                throw error;
+            }
+        };
+        wrapped.__v9Wrapped = true;
+        root.syncToCloud = wrapped;
+        A.sync.push = (...args) => root.syncToCloud(...args);
+    }
+
+    A.bootstrapV9 = function () {
+        const migration = A.storage.migrate();
+        A.state.hydrateFromLegacy();
+        installWorkoutEntryAdapter();
+        wrapWorkoutRenderer();
+        wrapSyncStatus();
+        root.searchWorkout?.();
+        decorateWorkoutCards();
+        console.info('[Achilles OS]', `V${A.core.version}`, migration);
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => A.bootstrapV9(), { once: true });
+    } else {
+        A.bootstrapV9();
+    }
+})(window);
+
+    </script>
 
 </body>
 </html>
