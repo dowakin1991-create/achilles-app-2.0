@@ -747,18 +747,65 @@
                         <button onclick="changeDate(1)" class="secondary" id="btn-next-date" style="width: 40px; height: 40px; padding: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center;" disabled><i class="fa-solid fa-chevron-right"></i></button>
                     </div>
                     
-                    <div style="background: var(--card-bg); padding: 30px 25px; border-radius: 30px; border: 1px solid var(--glass-border);">
-                        <span style="font-size: 16px; font-weight: 600; color: var(--text-muted);">Спожито:</span>
-                        <div style="font-size: 48px; font-weight: 800; margin: 5px 0; letter-spacing: -2px;">
-                            <span class="gradient-text" id="calories-consumed" style="animation: none;">0</span> <span style="font-size: 24px; color: var(--text-muted); font-weight: 600;">/ <span id="calories-goal">2000</span> ккал</span>
+                    <div class="nutrition-hero-card">
+                        <div class="nutrition-hero-topline">
+                            <span class="nutrition-hero-label">Спожито:</span>
+                            <div id="bonus-kcal-msg" class="bonus-badge" style="display: none;"></div>
                         </div>
-                        <div class="progress-bar"><div class="progress-fill gradient-bg" id="calorie-progress"></div></div>
-                        <div id="bonus-kcal-msg" class="bonus-badge" style="display: none;"></div>
-                        
-                        <div class="macro-box">
-                            <div class="macro-item"><strong id="macro-p" class="c-p">0</strong><span id="target-p" style="color: var(--text-muted);">/ 0г</span><br>Білки</div>
-                            <div class="macro-item"><strong id="macro-f" class="c-f">0</strong><span id="target-f" style="color: var(--text-muted);">/ 0г</span><br>Жири</div>
-                            <div class="macro-item"><strong id="macro-c" class="c-c">0</strong><span id="target-c" style="color: var(--text-muted);">/ 0г</span><br>Вугл.</div>
+
+                        <div class="nutrition-hero-body">
+                            <div class="nutrition-rings-wrap">
+                                <div class="nutrition-rings-widget" id="nutrition-rings-widget" aria-label="Поживні кільця">
+                                    <svg class="nutrition-rings-svg" viewBox="0 0 240 240" role="img" aria-hidden="true">
+                                        <circle class="ring-track ring-track-kcal" cx="120" cy="120" r="92"></circle>
+                                        <circle class="ring-progress ring-kcal gradient-ring" id="ring-kcal" cx="120" cy="120" r="92"></circle>
+
+                                        <circle class="ring-track ring-track-protein" cx="120" cy="120" r="72"></circle>
+                                        <circle class="ring-progress ring-protein" id="ring-protein" cx="120" cy="120" r="72"></circle>
+
+                                        <circle class="ring-track ring-track-fat" cx="120" cy="120" r="54"></circle>
+                                        <circle class="ring-progress ring-fat" id="ring-fat" cx="120" cy="120" r="54"></circle>
+
+                                        <circle class="ring-track ring-track-carb" cx="120" cy="120" r="38"></circle>
+                                        <circle class="ring-progress ring-carb" id="ring-carb" cx="120" cy="120" r="38"></circle>
+                                    </svg>
+
+                                    <div class="nutrition-rings-center">
+                                        <span class="nutrition-rings-title">Ккал</span>
+                                        <div class="nutrition-rings-kcal-line">
+                                            <span class="nutrition-rings-kcal-value gradient-text" id="calories-consumed" style="animation: none;">0</span>
+                                            <span class="nutrition-rings-kcal-goal">/ <span id="calories-goal">2000</span></span>
+                                        </div>
+                                        <span class="nutrition-rings-kcal-unit">ккал</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="nutrition-macro-cards">
+                                <div class="nutrition-macro-card protein">
+                                    <span class="nutrition-macro-dot"></span>
+                                    <div class="nutrition-macro-copy">
+                                        <span class="nutrition-macro-name">Білки</span>
+                                        <div class="nutrition-macro-value-line"><strong id="macro-p" class="c-p">0</strong><span id="target-p">/ 0г</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="nutrition-macro-card fat">
+                                    <span class="nutrition-macro-dot"></span>
+                                    <div class="nutrition-macro-copy">
+                                        <span class="nutrition-macro-name">Жири</span>
+                                        <div class="nutrition-macro-value-line"><strong id="macro-f" class="c-f">0</strong><span id="target-f">/ 0г</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="nutrition-macro-card carb">
+                                    <span class="nutrition-macro-dot"></span>
+                                    <div class="nutrition-macro-copy">
+                                        <span class="nutrition-macro-name">Вуглеводи</span>
+                                        <div class="nutrition-macro-value-line"><strong id="macro-c" class="c-c">0</strong><span id="target-c">/ 0г</span></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1790,7 +1837,8 @@
             if(percent > 100) percent = 100;
             
             requestAnimationFrame(() => {
-                document.getElementById('calorie-progress').style.width = percent + '%';
+                const progressEl = document.getElementById('calorie-progress');
+                if(progressEl) progressEl.style.width = percent + '%';
                 document.getElementById('calories-consumed').innerText = Math.round(window.consumedCalories); 
                 document.getElementById('macro-p').innerText = Math.round(window.macros.p);
                 document.getElementById('macro-f').innerText = Math.round(window.macros.f);
@@ -3481,6 +3529,407 @@ button,
     .live-field-grid { grid-template-columns:1fr; }
 }
 </style>
+
+
+<style id="achilles-rings-upgrade">
+:root {
+    --ring-green: #39D353;
+    --ring-yellow: #F2C94C;
+    --ring-blue: #2893FF;
+    --bg-flow-speed: 18s;
+}
+
+@keyframes achillesBgFloat {
+    0% {
+        transform: scale(1) translate3d(0, 0, 0);
+        filter: saturate(1) brightness(1);
+    }
+    33% {
+        transform: scale(1.06) translate3d(-1.2%, -1.4%, 0);
+        filter: saturate(1.06) brightness(1.02);
+    }
+    66% {
+        transform: scale(1.08) translate3d(1.8%, 1.1%, 0);
+        filter: saturate(1.1) brightness(1.03);
+    }
+    100% {
+        transform: scale(1) translate3d(0, 0, 0);
+        filter: saturate(1) brightness(1);
+    }
+}
+
+@keyframes achillesOverlayDrift {
+    0% { opacity: 0.42; transform: translate3d(0,0,0) scale(1); }
+    50% { opacity: 0.56; transform: translate3d(-1.2%, 1%, 0) scale(1.02); }
+    100% { opacity: 0.42; transform: translate3d(0,0,0) scale(1); }
+}
+
+body::before {
+    animation: achillesBgFloat var(--bg-flow-speed) ease-in-out infinite;
+    transform-origin: center center;
+    will-change: transform, filter;
+}
+
+body::after {
+    background:
+        radial-gradient(900px 600px at 14% 10%, rgba(var(--primary-rgb), 0.08), transparent 56%),
+        radial-gradient(800px 520px at 88% 18%, rgba(57, 211, 83, 0.04), transparent 56%),
+        radial-gradient(760px 520px at 50% 90%, rgba(40, 147, 255, 0.05), transparent 56%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0) 18%, rgba(0,0,0,0.05) 100%) !important;
+    animation: achillesOverlayDrift calc(var(--bg-flow-speed) * 0.85) ease-in-out infinite;
+    will-change: transform, opacity;
+}
+
+.nutrition-hero-card {
+    position: relative;
+    padding: 30px 25px;
+    border-radius: 32px;
+    border: 1px solid var(--glass-border);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--card-bg) 92%, transparent), color-mix(in srgb, var(--card-bg) 78%, transparent));
+    box-shadow: 0 22px 54px var(--shadow-color);
+    overflow: hidden;
+}
+
+.nutrition-hero-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 15%, rgba(var(--primary-rgb), 0.10), transparent 26%),
+        radial-gradient(circle at 82% 84%, rgba(var(--primary-rgb), 0.06), transparent 24%);
+    pointer-events: none;
+}
+
+.nutrition-hero-topline {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.nutrition-hero-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.nutrition-hero-body {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+    gap: 26px;
+    align-items: center;
+}
+
+.nutrition-rings-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nutrition-rings-widget {
+    position: relative;
+    width: min(72vw, 320px);
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+}
+
+.nutrition-rings-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.16));
+}
+
+.ring-track,
+.ring-progress {
+    fill: none;
+    transform: rotate(-90deg);
+    transform-origin: 120px 120px;
+    stroke-linecap: round;
+}
+
+.ring-track {
+    opacity: 0.18;
+}
+
+.ring-progress {
+    transition: stroke-dashoffset 1150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 280ms ease;
+    will-change: stroke-dashoffset;
+}
+
+.ring-track-kcal { stroke: rgba(var(--primary-rgb), 0.16); stroke-width: 16; }
+.ring-kcal { stroke: url(#achillesRingGradient); stroke-width: 16; }
+.ring-track-protein { stroke: rgba(57, 211, 83, 0.18); stroke-width: 13; }
+.ring-protein { stroke: var(--ring-green); stroke-width: 13; }
+.ring-track-fat { stroke: rgba(242, 201, 76, 0.20); stroke-width: 11; }
+.ring-fat { stroke: var(--ring-yellow); stroke-width: 11; }
+.ring-track-carb { stroke: rgba(40, 147, 255, 0.20); stroke-width: 9; }
+.ring-carb { stroke: var(--ring-blue); stroke-width: 9; }
+
+.nutrition-rings-svg defs + * { }
+
+.nutrition-rings-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 52px;
+    pointer-events: none;
+}
+
+.nutrition-rings-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.nutrition-rings-kcal-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nutrition-rings-kcal-value {
+    font-size: clamp(46px, 8vw, 64px);
+    font-weight: 900;
+    line-height: 0.94;
+    letter-spacing: -0.06em;
+}
+
+.nutrition-rings-kcal-goal {
+    font-size: clamp(18px, 3vw, 24px);
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.nutrition-rings-kcal-unit {
+    margin-top: 5px;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.nutrition-macro-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+.nutrition-macro-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 84px;
+    padding: 18px 18px;
+    border-radius: 22px;
+    border: 1px solid var(--glass-border);
+    background: color-mix(in srgb, var(--input-bg) 86%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.nutrition-macro-dot {
+    flex: 0 0 auto;
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    box-shadow: 0 0 16px currentColor;
+}
+
+.nutrition-macro-card.protein { color: var(--ring-green); }
+.nutrition-macro-card.fat { color: var(--ring-yellow); }
+.nutrition-macro-card.carb { color: var(--ring-blue); }
+.nutrition-macro-card .nutrition-macro-dot { background: currentColor; }
+
+.nutrition-macro-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nutrition-macro-name {
+    color: var(--text-main);
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.nutrition-macro-value-line {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.nutrition-macro-value-line strong {
+    font-size: 34px;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    color: currentColor;
+}
+
+.nutrition-macro-value-line span {
+    color: var(--text-muted) !important;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.progress-bar,
+#calorie-progress,
+.macro-box {
+    display: none !important;
+}
+
+@media (max-width: 920px) {
+    .nutrition-hero-body {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .nutrition-macro-cards {
+        width: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .nutrition-macro-card {
+        min-height: 118px;
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 640px) {
+    .nutrition-hero-card {
+        padding: 24px 18px;
+        border-radius: 28px;
+    }
+
+    .nutrition-rings-widget {
+        width: min(82vw, 320px);
+    }
+
+    .nutrition-macro-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .nutrition-macro-card {
+        min-height: 84px;
+        flex-direction: row;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .nutrition-rings-center {
+        padding: 44px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before,
+    body::after,
+    .ring-progress {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+
+<script id="achilles-rings-script">
+(function() {
+    function injectRingGradient() {
+        const svg = document.querySelector('.nutrition-rings-svg');
+        if (!svg || svg.querySelector('#achillesRingGradient')) return;
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradient.setAttribute('id', 'achillesRingGradient');
+        gradient.setAttribute('x1', '0%');
+        gradient.setAttribute('y1', '0%');
+        gradient.setAttribute('x2', '100%');
+        gradient.setAttribute('y2', '100%');
+        [['0%', 'var(--accent-1)'], ['52%', 'var(--accent-2)'], ['100%', 'var(--accent-3)']].forEach(([offset, color]) => {
+            const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+            stop.setAttribute('offset', offset);
+            stop.style.stopColor = color;
+            gradient.appendChild(stop);
+        });
+        defs.appendChild(gradient);
+        svg.insertBefore(defs, svg.firstChild);
+    }
+
+    function setCircleProgress(el, percent, animate) {
+        if (!el) return;
+        const radius = parseFloat(el.getAttribute('r'));
+        const circumference = 2 * Math.PI * radius;
+        const safePercent = Math.max(0, Math.min(percent || 0, 1));
+        el.style.strokeDasharray = `${circumference}`;
+        const target = circumference * (1 - safePercent);
+
+        if (animate) {
+            el.style.transition = 'none';
+            el.style.strokeDashoffset = `${circumference}`;
+            el.getBoundingClientRect();
+            requestAnimationFrame(() => {
+                el.style.transition = 'stroke-dashoffset 1150ms cubic-bezier(0.22, 1, 0.36, 1), opacity 280ms ease';
+                el.style.strokeDashoffset = `${target}`;
+            });
+        } else {
+            el.style.strokeDashoffset = `${target}`;
+        }
+        el.style.opacity = safePercent > 0 ? '1' : '0.42';
+    }
+
+    window.renderNutritionRings = function(animate = false) {
+        injectRingGradient();
+        const kcalGoal = parseFloat(document.getElementById('calories-goal')?.textContent || '0') || 0;
+        const pTarget = parseFloat((document.getElementById('target-p')?.textContent || '').replace(/[^\d.]/g, '')) || 0;
+        const fTarget = parseFloat((document.getElementById('target-f')?.textContent || '').replace(/[^\d.]/g, '')) || 0;
+        const cTarget = parseFloat((document.getElementById('target-c')?.textContent || '').replace(/[^\d.]/g, '')) || 0;
+
+        const kcalPercent = kcalGoal > 0 ? (window.consumedCalories / kcalGoal) : 0;
+        const proteinPercent = pTarget > 0 ? (window.macros.p / pTarget) : 0;
+        const fatPercent = fTarget > 0 ? (window.macros.f / fTarget) : 0;
+        const carbPercent = cTarget > 0 ? (window.macros.c / cTarget) : 0;
+
+        setCircleProgress(document.getElementById('ring-kcal'), kcalPercent, animate);
+        setCircleProgress(document.getElementById('ring-protein'), proteinPercent, animate);
+        setCircleProgress(document.getElementById('ring-fat'), fatPercent, animate);
+        setCircleProgress(document.getElementById('ring-carb'), carbPercent, animate);
+    };
+
+    const prevUpdateGoalDisplay = window.updateGoalDisplay;
+    window.updateGoalDisplay = function() {
+        prevUpdateGoalDisplay();
+        requestAnimationFrame(() => {
+            const isDashboardActive = document.getElementById('tab-dashboard')?.classList.contains('active');
+            window.renderNutritionRings(isDashboardActive);
+        });
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        injectRingGradient();
+        setTimeout(() => window.renderNutritionRings(true), 120);
+
+        document.querySelectorAll('.nav-item[data-target="tab-dashboard"], .menu-item[data-target="tab-dashboard"]').forEach(item => {
+            item.addEventListener('click', () => {
+                setTimeout(() => window.renderNutritionRings(true), 90);
+            }, { passive: true });
+        });
+    }, { once: true });
+})();
+</script>
 
 </body>
 </html>
