@@ -594,7 +594,45 @@
         }
 
     </style>
-    <link rel="stylesheet" href="css/v9.css">
+    <style id="achilles-v9-css">
+/* Achilles OS V9.1 — architecture-facing UI additions only. */
+.exercise-v9-history {
+    display: grid;
+    gap: 9px;
+    padding: 13px 14px;
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--input-bg) 82%, transparent);
+}
+.exercise-v9-history-row {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+.exercise-v9-kicker {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+.exercise-v9-history-row strong {
+    color: var(--text-main);
+    font-size: 13px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+.exercise-v9-next {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 800;
+}
+.exercise-v9-next i { font-size: 11px; }
+
+    </style>
 </head>
 <body> 
 
@@ -745,6 +783,7 @@
                             <span class="eyebrow">ACHILLES OS</span>
                             <h1 id="greeting-header">Привіт, <span class="gradient-text" id="display-username">Спартанцю</span> <i id="sync-icon" class="fa-solid fa-cloud-arrow-up sync-icon"></i></h1>
                             <span class="dash-subtitle">Твій стан, прогрес і наступний крок — в одному місці.</span>
+                            <span id="sync-status-pill" class="sync-status-pill" data-state="local"><i class="fa-solid fa-mobile-screen-button"></i><span>Дані збережені локально</span></span>
                         </div>
 
                         <div class="date-switcher premium-control">
@@ -1431,7 +1470,13 @@
                 dataVersion: 2,
                 syncedAt: Date.now()
             };
-            try { await setDoc(doc(db, "users", userName), dataToSave); } catch(e) { console.error("Cloud Sync Error", e); }
+            try {
+                await setDoc(doc(db, "users", userName), dataToSave);
+                return true;
+            } catch(e) {
+                console.error("Cloud Sync Error", e);
+                throw e;
+            }
         };
 
         window.loadFromCloud = async function(userName) {
@@ -1472,13 +1517,28 @@
                     let cloudFW = d.favWorkouts || [];
                     if(cloudFW.length > localFW.length) localStorage.setItem('achilles_fav_workouts', JSON.stringify(cloudFW));
 
+                    const mergeFoods = (cloudList, localList) => {
+                        const map = new Map();
+                        const keyOf = item => {
+                            const barcode = String(item?.barcode || '').trim();
+                            if (barcode) return `barcode:${barcode}`;
+                            const name = String(item?.name || '').replace(/^[^\p{L}\p{N}]+/u, '').trim().toLowerCase();
+                            return `name:${name}|${Number(item?.kcal || 0)}`;
+                        };
+                        [...(cloudList || []), ...(localList || [])].forEach(item => {
+                            if (!item || !item.name) return;
+                            map.set(keyOf(item), item); // локальна версія йде другою і має пріоритет
+                        });
+                        return [...map.values()];
+                    };
+
                     let localCF = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
                     let cloudCF = d.customFoods || [];
-                    if(cloudCF.length > localCF.length) localStorage.setItem('achilles_custom_foods', JSON.stringify(cloudCF));
+                    localStorage.setItem('achilles_custom_foods', JSON.stringify(mergeFoods(cloudCF, localCF)));
 
                     let localFF = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
                     let cloudFF = d.favFoods || [];
-                    if(cloudFF.length > localFF.length) localStorage.setItem('achilles_fav_foods', JSON.stringify(cloudFF));
+                    localStorage.setItem('achilles_fav_foods', JSON.stringify(mergeFoods(cloudFF, localFF)));
 
                     const localPRs = JSON.parse(localStorage.getItem('achilles_prs')) || {};
                     const cloudPRs = d.prs || {};
@@ -5192,13 +5252,1276 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
 </style>
 
 
-    <!-- Achilles OS V9.1 architecture -->
-    <script src="js/core/storage.js"></script>
-    <script src="js/core/state.js"></script>
-    <script src="js/core/daily.js"></script>
-    <script src="js/training/model.js"></script>
-    <script src="js/training/history.js"></script>
-    <script src="js/app-v9.js"></script>
+<style id="achilles-v9-2-data-ui">
+.sync-status-pill {
+    display: inline-flex; align-items: center; gap: 7px; width: fit-content;
+    margin-top: 10px; padding: 7px 10px; border-radius: 999px;
+    border: 1px solid var(--glass-border); background: var(--input-bg);
+    color: var(--text-muted); font-size: 11px; font-weight: 750; letter-spacing: .01em;
+    transition: opacity 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+.sync-status-pill i { font-size: 11px; }
+.sync-status-pill[data-state="syncing"] { color: var(--primary); border-color: rgba(var(--primary-rgb), .26); }
+.sync-status-pill[data-state="syncing"] i { animation: v92SyncPulse 900ms ease-in-out infinite; }
+.sync-status-pill[data-state="synced"] { color: var(--success); }
+.sync-status-pill[data-state="offline"] { color: var(--text-muted); }
+.sync-status-pill[data-state="queued"] { color: var(--primary); }
+.sync-status-pill[data-state="error"] { color: var(--danger); }
+.food-api-status[data-state="cache"] .food-api-dot { background: var(--primary); box-shadow: 0 0 10px rgba(var(--primary-rgb), .25); }
+.food-api-status[data-state="offline"] .food-api-dot { background: var(--text-muted); box-shadow: none; }
+.food-source-badge {
+    display:inline-flex; align-items:center; margin-top:7px; padding:4px 7px; border-radius:999px;
+    background:var(--input-bg); border:1px solid var(--glass-border); color:var(--text-muted);
+    font-size:10px; font-weight:750; letter-spacing:.02em;
+}
+@keyframes v92SyncPulse { 50% { opacity:.45; transform:scale(.86); } }
+</style>
+
+    <!-- Achilles OS V9.2 architecture -->
+    <script id="js-core-storage">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    const LEGACY = A.storage || {};
+
+    const KEYS = Object.freeze({
+        schemaVersion: 'achilles_schema_version',
+        user: 'achilles_user',
+        profile: 'achilles_profile',
+        allDays: 'achilles_all_days',
+        legacyDaily: 'achilles_daily_data',
+        macros: 'achilles_macros',
+        baseKcal: 'achilles_base_kcal',
+        appMode: 'achilles_app_mode',
+        themeColor: 'achilles_theme_color',
+        themeMode: 'achilles_theme_mode',
+        weightHistory: 'achilles_weight_history',
+        favFoods: 'achilles_fav_foods',
+        customFoods: 'achilles_custom_foods',
+        foodCache: 'achilles_food_cache_v2',
+        foodRecent: 'achilles_food_recent_v1',
+        syncQueue: 'achilles_sync_queue_v1',
+        favWorkouts: 'achilles_fav_workouts',
+        prs: 'achilles_prs',
+        lastPR: 'achilles_last_pr'
+    });
+
+    function clone(value) {
+        if (value === undefined) return undefined;
+        try { return structuredClone(value); }
+        catch (_) { return JSON.parse(JSON.stringify(value)); }
+    }
+
+    function safeJSON(raw, fallback) {
+        if (raw === null || raw === undefined || raw === '') return clone(fallback);
+        try { return JSON.parse(raw); }
+        catch (error) {
+            console.warn('[Achilles.storage] invalid JSON', error);
+            return clone(fallback);
+        }
+    }
+
+    function normalizeMacros(value) {
+        const m = value && typeof value === 'object' ? value : {};
+        return {
+            p: Number(m.p || 0),
+            f: Number(m.f || 0),
+            c: Number(m.c || 0)
+        };
+    }
+
+    function normalizeDay(value) {
+        const d = value && typeof value === 'object' ? value : {};
+        return {
+            consumedCalories: Number(d.consumedCalories || 0),
+            workoutBonus: Number(d.workoutBonus || 0),
+            macros: normalizeMacros(d.macros),
+            log: Array.isArray(d.log) ? d.log : [],
+            updatedAt: Number(d.updatedAt || 0)
+        };
+    }
+
+    A.storage = {
+        ...LEGACY,
+        version: '9.2',
+        schemaVersion: 4,
+        keys: KEYS,
+
+        get(key, fallback = null) {
+            const raw = localStorage.getItem(key);
+            return raw === null ? fallback : raw;
+        },
+
+        set(key, value) {
+            localStorage.setItem(key, String(value));
+            return value;
+        },
+
+        json(key, fallback = null) {
+            return safeJSON(localStorage.getItem(key), fallback);
+        },
+
+        setJSON(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+            return value;
+        },
+
+        remove(key) {
+            localStorage.removeItem(key);
+        },
+
+        transaction(key, fallback, updater) {
+            const current = this.json(key, fallback);
+            const next = updater(clone(current));
+            this.setJSON(key, next);
+            return next;
+        },
+
+        profile() {
+            return this.json(KEYS.profile, {});
+        },
+
+        macroTargets() {
+            return normalizeMacros(this.json(KEYS.macros, { p: 0, f: 0, c: 0 }));
+        },
+
+        days() {
+            const raw = this.json(KEYS.allDays, {});
+            const result = {};
+            Object.entries(raw || {}).forEach(([date, day]) => { result[date] = normalizeDay(day); });
+            return result;
+        },
+
+        setDays(days) {
+            const result = {};
+            Object.entries(days || {}).forEach(([date, day]) => { result[date] = normalizeDay(day); });
+            this.setJSON(KEYS.allDays, result);
+            return result;
+        },
+
+        getDay(date) {
+            return normalizeDay(this.days()[date]);
+        },
+
+        putDay(date, day) {
+            return this.transaction(KEYS.allDays, {}, days => {
+                days[date] = normalizeDay(day);
+                return days;
+            })[date];
+        },
+
+        migrate() {
+            const currentVersion = Number(this.get(KEYS.schemaVersion, 0)) || 0;
+            let days = this.days();
+
+            const oldDaily = this.json(KEYS.legacyDaily, null);
+            if (oldDaily && oldDaily.date && !days[oldDaily.date]) {
+                days[oldDaily.date] = normalizeDay(oldDaily);
+                this.remove(KEYS.legacyDaily);
+            }
+
+            days = this.setDays(days);
+            this.set(KEYS.schemaVersion, this.schemaVersion);
+
+            return {
+                from: currentVersion,
+                to: this.schemaVersion,
+                migrated: currentVersion !== this.schemaVersion,
+                days: Object.keys(days).length
+            };
+        }
+    };
+})(window);
+
+    </script>
+    <script id="js-core-state">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    const existing = A.state || {};
+    const listeners = new Map();
+
+    const runtime = {
+        selectedDate: root.currentViewDate || root.todayDate || null,
+        nutrition: {
+            consumedCalories: Number(root.consumedCalories || 0),
+            workoutBonus: Number(root.workoutBonus || 0),
+            macros: { ...(root.macros || { p: 0, f: 0, c: 0 }) },
+            targets: { ...(root.targetMacros || { p: 0, f: 0, c: 0 }) }
+        },
+        dailyLog: Array.isArray(root.dailyLog) ? [...root.dailyLog] : [],
+        profile: A.storage?.profile?.() || {},
+        settings: {
+            appMode: A.storage?.get?.('achilles_app_mode', 'pro') || 'pro',
+            themeColor: A.storage?.get?.('achilles_theme_color', 'gold') || 'gold',
+            themeMode: A.storage?.get?.('achilles_theme_mode', 'auto') || 'auto'
+        },
+        sync: { status: 'idle', lastAt: 0, error: null }
+    };
+
+    function emit(topic, payload) {
+        const direct = listeners.get(topic) || [];
+        const any = listeners.get('*') || [];
+        [...direct, ...any].forEach(fn => {
+            try { fn(payload, topic); } catch (error) { console.error('[Achilles.state listener]', error); }
+        });
+    }
+
+    A.state = {
+        ...existing,
+        runtime,
+
+        snapshot() {
+            try { return structuredClone(runtime); }
+            catch (_) { return JSON.parse(JSON.stringify(runtime)); }
+        },
+
+        hydrateFromLegacy() {
+            runtime.selectedDate = root.currentViewDate || root.todayDate || runtime.selectedDate;
+            runtime.nutrition.consumedCalories = Number(root.consumedCalories || 0);
+            runtime.nutrition.workoutBonus = Number(root.workoutBonus || 0);
+            runtime.nutrition.macros = { ...(root.macros || { p: 0, f: 0, c: 0 }) };
+            runtime.nutrition.targets = { ...(root.targetMacros || A.storage.macroTargets()) };
+            runtime.dailyLog = Array.isArray(root.dailyLog) ? [...root.dailyLog] : [];
+            runtime.profile = A.storage.profile();
+            runtime.settings.appMode = A.storage.get('achilles_app_mode', 'pro');
+            runtime.settings.themeColor = A.storage.get('achilles_theme_color', 'gold');
+            runtime.settings.themeMode = A.storage.get('achilles_theme_mode', 'auto');
+            emit('hydrate', this.snapshot());
+            return runtime;
+        },
+
+        setNutrition(patch, options = {}) {
+            runtime.nutrition = {
+                ...runtime.nutrition,
+                ...patch,
+                macros: patch.macros ? { ...patch.macros } : runtime.nutrition.macros,
+                targets: patch.targets ? { ...patch.targets } : runtime.nutrition.targets
+            };
+            if (options.syncLegacy !== false) {
+                root.consumedCalories = runtime.nutrition.consumedCalories;
+                root.workoutBonus = runtime.nutrition.workoutBonus;
+                root.macros = runtime.nutrition.macros;
+                root.targetMacros = runtime.nutrition.targets;
+            }
+            emit('nutrition', { ...runtime.nutrition });
+            return runtime.nutrition;
+        },
+
+        setDailyLog(log, options = {}) {
+            runtime.dailyLog = Array.isArray(log) ? [...log] : [];
+            if (options.syncLegacy !== false) root.dailyLog = runtime.dailyLog;
+            emit('dailyLog', [...runtime.dailyLog]);
+            return runtime.dailyLog;
+        },
+
+        setSelectedDate(date) {
+            runtime.selectedDate = date;
+            root.currentViewDate = date;
+            emit('date', date);
+            return date;
+        },
+
+        setSync(status, extra = {}) {
+            runtime.sync = { ...runtime.sync, status, ...extra };
+            emit('sync', { ...runtime.sync });
+        },
+
+        subscribe(topic, fn) {
+            if (!listeners.has(topic)) listeners.set(topic, []);
+            listeners.get(topic).push(fn);
+            return () => {
+                const list = listeners.get(topic) || [];
+                listeners.set(topic, list.filter(x => x !== fn));
+            };
+        }
+    };
+})(window);
+
+    </script>
+    <script id="js-core-daily">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+
+    function emptyDay() {
+        return { consumedCalories: 0, workoutBonus: 0, macros: { p: 0, f: 0, c: 0 }, log: [], updatedAt: 0 };
+    }
+
+    function dateLabel(date) {
+        if (date === root.todayDate) return 'Сьогодні';
+        const d = new Date(`${date}T12:00:00`);
+        return d.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
+    }
+
+    function applyDay(date, day, { render = true } = {}) {
+        const safe = { ...emptyDay(), ...(day || {}), macros: { ...emptyDay().macros, ...(day?.macros || {}) }, log: Array.isArray(day?.log) ? day.log : [] };
+        root.allDaysData = A.storage.days();
+        root.currentViewDate = date;
+        root.consumedCalories = Number(safe.consumedCalories || 0);
+        root.workoutBonus = Number(safe.workoutBonus || 0);
+        root.macros = { ...safe.macros };
+        root.dailyLog = [...safe.log];
+
+        A.state.setSelectedDate(date);
+        A.state.setNutrition({
+            consumedCalories: root.consumedCalories,
+            workoutBonus: root.workoutBonus,
+            macros: root.macros,
+            targets: root.targetMacros || A.storage.macroTargets()
+        }, { syncLegacy: false });
+        A.state.setDailyLog(root.dailyLog, { syncLegacy: false });
+
+        const label = document.getElementById('display-date');
+        if (label) label.textContent = dateLabel(date);
+        const next = document.getElementById('btn-next-date');
+        if (next) next.disabled = date >= root.todayDate;
+
+        if (render) {
+            root.updateGoalDisplay?.();
+            root.renderDiary?.();
+            root.renderProgressInsights?.();
+        }
+        return safe;
+    }
+
+    A.daily = {
+        empty: emptyDay,
+
+        currentSnapshot() {
+            return {
+                consumedCalories: Number(root.consumedCalories || 0),
+                workoutBonus: Number(root.workoutBonus || 0),
+                macros: { ...(root.macros || { p: 0, f: 0, c: 0 }) },
+                log: Array.isArray(root.dailyLog) ? [...root.dailyLog] : [],
+                updatedAt: Date.now()
+            };
+        },
+
+        load(date = root.todayDate) {
+            const days = A.storage.days();
+            root.allDaysData = days;
+            const day = days[date] || emptyDay();
+            return applyDay(date, day, { render: true });
+        },
+
+        save({ sync = true, touch = true } = {}) {
+            const date = root.currentViewDate || root.todayDate;
+            const previous = A.storage.getDay(date);
+            const snapshot = this.currentSnapshot();
+            if (!touch) snapshot.updatedAt = previous.updatedAt || 0;
+            A.storage.putDay(date, snapshot);
+            root.allDaysData = A.storage.days();
+            A.state.hydrateFromLegacy();
+            root.renderProgressInsights?.();
+            if (sync) A.sync?.push?.();
+            return snapshot;
+        },
+
+        switch(offsetDays) {
+            this.save({ sync: false, touch: false });
+            const current = new Date(`${root.currentViewDate || root.todayDate}T12:00:00`);
+            current.setDate(current.getDate() + Number(offsetDays || 0));
+            const date = current.toISOString().slice(0, 10);
+            if (date > root.todayDate) return false;
+            this.load(date);
+            return true;
+        },
+
+        installLegacyAPI() {
+            root.loadDailyData = () => this.load(root.todayDate);
+            root.saveDailyData = () => this.save({ sync: true, touch: true });
+            root.changeDate = offset => this.switch(offset);
+        }
+    };
+
+    A.daily.installLegacyAPI();
+})(window);
+
+    </script>
+    <script id="js-training-model">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    A.training = A.training || {};
+
+    const TYPES = Object.freeze({
+        STRENGTH_WEIGHTED: 'strength_weighted',
+        STRENGTH_BODYWEIGHT: 'strength_bodyweight',
+        STRENGTH_BODYWEIGHT_OPTIONAL: 'strength_bodyweight_optional_weight',
+        CARDIO_TIME: 'cardio_time',
+        CARDIO_TIME_DISTANCE: 'cardio_time_distance',
+        STATIC_TIME: 'static_time'
+    });
+
+    const legacyTypeMap = Object.freeze({
+        strength_weighted: TYPES.STRENGTH_WEIGHTED,
+        bodyweight: TYPES.STRENGTH_BODYWEIGHT,
+        bodyweight_optional: TYPES.STRENGTH_BODYWEIGHT_OPTIONAL,
+        cardio_time: TYPES.CARDIO_TIME,
+        cardio_distance: TYPES.CARDIO_TIME_DISTANCE,
+        static_time: TYPES.STATIC_TIME
+    });
+
+    function normalizeExercise(exercise) {
+        if (!exercise) return null;
+        const type = legacyTypeMap[exercise.type || exercise.kind] || exercise.type || exercise.kind || TYPES.STRENGTH_BODYWEIGHT;
+        return Object.freeze({
+            id: String(exercise.id || exercise.name || '').trim(),
+            name: exercise.name || exercise.id || 'Вправа',
+            description: exercise.desc || exercise.description || '',
+            type,
+            factor: Number(exercise.factor || 0),
+            distanceUnit: exercise.distanceUnit || null,
+            raw: exercise
+        });
+    }
+
+    function requiredMetrics(exercise) {
+        const ex = normalizeExercise(exercise);
+        if (!ex) return [];
+        switch (ex.type) {
+            case TYPES.STRENGTH_WEIGHTED: return ['sets.reps', 'sets.weightKg'];
+            case TYPES.STRENGTH_BODYWEIGHT: return ['sets.reps'];
+            case TYPES.STRENGTH_BODYWEIGHT_OPTIONAL: return ['sets.reps', 'sets.addedWeightKg?'];
+            case TYPES.CARDIO_TIME: return ['durationSec'];
+            case TYPES.CARDIO_TIME_DISTANCE: return ['durationSec', 'distance'];
+            case TYPES.STATIC_TIME: return ['durationSec'];
+            default: return [];
+        }
+    }
+
+    function normalizeSets(sets, type) {
+        if (!Array.isArray(sets)) return [];
+        return sets.map(set => {
+            const reps = Number(set.reps || 0);
+            const weight = Number(set.weightKg ?? set.weight ?? set.addedWeightKg ?? 0);
+            if (type === TYPES.STRENGTH_BODYWEIGHT_OPTIONAL) {
+                return { reps, addedWeightKg: weight > 0 ? weight : 0 };
+            }
+            if (type === TYPES.STRENGTH_WEIGHTED) return { reps, weightKg: weight };
+            return { reps };
+        }).filter(set => set.reps > 0);
+    }
+
+    function entryFromLegacy(logEntry, exercise) {
+        const ex = normalizeExercise(exercise || (root.workoutDB || []).find(x => x.name === logEntry?.exercise));
+        if (!logEntry || !ex) return null;
+        const durationRaw = Number(logEntry.duration || 0);
+        const durationSec = logEntry.durationUnit === 'хв' ? durationRaw * 60 : durationRaw;
+        const metrics = {
+            sets: normalizeSets(logEntry.sets, ex.type),
+            durationSec: durationSec || 0,
+            distance: Number(logEntry.distance || 0),
+            distanceUnit: logEntry.distanceUnit || ex.distanceUnit || null,
+            volumeKg: Number(logEntry.volume || 0),
+            estimated1RMKg: Number(logEntry.estimated1RM || logEntry.pr?.est1RM || 0),
+            burnedKcal: Number(logEntry.burned || 0)
+        };
+        return {
+            schemaVersion: 3,
+            id: logEntry.id || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            exerciseId: ex.id,
+            exerciseName: ex.name,
+            exerciseType: ex.type,
+            createdAt: Number(logEntry.createdAt || logEntry.id || Date.now()),
+            metrics
+        };
+    }
+
+    A.training.types = TYPES;
+    A.training.model = {
+        normalizeExercise,
+        requiredMetrics,
+        entryFromLegacy,
+        all() { return (root.workoutDB || []).map(normalizeExercise).filter(Boolean); },
+        byId(id) {
+            const raw = (root.workoutDB || []).find(x => x.id === id);
+            return normalizeExercise(raw);
+        },
+        byName(name) {
+            const raw = (root.workoutDB || []).find(x => x.name === name);
+            return normalizeExercise(raw);
+        }
+    };
+
+    A.training.byId = id => A.training.model.byId(id);
+})(window);
+
+    </script>
+    <script id="js-training-history">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    A.training = A.training || {};
+
+    function allEntries() {
+        const days = A.storage.days();
+        const out = [];
+        Object.entries(days).forEach(([date, day]) => {
+            (day.log || []).forEach(item => {
+                if (item?.type !== 'workout') return;
+                const exercise = A.training.model.byId(item.exerciseId) || A.training.model.byName(item.exercise);
+                const normalized = item.trainingSession?.schemaVersion === 3
+                    ? item.trainingSession
+                    : A.training.model.entryFromLegacy(item, exercise?.raw || exercise);
+                if (normalized) out.push({ ...normalized, date, legacy: item });
+            });
+        });
+        return out.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+    }
+
+    function formatEntry(entry) {
+        if (!entry) return '';
+        const m = entry.metrics || {};
+        const sets = m.sets || [];
+        if (sets.length) {
+            return sets.map(s => {
+                if (Number(s.weightKg || 0) > 0) return `${s.reps}×${s.weightKg} кг`;
+                if (Number(s.addedWeightKg || 0) > 0) return `${s.reps}×+${s.addedWeightKg} кг`;
+                return `${s.reps} повт.`;
+            }).join(' · ');
+        }
+        if (m.durationSec) {
+            const min = Math.round(m.durationSec / 60);
+            const dist = m.distance > 0 ? ` · ${m.distance} ${m.distanceUnit || ''}` : '';
+            return `${min} хв${dist}`;
+        }
+        return 'Записане тренування';
+    }
+
+    A.training.history = {
+        all: allEntries,
+        forExercise(idOrName) {
+            return allEntries().filter(x => x.exerciseId === idOrName || x.exerciseName === idOrName);
+        },
+        last(idOrName) {
+            return this.forExercise(idOrName)[0] || null;
+        },
+        format: formatEntry
+    };
+
+    A.training.progression = {
+        suggest(idOrName) {
+            const exercise = A.training.model.byId(idOrName) || A.training.model.byName(idOrName);
+            const last = A.training.history.last(idOrName);
+            if (!exercise || !last) return null;
+
+            const sets = last.metrics?.sets || [];
+            const type = exercise.type;
+
+            if (type === A.training.types.STRENGTH_WEIGHTED && sets.length) {
+                const valid = sets.filter(s => Number(s.weightKg) > 0 && Number(s.reps) > 0);
+                if (!valid.length) return null;
+                const minReps = Math.min(...valid.map(s => Number(s.reps)));
+                const maxWeight = Math.max(...valid.map(s => Number(s.weightKg)));
+                if (minReps >= 12) {
+                    const nextWeight = Math.round((maxWeight + 2.5) * 2) / 2;
+                    return { label: `Орієнтир: ${nextWeight} кг`, reason: 'усі робочі підходи ≥12 повторів' };
+                }
+                const weakest = Math.min(...valid.map(s => Number(s.reps)));
+                return { label: `Орієнтир: +1 повтор у підході з ${weakest}`, reason: 'залишаємо робочу вагу' };
+            }
+
+            if ((type === A.training.types.STRENGTH_BODYWEIGHT || type === A.training.types.STRENGTH_BODYWEIGHT_OPTIONAL) && sets.length) {
+                const total = sets.reduce((sum, s) => sum + Number(s.reps || 0), 0);
+                return { label: `Орієнтир: ${total + 1} сумарних повторів`, reason: 'м’яка прогресія без зміни техніки' };
+            }
+
+            if ((type === A.training.types.CARDIO_TIME || type === A.training.types.CARDIO_TIME_DISTANCE) && last.metrics?.durationSec) {
+                const minutes = Math.max(1, Math.round(last.metrics.durationSec / 60));
+                return { label: `Орієнтир: ${minutes + 2} хв`, reason: 'невелике збільшення тривалості' };
+            }
+
+            if (type === A.training.types.STATIC_TIME && last.metrics?.durationSec) {
+                return { label: `Орієнтир: ${Math.round(last.metrics.durationSec + 5)} сек`, reason: '+5 секунд до утримання' };
+            }
+
+            return null;
+        }
+    };
+})(window);
+
+    </script>
+    <script id="js-app-v9">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    A.core = A.core || {};
+    A.core.version = '9.2';
+
+    function trainingSessionFromMetadata(name, metadata) {
+        const exercise = A.training.model.byId(metadata.exerciseId) || A.training.model.byName(name);
+        if (!exercise) return null;
+        return A.training.model.entryFromLegacy({
+            id: Date.now(),
+            createdAt: Date.now(),
+            exercise: name,
+            burned: metadata.burned || 0,
+            ...metadata
+        }, exercise.raw);
+    }
+
+    function installWorkoutEntryAdapter() {
+        if (typeof root.logWorkoutEntry !== 'function' || root.logWorkoutEntry.__v9Wrapped) return;
+        const legacy = root.logWorkoutEntry;
+        const wrapped = function (name, burnedKcal, details, metadata = {}) {
+            const session = trainingSessionFromMetadata(name, { ...metadata, burned: burnedKcal });
+            const enriched = {
+                ...metadata,
+                exerciseId: session?.exerciseId || metadata.exerciseId || null,
+                exerciseType: session?.exerciseType || metadata.kind || null,
+                trainingSession: session
+            };
+            return legacy.call(this, name, burnedKcal, details, enriched);
+        };
+        wrapped.__v9Wrapped = true;
+        root.logWorkoutEntry = wrapped;
+    }
+
+    function decorateWorkoutCards() {
+        document.querySelectorAll('.exercise-card[data-exercise-id]').forEach(card => {
+            card.querySelector('.exercise-v9-history')?.remove();
+            const id = card.dataset.exerciseId;
+            const last = A.training.history.last(id);
+            if (!last) return;
+
+            const progression = A.training.progression.suggest(id);
+            const box = document.createElement('div');
+            box.className = 'exercise-v9-history';
+            const date = new Date(`${last.date}T12:00:00`).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
+            box.innerHTML = `
+                <div class="exercise-v9-history-row">
+                    <span class="exercise-v9-kicker">Останнє · ${date}</span>
+                    <strong>${A.training.history.format(last)}</strong>
+                </div>
+                ${progression ? `<div class="exercise-v9-next"><i class="fa-solid fa-arrow-trend-up"></i><span>${progression.label}</span></div>` : ''}
+            `;
+            const actions = card.querySelector('.exercise-actions');
+            if (actions) card.insertBefore(box, actions);
+            else card.appendChild(box);
+        });
+    }
+
+    function wrapWorkoutRenderer() {
+        if (typeof root.renderWorkouts !== 'function' || root.renderWorkouts.__v9Wrapped) return;
+        const legacy = root.renderWorkouts;
+        const wrapped = function (...args) {
+            const result = legacy.apply(this, args);
+            requestAnimationFrame(decorateWorkoutCards);
+            return result;
+        };
+        wrapped.__v9Wrapped = true;
+        root.renderWorkouts = wrapped;
+    }
+
+    function wrapSyncStatus() {
+        if (typeof root.syncToCloud !== 'function' || root.syncToCloud.__v9Wrapped) return;
+        const legacy = root.syncToCloud;
+        const wrapped = async function (...args) {
+            A.state.setSync('syncing', { error: null });
+            try {
+                const result = await legacy.apply(this, args);
+                A.state.setSync('synced', { lastAt: Date.now(), error: null });
+                return result;
+            } catch (error) {
+                A.state.setSync('error', { error: String(error?.message || error) });
+                throw error;
+            }
+        };
+        wrapped.__v9Wrapped = true;
+        root.syncToCloud = wrapped;
+        A.sync.push = (...args) => root.syncToCloud(...args);
+    }
+
+    A.bootstrapV9 = function () {
+        const migration = A.storage.migrate();
+        A.state.hydrateFromLegacy();
+        installWorkoutEntryAdapter();
+        wrapWorkoutRenderer();
+        wrapSyncStatus();
+        root.searchWorkout?.();
+        decorateWorkoutCards();
+        console.info('[Achilles OS]', `V${A.core.version}`, migration);
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => A.bootstrapV9(), { once: true });
+    } else {
+        A.bootstrapV9();
+    }
+})(window);
+
+    </script>
+
+    <script id="js-v9-2-nutrition-sync">
+(function (root) {
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    const FOOD_CACHE_KEY = A.storage?.keys?.foodCache || 'achilles_food_cache_v2';
+    const FOOD_RECENT_KEY = A.storage?.keys?.foodRecent || 'achilles_food_recent_v1';
+    const SYNC_QUEUE_KEY = A.storage?.keys?.syncQueue || 'achilles_sync_queue_v1';
+    const CACHE_TTL = 14 * 24 * 60 * 60 * 1000;
+    const MAX_CACHE_QUERIES = 40;
+    const MAX_RECENT = 12;
+
+    const clone = value => {
+        try { return structuredClone(value); }
+        catch (_) { return JSON.parse(JSON.stringify(value)); }
+    };
+
+    const stripDecorations = value => String(value || '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
+    const foodKey = item => {
+        const barcode = String(item?.barcode || '').trim();
+        if (barcode) return `barcode:${barcode}`;
+        return `name:${stripDecorations(item?.name).toLowerCase()}|${Number(item?.kcal || 0)}`;
+    };
+
+    function normalizeFood(item, defaults = {}) {
+        if (!item || typeof item !== 'object') return null;
+        const name = String(item.name || '').trim();
+        if (!name) return null;
+        const now = Date.now();
+        return {
+            ...item,
+            ...defaults,
+            id: item.id || defaults.id || foodKey(item),
+            name,
+            kcal: Math.max(0, Number(item.kcal || 0)),
+            p: Math.max(0, Number(item.p || 0)),
+            f: Math.max(0, Number(item.f || 0)),
+            c: Math.max(0, Number(item.c || 0)),
+            fiber: Math.max(0, Number(item.fiber || 0)),
+            barcode: String(item.barcode || ''),
+            source: item.source || defaults.source || 'local',
+            createdAt: Number(item.createdAt || defaults.createdAt || now),
+            updatedAt: Number(item.updatedAt || defaults.updatedAt || now)
+        };
+    }
+
+    function dedupeFoods(items) {
+        const map = new Map();
+        (items || []).forEach(raw => {
+            const item = normalizeFood(raw);
+            if (!item) return;
+            const key = foodKey(item);
+            const previous = map.get(key);
+            if (!previous || Number(item.updatedAt || 0) >= Number(previous.updatedAt || 0)) map.set(key, item);
+        });
+        return [...map.values()];
+    }
+
+    function normalizedQuery(query) {
+        return String(query || '').trim().toLocaleLowerCase('uk-UA').replace(/\s+/g, ' ');
+    }
+
+    A.nutritionRepo = {
+        normalize: normalizeFood,
+        key: foodKey,
+        dedupe: dedupeFoods,
+
+        custom() {
+            return dedupeFoods(A.storage.json(A.storage.keys.customFoods, []));
+        },
+
+        favorites() {
+            return dedupeFoods(A.storage.json(A.storage.keys.favFoods, []));
+        },
+
+        setCustom(items) {
+            return A.storage.setJSON(A.storage.keys.customFoods, dedupeFoods(items));
+        },
+
+        setFavorites(items) {
+            return A.storage.setJSON(A.storage.keys.favFoods, dedupeFoods(items));
+        },
+
+        isFavorite(item) {
+            const key = foodKey(item);
+            return this.favorites().some(x => foodKey(x) === key);
+        },
+
+        toggleFavorite(item) {
+            const normalized = normalizeFood(item);
+            if (!normalized) return false;
+            const key = foodKey(normalized);
+            const list = this.favorites();
+            const index = list.findIndex(x => foodKey(x) === key);
+            let active = false;
+            if (index >= 0) list.splice(index, 1);
+            else { list.unshift({ ...normalized, updatedAt: Date.now() }); active = true; }
+            this.setFavorites(list);
+            A.sync?.push?.('favorite-food');
+            return active;
+        },
+
+        addCustom(item) {
+            const normalized = normalizeFood(item, { source: 'custom' });
+            if (!normalized) return null;
+            const list = this.custom();
+            const key = foodKey(normalized);
+            const index = list.findIndex(x => foodKey(x) === key);
+            if (index >= 0) list[index] = { ...list[index], ...normalized, updatedAt: Date.now() };
+            else list.unshift({ ...normalized, createdAt: Date.now(), updatedAt: Date.now() });
+            this.setCustom(list);
+
+            const favorites = this.favorites().filter(x => foodKey(x) !== key);
+            favorites.unshift({ ...normalized, updatedAt: Date.now() });
+            this.setFavorites(favorites);
+            A.sync?.push?.('custom-food');
+            return normalized;
+        },
+
+        recent() {
+            return dedupeFoods(A.storage.json(FOOD_RECENT_KEY, [])).slice(0, MAX_RECENT);
+        },
+
+        touchRecent(item) {
+            const normalized = normalizeFood(item);
+            if (!normalized) return;
+            const key = foodKey(normalized);
+            const next = this.recent().filter(x => foodKey(x) !== key);
+            next.unshift({ ...normalized, lastUsedAt: Date.now(), updatedAt: Date.now() });
+            A.storage.setJSON(FOOD_RECENT_KEY, next.slice(0, MAX_RECENT));
+        },
+
+        cacheState() {
+            const raw = A.storage.json(FOOD_CACHE_KEY, { version: 2, queries: {} });
+            return raw && typeof raw === 'object' ? { version: 2, queries: raw.queries || {} } : { version: 2, queries: {} };
+        },
+
+        cached(query, { allowStale = false } = {}) {
+            const q = normalizedQuery(query);
+            if (!q) return [];
+            const entry = this.cacheState().queries[q];
+            if (!entry || !Array.isArray(entry.items)) return [];
+            const age = Date.now() - Number(entry.updatedAt || 0);
+            if (!allowStale && age > CACHE_TTL) return [];
+            return dedupeFoods(entry.items);
+        },
+
+        cache(query, items) {
+            const q = normalizedQuery(query);
+            if (!q || !items?.length) return;
+            const state = this.cacheState();
+            state.queries[q] = { updatedAt: Date.now(), items: dedupeFoods(items).slice(0, 12) };
+            const ordered = Object.entries(state.queries)
+                .sort((a, b) => Number(b[1]?.updatedAt || 0) - Number(a[1]?.updatedAt || 0))
+                .slice(0, MAX_CACHE_QUERIES);
+            state.queries = Object.fromEntries(ordered);
+            try { A.storage.setJSON(FOOD_CACHE_KEY, state); }
+            catch (error) {
+                console.warn('[Achilles.nutritionRepo] cache quota', error);
+                state.queries = Object.fromEntries(ordered.slice(0, 12));
+                try { A.storage.setJSON(FOOD_CACHE_KEY, state); } catch (_) {}
+            }
+        },
+
+        localSearch(query) {
+            const q = normalizedQuery(query);
+            const local = [
+                ...this.custom(),
+                ...(root.foodDB || []).map(x => normalizeFood(x, { source: 'built-in' })).filter(Boolean)
+            ];
+            if (!q) return dedupeFoods(local);
+            return dedupeFoods(local.filter(item => stripDecorations(item.name).toLocaleLowerCase('uk-UA').includes(q)));
+        },
+
+        sanitize() {
+            this.setCustom(this.custom());
+            this.setFavorites(this.favorites());
+            A.storage.setJSON(FOOD_RECENT_KEY, this.recent());
+        }
+    };
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+    }
+
+    function payloadFor(item) {
+        return encodeURIComponent(JSON.stringify(normalizeFood(item) || item));
+    }
+
+    function decodePayload(payload) {
+        if (typeof payload === 'object') return normalizeFood(payload);
+        try { return normalizeFood(JSON.parse(decodeURIComponent(String(payload)))); }
+        catch (_) {
+            try { return normalizeFood(JSON.parse(String(payload).replace(/&quot;/g, '"'))); }
+            catch (error) { console.warn('[Achilles.food] invalid payload', error); return null; }
+        }
+    }
+
+    root.generateFoodCardHtml = function (item, index) {
+        const normalized = normalizeFood(item);
+        if (!normalized) return '';
+        const isFav = A.nutritionRepo.isFavorite(normalized);
+        const uniqueId = `food-input-${String(index).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+        const payload = payloadFor(normalized);
+        const online = normalized.source && !['local', 'built-in', 'custom'].includes(normalized.source);
+        const sourceLabel = normalized.source === 'cache' ? 'Кеш' : (online ? 'Open Food Facts' : (normalized.source === 'custom' ? 'Свій продукт' : 'Локально'));
+        return `
+            <div class="list-item" style="${online ? 'border-left: 3px solid var(--primary);' : ''}">
+                <div style="display:flex;justify-content:space-between;width:100%;align-items:flex-start;margin-bottom:12px;gap:12px;">
+                    <div style="min-width:0;">
+                        <strong style="font-size:18px;overflow-wrap:anywhere;">${escapeHtml(normalized.name)}</strong><br>
+                        <span style="font-size:13px;opacity:.8;color:var(--text-muted);">${Math.round(normalized.kcal)} ккал | Б:${Number(normalized.p.toFixed(1))} Ж:${Number(normalized.f.toFixed(1))} В:${Number(normalized.c.toFixed(1))} (на 100г)</span><br>
+                        <span class="food-source-badge">${escapeHtml(sourceLabel)}</span>
+                    </div>
+                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavFood('${payload}', event)"></i>
+                </div>
+                <div style="display:flex;width:100%;gap:10px;">
+                    <input type="number" inputmode="decimal" id="${uniqueId}" placeholder="Вага (г)" style="margin:0;padding:14px;flex:1;">
+                    <button class="add-btn primary-btn gradient-bg" onclick="addFood('${payload}', '${uniqueId}')" style="margin:0;padding:0 25px;border-radius:16px;">+</button>
+                </div>
+            </div>`;
+    };
+
+    root.toggleFavFood = function (payload, event) {
+        const item = decodePayload(payload);
+        if (!item) return;
+        const active = A.nutritionRepo.toggleFavorite(item);
+        if (event?.target) {
+            event.target.classList.toggle('fa-solid', active);
+            event.target.classList.toggle('fa-regular', !active);
+            event.target.classList.toggle('active', active);
+        }
+        if (root.currentFoodFilter === 'fav') root.renderFavFoods();
+    };
+
+    root.renderFavFoods = function () {
+        const box = document.getElementById('food-results');
+        if (!box) return;
+        const favorites = A.nutritionRepo.favorites();
+        box.innerHTML = favorites.length
+            ? favorites.map((item, i) => root.generateFoodCardHtml(item, `fav-${i}`)).join('')
+            : '<div class="list-item" style="color:var(--text-muted);text-align:center;padding:20px;border:none;">Улюблених продуктів поки немає</div>';
+    };
+
+    root.saveCustomFood = function () {
+        const name = document.getElementById('cf-name')?.value.trim();
+        const kcal = Number(document.getElementById('cf-kcal')?.value);
+        const p = Number(document.getElementById('cf-p')?.value || 0);
+        const f = Number(document.getElementById('cf-f')?.value || 0);
+        const c = Number(document.getElementById('cf-c')?.value || 0);
+        if (!name || !Number.isFinite(kcal) || kcal < 0) { alert('Введіть назву та калорійність!'); return; }
+
+        A.nutritionRepo.addCustom({ name: `🛠️ ${name}`, kcal, p, f, c, fiber: 0, source: 'custom' });
+        root.closeCustomFood?.();
+        ['cf-name','cf-kcal','cf-p','cf-f','cf-c'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        root.setFoodFilter?.('fav');
+    };
+
+    root.addFood = function (payload, weightId) {
+        const item = decodePayload(payload);
+        if (!item) return;
+        const input = document.getElementById(weightId);
+        let weight = Number(input?.value);
+        if (!Number.isFinite(weight) || weight <= 0) weight = 100;
+
+        const ratio = weight / 100;
+        const actualKcal = Math.round(item.kcal * ratio);
+        const actualP = Math.round(item.p * ratio * 10) / 10;
+        const actualF = Math.round(item.f * ratio * 10) / 10;
+        const actualC = Math.round(item.c * ratio * 10) / 10;
+
+        root.consumedCalories = Number(root.consumedCalories || 0) + actualKcal;
+        root.macros = root.macros || { p: 0, f: 0, c: 0 };
+        root.macros.p = Number(root.macros.p || 0) + actualP;
+        root.macros.f = Number(root.macros.f || 0) + actualF;
+        root.macros.c = Number(root.macros.c || 0) + actualC;
+
+        const safeName = escapeHtml(item.name);
+        const entry = {
+            id: Date.now(),
+            createdAt: Date.now(),
+            type: 'food',
+            foodId: item.id || foodKey(item),
+            foodSource: item.source || 'local',
+            barcode: item.barcode || '',
+            weightG: weight,
+            kcal: actualKcal, p: actualP, f: actualF, c: actualC,
+            html: `🥗 <strong style="color:var(--text-main);">${safeName} (${weight}г)</strong><br><span style="font-size:14px;opacity:.8;" class="gradient-text">${actualKcal} ккал</span> <span style="font-size:12px;opacity:.6;color:var(--text-main);">| Б:${actualP} Ж:${actualF} В:${actualC}</span>`
+        };
+
+        root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+        root.dailyLog.push(entry);
+        A.nutritionRepo.touchRecent(item);
+        root.saveDailyData?.();
+        root.updateGoalDisplay?.();
+        root.renderDiary?.();
+
+        const search = document.getElementById('food-search');
+        const results = document.getElementById('food-results');
+        if (search) search.value = '';
+        if (results) results.innerHTML = '';
+        if (root.currentFoodFilter === 'fav') root.renderFavFoods();
+        document.querySelector('.nav-item[data-target="tab-dashboard"]')?.click();
+    };
+
+    let foodSearchTimer = 0;
+    let foodAbortController = null;
+
+    function renderFoodItems(items) {
+        const box = document.getElementById('food-results');
+        if (!box) return;
+        box.innerHTML = dedupeFoods(items).map((item, i) => root.generateFoodCardHtml(item, `v92-${i}`)).join('');
+    }
+
+    function renderRecent() {
+        const recent = A.nutritionRepo.recent();
+        const box = document.getElementById('food-results');
+        if (!box) return;
+        if (recent.length) {
+            renderFoodItems(recent);
+            root.setFoodApiStatus?.(navigator.onLine ? 'cache' : 'offline', navigator.onLine ? 'Нещодавні продукти · збережено на пристрої' : 'Офлайн · нещодавні продукти доступні');
+        } else {
+            box.innerHTML = '';
+            root.setFoodApiStatus?.(navigator.onLine ? 'ready' : 'offline', navigator.onLine ? 'Онлайн-база Open Food Facts готова' : 'Офлайн · локальна база працює');
+        }
+    }
+
+    async function onlineSearch(query, localItems, cachedItems) {
+        const spinner = document.getElementById('loading-spinner');
+        if (!navigator.onLine) {
+            if (spinner) spinner.style.display = 'none';
+            renderFoodItems([...localItems, ...cachedItems.map(x => ({ ...x, source: x.source || 'cache' }))]);
+            root.setFoodApiStatus?.('offline', cachedItems.length ? 'Офлайн · показано локальні та кешовані результати' : 'Офлайн · показано локальні результати');
+            return;
+        }
+
+        foodAbortController?.abort();
+        foodAbortController = new AbortController();
+        const signal = foodAbortController.signal;
+        if (spinner) spinner.style.display = 'block';
+        root.setFoodApiStatus?.('loading', cachedItems.length ? 'Кеш знайдено · оновлюю онлайн…' : 'Шукаю в онлайн-базі…');
+
+        try {
+            let rawResults = [];
+            let source = 'Open Food Facts Search';
+            try {
+                rawResults = await root.fetchSearchALicious(query, signal);
+            } catch (primaryError) {
+                if (primaryError?.name === 'AbortError') throw primaryError;
+                source = 'Open Food Facts fallback';
+                rawResults = await root.fetchLegacyOFF(query, signal);
+            }
+            if (signal.aborted) return;
+
+            const onlineItems = dedupeFoods(rawResults
+                .map((raw, index) => root.normalizeOnlineFood(raw, index, source))
+                .filter(Boolean)
+                .map(item => normalizeFood(item, { source })))
+                .slice(0, 12);
+
+            if (onlineItems.length) A.nutritionRepo.cache(query, onlineItems);
+            const combined = dedupeFoods([...localItems, ...onlineItems]);
+            renderFoodItems(combined);
+            root.setFoodApiStatus?.(onlineItems.length ? 'online' : 'empty', onlineItems.length
+                ? `Онлайн оновлено · ${onlineItems.length} результатів`
+                : (combined.length ? 'Онлайн-збігів немає · показано локальні' : 'Збігів не знайдено'));
+        } catch (error) {
+            if (error?.name !== 'AbortError') {
+                console.warn('[Achilles.food] online search unavailable', error);
+                renderFoodItems([...localItems, ...cachedItems.map(x => ({ ...x, source: x.source || 'cache' }))]);
+                root.setFoodApiStatus?.(cachedItems.length ? 'cache' : 'error', cachedItems.length
+                    ? 'Онлайн недоступний · показано кеш'
+                    : 'Онлайн-база тимчасово недоступна · локальна база працює');
+            }
+        } finally {
+            if (!signal.aborted && spinner) spinner.style.display = 'none';
+        }
+    }
+
+    root.onSearchInput = function () {
+        if (root.currentFoodFilter === 'fav') return;
+        clearTimeout(foodSearchTimer);
+        foodAbortController?.abort();
+        const query = normalizedQuery(document.getElementById('food-search')?.value || '');
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) spinner.style.display = 'none';
+
+        if (query.length < 2) { renderRecent(); return; }
+
+        const local = A.nutritionRepo.localSearch(query);
+        const cached = A.nutritionRepo.cached(query, { allowStale: !navigator.onLine });
+        renderFoodItems([...local, ...cached.map(x => ({ ...x, source: 'cache' }))]);
+        if (cached.length) root.setFoodApiStatus?.('cache', navigator.onLine ? 'Знайдено в кеші · перевіряю оновлення…' : 'Офлайн · показано кеш');
+        else root.setFoodApiStatus?.(navigator.onLine ? 'loading' : 'offline', navigator.onLine ? 'Готую онлайн-пошук…' : 'Офлайн · показано локальні результати');
+
+        foodSearchTimer = setTimeout(() => onlineSearch(query, local, cached), 380);
+    };
+
+    root.searchOnlineFood = function (query) {
+        const q = normalizedQuery(query);
+        const local = A.nutritionRepo.localSearch(q);
+        const cached = A.nutritionRepo.cached(q, { allowStale: !navigator.onLine });
+        return onlineSearch(q, local, cached);
+    };
+    root.searchOpenFoodFacts = root.searchOnlineFood;
+
+    function syncLabel(state) {
+        switch (state) {
+            case 'syncing': return ['fa-cloud-arrow-up', 'Синхронізація…'];
+            case 'synced': return ['fa-circle-check', 'Синхронізовано'];
+            case 'queued': return ['fa-clock', 'Збережено локально · очікує хмари'];
+            case 'offline': return ['fa-wifi', 'Офлайн · зміни збережено'];
+            case 'error': return ['fa-triangle-exclamation', 'Помилка хмари · дані локально'];
+            default: return ['fa-mobile-screen-button', 'Дані збережені локально'];
+        }
+    }
+
+    function renderSyncStatus(state) {
+        const pill = document.getElementById('sync-status-pill');
+        if (!pill) return;
+        const status = state?.status || state || 'local';
+        const [icon, text] = syncLabel(status);
+        pill.dataset.state = status;
+        pill.innerHTML = `<i class="fa-solid ${icon}"></i><span>${text}</span>`;
+    }
+
+    A.syncQueue = {
+        transport: null,
+        timer: 0,
+        flushing: null,
+
+        read() {
+            const q = A.storage.json(SYNC_QUEUE_KEY, []);
+            return Array.isArray(q) ? q : [];
+        },
+
+        write(queue) {
+            A.storage.setJSON(SYNC_QUEUE_KEY, queue);
+            return queue;
+        },
+
+        enqueue(reason = 'change') {
+            const user = A.storage.get(A.storage.keys.user, '');
+            if (!user) {
+                A.state?.setSync?.('idle', { error: null });
+                return Promise.resolve(false);
+            }
+            const previous = this.read()[0];
+            this.write([{
+                id: previous?.id || `snapshot-${Date.now()}`,
+                type: 'cloud-snapshot',
+                reason,
+                createdAt: Number(previous?.createdAt || Date.now()),
+                updatedAt: Date.now(),
+                attempts: Number(previous?.attempts || 0)
+            }]);
+
+            if (!navigator.onLine) {
+                A.state?.setSync?.('offline', { error: null });
+                return Promise.resolve(true);
+            }
+            A.state?.setSync?.('queued', { error: null });
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => this.flush(), 650);
+            return Promise.resolve(true);
+        },
+
+        async flush() {
+            if (this.flushing) return this.flushing;
+            if (!this.read().length) {
+                if (navigator.onLine) A.state?.setSync?.('synced', { error: null });
+                return true;
+            }
+            if (!navigator.onLine) {
+                A.state?.setSync?.('offline', { error: null });
+                return false;
+            }
+            if (typeof this.transport !== 'function') return false;
+
+            this.flushing = (async () => {
+                A.state?.setSync?.('syncing', { error: null });
+                try {
+                    const result = await this.transport();
+                    if (result === false) throw new Error('Хмарна синхронізація недоступна');
+                    this.write([]);
+                    A.state?.setSync?.('synced', { lastAt: Date.now(), error: null });
+                    return true;
+                } catch (error) {
+                    const queue = this.read();
+                    if (queue[0]) queue[0].attempts = Number(queue[0].attempts || 0) + 1;
+                    this.write(queue);
+                    A.state?.setSync?.(navigator.onLine ? 'error' : 'offline', { error: String(error?.message || error) });
+                    console.warn('[Achilles.syncQueue]', error);
+                    return false;
+                } finally {
+                    this.flushing = null;
+                }
+            })();
+            return this.flushing;
+        },
+
+        install() {
+            if (root.syncToCloud?.__v92Queue) return;
+            this.transport = root.syncToCloud;
+            const queueFn = reason => this.enqueue(typeof reason === 'string' ? reason : 'change');
+            queueFn.__v92Queue = true;
+            root.syncToCloud = queueFn;
+            A.sync.push = queueFn;
+
+            root.addEventListener('online', () => {
+                renderSyncStatus({ status: this.read().length ? 'queued' : 'synced' });
+                if (this.read().length) this.flush();
+                if (root.currentFoodFilter !== 'fav') root.onSearchInput?.();
+            });
+            root.addEventListener('offline', () => {
+                A.state?.setSync?.('offline', { error: null });
+                if (root.currentFoodFilter !== 'fav') root.onSearchInput?.();
+            });
+
+            if (this.read().length) {
+                A.state?.setSync?.(navigator.onLine ? 'queued' : 'offline', { error: null });
+                if (navigator.onLine) setTimeout(() => this.flush(), 800);
+            } else {
+                A.state?.setSync?.(navigator.onLine ? 'synced' : 'offline', { error: null });
+            }
+        }
+    };
+
+    function bootstrapV92() {
+        A.core.version = '9.2';
+        A.nutritionRepo.sanitize();
+        A.state?.subscribe?.('sync', renderSyncStatus);
+        A.syncQueue.install();
+        renderSyncStatus(A.state?.runtime?.sync || { status: navigator.onLine ? 'synced' : 'offline' });
+
+        // Cloud pull лишається джерелом відновлення, але після нього чистимо дублікати продуктів.
+        if (typeof root.loadFromCloud === 'function' && !root.loadFromCloud.__v92Wrapped) {
+            const legacyPull = root.loadFromCloud;
+            const wrappedPull = async function (...args) {
+                const result = await legacyPull.apply(this, args);
+                A.nutritionRepo.sanitize();
+                return result;
+            };
+            wrappedPull.__v92Wrapped = true;
+            root.loadFromCloud = wrappedPull;
+            if (A.sync) A.sync.pull = (...args) => root.loadFromCloud(...args);
+        }
+
+        // Початковий екран харчування: корисні останні продукти замість порожньої області.
+        if (root.currentFoodFilter !== 'fav' && !(document.getElementById('food-search')?.value || '').trim()) renderRecent();
+
+        // Повторна санітизація після можливого початкового cloud pull.
+        setTimeout(() => A.nutritionRepo.sanitize(), 1800);
+        console.info('[Achilles OS] V9.2 nutrition repository + offline queue ready');
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootstrapV92, { once: true });
+    else bootstrapV92();
+})(window);
+    </script>
 
 </body>
 </html>
