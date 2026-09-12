@@ -782,12 +782,9 @@
                                         </svg>
 
                                         <div class="nutrition-rings-center">
-                                            <span class="nutrition-rings-title">Ккал</span>
-                                            <div class="nutrition-rings-kcal-line">
-                                                <span class="nutrition-rings-kcal-value gradient-text" id="calories-consumed" style="animation: none;">0</span>
-                                                <span class="nutrition-rings-kcal-goal">/ <span id="calories-goal">2000</span></span>
-                                            </div>
-                                            <span class="nutrition-rings-kcal-unit">ккал</span>
+                                            <span class="nutrition-rings-title">КАЛОРІЇ</span>
+                                            <span class="nutrition-rings-kcal-value gradient-text" id="calories-consumed" style="animation: none;">0</span>
+                                            <span class="nutrition-rings-kcal-goal"><span id="calories-goal">2000</span> ккал ціль</span>
                                         </div>
                                     </div>
                                 </div>
@@ -935,121 +932,200 @@
                     </section>
                 </div>
 
-                <!-- ЇЖА -->
-                <div id="tab-food" class="tab-content">
-                    <h1>База <span class="gradient-text">ПРОДУКТІВ</span></h1>
-                    
-                    <div class="filter-tabs">
-                        <div id="btn-food-all" class="filter-tab active" onclick="setFoodFilter('all')">Пошук / Усі</div>
-                        <div id="btn-food-fav" class="filter-tab" style="margin-left: 10px;" onclick="setFoodFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
-                    </div>
+                <!-- NUTRITION WORKSPACE -->
+                <div id="tab-food" class="tab-content premium-workspace premium-food-workspace">
+                    <section class="workspace-header premium-surface premium-surface-ghost">
+                        <div>
+                            <span class="eyebrow">NUTRITION</span>
+                            <h1>Твій <span class="gradient-text">РАЦІОН</span></h1>
+                            <p>Локальна база, улюблені продукти та онлайн-пошук в одному потоці.</p>
+                        </div>
+                        <div class="workspace-header-chip"><i class="fa-solid fa-database"></i><span>Open Food Facts</span></div>
+                    </section>
 
-                    <button class="secondary" onclick="openCustomFood()" style="margin-bottom: 20px; border-radius: 20px;"><i class="fa-solid fa-plus"></i> Створити свій продукт</button>
-
-                    <input type="text" id="food-search" placeholder="Пошук (борщ, яблуко, суші...)" oninput="onSearchInput()">
-                    <div id="food-api-status" class="food-api-status"><span class="food-api-dot"></span><span>Онлайн-база Open Food Facts готова</span></div>
-                    <div id="loading-spinner" style="display:none; text-align:center; padding:15px; color:var(--primary);"><i class="fa-solid fa-circle-notch fa-spin fa-2x"></i></div>
-                    <div id="food-results" style="margin-top: 20px; padding-bottom: 20px;"></div>
-                </div>
-
-                <!-- ТРЕНУВАННЯ -->
-                <div id="tab-workout" class="tab-content">
-                    <h1>Твої <span class="gradient-text">ТРЕНУВАННЯ</span></h1>
-                    
-                    <div class="filter-tabs" id="workout-mode-tabs">
-                        <div id="btn-mode-extended" class="filter-tab active" onclick="setWorkoutMode('extended')">Розширене (Live)</div>
-                        <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')">Ручний ввід / Годинник</div>
-                    </div>
-
-                    <div id="simple-aw-container" style="display: none;">
-                        <div style="background: var(--card-bg); padding: 20px; border-radius: 30px; margin-bottom: 20px; border: 1px solid var(--glass-border);">
-                            <h4 style="color: var(--primary); margin-bottom: 15px; text-align: center;">⌚ Дані з Apple Watch</h4>
-                            <div style="display: flex; gap: 12px;">
-                                <input type="number" id="simp-aw-time" placeholder="Час (хв)" inputmode="numeric" pattern="[0-9]*" style="margin:0;">
-                                <input type="number" id="simp-aw-kcal" placeholder="Ккал" inputmode="numeric" pattern="[0-9]*" style="margin:0;">
+                    <section class="workspace-block premium-section">
+                        <div class="workspace-block-head">
+                            <div><span class="eyebrow">ПОШУК</span><h2>Знайти продукт</h2></div>
+                            <button class="workspace-action-btn secondary" onclick="openCustomFood()"><i class="fa-solid fa-plus"></i><span>Свій продукт</span></button>
+                        </div>
+                        <div class="command-surface premium-surface">
+                            <div class="premium-segmented-control filter-tabs">
+                                <div id="btn-food-all" class="filter-tab active" onclick="setFoodFilter('all')">Пошук / Усі</div>
+                                <div id="btn-food-fav" class="filter-tab" onclick="setFoodFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
                             </div>
-                            <button class="gradient-bg primary-btn" onclick="logAppleWatch()" style="margin-top: 15px; width: 100%; border-radius: 16px;">Записати тренування</button>
+                            <div class="search-command-row">
+                                <div class="premium-search-field">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="food-search" placeholder="Борщ, яблуко, суші..." oninput="onSearchInput()">
+                                </div>
+                            </div>
+                            <div id="food-api-status" class="food-api-status"><span class="food-api-dot"></span><span>Онлайн-база Open Food Facts готова</span></div>
+                            <div id="loading-spinner" class="workspace-loader" style="display:none;"><i class="fa-solid fa-circle-notch fa-spin"></i><span>Шукаємо продукти…</span></div>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="filter-tabs">
-                        <div id="btn-all-workouts" class="filter-tab active" onclick="setWorkoutFilter('all')">Усі вправи</div>
-                        <div id="btn-fav-workouts" class="filter-tab" style="margin-left: 10px;" onclick="setWorkoutFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
-                    </div>
-
-                    <input type="text" id="workout-search" placeholder="Пошук (біг, груди, спина...)" oninput="searchWorkout()">
-                    <div id="workout-list-container" style="margin-top: 20px; padding-bottom: 20px;"></div>
+                    <section class="workspace-block premium-section results-section">
+                        <div class="workspace-block-head compact">
+                            <div><span class="eyebrow">РЕЗУЛЬТАТИ</span><h2>Продукти</h2></div>
+                        </div>
+                        <div id="food-results" class="premium-results-grid"></div>
+                    </section>
                 </div>
 
-                <!-- ПРОФІЛЬ (НОВА 4 Вкладка) -->
-                <div id="tab-profile" class="tab-content">
-                    <div class="profile-avatar-large"></div>
-                    <h1 style="text-align: center; margin-bottom: 30px;">Твій <span class="gradient-text">ПРОФІЛЬ</span></h1>
-                    
-                    <div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; margin-bottom: 25px; border: 1px solid var(--glass-border);">
-                        
-                        <span class="label-text">Колір додатка:</span>
-                        <select id="edit-theme-color" style="margin-bottom: 8px;" onchange="window.previewTheme()">
-                            <option value="gold">🏆 Золотий Ахіллес</option>
-                            <option value="blood">🩸 Кривава Спарта</option>
-                            <option value="sky">🌌 Небесно-блакитна</option>
-                        </select>
-
-                        <span class="label-text">Режим екрану:</span>
-                        <select id="edit-theme-mode" style="margin-bottom: 25px;" onchange="window.previewTheme()">
-                            <option value="auto">🌗 Системний (Авто)</option>
-                            <option value="dark">🌙 Темний</option>
-                            <option value="light">☀️ Світлий</option>
-                        </select>
-
-                        <select id="edit-app-mode" style="margin-bottom: 15px; border-color: var(--primary);">
-                            <option value="simple">Режим: Звичайний (Без калорій)</option>
-                            <option value="pro">Режим: PRO (Трекінг спалених калорій)</option>
-                        </select>
-
-                        <select id="edit-diet" style="margin-bottom: 15px;">
-                            <option value="standard">Спортивний (Б: 2г/кг, Ж: 1г/кг)</option>
-                            <option value="balanced">Збалансований (30% Б / 30% Ж / 40% В)</option>
-                            <option value="lowcarb">Низьковуглеводний (Більше білка і жирів)</option>
-                            <option value="keto">Кето-дієта (75% Жирів, 5% Вугл.)</option>
-                        </select>
-
-                        <input type="text" id="edit-name" placeholder="Ім'я" disabled style="opacity: 0.5;">
-                        <select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select>
-                        <div style="display: flex; gap: 12px;">
-                            <input type="number" id="edit-age" placeholder="Вік" inputmode="numeric" pattern="[0-9]*">
-                            <input type="number" id="edit-height" placeholder="Зріст (см)" inputmode="numeric" pattern="[0-9]*">
+                <!-- TRAINING WORKSPACE -->
+                <div id="tab-workout" class="tab-content premium-workspace premium-training-workspace">
+                    <section class="workspace-header premium-surface premium-surface-ghost">
+                        <div>
+                            <span class="eyebrow">TRAINING</span>
+                            <h1>Твій <span class="gradient-text">ЗАЛ</span></h1>
+                            <p>Силові, власна вага та кардіо з правильними метриками для кожного типу вправ.</p>
                         </div>
-                        
-                        <span class="label-text">Твій графік (співвідношення днів):</span>
-                        <div style="display: flex; gap: 12px; margin-bottom: 8px;">
-                            <input type="number" id="edit-work-days" placeholder="Робочих (напр. 2)" inputmode="numeric" pattern="[0-9]*">
-                            <input type="number" id="edit-rest-days" placeholder="Вихідних (напр. 2)" inputmode="numeric" pattern="[0-9]*">
+                        <div class="workspace-header-chip"><i class="fa-solid fa-bolt"></i><span>Live + Manual</span></div>
+                    </section>
+
+                    <section class="workspace-block premium-section">
+                        <div class="workspace-block-head"><div><span class="eyebrow">РЕЖИМ</span><h2>Як записуємо</h2></div></div>
+                        <div class="command-surface premium-surface">
+                            <div class="premium-segmented-control filter-tabs" id="workout-mode-tabs">
+                                <div id="btn-mode-extended" class="filter-tab active" onclick="setWorkoutMode('extended')"><i class="fa-solid fa-play"></i> Live</div>
+                                <div id="btn-mode-simple" class="filter-tab" onclick="setWorkoutMode('simple')"><i class="fa-solid fa-keyboard"></i> Ручний ввід</div>
+                            </div>
+
+                            <div id="simple-aw-container" class="watch-entry-card" style="display: none;">
+                                <div class="watch-entry-head">
+                                    <div class="watch-entry-icon"><i class="fa-brands fa-apple"></i></div>
+                                    <div><strong>Apple Watch</strong><span>Запиши тренування за часом і калоріями.</span></div>
+                                </div>
+                                <div class="two-field-grid">
+                                    <input type="number" id="simp-aw-time" placeholder="Час (хв)" inputmode="numeric" pattern="[0-9]*">
+                                    <input type="number" id="simp-aw-kcal" placeholder="Ккал" inputmode="numeric" pattern="[0-9]*">
+                                </div>
+                                <button class="gradient-bg primary-btn full-width-btn" onclick="logAppleWatch()">Записати тренування</button>
+                            </div>
                         </div>
+                    </section>
 
-                        <select id="edit-activity-work" style="margin-top: 8px;">
-                            <option value="1.2">Мінімальна (Сидяча робота)</option>
-                            <option value="1.375">Легка (Офіс, трохи руху)</option>
-                            <option value="1.55">Середня (На ногах 8+ год)</option>
-                            <option value="1.725">Висока (Зміни 12-14 год на ногах)</option>
-                            <option value="1.9">Екстремальна (Важка праця)</option>
-                        </select>
+                    <section class="workspace-block premium-section">
+                        <div class="workspace-block-head"><div><span class="eyebrow">БІБЛІОТЕКА</span><h2>Вправи</h2></div></div>
+                        <div class="command-surface premium-surface">
+                            <div class="premium-segmented-control filter-tabs">
+                                <div id="btn-all-workouts" class="filter-tab active" onclick="setWorkoutFilter('all')">Усі вправи</div>
+                                <div id="btn-fav-workouts" class="filter-tab" onclick="setWorkoutFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
+                            </div>
+                            <div class="premium-search-field">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="workout-search" placeholder="Біг, груди, спина..." oninput="searchWorkout()">
+                            </div>
+                        </div>
+                        <div id="workout-list-container" class="premium-results-grid exercise-results-grid"></div>
+                    </section>
+                </div>
 
-                        <select id="edit-activity-rest" style="margin-top: 8px;">
-                            <option value="1.2">Мінімальна (Диван, ПК, рест)</option>
-                            <option value="1.375">Легка (Прогулянки, хатні справи)</option>
-                            <option value="1.55">Середня (Активний відпочинок)</option>
-                        </select>
+                <!-- PROFILE WORKSPACE -->
+                <div id="tab-profile" class="tab-content premium-workspace premium-profile-workspace">
+                    <section class="profile-hero premium-surface premium-surface-ghost">
+                        <div class="profile-avatar-large"></div>
+                        <div class="profile-hero-copy">
+                            <span class="eyebrow">ACCOUNT</span>
+                            <h1>Твій <span class="gradient-text">ПРОФІЛЬ</span></h1>
+                            <p>Теми, цілі, режим харчування та активність — одна конфігурація Achilles.</p>
+                        </div>
+                    </section>
 
-                        <select id="edit-goal" style="margin-top: 8px;">
-                            <option value="lose">Схуднення (Дефіцит 20%)</option>
-                            <option value="maintain">Підтримка ваги</option>
-                            <option value="gain">Набір маси (Профіцит 15%)</option>
-                        </select>
-                        <button onclick="saveProfile()" class="gradient-bg primary-btn" style="margin-top: 25px; padding: 20px; border-radius: 20px; font-size: 18px;">Зберегти налаштування</button>
+                    <div class="profile-settings-grid">
+                        <section class="settings-card premium-surface">
+                            <div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-palette"></i></div><div><span class="eyebrow">ВИГЛЯД</span><h2>Інтерфейс</h2></div></div>
+                            <div class="settings-fields">
+                                <label><span>Колір додатка</span>
+                                    <select id="edit-theme-color" onchange="window.previewTheme()">
+                                        <option value="gold">🏆 Золотий Ахіллес</option>
+                                        <option value="blood">🩸 Кривава Спарта</option>
+                                        <option value="sky">🌌 Небесно-блакитна</option>
+                                    </select>
+                                </label>
+                                <label><span>Режим екрану</span>
+                                    <select id="edit-theme-mode" onchange="window.previewTheme()">
+                                        <option value="auto">🌗 Системний (Авто)</option>
+                                        <option value="dark">🌙 Темний</option>
+                                        <option value="light">☀️ Світлий</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="settings-card premium-surface">
+                            <div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-bullseye"></i></div><div><span class="eyebrow">ПЛАН</span><h2>Мета й раціон</h2></div></div>
+                            <div class="settings-fields">
+                                <label><span>Режим додатку</span>
+                                    <select id="edit-app-mode">
+                                        <option value="simple">Звичайний (Без калорій)</option>
+                                        <option value="pro">PRO (Трекінг спалених калорій)</option>
+                                    </select>
+                                </label>
+                                <label><span>Стиль харчування</span>
+                                    <select id="edit-diet">
+                                        <option value="standard">Спортивний (Б: 2г/кг, Ж: 1г/кг)</option>
+                                        <option value="balanced">Збалансований (30% Б / 30% Ж / 40% В)</option>
+                                        <option value="lowcarb">Низьковуглеводний</option>
+                                        <option value="keto">Кето-дієта</option>
+                                    </select>
+                                </label>
+                                <label><span>Мета</span>
+                                    <select id="edit-goal">
+                                        <option value="lose">Схуднення (Дефіцит 20%)</option>
+                                        <option value="maintain">Підтримка ваги</option>
+                                        <option value="gain">Набір маси (Профіцит 15%)</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="settings-card premium-surface">
+                            <div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-user"></i></div><div><span class="eyebrow">ТІЛО</span><h2>Особисті дані</h2></div></div>
+                            <div class="settings-fields">
+                                <label><span>Ім'я</span><input type="text" id="edit-name" placeholder="Ім'я" disabled></label>
+                                <label><span>Стать</span><select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select></label>
+                                <div class="two-field-grid">
+                                    <label><span>Вік</span><input type="number" id="edit-age" placeholder="Вік" inputmode="numeric" pattern="[0-9]*"></label>
+                                    <label><span>Зріст</span><input type="number" id="edit-height" placeholder="см" inputmode="numeric" pattern="[0-9]*"></label>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="settings-card premium-surface">
+                            <div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-calendar-days"></i></div><div><span class="eyebrow">РИТМ</span><h2>Графік і активність</h2></div></div>
+                            <div class="settings-fields">
+                                <div class="two-field-grid">
+                                    <label><span>Робочих днів</span><input type="number" id="edit-work-days" placeholder="2" inputmode="numeric" pattern="[0-9]*"></label>
+                                    <label><span>Вихідних днів</span><input type="number" id="edit-rest-days" placeholder="2" inputmode="numeric" pattern="[0-9]*"></label>
+                                </div>
+                                <label><span>Активність у робочий день</span>
+                                    <select id="edit-activity-work">
+                                        <option value="1.2">Мінімальна (Сидяча робота)</option>
+                                        <option value="1.375">Легка (Офіс, трохи руху)</option>
+                                        <option value="1.55">Середня (На ногах 8+ год)</option>
+                                        <option value="1.725">Висока (Зміни 12-14 год на ногах)</option>
+                                        <option value="1.9">Екстремальна (Важка праця)</option>
+                                    </select>
+                                </label>
+                                <label><span>Активність у вихідний</span>
+                                    <select id="edit-activity-rest">
+                                        <option value="1.2">Мінімальна (Диван, ПК, рест)</option>
+                                        <option value="1.375">Легка (Прогулянки, хатні справи)</option>
+                                        <option value="1.55">Середня (Активний відпочинок)</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </section>
                     </div>
 
-                    <button class="danger" onclick="logout()" style="padding: 20px; border-radius: 20px; font-size: 17px; font-weight: 700;">Вийти з акаунту</button>
+                    <section class="profile-actions premium-surface">
+                        <div><span class="eyebrow">ЗМІНИ</span><h2>Зберегти конфігурацію</h2><p>Після збереження Achilles перерахує цілі й синхронізує профіль.</p></div>
+                        <div class="profile-action-buttons">
+                            <button onclick="saveProfile()" class="gradient-bg primary-btn"><i class="fa-solid fa-check"></i> Зберегти</button>
+                            <button class="danger" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Вийти</button>
+                        </div>
+                    </section>
                 </div>
             </div>
 
@@ -4495,6 +4571,371 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
         document.querySelectorAll('[data-target="tab-dashboard"]').forEach(item=>{
             item.addEventListener('click',()=>setTimeout(()=>A.dashboard.enter(),45),{passive:true});
         });
+    },{once:true});
+})();
+</script>
+
+
+<style id="achilles-v7-design-system">
+/* =========================================================
+   ACHILLES V7 — DESIGN TOKENS / PREMIUM WORKSPACES
+   ========================================================= */
+:root {
+    --space-1: 6px;
+    --space-2: 10px;
+    --space-3: 14px;
+    --space-4: 18px;
+    --space-5: 24px;
+    --space-6: 30px;
+    --space-7: 38px;
+    --radius-sm: 14px;
+    --radius-md: 18px;
+    --radius-lg: 24px;
+    --radius-xl: 30px;
+    --radius-2xl: 36px;
+    --premium-ease: cubic-bezier(.22,1,.36,1);
+    --surface-border: color-mix(in srgb, var(--glass-border) 86%, transparent);
+    --surface-shadow: 0 20px 50px var(--shadow-color);
+    --control-h: 58px;
+}
+
+/* Fix: ring text now stays INSIDE the smallest ring */
+.nutrition-rings-center {
+    width: 64px !important;
+    height: 64px !important;
+    inset: 50% auto auto 50% !important;
+    transform: translate(-50%, -50%) !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 2px !important;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--bg-base, #000) 72%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 0 0 1px rgba(127,127,127,.07);
+}
+.nutrition-rings-title {
+    margin: 0 !important;
+    font-size: 8px !important;
+    letter-spacing: .16em !important;
+    line-height: 1 !important;
+    opacity: .76;
+}
+.nutrition-rings-kcal-value {
+    font-size: clamp(22px, 4vw, 28px) !important;
+    line-height: .96 !important;
+    letter-spacing: -.055em !important;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+.nutrition-rings-kcal-goal {
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 7px !important;
+    line-height: 1.1 !important;
+    color: var(--text-muted) !important;
+    font-weight: 750 !important;
+}
+.nutrition-rings-kcal-line,.nutrition-rings-kcal-unit { display:none !important; }
+
+.premium-workspace { padding-bottom: 24px; }
+.workspace-header,
+.profile-hero {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    padding:26px 28px;
+    margin-bottom:28px;
+    border-radius:var(--radius-xl);
+}
+.workspace-header h1,.profile-hero h1 { margin:4px 0 7px !important; }
+.workspace-header p,.profile-hero p {
+    max-width:650px;
+    margin:0;
+    color:var(--text-muted);
+    font-size:14px;
+    line-height:1.5;
+}
+.workspace-header-chip {
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    min-height:40px;
+    padding:0 14px;
+    border-radius:999px;
+    background:var(--input-bg);
+    border:1px solid var(--surface-border);
+    color:var(--text-muted);
+    font-size:12px;
+    font-weight:750;
+}
+.workspace-header-chip i { color:var(--primary); }
+.workspace-block { margin-top:0 !important; margin-bottom:30px; }
+.workspace-block-head {
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:18px;
+    margin:0 2px 13px;
+}
+.workspace-block-head.compact { margin-bottom:10px; }
+.workspace-block-head h2 { margin:2px 0 0; font-size:24px; letter-spacing:-.045em; }
+.command-surface { padding:18px; border-radius:var(--radius-xl); }
+.workspace-action-btn {
+    width:auto !important;
+    min-height:42px !important;
+    padding:0 15px !important;
+    margin:0 !important;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+}
+.premium-segmented-control {
+    margin:0 0 14px !important;
+    padding:5px !important;
+    border-radius:18px !important;
+    background:color-mix(in srgb, var(--input-bg) 82%, transparent) !important;
+}
+.premium-segmented-control .filter-tab {
+    margin:0 !important;
+    min-height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    border-radius:14px !important;
+}
+.premium-search-field {
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+.premium-search-field > i {
+    position:absolute;
+    left:18px;
+    z-index:2;
+    color:var(--text-muted);
+    pointer-events:none;
+}
+.premium-search-field input {
+    margin:0 !important;
+    padding-left:48px !important;
+    background:color-mix(in srgb, var(--input-bg) 88%, transparent) !important;
+}
+.workspace-loader {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    min-height:58px;
+    color:var(--primary);
+    font-weight:700;
+}
+.premium-results-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:0 !important;
+    padding:0 0 12px !important;
+}
+.premium-results-grid > .list-item,
+.exercise-results-grid > .exercise-card {
+    margin:0 !important;
+    height:100%;
+    border-radius:var(--radius-lg) !important;
+    background:color-mix(in srgb, var(--card-bg) 90%, transparent) !important;
+    box-shadow:0 14px 34px rgba(0,0,0,.08);
+}
+
+.watch-entry-card {
+    margin-top:14px;
+    padding:18px;
+    border-radius:20px;
+    border:1px solid var(--surface-border);
+    background:color-mix(in srgb, var(--input-bg) 82%, transparent);
+}
+.watch-entry-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.watch-entry-icon {
+    width:46px;height:46px;border-radius:15px;
+    display:grid;place-items:center;
+    color:var(--primary);background:rgba(var(--primary-rgb),.10);
+    border:1px solid rgba(var(--primary-rgb),.18);font-size:21px;
+}
+.watch-entry-head strong,.watch-entry-head span { display:block; }
+.watch-entry-head strong { font-size:16px; }
+.watch-entry-head span { margin-top:3px;color:var(--text-muted);font-size:12px; }
+.two-field-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }
+.two-field-grid input { margin:0 !important; }
+.full-width-btn { width:100% !important;margin:14px 0 0 !important; }
+
+.profile-hero { justify-content:flex-start; }
+.profile-hero .profile-avatar-large {
+    flex:0 0 auto;
+    margin:0 !important;
+    width:82px !important;height:82px !important;border-radius:23px !important;
+}
+.profile-hero-copy { min-width:0; }
+.profile-settings-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+}
+.settings-card {
+    padding:22px;
+    border-radius:var(--radius-xl);
+}
+.settings-card-head { display:flex;align-items:center;gap:13px;margin-bottom:18px; }
+.settings-card-head h2 { margin:2px 0 0;font-size:20px;letter-spacing:-.04em; }
+.settings-icon {
+    width:48px;height:48px;border-radius:16px;
+    display:grid;place-items:center;
+    color:var(--primary);font-size:18px;
+    background:rgba(var(--primary-rgb),.10);
+    border:1px solid rgba(var(--primary-rgb),.17);
+}
+.settings-fields { display:grid;gap:12px; }
+.settings-fields label { display:grid;gap:7px; }
+.settings-fields label > span { color:var(--text-muted);font-size:11px;font-weight:750;letter-spacing:.02em; }
+.settings-fields input,.settings-fields select { margin:0 !important;min-height:54px !important; }
+#edit-name { opacity:.68 !important; }
+.profile-actions {
+    margin-top:14px;
+    padding:22px;
+    border-radius:var(--radius-xl);
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.profile-actions h2 { margin:3px 0 5px;font-size:21px; }
+.profile-actions p { margin:0;color:var(--text-muted);font-size:12px;line-height:1.5; }
+.profile-action-buttons { display:flex;gap:10px;flex:0 0 auto; }
+.profile-action-buttons button { width:auto !important;margin:0 !important;padding:0 18px !important;min-height:52px; }
+
+@keyframes workspaceEnterV7 {
+    from { opacity:0; transform:translate3d(0,10px,0) scale(.997); }
+    to { opacity:1; transform:translate3d(0,0,0) scale(1); }
+}
+.premium-workspace.workspace-enter { animation:workspaceEnterV7 480ms var(--premium-ease) both; }
+.premium-workspace .premium-surface {
+    backdrop-filter:blur(24px) saturate(155%);
+    -webkit-backdrop-filter:blur(24px) saturate(155%);
+}
+
+/* One visual language across generated food/workout cards */
+.list-item h4,.exercise-card h4 { font-size:17px !important;letter-spacing:-.025em; }
+.list-item p,.exercise-card p { color:var(--text-muted) !important;line-height:1.45; }
+.exercise-card-head { gap:14px; }
+.exercise-input-grid input { min-height:54px !important; }
+.workout-add,.live-start-btn { min-height:54px !important;border-radius:17px !important; }
+.food-api-status { margin-top:11px !important; }
+
+@media (max-width:900px){
+    .premium-results-grid,.profile-settings-grid { grid-template-columns:1fr; }
+    .workspace-header,.profile-actions { align-items:flex-start; }
+}
+@media (max-width:640px){
+    .workspace-header,.profile-hero { padding:20px;border-radius:26px;align-items:flex-start; }
+    .workspace-header-chip { display:none; }
+    .workspace-block-head { align-items:center; }
+    .workspace-action-btn span { display:none; }
+    .profile-hero { flex-direction:column; }
+    .profile-hero .profile-avatar-large { width:76px !important;height:76px !important; }
+    .profile-actions { flex-direction:column;align-items:stretch; }
+    .profile-action-buttons { display:grid;grid-template-columns:1fr 1fr; }
+    .profile-action-buttons button { width:100% !important; }
+    .two-field-grid { grid-template-columns:1fr 1fr; }
+    .nutrition-rings-center { width:62px !important;height:62px !important; }
+    .nutrition-rings-kcal-value { font-size:25px !important; }
+}
+</style>
+
+<script id="achilles-v7-architecture">
+(function(){
+    'use strict';
+    const A = window.Achilles = window.Achilles || {};
+
+    /* CORE */
+    A.core = A.core || {
+        version: '7.0',
+        clamp(value,min,max){ return Math.max(min,Math.min(max,value)); },
+        nextFrame(fn){ return requestAnimationFrame(()=>requestAnimationFrame(fn)); }
+    };
+
+    /* STORAGE */
+    A.storage = A.storage || {
+        get(key,fallback=null){ const value=localStorage.getItem(key); return value===null?fallback:value; },
+        set(key,value){ localStorage.setItem(key,String(value)); return value; },
+        json(key,fallback){ try{ const raw=localStorage.getItem(key); return raw===null?fallback:JSON.parse(raw); }catch(e){ console.warn('Achilles storage parse',key,e); return fallback; } },
+        setJSON(key,value){ localStorage.setItem(key,JSON.stringify(value)); return value; },
+        day(date){ const all=window.allDaysData || this.json('achilles_all_days',{}); return all?.[date] || null; }
+    };
+
+    /* SYNC */
+    A.sync = A.sync || {
+        push(){ return typeof window.syncToCloud==='function' ? window.syncToCloud() : Promise.resolve(false); },
+        pull(user){ return typeof window.loadFromCloud==='function' ? window.loadFromCloud(user) : Promise.resolve(false); }
+    };
+
+    /* NUTRITION */
+    A.nutrition = A.nutrition || {
+        search(){ return typeof window.onSearchInput==='function' ? window.onSearchInput() : null; },
+        refresh(animate=false){
+            if(typeof window.updateGoalDisplay==='function') window.updateGoalDisplay();
+            if(typeof window.renderNutritionRings==='function') window.renderNutritionRings(animate);
+        },
+        favorites(){ return A.storage.json('achilles_fav_foods',[]); },
+        custom(){ return A.storage.json('achilles_custom_foods',[]); }
+    };
+
+    /* TRAINING */
+    A.training = A.training || {
+        search(){ return typeof window.searchWorkout==='function' ? window.searchWorkout() : null; },
+        favorites(){ return A.storage.json('achilles_fav_workouts',[]); },
+        prs(){ return A.storage.json('achilles_prs',{}); },
+        byId(id){ return typeof window.getWorkoutById==='function' ? window.getWorkoutById(id) : null; }
+    };
+
+    /* THEME */
+    A.theme = A.theme || {
+        current(){ return { color:A.storage.get('achilles_theme_color','gold'), mode:A.storage.get('achilles_theme_mode','auto') }; },
+        apply(color,mode){ return typeof window.applyTheme==='function' ? window.applyTheme(color,mode) : null; }
+    };
+
+    /* UI CONTROLLER */
+    A.ui = A.ui || {};
+    A.ui.enter = function(targetId){
+        const tab=document.getElementById(targetId);
+        if(!tab) return;
+        tab.classList.remove('workspace-enter');
+        void tab.offsetWidth;
+        tab.classList.add('workspace-enter');
+        if(targetId==='tab-dashboard' && A.dashboard?.enter) A.dashboard.enter();
+        if(targetId==='tab-food') setTimeout(()=>A.nutrition.search(),40);
+        if(targetId==='tab-workout') setTimeout(()=>A.training.search(),40);
+    };
+
+    A.bootstrap = A.bootstrap || {};
+    A.bootstrap.install = function(){
+        if(A.bootstrap.installed) return;
+        document.querySelectorAll('.nav-item[data-target]').forEach(item=>{
+            item.addEventListener('click',()=>{
+                const id=item.getAttribute('data-target');
+                setTimeout(()=>A.ui.enter(id),35);
+            },{passive:true});
+        });
+        A.bootstrap.installed=true;
+    };
+
+    document.addEventListener('DOMContentLoaded',()=>{
+        A.bootstrap.install();
+        setTimeout(()=>A.ui.enter('tab-dashboard'),180);
     },{once:true});
 })();
 </script>
