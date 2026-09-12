@@ -13,7 +13,7 @@
     <link rel="apple-touch-icon" href="IMG_9302.jpeg">
     <link rel="manifest" href="manifest.webmanifest">
     <title>Achilles OS</title>
-    <meta name="achilles-build" content="10.0">
+    <meta name="achilles-build" content="10.1">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -25,8 +25,19 @@
             let actualMode = mode === 'auto' ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
             document.documentElement.setAttribute('data-color', color);
             document.documentElement.setAttribute('data-theme', actualMode);
+
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isStandalone = navigator.standalone === true || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+            if (isIOS && isStandalone) document.documentElement.classList.add('ios-standalone');
+
+            const chromeColors = {
+                dark: { gold: '#000000', blood: '#000000', sky: '#000000' },
+                light: { gold: '#FFFBF4', blood: '#FFF7F8', sky: '#F7FBFF' }
+            };
             const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-            if (metaThemeColor) { metaThemeColor.setAttribute("content", actualMode === 'light' ? "#F2F2F7" : "#000000"); }
+            if (metaThemeColor) {
+                metaThemeColor.setAttribute('content', chromeColors[actualMode]?.[color] || (actualMode === 'light' ? '#F7F7F7' : '#000000'));
+            }
         })();
     </script>
     
@@ -3269,11 +3280,22 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
     </script>
 
     <script>
-        /* iOS standalone/PWA: синхронізує CSS-висоту з реальною видимою висотою екрана. */
+        /* Viewport controller.
+           На iOS Home Screen НЕ фіксуємо висоту через window.innerHeight: WebKit може
+           повертати занижену висоту й залишати системну смугу знизу. Для standalone
+           використовуємо 100vh; у звичайному браузері лишаємо innerHeight workaround. */
         (function () {
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isStandalone = navigator.standalone === true || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+
+            if (isIOS && isStandalone) {
+                document.documentElement.classList.add('ios-standalone');
+                document.documentElement.style.setProperty('--app-height', '100vh');
+                return;
+            }
+
             let lastHeight = 0;
             let rafId = 0;
-
             function applyAppHeight() {
                 cancelAnimationFrame(rafId);
                 rafId = requestAnimationFrame(function () {
@@ -7580,12 +7602,92 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
             const old=A.dashboard.refresh.bind(A.dashboard);
             A.dashboard.refresh=function(opts={}){ const r=old(opts); requestAnimationFrame(()=>{renderAnalyticsV2();renderCoachV2();}); return r; };
         }
-        console.info('[Achilles OS] V10.0 Training Intelligence + Analytics V2 + Coach V2 ready');
+        console.info('[Achilles OS] V10.1 iOS standalone viewport fix ready');
     }
 
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bootstrapV10,{once:true});
     else bootstrapV10();
 })(window);
+</script>
+
+<style id="achilles-v10-1-ios-standalone-fix">
+/* =========================================================
+   V10.1 — iOS Home Screen bottom-strip mitigation
+   WebKit standalone can report a viewport shorter than the physical display.
+   Keep the root canvas and tab bar on the same solid tone so any OS-owned
+   bottom region visually merges with Achilles instead of becoming a stripe.
+   ========================================================= */
+:root { --pwa-system-bg: #000000; }
+html[data-theme="dark"] { --pwa-system-bg: #000000; }
+html[data-theme="light"][data-color="gold"]  { --pwa-system-bg: #FFFBF4; }
+html[data-theme="light"][data-color="blood"] { --pwa-system-bg: #FFF7F8; }
+html[data-theme="light"][data-color="sky"]   { --pwa-system-bg: #F7FBFF; }
+
+/* Important: the original file fixed the root <html> element. That is a known
+   trouble spot in iOS standalone + viewport-fit=cover, so undo it for Home Screen. */
+html.ios-standalone {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: var(--pwa-system-bg) !important;
+}
+
+html.ios-standalone body {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background-color: var(--pwa-system-bg) !important;
+}
+
+html.ios-standalone #main-app-window {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+html.ios-standalone #main-app-window > .app-window {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+}
+
+/* The OS-owned strip cannot always be painted by DOM on affected iOS builds.
+   Matching the tab bar to the root canvas removes the visible seam. */
+html.ios-standalone #main-app-window .nav-bar {
+    background: var(--pwa-system-bg) !important;
+}
+</style>
+
+<script id="achilles-v10-1-system-chrome">
+(function(){
+    const palettes = {
+        dark: { gold:'#000000', blood:'#000000', sky:'#000000' },
+        light: { gold:'#FFFBF4', blood:'#FFF7F8', sky:'#F7FBFF' }
+    };
+    function syncSystemChrome(){
+        const root = document.documentElement;
+        const mode = root.getAttribute('data-theme') || 'dark';
+        const color = root.getAttribute('data-color') || 'gold';
+        const value = palettes[mode]?.[color] || (mode === 'light' ? '#F7F7F7' : '#000000');
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', value);
+    }
+    syncSystemChrome();
+    new MutationObserver(syncSystemChrome).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme','data-color'] });
+})();
 </script>
 
 <script id="achilles-v10-pwa">
