@@ -9064,5 +9064,205 @@ html.ios-standalone #main-app-window .nav-bar {
 })();
 </script>
 
+
+
+<style id="achilles-v108-diary-delete-style">
+.diary-delete-v108{
+  position:relative !important;
+  z-index:2147483647 !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:transparent !important;
+  border:0 !important;
+  background:transparent !important;
+  padding:14px !important;
+  min-width:52px !important;
+  min-height:52px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  cursor:pointer !important;
+}
+.diary-delete-v108 *{pointer-events:none !important;}
+</style>
+<script id="achilles-v108-diary-delete-finalfix">
+(() => {
+  'use strict';
+  const root = window;
+  const A = root.Achilles = root.Achilles || {};
+
+  function escAttr(value){
+    return String(value ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#39;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;');
+  }
+
+  function recalcFromLog(){
+    const log = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    let kcal = 0, p = 0, f = 0, c = 0, bonus = 0;
+    for (const entry of log){
+      if (entry?.type === 'food') {
+        kcal += Number(entry.kcal || 0);
+        p += Number(entry.p || 0);
+        f += Number(entry.f || 0);
+        c += Number(entry.c || 0);
+      } else if (entry?.type === 'workout') {
+        bonus += Number(entry.burned || 0);
+      }
+    }
+    root.consumedCalories = Math.max(0, kcal);
+    root.workoutBonus = Math.max(0, bonus);
+    root.macros = { p: Math.max(0,p), f: Math.max(0,f), c: Math.max(0,c) };
+  }
+
+  function persistDirectly(){
+    const date = root.currentViewDate || root.todayDate || new Date().toISOString().slice(0,10);
+    const snapshot = {
+      consumedCalories: Number(root.consumedCalories || 0),
+      workoutBonus: Number(root.workoutBonus || 0),
+      macros: {
+        p: Number(root.macros?.p || 0),
+        f: Number(root.macros?.f || 0),
+        c: Number(root.macros?.c || 0)
+      },
+      log: Array.isArray(root.dailyLog) ? root.dailyLog : [],
+      updatedAt: Date.now()
+    };
+
+    let all = {};
+    try {
+      all = JSON.parse(localStorage.getItem('achilles_all_days') || '{}') || {};
+    } catch (_) {
+      all = {};
+    }
+    all[date] = snapshot;
+    root.allDaysData = all;
+    localStorage.setItem('achilles_all_days', JSON.stringify(all));
+
+    try { A.state?.setDailyLog?.([...snapshot.log], { syncLegacy:false }); } catch (_) {}
+    try {
+      A.state?.setNutrition?.({
+        consumedCalories:snapshot.consumedCalories,
+        workoutBonus:snapshot.workoutBonus,
+        macros:{...snapshot.macros},
+        targets:root.targetMacros || A.storage?.macroTargets?.() || {p:0,f:0,c:0}
+      }, { syncLegacy:false });
+    } catch (_) {}
+
+    return snapshot;
+  }
+
+  function deleteAt(rawIndex){
+    root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    const index = Number(rawIndex);
+    if (!Number.isInteger(index) || index < 0 || index >= root.dailyLog.length) {
+      A.toast?.('Запис уже відсутній','fa-circle-info',1500);
+      return false;
+    }
+
+    root.dailyLog.splice(index,1);
+    recalcFromLog();
+    persistDirectly();
+
+    try { root.updateGoalDisplay?.(); } catch (_) {}
+    try { root.renderProgressInsights?.(); } catch (_) {}
+    try { root.renderDiary?.(); } catch (_) {}
+    try { A.haptics?.light?.(); } catch (_) {}
+    A.toast?.('Запис видалено','fa-trash-can',1500);
+
+    // Cloud sync happens only after the local deletion is already committed.
+    setTimeout(() => {
+      try { root.syncToCloud?.(); } catch (_) {}
+    }, 150);
+    return true;
+  }
+
+  root.__achillesDeleteDiaryV108 = function(event, buttonOrIndex){
+    try {
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      event?.stopImmediatePropagation?.();
+    } catch (_) {}
+
+    const now = Date.now();
+    if (root.__achillesDiaryDeleteLock && now < root.__achillesDiaryDeleteLock) return false;
+    root.__achillesDiaryDeleteLock = now + 700;
+
+    const rawIndex = typeof buttonOrIndex === 'object'
+      ? buttonOrIndex?.dataset?.logIndex
+      : buttonOrIndex;
+    return deleteAt(rawIndex);
+  };
+
+  root.renderDiary = function(){
+    const foodList = document.getElementById('food-list');
+    const workoutList = document.getElementById('workout-list');
+    if (!foodList || !workoutList) return;
+
+    root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    const indexed = root.dailyLog.map((entry,index)=>({entry,index}));
+    const foods = indexed.filter(x=>x.entry?.type === 'food');
+    const workouts = indexed.filter(x=>x.entry?.type === 'workout');
+
+    const row = ({entry,index}) => `
+      <div class="diary-row-v108" data-diary-row="1" style="padding:15px 20px;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;position:relative;">
+        <div style="flex-grow:1;padding-right:10px;min-width:0;">${entry?.html || ''}</div>
+        <button
+          type="button"
+          class="delete-btn diary-delete-v108"
+          data-log-index="${index}"
+          data-entry-id="${escAttr(entry?.id ?? '')}"
+          aria-label="Видалити запис"
+          onclick="return window.__achillesDeleteDiaryV108(event, this);"
+        ><i class="fa-solid fa-trash-can"></i></button>
+      </div>`;
+
+    foodList.innerHTML = foods.length
+      ? foods.map(row).join('')
+      : '<div style="padding:15px;text-align:center;opacity:.6;">Поки що нічого. Час підкріпитися!</div>';
+    workoutList.innerHTML = workouts.length
+      ? workouts.map(row).join('')
+      : '<div style="padding:15px;text-align:center;opacity:.6;">Сьогодні без тренувань.</div>';
+  };
+
+  root.deleteLogEntry = function(id){
+    root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    const wanted = String(id ?? '');
+    const index = root.dailyLog.findIndex(entry => String(entry?.id ?? '') === wanted);
+    return index >= 0 ? deleteAt(index) : false;
+  };
+
+  function delegatedDelete(event){
+    const btn = event.target?.closest?.('.diary-delete-v108');
+    if (!btn) return;
+    root.__achillesDeleteDiaryV108(event, btn);
+  }
+
+  // Capture phase + multiple iOS event families. The lock prevents duplicate deletion.
+  document.addEventListener('pointerup', delegatedDelete, true);
+  document.addEventListener('touchend', delegatedDelete, {capture:true, passive:false});
+  document.addEventListener('click', delegatedDelete, true);
+
+  const boot = () => {
+    try { root.renderDiary?.(); } catch (error) { console.error('[Achilles V10.8] diary render error', error); }
+    try {
+      if (sessionStorage.getItem('achilles_v108_seen') !== '1') {
+        sessionStorage.setItem('achilles_v108_seen','1');
+        A.toast?.('V10.8 · журнал виправлено','fa-trash-can',1800);
+      }
+    } catch (_) {}
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, {once:true});
+  else setTimeout(boot,0);
+  root.addEventListener('pageshow',()=>setTimeout(boot,80));
+
+  console.info('[Achilles OS] V10.8 journal delete final fix active');
+})();
+</script>
+
 </body>
 </html>
