@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'achilles-os-v10-4';
+const CACHE_VERSION = 'achilles-os-v10-5';
 const APP_SHELL = ['./', './index.html', './IMG_9302.jpeg', './manifest.webmanifest'];
 
 self.addEventListener('install', event => {
