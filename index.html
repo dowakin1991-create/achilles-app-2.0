@@ -8907,5 +8907,162 @@ html.ios-standalone #main-app-window .nav-bar {
 })();
 </script>
 
+
+
+<script id="achilles-v107-diary-delete-hardfix">
+(() => {
+  'use strict';
+  const root = window;
+  const A = root.Achilles = root.Achilles || {};
+
+  const escAttr = (v) => String(v ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#39;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;');
+
+  function persistAfterDelete() {
+    try {
+      if (A.daily?.save) A.daily.save({ sync: true, touch: true });
+      else root.saveDailyData?.();
+    } catch (error) {
+      console.error('[Achilles V10.7] save after delete failed', error);
+      try { root.saveDailyData?.(); } catch (_) {}
+    }
+
+    try { root.updateGoalDisplay?.(); } catch (_) {}
+    try { root.renderProgressInsights?.(); } catch (_) {}
+    try { A.sync?.push?.('diary-delete-v107'); } catch (_) {}
+  }
+
+  function deleteByIndex(rawIndex) {
+    root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    const index = Number(rawIndex);
+    if (!Number.isInteger(index) || index < 0 || index >= root.dailyLog.length) {
+      A.toast?.('Запис уже відсутній','fa-circle-info',1600);
+      return false;
+    }
+
+    const entry = root.dailyLog[index];
+
+    if (entry?.type === 'food') {
+      root.consumedCalories = Math.max(0, Number(root.consumedCalories || 0) - Number(entry.kcal || 0));
+      root.macros = root.macros || { p:0, f:0, c:0 };
+      root.macros.p = Math.max(0, Number(root.macros.p || 0) - Number(entry.p || 0));
+      root.macros.f = Math.max(0, Number(root.macros.f || 0) - Number(entry.f || 0));
+      root.macros.c = Math.max(0, Number(root.macros.c || 0) - Number(entry.c || 0));
+    } else if (entry?.type === 'workout') {
+      root.workoutBonus = Math.max(0, Number(root.workoutBonus || 0) - Number(entry.burned || 0));
+    }
+
+    root.dailyLog.splice(index, 1);
+    persistAfterDelete();
+    try { root.renderDiary?.(); } catch (_) {}
+    try { A.haptics?.light?.(); } catch (_) {}
+    A.toast?.('Запис видалено','fa-trash-can',1500);
+    return true;
+  }
+
+  root.__achillesDeleteDiaryIndex = function(event, index) {
+    try {
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+    } catch (_) {}
+    return deleteByIndex(index);
+  };
+
+  function bindButtons(container) {
+    if (!container) return;
+    container.querySelectorAll('.diary-delete-v107').forEach(btn => {
+      if (btn.__v107Bound) return;
+      btn.__v107Bound = true;
+
+      const fire = (event) => {
+        if (btn.dataset.busy === '1') return;
+        btn.dataset.busy = '1';
+        try {
+          event?.preventDefault?.();
+          event?.stopPropagation?.();
+          deleteByIndex(btn.dataset.logIndex);
+        } finally {
+          setTimeout(() => { try { btn.dataset.busy = '0'; } catch (_) {} }, 500);
+        }
+      };
+
+      // iOS Safari/PWA: touchend is the most reliable path.
+      btn.addEventListener('touchend', fire, { passive: false });
+      btn.addEventListener('click', fire, false);
+    });
+  }
+
+  root.renderDiary = function() {
+    const foodList = document.getElementById('food-list');
+    const workoutList = document.getElementById('workout-list');
+    if (!foodList || !workoutList) return;
+
+    root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    const indexed = root.dailyLog.map((entry, index) => ({ entry, index }));
+    const foods = indexed.filter(x => x.entry?.type === 'food');
+    const workouts = indexed.filter(x => x.entry?.type === 'workout');
+
+    const row = ({ entry, index }) => `
+      <div class="diary-row-v107" style="padding:15px 20px;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;">
+        <div style="flex-grow:1;padding-right:10px;min-width:0;">${entry?.html || ''}</div>
+        <button
+          type="button"
+          class="delete-btn diary-delete-v107"
+          data-log-index="${index}"
+          data-entry-id="${escAttr(entry?.id ?? '')}"
+          aria-label="Видалити запис"
+          onclick="return window.__achillesDeleteDiaryIndex(event, ${index});"
+          style="position:relative;z-index:50;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border:0;background:transparent;padding:14px;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;"
+        >
+          <i class="fa-solid fa-trash-can" style="pointer-events:none;"></i>
+        </button>
+      </div>`;
+
+    foodList.innerHTML = foods.length
+      ? foods.map(row).join('')
+      : '<div style="padding:15px;text-align:center;opacity:.6;">Поки що нічого. Час підкріпитися!</div>';
+
+    workoutList.innerHTML = workouts.length
+      ? workouts.map(row).join('')
+      : '<div style="padding:15px;text-align:center;opacity:.6;">Сьогодні без тренувань.</div>';
+
+    bindButtons(foodList);
+    bindButtons(workoutList);
+  };
+
+  // Keep public API compatible, but resolve by ID if somebody calls it directly.
+  root.deleteLogEntry = function(id) {
+    root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    const wanted = String(id ?? '');
+    const index = root.dailyLog.findIndex(e => String(e?.id ?? '') === wanted);
+    if (index < 0) {
+      A.toast?.('Запис не знайдено','fa-circle-info',1600);
+      return false;
+    }
+    return deleteByIndex(index);
+  };
+
+  const boot = () => {
+    try { root.renderDiary?.(); } catch (error) { console.error('[Achilles V10.7] render error', error); }
+    try {
+      if (sessionStorage.getItem('achilles_v107_seen') !== '1') {
+        sessionStorage.setItem('achilles_v107_seen','1');
+        A.toast?.('V10.7 · видалення виправлено','fa-trash-can',1800);
+      }
+    } catch (_) {}
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
+  else setTimeout(boot, 0);
+  root.addEventListener('pageshow', () => setTimeout(boot, 80));
+
+  console.info('[Achilles OS] V10.7 diary delete hardfix active');
+})();
+</script>
+
 </body>
 </html>
