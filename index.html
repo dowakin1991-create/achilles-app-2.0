@@ -1362,13 +1362,16 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
                                 <div id="btn-food-all" class="filter-tab active" onclick="setFoodFilter('all')">Пошук / Усі</div>
                                 <div id="btn-food-fav" class="filter-tab" onclick="setFoodFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
                             </div>
-                            <div class="search-command-row">
+                            <div class="search-command-row food-search-v103-row">
                                 <div class="premium-search-field">
                                     <i class="fa-solid fa-magnifying-glass"></i>
-                                    <input type="text" id="food-search" placeholder="Борщ, яблуко, суші..." oninput="onSearchInput()">
+                                    <input type="text" id="food-search" placeholder="Борщ, яблуко, суші..." oninput="onSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();runOnlineFoodSearch();}">
                                 </div>
+                                <button id="food-online-search-btn" class="food-online-search-btn gradient-bg" type="button" onclick="runOnlineFoodSearch()" aria-label="Шукати в Open Food Facts">
+                                    <i class="fa-solid fa-cloud-arrow-down"></i><span>Знайти</span>
+                                </button>
                             </div>
-                            <div id="food-api-status" class="food-api-status"><span class="food-api-dot"></span><span>Онлайн-база Open Food Facts готова</span></div>
+                            <div id="food-api-status" class="food-api-status"><span class="food-api-dot"></span><span>Локальний пошук одразу · онлайн — кнопкою «Знайти»</span></div>
                             <div id="loading-spinner" class="workspace-loader" style="display:none;"><i class="fa-solid fa-circle-notch fa-spin"></i><span>Шукаємо продукти…</span></div>
                         </div>
                     </section>
@@ -6535,7 +6538,7 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
         }
     }
 
-    // V10.2: food cards no longer pass the whole product JSON through inline onclick.
+    // V10.3: food cards no longer pass the whole product JSON through inline onclick.
     // Some legacy/custom product names can contain characters that are awkward inside
     // HTML/JS attributes. Keep the normalized object in memory and pass only a safe key.
     A.foodCardRegistry = A.foodCardRegistry || new Map();
@@ -7681,7 +7684,7 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
             const old=A.dashboard.refresh.bind(A.dashboard);
             A.dashboard.refresh=function(opts={}){ const r=old(opts); requestAnimationFrame(()=>{renderAnalyticsV2();renderCoachV2();}); return r; };
         }
-        console.info('[Achilles OS] V10.2 iOS standalone viewport fix ready');
+        console.info('[Achilles OS] V10.3 iOS standalone viewport fix ready');
     }
 
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bootstrapV10,{once:true});
@@ -7691,7 +7694,7 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
 
 <style id="achilles-v10-1-ios-standalone-fix">
 /* =========================================================
-   V10.2 — iOS Home Screen bottom-strip mitigation
+   V10.3 — iOS Home Screen bottom-strip mitigation
    WebKit standalone can report a viewport shorter than the physical display.
    Keep the root canvas and tab bar on the same solid tone so any OS-owned
    bottom region visually merges with Achilles instead of becoming a stripe.
@@ -7767,6 +7770,327 @@ html.ios-standalone #main-app-window .nav-bar {
     syncSystemChrome();
     new MutationObserver(syncSystemChrome).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme','data-color'] });
 })();
+</script>
+
+
+<style id="achilles-v10-3-food-ui">
+/* V10.3 — reliable Open Food Facts search + custom-food delete */
+.food-search-v103-row {
+    display:flex !important;
+    align-items:stretch !important;
+    gap:10px !important;
+}
+.food-search-v103-row .premium-search-field { flex:1 1 auto; min-width:0; }
+.food-online-search-btn {
+    min-width:104px;
+    min-height:54px;
+    padding:0 16px;
+    margin:0 !important;
+    border:0;
+    border-radius:17px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font:inherit;
+    font-weight:800;
+    color:#111;
+    box-shadow:0 10px 24px rgba(var(--primary-rgb),.16);
+    -webkit-tap-highlight-color:transparent;
+}
+.food-online-search-btn:disabled { opacity:.58; transform:none !important; }
+.food-card-actions {
+    display:flex; align-items:center; justify-content:flex-end; gap:10px; flex:0 0 auto;
+}
+.food-delete-btn {
+    width:42px; height:42px; min-width:42px; padding:0; margin:0;
+    border-radius:13px; border:1px solid color-mix(in srgb, var(--danger) 26%, var(--border));
+    background:color-mix(in srgb, var(--danger) 8%, var(--input-bg));
+    color:var(--danger); display:inline-flex; align-items:center; justify-content:center;
+    font-size:15px; box-shadow:none;
+}
+.food-delete-btn:active { transform:scale(.94); }
+@media (max-width:430px) {
+    .food-online-search-btn { min-width:58px; width:58px; padding:0; }
+    .food-online-search-btn span { display:none; }
+}
+</style>
+
+<script id="achilles-v10-3-food-reliability">
+(function(root){
+    'use strict';
+
+    const A = root.Achilles = root.Achilles || {};
+    if (!A.nutritionRepo) return;
+
+    const repo = A.nutritionRepo;
+    const RECENT_KEY = A.storage?.keys?.foodRecent || 'achilles_food_recent_v1';
+    const MIN_ONLINE_INTERVAL = 6500; // OFF search limit is 10 requests/min/IP
+    let lastOnlineRequestAt = 0;
+    let activeController = null;
+    let cardSeq = 0;
+
+    const esc = value => String(value ?? '')
+        .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+        .replaceAll('"','&quot;').replaceAll("'",'&#039;');
+    const strip = value => String(value || '').replace(/^[^\p{L}\p{N}]+/u,'').trim();
+    const qnorm = value => String(value || '').trim().toLocaleLowerCase('uk-UA').replace(/\s+/g,' ');
+
+    repo.isCustom = function(item){
+        const key = this.key(item);
+        return this.custom().some(x => this.key(x) === key);
+    };
+
+    repo.deleteCustom = function(item){
+        const normalized = this.normalize(item);
+        if (!normalized) return false;
+        const key = this.key(normalized);
+        const before = this.custom();
+        const next = before.filter(x => this.key(x) !== key);
+        if (next.length === before.length) return false;
+
+        this.setCustom(next);
+        this.setFavorites(this.favorites().filter(x => this.key(x) !== key));
+        try {
+            const recents = this.recent().filter(x => this.key(x) !== key);
+            A.storage?.setJSON?.(RECENT_KEY, recents);
+        } catch (_) {}
+        A.sync?.push?.('custom-food-delete');
+        return true;
+    };
+
+    function register(item){
+        const normalized = repo.normalize(item);
+        if (!normalized) return null;
+        const key = `food-v103-${Date.now().toString(36)}-${++cardSeq}`;
+        A.foodCardRegistry = A.foodCardRegistry || new Map();
+        A.foodCardRegistry.set(key, normalized);
+        while (A.foodCardRegistry.size > 220) {
+            A.foodCardRegistry.delete(A.foodCardRegistry.keys().next().value);
+        }
+        return key;
+    }
+
+    function fromKey(key){
+        return repo.normalize(A.foodCardRegistry?.get(String(key || '')));
+    }
+
+    root.generateFoodCardHtml = function(item, index){
+        const normalized = repo.normalize(item);
+        if (!normalized) return '';
+        const custom = repo.isCustom(normalized);
+        if (custom) normalized.source = 'custom';
+        const favorite = repo.isFavorite(normalized);
+        const cardKey = register(normalized);
+        if (!cardKey) return '';
+        const inputId = `food-input-${cardKey}`;
+        const online = normalized.source && !['local','built-in','custom'].includes(normalized.source);
+        const sourceLabel = custom ? 'Свій продукт' : (normalized.source === 'cache' ? 'Кеш' : (online ? 'Open Food Facts' : 'Локально'));
+
+        return `
+            <div class="list-item" style="${online ? 'border-left:3px solid var(--primary);' : ''}">
+                <div style="display:flex;justify-content:space-between;width:100%;align-items:flex-start;margin-bottom:12px;gap:12px;">
+                    <div style="min-width:0;">
+                        <strong style="font-size:18px;overflow-wrap:anywhere;">${esc(normalized.name)}</strong><br>
+                        <span style="font-size:13px;opacity:.8;color:var(--text-muted);">${Math.round(normalized.kcal)} ккал | Б:${Number(normalized.p.toFixed(1))} Ж:${Number(normalized.f.toFixed(1))} В:${Number(normalized.c.toFixed(1))} (на 100г)</span><br>
+                        <span class="food-source-badge">${esc(sourceLabel)}</span>
+                    </div>
+                    <div class="food-card-actions">
+                        ${custom ? `<button class="food-delete-btn" type="button" onclick="deleteCustomFoodByKey('${cardKey}')" aria-label="Видалити власний продукт"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                        <i class="fa-${favorite ? 'solid' : 'regular'} fa-heart fav-btn ${favorite ? 'active' : ''}" onclick="toggleFavFoodByKey('${cardKey}', event)"></i>
+                    </div>
+                </div>
+                <div style="display:flex;width:100%;gap:10px;">
+                    <input type="number" inputmode="decimal" min="1" step="1" id="${inputId}" placeholder="Вага (г)" style="margin:0;padding:14px;flex:1;">
+                    <button class="add-btn primary-btn gradient-bg" onclick="addFoodByKey('${cardKey}', '${inputId}')" style="margin:0;padding:0 25px;border-radius:16px;">+</button>
+                </div>
+            </div>`;
+    };
+
+    root.deleteCustomFoodByKey = function(cardKey){
+        const item = fromKey(cardKey);
+        if (!item || !repo.isCustom(item)) {
+            A.toast?.('Це не власний продукт', 'fa-circle-info');
+            return false;
+        }
+        const cleanName = strip(item.name);
+        if (!root.confirm(`Видалити власний продукт «${cleanName}»?`)) return false;
+        const deleted = repo.deleteCustom(item);
+        if (!deleted) return false;
+        A.foodCardRegistry?.delete?.(cardKey);
+        A.haptics?.light?.();
+        A.toast?.(`Видалено: ${cleanName}`, 'fa-trash-can', 1800);
+        refreshCurrentFoodView();
+        return true;
+    };
+
+    function render(items){
+        const box = document.getElementById('food-results');
+        if (!box) return;
+        const list = repo.dedupe(items || []);
+        box.innerHTML = list.map((item,i) => root.generateFoodCardHtml(item, `v103-${i}`)).join('');
+    }
+
+    function renderRecent(){
+        const recent = repo.recent();
+        if (recent.length) {
+            render(recent);
+            root.setFoodApiStatus?.(navigator.onLine ? 'cache' : 'offline', navigator.onLine
+                ? 'Нещодавні продукти · введи назву або натисни «Знайти»'
+                : 'Офлайн · нещодавні продукти доступні');
+        } else {
+            render([]);
+            root.setFoodApiStatus?.(navigator.onLine ? 'ready' : 'offline', navigator.onLine
+                ? 'Локальний пошук одразу · онлайн — кнопкою «Знайти»'
+                : 'Офлайн · локальна база працює');
+        }
+    }
+
+    function refreshCurrentFoodView(){
+        if (root.currentFoodFilter === 'fav') { root.renderFavFoods?.(); return; }
+        const q = qnorm(document.getElementById('food-search')?.value || '');
+        if (q.length < 2) { renderRecent(); return; }
+        const local = repo.localSearch(q);
+        const cached = repo.cached(q, { allowStale:true }).map(x => ({...x, source:'cache'}));
+        render([...local, ...cached]);
+    }
+
+    // Important: local/cache search is live, but network search is explicit.
+    // This avoids Open Food Facts' 10-search-requests/minute rate limit.
+    root.onSearchInput = function(){
+        activeController?.abort();
+        const q = qnorm(document.getElementById('food-search')?.value || '');
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) spinner.style.display = 'none';
+        if (q.length < 2) { renderRecent(); return; }
+
+        const local = repo.localSearch(q);
+        const cached = repo.cached(q, { allowStale:true }).map(x => ({...x, source:'cache'}));
+        render([...local, ...cached]);
+        root.setFoodApiStatus?.(cached.length ? 'cache' : 'ready', cached.length
+            ? 'Є кешований результат · «Знайти» оновить онлайн'
+            : 'Локальні результати готові · натисни «Знайти» для онлайн-бази');
+    };
+
+    function busy(on){
+        const btn = document.getElementById('food-online-search-btn');
+        if (!btn) return;
+        btn.disabled = !!on;
+        btn.innerHTML = on
+            ? '<i class="fa-solid fa-circle-notch fa-spin"></i><span>Пошук</span>'
+            : '<i class="fa-solid fa-cloud-arrow-down"></i><span>Знайти</span>';
+    }
+
+    function errKind(error){
+        const msg = String(error?.message || error || '');
+        if (/429/.test(msg)) return 'rate';
+        if (/503|502|504/.test(msg)) return 'server';
+        if (error?.name === 'AbortError') return 'abort';
+        return 'network';
+    }
+
+    async function callWithTimeout(fn, query, timeoutMs=8000){
+        activeController?.abort();
+        const controller = new AbortController();
+        activeController = controller;
+        const timer = setTimeout(() => controller.abort('timeout'), timeoutMs);
+        try { return await fn(query, controller.signal); }
+        finally { clearTimeout(timer); if (activeController === controller) activeController = null; }
+    }
+
+    async function doOnline(q){
+        const now = Date.now();
+        const wait = MIN_ONLINE_INTERVAL - (now - lastOnlineRequestAt);
+        if (wait > 0) {
+            const sec = Math.max(1, Math.ceil(wait/1000));
+            root.setFoodApiStatus?.('cache', `Захищаю API від ліміту · повтори через ${sec} с`);
+            const cached = repo.cached(q, {allowStale:true});
+            render([...repo.localSearch(q), ...cached.map(x=>({...x,source:'cache'}))]);
+            return [];
+        }
+        lastOnlineRequestAt = now;
+        busy(true);
+        const spinner = document.getElementById('loading-spinner');
+        if (spinner) spinner.style.display = 'block';
+        root.setFoodApiStatus?.('loading', 'Шукаю в Open Food Facts…');
+
+        let raw = [];
+        let source = 'Open Food Facts Search';
+        try {
+            try {
+                raw = await callWithTimeout(root.fetchSearchALicious, q, 7500);
+            } catch (primaryError) {
+                const kind = errKind(primaryError);
+                if (kind === 'abort') throw primaryError;
+                if (kind === 'rate') throw primaryError;
+                source = 'Open Food Facts fallback';
+                raw = await callWithTimeout(root.fetchLegacyOFF, q, 9000);
+            }
+
+            const online = repo.dedupe((raw || [])
+                .map((x,i) => root.normalizeOnlineFood?.(x,i,source))
+                .filter(Boolean)
+                .map(x => repo.normalize(x,{source})))
+                .slice(0,12);
+
+            if (online.length) repo.cache(q, online);
+            const combined = repo.dedupe([...repo.localSearch(q), ...online]);
+            render(combined);
+            root.setFoodApiStatus?.(online.length ? 'online' : 'empty', online.length
+                ? `Open Food Facts · ${online.length} результатів`
+                : (combined.length ? 'Онлайн-збігів немає · показано локальні' : 'Збігів не знайдено'));
+            return online;
+        } catch(error) {
+            if (errKind(error) === 'abort') return [];
+            console.warn('[Achilles V10.3] OFF search failed', error);
+            const cached = repo.cached(q,{allowStale:true});
+            render([...repo.localSearch(q), ...cached.map(x=>({...x,source:'cache'}))]);
+            const kind = errKind(error);
+            root.setFoodApiStatus?.(cached.length ? 'cache' : 'error', cached.length
+                ? 'Open Food Facts не відповідає · показано кеш'
+                : kind === 'rate'
+                    ? 'Ліміт Open Food Facts · зачекай кілька секунд і повтори'
+                    : kind === 'server'
+                        ? 'Open Food Facts перевантажений · локальна база працює'
+                        : 'Немає відповіді від Open Food Facts · локальна база працює');
+            return [];
+        } finally {
+            if (spinner) spinner.style.display = 'none';
+            busy(false);
+        }
+    }
+
+    root.runOnlineFoodSearch = function(){
+        const q = qnorm(document.getElementById('food-search')?.value || '');
+        if (q.length < 2) {
+            A.toast?.('Введи хоча б 2 символи', 'fa-magnifying-glass');
+            return Promise.resolve([]);
+        }
+        return doOnline(q);
+    };
+
+    // Keep compatibility with old code, but do not silently trigger it from typing.
+    root.searchOnlineFood = q => doOnline(qnorm(q));
+    root.searchOpenFoodFacts = root.searchOnlineFood;
+
+    // Re-render favorites with delete controls for custom products.
+    root.renderFavFoods = function(){
+        const box = document.getElementById('food-results');
+        if (!box) return;
+        const favorites = repo.favorites();
+        box.innerHTML = favorites.length
+            ? favorites.map((item,i) => root.generateFoodCardHtml(item,`fav-v103-${i}`)).join('')
+            : '<div class="list-item" style="color:var(--text-muted);text-align:center;padding:20px;border:none;">Улюблених продуктів поки немає</div>';
+    };
+
+    // Refresh stale status left from a previous failed API call.
+    function resetStatus(){
+        if (root.currentFoodFilter !== 'fav' && !(document.getElementById('food-search')?.value || '').trim()) renderRecent();
+    }
+    root.addEventListener('online', resetStatus);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', resetStatus, {once:true});
+    else setTimeout(resetStatus, 0);
+})(window);
 </script>
 
 <script id="achilles-v10-pwa">
