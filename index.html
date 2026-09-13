@@ -6535,12 +6535,38 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
         }
     }
 
+    // V10.2: food cards no longer pass the whole product JSON through inline onclick.
+    // Some legacy/custom product names can contain characters that are awkward inside
+    // HTML/JS attributes. Keep the normalized object in memory and pass only a safe key.
+    A.foodCardRegistry = A.foodCardRegistry || new Map();
+    let foodCardSequence = 0;
+
+    function registerFoodCard(item, index) {
+        const normalized = normalizeFood(item);
+        if (!normalized) return null;
+        const suffix = String(index ?? 'item').replace(/[^a-zA-Z0-9_-]/g, '-');
+        const key = `food-${++foodCardSequence}-${suffix}`;
+        A.foodCardRegistry.set(key, normalized);
+        // Prevent unbounded growth after many searches in one session.
+        while (A.foodCardRegistry.size > 180) {
+            const first = A.foodCardRegistry.keys().next().value;
+            A.foodCardRegistry.delete(first);
+        }
+        return key;
+    }
+
+    function foodFromCardKey(key) {
+        const item = A.foodCardRegistry.get(String(key || ''));
+        return item ? normalizeFood(item) : null;
+    }
+
     root.generateFoodCardHtml = function (item, index) {
         const normalized = normalizeFood(item);
         if (!normalized) return '';
         const isFav = A.nutritionRepo.isFavorite(normalized);
-        const uniqueId = `food-input-${String(index).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
-        const payload = payloadFor(normalized);
+        const cardKey = registerFoodCard(normalized, index);
+        if (!cardKey) return '';
+        const uniqueId = `food-input-${cardKey}`;
         const online = normalized.source && !['local', 'built-in', 'custom'].includes(normalized.source);
         const sourceLabel = normalized.source === 'cache' ? 'Кеш' : (online ? 'Open Food Facts' : (normalized.source === 'custom' ? 'Свій продукт' : 'Локально'));
         return `
@@ -6551,13 +6577,29 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
                         <span style="font-size:13px;opacity:.8;color:var(--text-muted);">${Math.round(normalized.kcal)} ккал | Б:${Number(normalized.p.toFixed(1))} Ж:${Number(normalized.f.toFixed(1))} В:${Number(normalized.c.toFixed(1))} (на 100г)</span><br>
                         <span class="food-source-badge">${escapeHtml(sourceLabel)}</span>
                     </div>
-                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavFood('${payload}', event)"></i>
+                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavFoodByKey('${cardKey}', event)"></i>
                 </div>
                 <div style="display:flex;width:100%;gap:10px;">
-                    <input type="number" inputmode="decimal" id="${uniqueId}" placeholder="Вага (г)" style="margin:0;padding:14px;flex:1;">
-                    <button class="add-btn primary-btn gradient-bg" onclick="addFood('${payload}', '${uniqueId}')" style="margin:0;padding:0 25px;border-radius:16px;">+</button>
+                    <input type="number" inputmode="decimal" min="1" step="1" id="${uniqueId}" placeholder="Вага (г)" style="margin:0;padding:14px;flex:1;">
+                    <button class="add-btn primary-btn gradient-bg" onclick="addFoodByKey('${cardKey}', '${uniqueId}')" style="margin:0;padding:0 25px;border-radius:16px;">+</button>
                 </div>
             </div>`;
+    };
+
+    root.toggleFavFoodByKey = function (cardKey, event) {
+        const item = foodFromCardKey(cardKey);
+        if (!item) {
+            console.warn('[Achilles.food] product card expired', cardKey);
+            A.toast?.('Онови список продуктів і спробуй ще раз', 'fa-arrows-rotate');
+            return;
+        }
+        const active = A.nutritionRepo.toggleFavorite(item);
+        if (event?.target) {
+            event.target.classList.toggle('fa-solid', active);
+            event.target.classList.toggle('fa-regular', !active);
+            event.target.classList.toggle('active', active);
+        }
+        if (root.currentFoodFilter === 'fav') root.renderFavFoods();
     };
 
     root.toggleFavFood = function (payload, event) {
@@ -6595,51 +6637,88 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
         root.setFoodFilter?.('fav');
     };
 
+    function addFoodItem(item, weightId) {
+        const normalized = normalizeFood(item);
+        if (!normalized) {
+            A.toast?.('Не вдалося прочитати продукт', 'fa-triangle-exclamation');
+            return false;
+        }
+
+        try {
+            const input = document.getElementById(weightId);
+            let weight = Number(String(input?.value ?? '').replace(',', '.'));
+            if (!Number.isFinite(weight) || weight <= 0) weight = 100;
+
+            const ratio = weight / 100;
+            const actualKcal = Math.round(normalized.kcal * ratio);
+            const actualP = Math.round(normalized.p * ratio * 10) / 10;
+            const actualF = Math.round(normalized.f * ratio * 10) / 10;
+            const actualC = Math.round(normalized.c * ratio * 10) / 10;
+
+            root.consumedCalories = Number(root.consumedCalories || 0) + actualKcal;
+            root.macros = root.macros || { p: 0, f: 0, c: 0 };
+            root.macros.p = Number(root.macros.p || 0) + actualP;
+            root.macros.f = Number(root.macros.f || 0) + actualF;
+            root.macros.c = Number(root.macros.c || 0) + actualC;
+
+            const safeName = escapeHtml(normalized.name);
+            const now = Date.now();
+            const entry = {
+                id: now,
+                createdAt: now,
+                type: 'food',
+                foodId: normalized.id || foodKey(normalized),
+                foodSource: normalized.source || 'local',
+                barcode: normalized.barcode || '',
+                weightG: weight,
+                kcal: actualKcal, p: actualP, f: actualF, c: actualC,
+                html: `🥗 <strong style="color:var(--text-main);">${safeName} (${weight}г)</strong><br><span style="font-size:14px;opacity:.8;" class="gradient-text">${actualKcal} ккал</span> <span style="font-size:12px;opacity:.6;color:var(--text-main);">| Б:${actualP} Ж:${actualF} В:${actualC}</span>`
+            };
+
+            root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+            root.dailyLog.push(entry);
+
+            // Save the meal first. Secondary conveniences such as recent-food history
+            // must never be able to cancel the actual add operation.
+            root.saveDailyData?.();
+            try { A.nutritionRepo.touchRecent(normalized); }
+            catch (recentError) { console.warn('[Achilles.food] recent history failed', recentError); }
+
+            root.updateGoalDisplay?.();
+            root.renderDiary?.();
+
+            if (input) input.value = '';
+            A.haptics?.success?.();
+            A.toast?.(`Додано: ${stripDecorations(normalized.name)} · ${weight} г`, 'fa-check', 1800);
+
+            const search = document.getElementById('food-search');
+            const results = document.getElementById('food-results');
+            if (search) search.value = '';
+            if (results) results.innerHTML = '';
+            if (root.currentFoodFilter === 'fav') root.renderFavFoods();
+            document.querySelector('.nav-item[data-target="tab-dashboard"]')?.click();
+            return true;
+        } catch (error) {
+            console.error('[Achilles.food] add failed', error, normalized);
+            A.toast?.('Не вдалося додати продукт. Спробуй ще раз.', 'fa-triangle-exclamation', 3000);
+            return false;
+        }
+    }
+
+    root.addFoodByKey = function (cardKey, weightId) {
+        const item = foodFromCardKey(cardKey);
+        if (!item) {
+            console.warn('[Achilles.food] product card expired', cardKey);
+            A.toast?.('Онови список продуктів і спробуй ще раз', 'fa-arrows-rotate');
+            return false;
+        }
+        return addFoodItem(item, weightId);
+    };
+
+    // Compatibility path for any older cards still present during a hot update.
     root.addFood = function (payload, weightId) {
         const item = decodePayload(payload);
-        if (!item) return;
-        const input = document.getElementById(weightId);
-        let weight = Number(input?.value);
-        if (!Number.isFinite(weight) || weight <= 0) weight = 100;
-
-        const ratio = weight / 100;
-        const actualKcal = Math.round(item.kcal * ratio);
-        const actualP = Math.round(item.p * ratio * 10) / 10;
-        const actualF = Math.round(item.f * ratio * 10) / 10;
-        const actualC = Math.round(item.c * ratio * 10) / 10;
-
-        root.consumedCalories = Number(root.consumedCalories || 0) + actualKcal;
-        root.macros = root.macros || { p: 0, f: 0, c: 0 };
-        root.macros.p = Number(root.macros.p || 0) + actualP;
-        root.macros.f = Number(root.macros.f || 0) + actualF;
-        root.macros.c = Number(root.macros.c || 0) + actualC;
-
-        const safeName = escapeHtml(item.name);
-        const entry = {
-            id: Date.now(),
-            createdAt: Date.now(),
-            type: 'food',
-            foodId: item.id || foodKey(item),
-            foodSource: item.source || 'local',
-            barcode: item.barcode || '',
-            weightG: weight,
-            kcal: actualKcal, p: actualP, f: actualF, c: actualC,
-            html: `🥗 <strong style="color:var(--text-main);">${safeName} (${weight}г)</strong><br><span style="font-size:14px;opacity:.8;" class="gradient-text">${actualKcal} ккал</span> <span style="font-size:12px;opacity:.6;color:var(--text-main);">| Б:${actualP} Ж:${actualF} В:${actualC}</span>`
-        };
-
-        root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
-        root.dailyLog.push(entry);
-        A.nutritionRepo.touchRecent(item);
-        root.saveDailyData?.();
-        root.updateGoalDisplay?.();
-        root.renderDiary?.();
-
-        const search = document.getElementById('food-search');
-        const results = document.getElementById('food-results');
-        if (search) search.value = '';
-        if (results) results.innerHTML = '';
-        if (root.currentFoodFilter === 'fav') root.renderFavFoods();
-        document.querySelector('.nav-item[data-target="tab-dashboard"]')?.click();
+        return addFoodItem(item, weightId);
     };
 
     let foodSearchTimer = 0;
@@ -7602,7 +7681,7 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
             const old=A.dashboard.refresh.bind(A.dashboard);
             A.dashboard.refresh=function(opts={}){ const r=old(opts); requestAnimationFrame(()=>{renderAnalyticsV2();renderCoachV2();}); return r; };
         }
-        console.info('[Achilles OS] V10.1 iOS standalone viewport fix ready');
+        console.info('[Achilles OS] V10.2 iOS standalone viewport fix ready');
     }
 
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bootstrapV10,{once:true});
@@ -7612,7 +7691,7 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
 
 <style id="achilles-v10-1-ios-standalone-fix">
 /* =========================================================
-   V10.1 — iOS Home Screen bottom-strip mitigation
+   V10.2 — iOS Home Screen bottom-strip mitigation
    WebKit standalone can report a viewport shorter than the physical display.
    Keep the root canvas and tab bar on the same solid tone so any OS-owned
    bottom region visually merges with Achilles instead of becoming a stripe.
