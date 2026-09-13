@@ -8803,5 +8803,109 @@ html.ios-standalone #main-app-window .nav-bar {
 })(window);
 </script>
 
+
+<script id="achilles-v106-diary-delete-fix">
+(() => {
+  'use strict';
+  const root = window;
+  const A = root.Achilles = root.Achilles || {};
+
+  const escapeAttr = (value) => String(value ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#39;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;');
+
+  root.renderDiary = function() {
+    const foodList = document.getElementById('food-list');
+    const workoutList = document.getElementById('workout-list');
+    if (!foodList || !workoutList) return;
+
+    root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    const foods = root.dailyLog.filter(e => e?.type === 'food');
+    const workouts = root.dailyLog.filter(e => e?.type === 'workout');
+
+    const row = (entry) => {
+      const id = escapeAttr(entry?.id ?? '');
+      return `
+        <div style="padding:15px 20px;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;">
+          <div style="flex-grow:1;padding-right:10px;min-width:0;">${entry?.html || ''}</div>
+          <button type="button" class="delete-btn diary-delete-v106" data-entry-id="${id}" aria-label="Видалити запис" style="border:0;background:transparent;padding:12px;cursor:pointer;">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>`;
+    };
+
+    foodList.innerHTML = foods.length
+      ? foods.map(row).join('')
+      : '<div style="padding:15px;text-align:center;opacity:.6;">Поки що нічого. Час підкріпитися!</div>';
+
+    workoutList.innerHTML = workouts.length
+      ? workouts.map(row).join('')
+      : '<div style="padding:15px;text-align:center;opacity:.6;">Сьогодні без тренувань.</div>';
+  };
+
+  root.deleteLogEntry = function(id) {
+    root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];
+    const wanted = String(id ?? '');
+    const index = root.dailyLog.findIndex(e => String(e?.id ?? '') === wanted);
+
+    if (index === -1) {
+      A.toast?.('Запис не знайдено','fa-circle-info',1800);
+      return false;
+    }
+
+    const entry = root.dailyLog[index];
+    if (!root.confirm('Видалити цей запис?')) return false;
+
+    if (entry?.type === 'food') {
+      root.consumedCalories = Math.max(0, Number(root.consumedCalories || 0) - Number(entry.kcal || 0));
+      root.macros = root.macros || {p:0,f:0,c:0};
+      root.macros.p = Math.max(0, Number(root.macros.p || 0) - Number(entry.p || 0));
+      root.macros.f = Math.max(0, Number(root.macros.f || 0) - Number(entry.f || 0));
+      root.macros.c = Math.max(0, Number(root.macros.c || 0) - Number(entry.c || 0));
+    } else if (entry?.type === 'workout') {
+      root.workoutBonus = Math.max(0, Number(root.workoutBonus || 0) - Number(entry.burned || 0));
+    }
+
+    root.dailyLog.splice(index, 1);
+
+    try {
+      if (A.daily?.save) A.daily.save({sync:true,touch:true});
+      else root.saveDailyData?.();
+    } catch (error) {
+      console.error('[Achilles V10.6] delete save error', error);
+      try { root.saveDailyData?.(); } catch (_) {}
+    }
+
+    try { root.updateGoalDisplay?.(); } catch (_) {}
+    try { root.renderDiary?.(); } catch (_) {}
+    try { root.renderProgressInsights?.(); } catch (_) {}
+    try { A.sync?.push?.('diary-delete-v106'); } catch (_) {}
+    try { root.syncToCloud?.(); } catch (_) {}
+
+    A.haptics?.light?.();
+    A.toast?.('Запис видалено','fa-trash-can',1600);
+    return true;
+  };
+
+  document.addEventListener('click', (event) => {
+    const btn = event.target.closest?.('.diary-delete-v106');
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    root.deleteLogEntry(btn.dataset.entryId || '');
+  }, true);
+
+  const boot = () => {
+    try { root.renderDiary?.(); } catch (_) {}
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, {once:true});
+  else setTimeout(boot, 0);
+})();
+</script>
+
 </body>
 </html>
