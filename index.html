@@ -13,7 +13,7 @@
     <link rel="apple-touch-icon" href="IMG_9302.png">
     <link rel="manifest" href="manifest.webmanifest">
     <title>Achilles OS</title>
-    <meta name="achilles-build" content="10.11">
+    <meta name="achilles-build" content="10.12">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -1005,17 +1005,37 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
 </head>
 <body> 
 
-    <!-- СПРАВЖНІЙ 120FPS SPLASH SCREEN -->
+    <!-- ACHILLES V10.12 · CINEMATIC SPLASH -->
     <div id="splash-screen" aria-hidden="true">
-        <div class="splash-ambient-mark"></div>
-        <div class="splash-brand">
-            <div class="splash-logo"></div>
-            <div class="splash-wordmark">
-                <span class="splash-wordmark-top">ACHILLES</span>
-                <span class="splash-wordmark-bottom">OS</span>
+        <div class="v1012-splash-vignette"></div>
+        <div class="v1012-splash-stage">
+            <svg class="v1012-lightning" viewBox="0 0 1000 1000" aria-hidden="true" focusable="false">
+                <defs>
+                    <filter id="v1012-gold-glow" x="-80%" y="-80%" width="260%" height="260%">
+                        <feGaussianBlur stdDeviation="15" result="b"/>
+                        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <filter id="v1012-red-glow" x="-80%" y="-80%" width="260%" height="260%">
+                        <feGaussianBlur stdDeviation="17" result="b"/>
+                        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+                <path class="v1012-bolt v1012-bolt-gold v1012-bolt-glow" d="M70 82 L202 227 L178 266 L330 383 L300 423 L500 500 L616 650 L655 622 L748 760 L918 925"/>
+                <path class="v1012-bolt v1012-bolt-gold" d="M70 82 L202 227 L178 266 L330 383 L300 423 L500 500 L616 650 L655 622 L748 760 L918 925"/>
+                <path class="v1012-bolt v1012-bolt-red v1012-bolt-glow" d="M930 88 L808 218 L834 260 L681 380 L712 420 L500 500 L390 642 L348 617 L246 760 L76 924"/>
+                <path class="v1012-bolt v1012-bolt-red" d="M930 88 L808 218 L834 260 L681 380 L712 420 L500 500 L390 642 L348 617 L246 760 L76 924"/>
+            </svg>
+            <div class="v1012-impact-flash"></div>
+            <div class="v1012-impact-ring"></div>
+            <div id="v1012-splash-logo-flight" class="v1012-splash-logo-flight">
+                <div class="v1012-logo-visual"></div>
             </div>
         </div>
     </div>
+
+    <button id="floating-achilles-logo" class="v1012-floating-logo" type="button" aria-label="Відкрити налаштування профілю">
+        <span class="v1012-floating-logo-image" aria-hidden="true"></span>
+    </button>
 
     <!-- LIVE WORKOUT OVERLAY -->
     <div id="live-overlay" class="live-overlay">
@@ -2006,13 +2026,8 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
 
         document.addEventListener("DOMContentLoaded", () => {
             window.applyTheme(); 
-            const splash = document.getElementById('splash-screen');            
-            setTimeout(() => {
-                if(splash) {
-                    splash.classList.add('hidden');
-                    setTimeout(() => splash.style.display = 'none', 500);
-                }
-            }, 800);
+            const splash = document.getElementById('splash-screen');
+            // V10.12 cinematic boot owns splash timing. Legacy 800ms auto-hide intentionally removed.
             const userName = localStorage.getItem('achilles_user');
             if (userName) {
                 window.loadUserData();
@@ -2708,7 +2723,7 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
             }, true);
         }
 
-        window.ACHILLES_BUILD = '10.10';
+        window.ACHILLES_BUILD = '10.12';
 
         window.openProfileTab = function() {
             if(!localStorage.getItem('achilles_user')) return;
@@ -4225,62 +4240,165 @@ button,
 
 <script id="achilles-premium-boot">
 (function () {
+    'use strict';
+
     const body = document.body;
     if (body) body.classList.add('app-booting');
 
-    function finishBoot() {
+    const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+    const raf = () => new Promise(resolve => requestAnimationFrame(resolve));
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+
+    function isSignedIn() {
+        return Boolean(localStorage.getItem('achilles_user'));
+    }
+
+    function syncLogoVisibility() {
+        const floating = document.getElementById('floating-achilles-logo');
+        if (!floating) return;
+        floating.classList.toggle('is-available', isSignedIn());
+    }
+
+    function syncLogoMode() {
+        const floating = document.getElementById('floating-achilles-logo');
+        if (!floating) return;
+        const profileActive = document.getElementById('tab-profile')?.classList.contains('active');
+        body?.classList.toggle('achilles-logo-profile-mode', Boolean(profileActive));
+        floating.setAttribute('aria-expanded', profileActive ? 'true' : 'false');
+    }
+
+    function openProfileFromLogo(event) {
+        event?.preventDefault?.();
+        event?.stopPropagation?.();
+        if (!isSignedIn()) return;
+
+        body?.classList.add('achilles-logo-profile-mode');
+        try { window.Achilles?.haptics?.light?.(); } catch (_) {}
+
+        // Give the GPU transform a frame head-start, then switch to the profile workspace.
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                if (window.Achilles?.router?.go) {
+                    window.Achilles.router.go('tab-profile', {
+                        source: document.querySelector('.nav-item[data-target="tab-profile"]')
+                    });
+                } else if (typeof window.openProfileTab === 'function') {
+                    window.openProfileTab();
+                } else {
+                    document.querySelector('.nav-item[data-target="tab-profile"]')?.click();
+                }
+                try { window.loadUserData?.(); } catch (_) {}
+                const scroller = document.querySelector('#main-app-window .main-content');
+                if (scroller) scroller.scrollTo({ top: 0, behavior: 'smooth' });
+                syncLogoMode();
+            });
+        });
+    }
+
+    async function runSplash() {
         const splash = document.getElementById('splash-screen');
-        if (body) {
-            body.classList.add('app-ready');
+        const flight = document.getElementById('v1012-splash-logo-flight');
+        const floating = document.getElementById('floating-achilles-logo');
+        if (!splash || !flight || !floating) {
+            body?.classList.add('app-ready', 'boot-finished');
+            syncLogoVisibility();
+            return;
         }
-        setTimeout(() => {
-            if (body) {
-                body.classList.remove('app-booting');
-                body.classList.add('boot-finished');
-            }
-            if (splash) splash.style.display = 'none';
-        }, 560);
+
+        splash.style.display = 'grid';
+        splash.classList.remove('hidden', 'v1012-finished');
+        await raf();
+        splash.classList.add('v1012-running');
+
+        if (reduceMotion) {
+            await wait(80);
+            syncLogoVisibility();
+            floating.classList.add('is-ready');
+            splash.classList.add('v1012-finished');
+            body?.classList.add('app-ready', 'boot-finished');
+            body?.classList.remove('app-booting');
+            setTimeout(() => { splash.style.display = 'none'; }, 120);
+            return;
+        }
+
+        // Lightning strike -> impact -> Achilles reveal.
+        await wait(430);
+        splash.classList.add('v1012-impact');
+        await wait(350);
+        splash.classList.add('v1012-logo-visible');
+        await wait(330);
+        splash.classList.add('v1012-bolts-out');
+        await wait(150);
+
+        // Mount the permanent logo invisibly so its safe-area-aware target rect is measurable.
+        syncLogoVisibility();
+        floating.classList.add('is-ready');
+        floating.style.opacity = '0';
+        floating.style.pointerEvents = 'none';
+        await raf();
+
+        const from = flight.getBoundingClientRect();
+        const to = floating.getBoundingClientRect();
+        const fromCx = from.left + from.width / 2;
+        const fromCy = from.top + from.height / 2;
+        const toCx = to.left + to.width / 2;
+        const toCy = to.top + to.height / 2;
+        const dx = toCx - fromCx;
+        const dy = toCy - fromCy;
+        const scale = Math.max(0.1, to.width / Math.max(1, from.width));
+
+        const fly = flight.animate([
+            { transform: 'translate3d(0,0,0) scale(1)', filter: 'brightness(1.05)' },
+            { transform: `translate3d(${dx * 0.64}px,${dy * 0.64}px,0) scale(${0.72 + scale * 0.28})`, offset: 0.66, filter: 'brightness(1.12)' },
+            { transform: `translate3d(${dx}px,${dy}px,0) scale(${scale})`, filter: 'brightness(1)' }
+        ], {
+            duration: 690,
+            easing: 'cubic-bezier(.18,.86,.22,1)',
+            fill: 'forwards'
+        });
+
+        body?.classList.add('app-ready');
+        try { await fly.finished; } catch (_) {}
+
+        floating.style.opacity = '';
+        floating.style.pointerEvents = '';
+        flight.style.opacity = '0';
+        splash.classList.add('v1012-finished');
+        body?.classList.remove('app-booting');
+        body?.classList.add('boot-finished');
+        syncLogoMode();
+        setTimeout(() => { splash.style.display = 'none'; }, 360);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const splash = document.getElementById('splash-screen');
-        if (!splash) {
-            finishBoot();
-            return;
-        }
-        splash.style.display = 'flex';
-        splash.classList.remove('hidden');
-        setTimeout(() => {
-            if (body) body.classList.add('app-ready');
-        }, 720);
-        setTimeout(() => {
-            splash.classList.add('hidden');
-            finishBoot();
-        }, 980);
+        const floating = document.getElementById('floating-achilles-logo');
+        floating?.addEventListener('click', openProfileFromLogo, { passive: false });
 
-        splash.addEventListener('transitionend', (e) => {
-            if (e.propertyName === 'opacity' && splash.classList.contains('hidden')) {
-                splash.style.display = 'none';
-            }
-        }, { passive: true });
-    }, { once: true });
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            new MutationObserver(syncLogoMode).observe(tab, { attributes: true, attributeFilter: ['class'] });
+        });
 
-    const originalShowScreen = window.showScreen;
-    if (typeof originalShowScreen === 'function') {
-        window.showScreen = function(screenId) {
-            originalShowScreen(screenId);
-            const screen = document.getElementById(screenId);
-            const pane = screen ? screen.querySelector('.app-window') : null;
-            if (pane) {
-                pane.style.opacity = '0.001';
-                pane.style.transform = 'translateY(10px) scale(0.995)';
+        // Keep visibility correct after login/logout or screen switches.
+        const originalShowScreen = window.showScreen;
+        if (typeof originalShowScreen === 'function' && !originalShowScreen.__v1012Wrapped) {
+            const wrapped = function(screenId) {
+                const result = originalShowScreen.apply(this, arguments);
                 requestAnimationFrame(() => {
-                    pane.style.opacity = '1';
-                    pane.style.transform = 'translateY(0) scale(1)';
+                    syncLogoVisibility();
+                    syncLogoMode();
                 });
-            }
-        };
-    }
+                return result;
+            };
+            wrapped.__v1012Wrapped = true;
+            window.showScreen = wrapped;
+        }
+
+        window.addEventListener('resize', syncLogoMode, { passive: true });
+        window.addEventListener('orientationchange', syncLogoMode, { passive: true });
+        syncLogoVisibility();
+        syncLogoMode();
+        runSplash();
+    }, { once: true });
 })();
 </script>
 
@@ -7873,7 +7991,7 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
 
     function addBuildBadge() {
         const hero=document.querySelector('#tab-profile .profile-hero-copy');
-        if(hero && !hero.querySelector('.v10-build-badge')) hero.insertAdjacentHTML('beforeend','<span class="v10-build-badge"><i class="fa-solid fa-code-branch"></i> Achilles OS 10.4 · local-first</span>');
+        if(hero && !hero.querySelector('.v10-build-badge')) hero.insertAdjacentHTML('beforeend','<span class="v10-build-badge"><i class="fa-solid fa-code-branch"></i> Achilles OS 10.12 · local-first</span>');
     }
 
     function installPolish() {
@@ -9224,8 +9342,8 @@ html.ios-standalone #main-app-window .nav-bar {
     root.addEventListener('online',()=>setTimeout(()=>setStatus(`${meta.searchRecords || 5000} локальних позицій · інтернет для пошуку не потрібен`),20));
     root.addEventListener('offline',()=>setTimeout(()=>setStatus(`${meta.searchRecords || 5000} локальних позицій · офлайн режим активний`),20));
 
-    root.ACHILLES_BUILD='10.11';
-    console.info('[Achilles OS] V10.11 Food Core active', meta);
+    root.ACHILLES_BUILD='10.12';
+    console.info('[Achilles OS] V10.12 UI + Food Core active', meta);
 })(window);
 </script>
 
@@ -9272,5 +9390,247 @@ html.ios-standalone #main-app-window .nav-bar {
 .food-core-empty strong{font-size:17px;}
 .food-core-empty span{font-size:13px;color:var(--text-muted);}
 </style>
+
+<style id="achilles-v1012-logo-system">
+:root {
+    --achilles-logo-size: clamp(58px, 14vw, 66px);
+    --achilles-logo-edge: max(16px, calc(env(safe-area-inset-right, 0px) + 12px));
+    --achilles-logo-top: max(12px, calc(env(safe-area-inset-top, 0px) + 8px));
+}
+
+/* Source PNG has transparent breathing room; 128% crops that margin without deforming the emblem. */
+.splash-logo,
+.profile-avatar-large,
+.main-avatar {
+    background-size: 128% 128% !important;
+    background-position: 50% 50% !important;
+    background-repeat: no-repeat !important;
+}
+
+#splash-screen {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 100000 !important;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background:
+        radial-gradient(circle at 50% 48%, rgba(255, 190, 64, .08), transparent 22%),
+        radial-gradient(circle at 50% 52%, rgba(198, 22, 28, .055), transparent 38%),
+        #050506 !important;
+    transition: opacity 320ms cubic-bezier(.2,.8,.2,1) !important;
+    contain: layout paint style;
+}
+#splash-screen.v1012-finished { opacity: 0 !important; }
+#splash-screen::before,
+#splash-screen::after,
+.splash-ambient-mark,
+.splash-brand { display: none !important; }
+
+.v1012-splash-vignette {
+    position: absolute;
+    inset: -12%;
+    background:
+        radial-gradient(circle at 50% 50%, transparent 0 18%, rgba(0,0,0,.18) 45%, rgba(0,0,0,.78) 100%),
+        linear-gradient(135deg, rgba(255,187,55,.025), transparent 42%, rgba(192,16,28,.025));
+    transform: translateZ(0);
+}
+
+.v1012-splash-stage {
+    position: relative;
+    width: min(94vw, 760px);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.v1012-lightning {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    transform: translateZ(0);
+}
+
+.v1012-bolt {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1500;
+    stroke-dashoffset: 1500;
+    opacity: 0;
+    vector-effect: non-scaling-stroke;
+    will-change: stroke-dashoffset, opacity;
+}
+.v1012-bolt-gold { stroke: #ffd774; stroke-width: 4.3; filter: url(#v1012-gold-glow); }
+.v1012-bolt-red { stroke: #ff3038; stroke-width: 4.3; filter: url(#v1012-red-glow); }
+.v1012-bolt-glow { stroke-width: 15; opacity: 0; }
+
+#splash-screen.v1012-running .v1012-bolt-gold {
+    animation: v1012BoltStrike 360ms cubic-bezier(.1,.74,.24,1) 40ms forwards;
+}
+#splash-screen.v1012-running .v1012-bolt-red {
+    animation: v1012BoltStrike 360ms cubic-bezier(.1,.74,.24,1) 90ms forwards;
+}
+#splash-screen.v1012-running .v1012-bolt-glow { opacity: .34; }
+#splash-screen.v1012-bolts-out .v1012-bolt {
+    animation: v1012BoltFade 220ms ease-out forwards !important;
+}
+
+.v1012-impact-flash,
+.v1012-impact-ring {
+    position: absolute;
+    left: 50%; top: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate3d(-50%,-50%,0) scale(.2);
+    will-change: transform, opacity;
+}
+.v1012-impact-flash {
+    width: 150px; height: 150px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,.95) 0 3%, rgba(255,216,119,.86) 9%, rgba(255,57,64,.34) 28%, transparent 70%);
+    mix-blend-mode: screen;
+}
+.v1012-impact-ring {
+    width: 110px; height: 110px; border-radius: 50%;
+    border: 2px solid rgba(255,218,124,.8);
+    box-shadow: 0 0 30px rgba(255,203,85,.42), inset 0 0 24px rgba(255,45,51,.18);
+}
+#splash-screen.v1012-impact .v1012-impact-flash { animation: v1012ImpactFlash 420ms ease-out both; }
+#splash-screen.v1012-impact .v1012-impact-ring { animation: v1012ImpactRing 520ms cubic-bezier(.16,.84,.27,1) both; }
+
+.v1012-splash-logo-flight {
+    position: relative;
+    width: clamp(126px, 31vw, 166px);
+    aspect-ratio: 1;
+    opacity: 0;
+    z-index: 5;
+    transform: translate3d(0,0,0) scale(.72);
+    will-change: transform, opacity, filter;
+}
+.v1012-logo-visual,
+.v1012-floating-logo-image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border-radius: 27%;
+    background-image: url('IMG_9302.png?v=10.12');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 128% 128%;
+    transform: translateZ(0);
+}
+.v1012-logo-visual {
+    filter: drop-shadow(0 18px 44px rgba(0,0,0,.55)) drop-shadow(0 0 24px rgba(255,184,55,.22));
+}
+#splash-screen.v1012-logo-visible .v1012-splash-logo-flight {
+    animation: v1012LogoReveal 540ms cubic-bezier(.18,.92,.22,1.18) both;
+}
+
+.v1012-floating-logo {
+    position: fixed;
+    z-index: 99990;
+    top: var(--achilles-logo-top);
+    right: var(--achilles-logo-edge);
+    width: var(--achilles-logo-size);
+    height: var(--achilles-logo-size);
+    border: 0;
+    padding: 0;
+    margin: 0;
+    border-radius: 25%;
+    background: transparent;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0,0,0) scale(.96);
+    transform-origin: center;
+    transition:
+        transform 620ms cubic-bezier(.18,.86,.22,1),
+        opacity 260ms ease,
+        filter 260ms ease;
+    will-change: transform, opacity;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    isolation: isolate;
+    contain: layout paint style;
+}
+.v1012-floating-logo::before {
+    content: '';
+    position: absolute;
+    inset: 5%;
+    border-radius: 28%;
+    z-index: -1;
+    opacity: .52;
+    background: radial-gradient(circle, rgba(var(--primary-rgb),.22), transparent 68%);
+    filter: blur(10px);
+}
+.v1012-floating-logo-image {
+    filter: drop-shadow(0 8px 18px rgba(0,0,0,.38));
+    transition: filter 260ms ease, transform 260ms ease;
+}
+.v1012-floating-logo.is-available.is-ready {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(0,0,0) scale(1);
+}
+.v1012-floating-logo:active .v1012-floating-logo-image { transform: translateZ(0) scale(.94); }
+
+/* High-refresh-friendly profile motion: only transform changes, not top/left/right. */
+body.achilles-logo-profile-mode .v1012-floating-logo.is-available.is-ready {
+    transform: translate3d(calc(-50vw + var(--achilles-logo-edge) + (var(--achilles-logo-size) / 2)), 0, 0) scale(1.12);
+}
+body.achilles-logo-profile-mode .v1012-floating-logo-image {
+    filter: drop-shadow(0 12px 28px rgba(0,0,0,.45)) drop-shadow(0 0 18px rgba(var(--primary-rgb),.22));
+}
+
+/* Avoid a duplicate Achilles icon when the persistent logo is centered over Profile. */
+body.achilles-logo-profile-mode #tab-profile .profile-avatar-large { display: none !important; }
+body.achilles-logo-profile-mode #tab-profile.active { padding-top: calc(var(--achilles-logo-size) + 22px) !important; }
+body.achilles-logo-profile-mode #tab-profile .profile-hero { justify-content: center !important; text-align: center; }
+body.achilles-logo-profile-mode #tab-profile .profile-hero-copy { margin-inline: auto; }
+
+@keyframes v1012BoltStrike {
+    0% { stroke-dashoffset: 1500; opacity: 0; }
+    18% { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+}
+@keyframes v1012BoltFade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+@keyframes v1012ImpactFlash {
+    0% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(.15); }
+    16% { opacity: 1; transform: translate3d(-50%,-50%,0) scale(.86); }
+    100% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(2.05); }
+}
+@keyframes v1012ImpactRing {
+    0% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(.25); }
+    24% { opacity: .9; }
+    100% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(2.7); }
+}
+@keyframes v1012LogoReveal {
+    0% { opacity: 0; transform: translate3d(0,0,0) scale(.62); filter: brightness(1.55); }
+    58% { opacity: 1; transform: translate3d(0,0,0) scale(1.06); filter: brightness(1.12); }
+    100% { opacity: 1; transform: translate3d(0,0,0) scale(1); filter: brightness(1); }
+}
+
+@media (max-width: 430px) {
+    :root { --achilles-logo-size: 60px; --achilles-logo-edge: max(14px, calc(env(safe-area-inset-right, 0px) + 11px)); }
+    .v1012-splash-stage { width: 106vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v1012-bolt, .v1012-impact-flash, .v1012-impact-ring, .v1012-splash-logo-flight { animation: none !important; }
+    .v1012-floating-logo { transition-duration: .01ms !important; }
+}
+</style>
+
 </body>
 </html>
