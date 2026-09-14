@@ -10,9 +10,9 @@
   "lang": "uk",
   "icons": [
     {
-      "src": "./IMG_9302.jpeg",
+      "src": "./IMG_9302.png",
       "sizes": "any",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     }
   ]
