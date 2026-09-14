@@ -10,10 +10,12 @@
     <meta name="description" content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку.">
     <meta name="format-detection" content="telephone=no">
     
-    <link rel="apple-touch-icon" href="IMG_9302.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png?v=10.13">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=10.13">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=10.13">
     <link rel="manifest" href="manifest.webmanifest">
     <title>Achilles OS</title>
-    <meta name="achilles-build" content="10.12">
+    <meta name="achilles-build" content="10.13">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -1005,37 +1007,61 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
 </head>
 <body> 
 
-    <!-- ACHILLES V10.12 · CINEMATIC SPLASH -->
+    <!-- ACHILLES V10.13 · DUAL LIGHTNING CINEMATIC SPLASH -->
     <div id="splash-screen" aria-hidden="true">
-        <div class="v1012-splash-vignette"></div>
-        <div class="v1012-splash-stage">
-            <svg class="v1012-lightning" viewBox="0 0 1000 1000" aria-hidden="true" focusable="false">
+        <div class="v1013-ambient"></div>
+        <div class="v1013-splash-stage">
+            <svg class="v1013-lightning" viewBox="0 0 1000 1000" aria-hidden="true" focusable="false">
                 <defs>
-                    <filter id="v1012-gold-glow" x="-80%" y="-80%" width="260%" height="260%">
-                        <feGaussianBlur stdDeviation="15" result="b"/>
-                        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                    <filter id="v1012-red-glow" x="-80%" y="-80%" width="260%" height="260%">
-                        <feGaussianBlur stdDeviation="17" result="b"/>
-                        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
+                    <linearGradient id="v1013-gold" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#fff6c9"/><stop offset="0.32" stop-color="#ffd66d"/><stop offset="1" stop-color="#b96d14"/>
+                    </linearGradient>
+                    <linearGradient id="v1013-red" x1="1" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#ffe1df"/><stop offset="0.30" stop-color="#ff4a45"/><stop offset="1" stop-color="#8f0714"/>
+                    </linearGradient>
                 </defs>
-                <path class="v1012-bolt v1012-bolt-gold v1012-bolt-glow" d="M70 82 L202 227 L178 266 L330 383 L300 423 L500 500 L616 650 L655 622 L748 760 L918 925"/>
-                <path class="v1012-bolt v1012-bolt-gold" d="M70 82 L202 227 L178 266 L330 383 L300 423 L500 500 L616 650 L655 622 L748 760 L918 925"/>
-                <path class="v1012-bolt v1012-bolt-red v1012-bolt-glow" d="M930 88 L808 218 L834 260 L681 380 L712 420 L500 500 L390 642 L348 617 L246 760 L76 924"/>
-                <path class="v1012-bolt v1012-bolt-red" d="M930 88 L808 218 L834 260 L681 380 L712 420 L500 500 L390 642 L348 617 L246 760 L76 924"/>
+
+                <!-- Gold strike: layered path + branches. No SVG blur filter: smoother on iPhone GPU. -->
+                <g class="v1013-strike v1013-strike-gold">
+                    <path class="v1013-bolt v1013-haze" pathLength="1" d="M-50 65 L116 168 L85 220 L233 295 L205 349 L375 416 L345 458 L500 500 L585 611 L628 584 L697 718 L754 682 L1050 948"/>
+                    <path class="v1013-bolt v1013-body" pathLength="1" d="M-50 65 L116 168 L85 220 L233 295 L205 349 L375 416 L345 458 L500 500 L585 611 L628 584 L697 718 L754 682 L1050 948"/>
+                    <path class="v1013-bolt v1013-core" pathLength="1" d="M-50 65 L116 168 L85 220 L233 295 L205 349 L375 416 L345 458 L500 500 L585 611 L628 584 L697 718 L754 682 L1050 948"/>
+                    <path class="v1013-branch" pathLength="1" d="M233 295 L287 211 L302 142"/>
+                    <path class="v1013-branch" pathLength="1" d="M375 416 L433 334 L448 274"/>
+                    <path class="v1013-branch" pathLength="1" d="M628 584 L704 535 L746 467"/>
+                    <path class="v1013-branch" pathLength="1" d="M697 718 L780 759 L826 834"/>
+                </g>
+
+                <!-- Red strike -->
+                <g class="v1013-strike v1013-strike-red">
+                    <path class="v1013-bolt v1013-haze" pathLength="1" d="M1055 50 L878 156 L910 214 L758 289 L794 345 L626 414 L659 454 L500 500 L418 610 L376 580 L302 714 L250 676 L-55 947"/>
+                    <path class="v1013-bolt v1013-body" pathLength="1" d="M1055 50 L878 156 L910 214 L758 289 L794 345 L626 414 L659 454 L500 500 L418 610 L376 580 L302 714 L250 676 L-55 947"/>
+                    <path class="v1013-bolt v1013-core" pathLength="1" d="M1055 50 L878 156 L910 214 L758 289 L794 345 L626 414 L659 454 L500 500 L418 610 L376 580 L302 714 L250 676 L-55 947"/>
+                    <path class="v1013-branch" pathLength="1" d="M758 289 L709 204 L693 135"/>
+                    <path class="v1013-branch" pathLength="1" d="M626 414 L565 330 L551 270"/>
+                    <path class="v1013-branch" pathLength="1" d="M376 580 L299 529 L255 459"/>
+                    <path class="v1013-branch" pathLength="1" d="M302 714 L218 754 L171 829"/>
+                </g>
             </svg>
-            <div class="v1012-impact-flash"></div>
-            <div class="v1012-impact-ring"></div>
-            <div id="v1012-splash-logo-flight" class="v1012-splash-logo-flight">
-                <div class="v1012-logo-visual"></div>
+
+            <div class="v1013-impact-flash"></div>
+            <div class="v1013-shockwave v1013-shockwave-a"></div>
+            <div class="v1013-shockwave v1013-shockwave-b"></div>
+            <div class="v1013-sparks" aria-hidden="true">
+                <i style="--dx:-150px;--dy:-54px;--rot:-20deg"></i><i style="--dx:146px;--dy:-62px;--rot:18deg"></i>
+                <i style="--dx:-112px;--dy:-125px;--rot:-48deg"></i><i style="--dx:118px;--dy:-128px;--rot:46deg"></i>
+                <i style="--dx:-176px;--dy:24px;--rot:-6deg"></i><i style="--dx:174px;--dy:28px;--rot:8deg"></i>
+                <i style="--dx:-102px;--dy:132px;--rot:52deg"></i><i style="--dx:106px;--dy:138px;--rot:-52deg"></i>
+                <i style="--dx:-42px;--dy:-162px;--rot:-76deg"></i><i style="--dx:46px;--dy:166px;--rot:77deg"></i>
+                <i style="--dx:-160px;--dy:92px;--rot:26deg"></i><i style="--dx:158px;--dy:94px;--rot:-27deg"></i>
+            </div>
+
+            <div id="v1013-splash-logo" class="v1013-splash-logo">
+                <div class="v1013-logo-aura"></div>
+                <div class="v1013-logo-visual"></div>
             </div>
         </div>
     </div>
-
-    <button id="floating-achilles-logo" class="v1012-floating-logo" type="button" aria-label="Відкрити налаштування профілю">
-        <span class="v1012-floating-logo-image" aria-hidden="true"></span>
-    </button>
 
     <!-- LIVE WORKOUT OVERLAY -->
     <div id="live-overlay" class="live-overlay">
@@ -1355,7 +1381,6 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
                                 <h2 style="margin:8px 0 6px;">Усі записи винесені в окрему вкладку</h2>
                                 <p style="margin:0;">Так журнал не засмічує статус, а видалення, їжа і тренування зібрані в одному місці.</p>
                             </div>
-                            <button class="gradient-bg primary-btn" type="button" onclick="window.Achilles?.router?.go?.('tab-journal',{source:document.querySelector(\".nav-item[data-target='tab-journal']\")})"><i class="fa-solid fa-book"></i> Відкрити журнал</button>
                         </div>
                     </section>
                 </div>
@@ -2027,7 +2052,7 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
         document.addEventListener("DOMContentLoaded", () => {
             window.applyTheme(); 
             const splash = document.getElementById('splash-screen');
-            // V10.12 cinematic boot owns splash timing. Legacy 800ms auto-hide intentionally removed.
+            // V10.13 cinematic boot owns splash timing. Legacy 800ms auto-hide intentionally removed.
             const userName = localStorage.getItem('achilles_user');
             if (userName) {
                 window.loadUserData();
@@ -2723,7 +2748,7 @@ html[data-theme="light"] .v10-toast { background:rgba(255,255,255,.94); color:#1
             }, true);
         }
 
-        window.ACHILLES_BUILD = '10.12';
+        window.ACHILLES_BUILD = '10.13';
 
         window.openProfileTab = function() {
             if(!localStorage.getItem('achilles_user')) return;
@@ -4246,159 +4271,55 @@ button,
     if (body) body.classList.add('app-booting');
 
     const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-    const raf = () => new Promise(resolve => requestAnimationFrame(resolve));
+    const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
     const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-
-    function isSignedIn() {
-        return Boolean(localStorage.getItem('achilles_user'));
-    }
-
-    function syncLogoVisibility() {
-        const floating = document.getElementById('floating-achilles-logo');
-        if (!floating) return;
-        floating.classList.toggle('is-available', isSignedIn());
-    }
-
-    function syncLogoMode() {
-        const floating = document.getElementById('floating-achilles-logo');
-        if (!floating) return;
-        const profileActive = document.getElementById('tab-profile')?.classList.contains('active');
-        body?.classList.toggle('achilles-logo-profile-mode', Boolean(profileActive));
-        floating.setAttribute('aria-expanded', profileActive ? 'true' : 'false');
-    }
-
-    function openProfileFromLogo(event) {
-        event?.preventDefault?.();
-        event?.stopPropagation?.();
-        if (!isSignedIn()) return;
-
-        body?.classList.add('achilles-logo-profile-mode');
-        try { window.Achilles?.haptics?.light?.(); } catch (_) {}
-
-        // Give the GPU transform a frame head-start, then switch to the profile workspace.
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                if (window.Achilles?.router?.go) {
-                    window.Achilles.router.go('tab-profile', {
-                        source: document.querySelector('.nav-item[data-target="tab-profile"]')
-                    });
-                } else if (typeof window.openProfileTab === 'function') {
-                    window.openProfileTab();
-                } else {
-                    document.querySelector('.nav-item[data-target="tab-profile"]')?.click();
-                }
-                try { window.loadUserData?.(); } catch (_) {}
-                const scroller = document.querySelector('#main-app-window .main-content');
-                if (scroller) scroller.scrollTo({ top: 0, behavior: 'smooth' });
-                syncLogoMode();
-            });
-        });
-    }
 
     async function runSplash() {
         const splash = document.getElementById('splash-screen');
-        const flight = document.getElementById('v1012-splash-logo-flight');
-        const floating = document.getElementById('floating-achilles-logo');
-        if (!splash || !flight || !floating) {
+        if (!splash) {
+            body?.classList.remove('app-booting');
             body?.classList.add('app-ready', 'boot-finished');
-            syncLogoVisibility();
             return;
         }
 
         splash.style.display = 'grid';
-        splash.classList.remove('hidden', 'v1012-finished');
-        await raf();
-        splash.classList.add('v1012-running');
+        splash.classList.remove('hidden', 'v1013-finished');
+        await nextFrame();
 
         if (reduceMotion) {
-            await wait(80);
-            syncLogoVisibility();
-            floating.classList.add('is-ready');
-            splash.classList.add('v1012-finished');
-            body?.classList.add('app-ready', 'boot-finished');
+            splash.classList.add('v1013-logo-visible');
+            await wait(180);
+            body?.classList.add('app-ready');
+            splash.classList.add('v1013-finished');
             body?.classList.remove('app-booting');
-            setTimeout(() => { splash.style.display = 'none'; }, 120);
+            body?.classList.add('boot-finished');
+            setTimeout(() => { splash.style.display = 'none'; }, 260);
             return;
         }
 
-        // Lightning strike -> impact -> Achilles reveal.
-        await wait(430);
-        splash.classList.add('v1012-impact');
-        await wait(350);
-        splash.classList.add('v1012-logo-visible');
+        // Both strikes are CSS-composited. Browser can render them at the display refresh rate
+        // (up to 120 Hz on ProMotion hardware) without a JavaScript animation loop.
+        splash.classList.add('v1013-running');
         await wait(330);
-        splash.classList.add('v1012-bolts-out');
-        await wait(150);
+        splash.classList.add('v1013-impact');
+        try { window.Achilles?.haptics?.tap?.(); } catch (_) {}
 
-        // Mount the permanent logo invisibly so its safe-area-aware target rect is measurable.
-        syncLogoVisibility();
-        floating.classList.add('is-ready');
-        floating.style.opacity = '0';
-        floating.style.pointerEvents = 'none';
-        await raf();
+        await wait(105);
+        splash.classList.add('v1013-logo-visible');
+        await wait(330);
+        splash.classList.add('v1013-bolts-out');
 
-        const from = flight.getBoundingClientRect();
-        const to = floating.getBoundingClientRect();
-        const fromCx = from.left + from.width / 2;
-        const fromCy = from.top + from.height / 2;
-        const toCx = to.left + to.width / 2;
-        const toCy = to.top + to.height / 2;
-        const dx = toCx - fromCx;
-        const dy = toCy - fromCy;
-        const scale = Math.max(0.1, to.width / Math.max(1, from.width));
-
-        const fly = flight.animate([
-            { transform: 'translate3d(0,0,0) scale(1)', filter: 'brightness(1.05)' },
-            { transform: `translate3d(${dx * 0.64}px,${dy * 0.64}px,0) scale(${0.72 + scale * 0.28})`, offset: 0.66, filter: 'brightness(1.12)' },
-            { transform: `translate3d(${dx}px,${dy}px,0) scale(${scale})`, filter: 'brightness(1)' }
-        ], {
-            duration: 690,
-            easing: 'cubic-bezier(.18,.86,.22,1)',
-            fill: 'forwards'
-        });
-
+        // Let the emblem breathe for a moment, then reveal the app under it.
+        await wait(300);
         body?.classList.add('app-ready');
-        try { await fly.finished; } catch (_) {}
-
-        floating.style.opacity = '';
-        floating.style.pointerEvents = '';
-        flight.style.opacity = '0';
-        splash.classList.add('v1012-finished');
+        await wait(160);
+        splash.classList.add('v1013-finished');
         body?.classList.remove('app-booting');
         body?.classList.add('boot-finished');
-        syncLogoMode();
-        setTimeout(() => { splash.style.display = 'none'; }, 360);
+        setTimeout(() => { splash.style.display = 'none'; }, 420);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const floating = document.getElementById('floating-achilles-logo');
-        floating?.addEventListener('click', openProfileFromLogo, { passive: false });
-
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            new MutationObserver(syncLogoMode).observe(tab, { attributes: true, attributeFilter: ['class'] });
-        });
-
-        // Keep visibility correct after login/logout or screen switches.
-        const originalShowScreen = window.showScreen;
-        if (typeof originalShowScreen === 'function' && !originalShowScreen.__v1012Wrapped) {
-            const wrapped = function(screenId) {
-                const result = originalShowScreen.apply(this, arguments);
-                requestAnimationFrame(() => {
-                    syncLogoVisibility();
-                    syncLogoMode();
-                });
-                return result;
-            };
-            wrapped.__v1012Wrapped = true;
-            window.showScreen = wrapped;
-        }
-
-        window.addEventListener('resize', syncLogoMode, { passive: true });
-        window.addEventListener('orientationchange', syncLogoMode, { passive: true });
-        syncLogoVisibility();
-        syncLogoMode();
-        runSplash();
-    }, { once: true });
+    document.addEventListener('DOMContentLoaded', runSplash, { once: true });
 })();
 </script>
 
@@ -7991,7 +7912,7 @@ input,select { background:color-mix(in srgb,var(--input-bg) 78%,transparent) !im
 
     function addBuildBadge() {
         const hero=document.querySelector('#tab-profile .profile-hero-copy');
-        if(hero && !hero.querySelector('.v10-build-badge')) hero.insertAdjacentHTML('beforeend','<span class="v10-build-badge"><i class="fa-solid fa-code-branch"></i> Achilles OS 10.12 · local-first</span>');
+        if(hero && !hero.querySelector('.v10-build-badge')) hero.insertAdjacentHTML('beforeend','<span class="v10-build-badge"><i class="fa-solid fa-code-branch"></i> Achilles OS 10.13 · local-first</span>');
     }
 
     function installPolish() {
@@ -8779,7 +8700,7 @@ html.ios-standalone #main-app-window .nav-bar {
     if (!('serviceWorker' in navigator)) return;
     window.addEventListener('load', async () => {
         try {
-            const reg = await navigator.serviceWorker.register('./sw.js?v=10.11', { scope: './', updateViaCache: 'none' });
+            const reg = await navigator.serviceWorker.register('./sw.js?v=10.13', { scope: './', updateViaCache: 'none' });
             reg.addEventListener('updatefound', () => {
                 const worker = reg.installing;
                 if (!worker) return;
@@ -9342,8 +9263,8 @@ html.ios-standalone #main-app-window .nav-bar {
     root.addEventListener('online',()=>setTimeout(()=>setStatus(`${meta.searchRecords || 5000} локальних позицій · інтернет для пошуку не потрібен`),20));
     root.addEventListener('offline',()=>setTimeout(()=>setStatus(`${meta.searchRecords || 5000} локальних позицій · офлайн режим активний`),20));
 
-    root.ACHILLES_BUILD='10.12';
-    console.info('[Achilles OS] V10.12 UI + Food Core active', meta);
+    root.ACHILLES_BUILD='10.13';
+    console.info('[Achilles OS] V10.13 cinematic UI + Food Core active', meta);
 })(window);
 </script>
 
@@ -9352,8 +9273,7 @@ html.ios-standalone #main-app-window .nav-bar {
 #bottom-nav .nav-item{flex:1 1 0;min-width:0;padding-inline:4px;}
 #bottom-nav .nav-text{font-size:10px;}
 #bottom-nav .nav-icon{font-size:21px;}
-.journal-shortcut-card{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
-.journal-shortcut-card .primary-btn{flex-shrink:0;}
+.journal-shortcut-card{display:block;}
 #tab-journal .journal-grid{display:grid;grid-template-columns:1fr;gap:18px;}
 @media (min-width: 980px){#tab-journal .journal-grid{grid-template-columns:1fr 1fr;}}
 .journal-list{overflow:hidden;border-radius:22px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);}
@@ -9391,14 +9311,14 @@ html.ios-standalone #main-app-window .nav-bar {
 .food-core-empty span{font-size:13px;color:var(--text-muted);}
 </style>
 
-<style id="achilles-v1012-logo-system">
-:root {
-    --achilles-logo-size: clamp(58px, 14vw, 66px);
-    --achilles-logo-edge: max(16px, calc(env(safe-area-inset-right, 0px) + 12px));
-    --achilles-logo-top: max(12px, calc(env(safe-area-inset-top, 0px) + 8px));
-}
+<style id="achilles-v1013-cinematic-system">
+/* =========================================================
+   ACHILLES V10.13 · HIGH-REFRESH CINEMATIC + VISUAL POLISH
+   Motion uses transform/opacity where possible. SVG path drawing is limited
+   to the short intro strike; no continuous blur-filter animation.
+   ========================================================= */
 
-/* Source PNG has transparent breathing room; 128% crops that margin without deforming the emblem. */
+/* The source PNG contains transparent breathing room. Crop visually, never distort. */
 .splash-logo,
 .profile-avatar-large,
 .main-avatar {
@@ -9418,217 +9338,277 @@ html.ios-standalone #main-app-window .nav-bar {
     opacity: 1 !important;
     visibility: visible !important;
     background:
-        radial-gradient(circle at 50% 48%, rgba(255, 190, 64, .08), transparent 22%),
-        radial-gradient(circle at 50% 52%, rgba(198, 22, 28, .055), transparent 38%),
-        #050506 !important;
-    transition: opacity 320ms cubic-bezier(.2,.8,.2,1) !important;
-    contain: layout paint style;
+        radial-gradient(circle at 50% 48%, rgba(255,197,83,.095), transparent 20%),
+        radial-gradient(circle at 50% 51%, rgba(205,25,34,.075), transparent 34%),
+        linear-gradient(180deg, #080809 0%, #030304 58%, #000 100%) !important;
+    transition: opacity 420ms cubic-bezier(.22,.8,.22,1) !important;
+    contain: strict;
 }
-#splash-screen.v1012-finished { opacity: 0 !important; }
+#splash-screen.v1013-finished { opacity: 0 !important; }
 #splash-screen::before,
 #splash-screen::after,
 .splash-ambient-mark,
 .splash-brand { display: none !important; }
 
-.v1012-splash-vignette {
-    position: absolute;
-    inset: -12%;
+.v1013-ambient {
+    position:absolute;
+    inset:-20%;
     background:
-        radial-gradient(circle at 50% 50%, transparent 0 18%, rgba(0,0,0,.18) 45%, rgba(0,0,0,.78) 100%),
-        linear-gradient(135deg, rgba(255,187,55,.025), transparent 42%, rgba(192,16,28,.025));
-    transform: translateZ(0);
+        radial-gradient(ellipse at 50% 48%, rgba(255,208,107,.055), transparent 25%),
+        conic-gradient(from 45deg at 50% 50%, transparent 0 20%, rgba(187,16,25,.018) 28%, transparent 36% 62%, rgba(255,189,64,.02) 72%, transparent 80%);
+    opacity:.9;
+    transform:translateZ(0) scale(1.02);
 }
 
-.v1012-splash-stage {
-    position: relative;
-    width: min(94vw, 760px);
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
-    transform: translateZ(0);
-    will-change: transform;
+.v1013-splash-stage {
+    position:relative;
+    width:min(110vw, 900px);
+    aspect-ratio:1;
+    display:grid;
+    place-items:center;
+    transform:translateZ(0);
+    will-change:transform;
+    contain:layout paint style;
+}
+.v1013-lightning {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+    transform:translateZ(0);
+}
+.v1013-strike { opacity:1; }
+.v1013-bolt,
+.v1013-branch {
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:1;
+    stroke-dashoffset:1;
+    opacity:0;
+    vector-effect:non-scaling-stroke;
+    will-change:stroke-dashoffset,opacity;
+}
+.v1013-strike-gold .v1013-haze { stroke:#ffb72f; stroke-width:18; opacity:0; }
+.v1013-strike-gold .v1013-body { stroke:url(#v1013-gold); stroke-width:7; }
+.v1013-strike-gold .v1013-core { stroke:#fff5c9; stroke-width:2.4; }
+.v1013-strike-gold .v1013-branch { stroke:#ffd163; stroke-width:3.1; }
+.v1013-strike-red .v1013-haze { stroke:#d30f22; stroke-width:19; opacity:0; }
+.v1013-strike-red .v1013-body { stroke:url(#v1013-red); stroke-width:7.2; }
+.v1013-strike-red .v1013-core { stroke:#ffe9e7; stroke-width:2.35; }
+.v1013-strike-red .v1013-branch { stroke:#ff343b; stroke-width:3.1; }
+
+#splash-screen.v1013-running .v1013-bolt {
+    animation:v1013Strike .43s cubic-bezier(.08,.78,.18,1) .035s both;
+}
+#splash-screen.v1013-running .v1013-haze {
+    animation:v1013StrikeHaze .43s cubic-bezier(.08,.78,.18,1) .035s both;
+}
+#splash-screen.v1013-running .v1013-branch {
+    animation:v1013Branch .22s cubic-bezier(.12,.75,.24,1) .22s both;
+}
+#splash-screen.v1013-running .v1013-strike-red .v1013-bolt { animation-delay:.055s; }
+#splash-screen.v1013-running .v1013-strike-red .v1013-branch { animation-delay:.235s; }
+#splash-screen.v1013-bolts-out .v1013-strike {
+    animation:v1013StrikeExit .25s ease-out both;
 }
 
-.v1012-lightning {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    transform: translateZ(0);
+@keyframes v1013Strike {
+    0% { stroke-dashoffset:1; opacity:0; }
+    7% { opacity:1; }
+    70% { opacity:1; }
+    82% { opacity:.34; }
+    89% { opacity:1; }
+    100% { stroke-dashoffset:0; opacity:1; }
+}
+@keyframes v1013StrikeHaze {
+    0% { stroke-dashoffset:1; opacity:0; }
+    14% { opacity:.08; }
+    58% { opacity:.32; }
+    100% { stroke-dashoffset:0; opacity:.20; }
+}
+@keyframes v1013Branch {
+    from { stroke-dashoffset:1; opacity:0; }
+    35% { opacity:.85; }
+    to { stroke-dashoffset:0; opacity:.48; }
+}
+@keyframes v1013StrikeExit { to { opacity:0; } }
+
+.v1013-impact-flash,
+.v1013-shockwave,
+.v1013-sparks,
+.v1013-splash-logo {
+    position:absolute;
+    left:50%; top:50%;
+    transform:translate3d(-50%,-50%,0);
+    pointer-events:none;
+}
+.v1013-impact-flash {
+    width:190px; height:190px;
+    border-radius:50%;
+    opacity:0;
+    background:radial-gradient(circle, #fff 0 2%, #fff0bd 4%, rgba(255,196,75,.78) 10%, rgba(255,48,53,.34) 27%, transparent 68%);
+    will-change:transform,opacity;
+}
+.v1013-shockwave {
+    width:116px; height:116px;
+    border-radius:50%;
+    border:1.5px solid rgba(255,218,130,.68);
+    opacity:0;
+    will-change:transform,opacity;
+}
+.v1013-shockwave-b { border-color:rgba(255,54,59,.48); }
+#splash-screen.v1013-impact .v1013-impact-flash { animation:v1013ImpactFlash .44s cubic-bezier(.16,.82,.22,1) both; }
+#splash-screen.v1013-impact .v1013-shockwave-a { animation:v1013Wave .64s cubic-bezier(.16,.84,.22,1) both; }
+#splash-screen.v1013-impact .v1013-shockwave-b { animation:v1013Wave .78s cubic-bezier(.16,.84,.22,1) .06s both; }
+#splash-screen.v1013-impact .v1013-splash-stage { animation:v1013ImpactKick .18s linear both; }
+@keyframes v1013ImpactFlash {
+    0% { opacity:0; transform:translate3d(-50%,-50%,0) scale(.18); }
+    16% { opacity:1; }
+    46% { opacity:.72; transform:translate3d(-50%,-50%,0) scale(1); }
+    100% { opacity:0; transform:translate3d(-50%,-50%,0) scale(1.75); }
+}
+@keyframes v1013Wave {
+    0% { opacity:0; transform:translate3d(-50%,-50%,0) scale(.22); }
+    18% { opacity:.9; }
+    100% { opacity:0; transform:translate3d(-50%,-50%,0) scale(3.45); }
+}
+@keyframes v1013ImpactKick {
+    0%,100% { transform:translate3d(0,0,0); }
+    25% { transform:translate3d(-2px,1px,0); }
+    50% { transform:translate3d(2px,-1px,0); }
+    75% { transform:translate3d(-1px,-1px,0); }
 }
 
-.v1012-bolt {
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 1500;
-    stroke-dashoffset: 1500;
-    opacity: 0;
-    vector-effect: non-scaling-stroke;
-    will-change: stroke-dashoffset, opacity;
+.v1013-sparks { width:1px; height:1px; z-index:4; }
+.v1013-sparks i {
+    position:absolute;
+    left:0; top:0;
+    width:30px; height:2px;
+    border-radius:999px;
+    opacity:0;
+    transform-origin:0 50%;
+    background:linear-gradient(90deg, rgba(255,255,255,.95), rgba(255,203,87,.76), transparent);
+    will-change:transform,opacity;
 }
-.v1012-bolt-gold { stroke: #ffd774; stroke-width: 4.3; filter: url(#v1012-gold-glow); }
-.v1012-bolt-red { stroke: #ff3038; stroke-width: 4.3; filter: url(#v1012-red-glow); }
-.v1012-bolt-glow { stroke-width: 15; opacity: 0; }
-
-#splash-screen.v1012-running .v1012-bolt-gold {
-    animation: v1012BoltStrike 360ms cubic-bezier(.1,.74,.24,1) 40ms forwards;
-}
-#splash-screen.v1012-running .v1012-bolt-red {
-    animation: v1012BoltStrike 360ms cubic-bezier(.1,.74,.24,1) 90ms forwards;
-}
-#splash-screen.v1012-running .v1012-bolt-glow { opacity: .34; }
-#splash-screen.v1012-bolts-out .v1012-bolt {
-    animation: v1012BoltFade 220ms ease-out forwards !important;
+.v1013-sparks i:nth-child(even) { background:linear-gradient(90deg, rgba(255,235,232,.95), rgba(255,59,62,.72), transparent); }
+#splash-screen.v1013-impact .v1013-sparks i { animation:v1013Spark .52s cubic-bezier(.16,.74,.26,1) both; }
+#splash-screen.v1013-impact .v1013-sparks i:nth-child(3n) { animation-delay:.025s; }
+#splash-screen.v1013-impact .v1013-sparks i:nth-child(4n) { animation-delay:.045s; }
+@keyframes v1013Spark {
+    0% { opacity:0; transform:translate3d(0,0,0) rotate(var(--rot)) scaleX(.35); }
+    14% { opacity:1; }
+    100% { opacity:0; transform:translate3d(var(--dx),var(--dy),0) rotate(var(--rot)) scaleX(1); }
 }
 
-.v1012-impact-flash,
-.v1012-impact-ring {
-    position: absolute;
-    left: 50%; top: 50%;
-    pointer-events: none;
-    opacity: 0;
-    transform: translate3d(-50%,-50%,0) scale(.2);
-    will-change: transform, opacity;
+.v1013-splash-logo {
+    width:clamp(142px, 35vw, 186px);
+    aspect-ratio:1;
+    z-index:8;
+    opacity:0;
+    transform:translate3d(-50%,-50%,0) scale(.58) rotate(-2deg);
+    will-change:transform,opacity;
 }
-.v1012-impact-flash {
-    width: 150px; height: 150px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,.95) 0 3%, rgba(255,216,119,.86) 9%, rgba(255,57,64,.34) 28%, transparent 70%);
-    mix-blend-mode: screen;
+.v1013-logo-aura {
+    position:absolute;
+    inset:-16%;
+    border-radius:34%;
+    opacity:.72;
+    background:radial-gradient(circle, rgba(255,202,94,.20), rgba(214,26,35,.07) 45%, transparent 70%);
+    transform:translateZ(0);
 }
-.v1012-impact-ring {
-    width: 110px; height: 110px; border-radius: 50%;
-    border: 2px solid rgba(255,218,124,.8);
-    box-shadow: 0 0 30px rgba(255,203,85,.42), inset 0 0 24px rgba(255,45,51,.18);
+.v1013-logo-visual {
+    position:absolute;
+    inset:0;
+    border-radius:25%;
+    background:url('IMG_9302.png?v=10.13') 50% 50% / 128% 128% no-repeat;
+    transform:translateZ(0);
+    filter:drop-shadow(0 20px 42px rgba(0,0,0,.56));
 }
-#splash-screen.v1012-impact .v1012-impact-flash { animation: v1012ImpactFlash 420ms ease-out both; }
-#splash-screen.v1012-impact .v1012-impact-ring { animation: v1012ImpactRing 520ms cubic-bezier(.16,.84,.27,1) both; }
-
-.v1012-splash-logo-flight {
-    position: relative;
-    width: clamp(126px, 31vw, 166px);
-    aspect-ratio: 1;
-    opacity: 0;
-    z-index: 5;
-    transform: translate3d(0,0,0) scale(.72);
-    will-change: transform, opacity, filter;
+#splash-screen.v1013-logo-visible .v1013-splash-logo {
+    animation:v1013LogoReveal .62s cubic-bezier(.16,.86,.18,1.14) both;
 }
-.v1012-logo-visual,
-.v1012-floating-logo-image {
-    position: absolute;
-    inset: 0;
-    display: block;
-    border-radius: 27%;
-    background-image: url('IMG_9302.png?v=10.12');
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    background-size: 128% 128%;
-    transform: translateZ(0);
-}
-.v1012-logo-visual {
-    filter: drop-shadow(0 18px 44px rgba(0,0,0,.55)) drop-shadow(0 0 24px rgba(255,184,55,.22));
-}
-#splash-screen.v1012-logo-visible .v1012-splash-logo-flight {
-    animation: v1012LogoReveal 540ms cubic-bezier(.18,.92,.22,1.18) both;
+@keyframes v1013LogoReveal {
+    0% { opacity:0; transform:translate3d(-50%,-50%,0) scale(.52) rotate(-3deg); }
+    54% { opacity:1; transform:translate3d(-50%,-50%,0) scale(1.075) rotate(.5deg); }
+    76% { transform:translate3d(-50%,-50%,0) scale(.985) rotate(0); }
+    100% { opacity:1; transform:translate3d(-50%,-50%,0) scale(1) rotate(0); }
 }
 
-.v1012-floating-logo {
-    position: fixed;
-    z-index: 99990;
-    top: var(--achilles-logo-top);
-    right: var(--achilles-logo-edge);
-    width: var(--achilles-logo-size);
-    height: var(--achilles-logo-size);
-    border: 0;
-    padding: 0;
-    margin: 0;
-    border-radius: 25%;
-    background: transparent;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translate3d(0,0,0) scale(.96);
-    transform-origin: center;
-    transition:
-        transform 620ms cubic-bezier(.18,.86,.22,1),
-        opacity 260ms ease,
-        filter 260ms ease;
-    will-change: transform, opacity;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    isolation: isolate;
-    contain: layout paint style;
+/* --- Visual polish pass -------------------------------------------------- */
+#main-app-window > .app-window > .main-content {
+    scroll-behavior:smooth;
+    overscroll-behavior-y:none;
 }
-.v1012-floating-logo::before {
-    content: '';
-    position: absolute;
-    inset: 5%;
-    border-radius: 28%;
-    z-index: -1;
-    opacity: .52;
-    background: radial-gradient(circle, rgba(var(--primary-rgb),.22), transparent 68%);
-    filter: blur(10px);
+.premium-surface {
+    box-shadow:
+        0 20px 52px rgba(0,0,0,.15),
+        inset 0 1px 0 rgba(255,255,255,.055),
+        inset 0 -1px 0 rgba(0,0,0,.06) !important;
 }
-.v1012-floating-logo-image {
-    filter: drop-shadow(0 8px 18px rgba(0,0,0,.38));
-    transition: filter 260ms ease, transform 260ms ease;
+.workspace-header,
+.profile-hero {
+    background:
+        radial-gradient(circle at 88% 0%, rgba(var(--primary-rgb),.10), transparent 34%),
+        color-mix(in srgb, var(--glass-bg) 56%, transparent) !important;
 }
-.v1012-floating-logo.is-available.is-ready {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translate3d(0,0,0) scale(1);
+#bottom-nav .nav-item {
+    position:relative;
+    isolation:isolate;
+    border-radius:18px;
+    transition:color .24s ease, transform .24s cubic-bezier(.2,.8,.2,1), opacity .24s ease !important;
 }
-.v1012-floating-logo:active .v1012-floating-logo-image { transform: translateZ(0) scale(.94); }
-
-/* High-refresh-friendly profile motion: only transform changes, not top/left/right. */
-body.achilles-logo-profile-mode .v1012-floating-logo.is-available.is-ready {
-    transform: translate3d(calc(-50vw + var(--achilles-logo-edge) + (var(--achilles-logo-size) / 2)), 0, 0) scale(1.12);
+#bottom-nav .nav-item::before {
+    content:"";
+    position:absolute;
+    inset:4px 3px 3px;
+    z-index:-1;
+    border-radius:15px;
+    opacity:0;
+    transform:scale(.86);
+    background:linear-gradient(180deg, rgba(var(--primary-rgb),.15), rgba(var(--primary-rgb),.045));
+    border:1px solid rgba(var(--primary-rgb),.08);
+    transition:opacity .24s ease, transform .28s cubic-bezier(.2,.9,.2,1);
 }
-body.achilles-logo-profile-mode .v1012-floating-logo-image {
-    filter: drop-shadow(0 12px 28px rgba(0,0,0,.45)) drop-shadow(0 0 18px rgba(var(--primary-rgb),.22));
+#bottom-nav .nav-item.active::before { opacity:1; transform:scale(1); }
+#bottom-nav .nav-item.active { transform:translate3d(0,-1px,0); }
+#bottom-nav .nav-item.active .nav-icon { text-shadow:0 5px 16px rgba(var(--primary-rgb),.28) !important; }
+.primary-btn,
+button.gradient-bg {
+    box-shadow:0 10px 26px rgba(var(--primary-rgb),.17), inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+input:focus,
+select:focus {
+    box-shadow:0 0 0 3px rgba(var(--primary-rgb),.10) !important;
 }
 
-/* Avoid a duplicate Achilles icon when the persistent logo is centered over Profile. */
-body.achilles-logo-profile-mode #tab-profile .profile-avatar-large { display: none !important; }
-body.achilles-logo-profile-mode #tab-profile.active { padding-top: calc(var(--achilles-logo-size) + 22px) !important; }
-body.achilles-logo-profile-mode #tab-profile .profile-hero { justify-content: center !important; text-align: center; }
-body.achilles-logo-profile-mode #tab-profile .profile-hero-copy { margin-inline: auto; }
-
-@keyframes v1012BoltStrike {
-    0% { stroke-dashoffset: 1500; opacity: 0; }
-    18% { opacity: 1; }
-    100% { stroke-dashoffset: 0; opacity: 1; }
-}
-@keyframes v1012BoltFade {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
-@keyframes v1012ImpactFlash {
-    0% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(.15); }
-    16% { opacity: 1; transform: translate3d(-50%,-50%,0) scale(.86); }
-    100% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(2.05); }
-}
-@keyframes v1012ImpactRing {
-    0% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(.25); }
-    24% { opacity: .9; }
-    100% { opacity: 0; transform: translate3d(-50%,-50%,0) scale(2.7); }
-}
-@keyframes v1012LogoReveal {
-    0% { opacity: 0; transform: translate3d(0,0,0) scale(.62); filter: brightness(1.55); }
-    58% { opacity: 1; transform: translate3d(0,0,0) scale(1.06); filter: brightness(1.12); }
-    100% { opacity: 1; transform: translate3d(0,0,0) scale(1); filter: brightness(1); }
+/* Less blur on iPhone PWA = smoother scrolling while keeping the glass look. */
+html.ios-standalone .list-item,
+html.ios-standalone .insight-tile,
+html.ios-standalone .coach-card,
+html.ios-standalone .macro-box,
+html.ios-standalone .chart-container,
+html.ios-standalone .filter-tabs,
+html.ios-standalone #food-list,
+html.ios-standalone #workout-list,
+html.ios-standalone #main-app-window .nav-bar,
+html.ios-standalone .premium-surface {
+    -webkit-backdrop-filter:blur(14px) saturate(140%) !important;
+    backdrop-filter:blur(14px) saturate(140%) !important;
 }
 
-@media (max-width: 430px) {
-    :root { --achilles-logo-size: 60px; --achilles-logo-edge: max(14px, calc(env(safe-area-inset-right, 0px) + 11px)); }
-    .v1012-splash-stage { width: 106vw; }
+@media (hover:hover) and (pointer:fine) {
+    .premium-surface { transition:transform .28s ease, border-color .28s ease, box-shadow .28s ease; }
+    .premium-surface:hover { transform:translate3d(0,-2px,0); border-color:rgba(var(--primary-rgb),.16) !important; }
 }
-
-@media (prefers-reduced-motion: reduce) {
-    .v1012-bolt, .v1012-impact-flash, .v1012-impact-ring, .v1012-splash-logo-flight { animation: none !important; }
-    .v1012-floating-logo { transition-duration: .01ms !important; }
+@media (max-width:430px) {
+    .v1013-splash-stage { width:122vw; }
+    .v1013-splash-logo { width:148px; }
+}
+@media (prefers-reduced-motion:reduce) {
+    .v1013-bolt,.v1013-branch,.v1013-impact-flash,.v1013-shockwave,.v1013-sparks i,.v1013-splash-logo,.v1013-splash-stage { animation:none !important; }
+    #splash-screen.v1013-logo-visible .v1013-splash-logo { opacity:1; transform:translate3d(-50%,-50%,0) scale(1); }
 }
 </style>
 
