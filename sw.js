@@ -1,5 +1,5 @@
-const CACHE_VERSION = 'achilles-os-v10-11';
-const APP_SHELL = ['./', './index.html', './IMG_9302.jpeg', './manifest.webmanifest', './foods_ua_5000.js'];
+const CACHE_VERSION = 'achilles-os-v10-11-logo-png';
+const APP_SHELL = ['./', './index.html', './IMG_9302.png', './manifest.webmanifest', './foods_ua_5000.js'];
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
