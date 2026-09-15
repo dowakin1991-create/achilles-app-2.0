@@ -13,7 +13,7 @@
             index.push({q, id: food.id, boost: 260, kind: 'sourced'});
     }
     Object.assign(root.ACHILLES_FOOD_CORE_META, {
-        version: '10.15.2', name: 'Achilles Food Core',
+        version: '10.15.3', name: 'Achilles Food Core',
         canonicalProfiles: canonical.length, searchRecords: index.length,
         sourcedProfiles: extra.length
     });
