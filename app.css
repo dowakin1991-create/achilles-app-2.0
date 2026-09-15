@@ -3349,3 +3349,17 @@ html.ios-standalone .premium-surface {
 }
 .premium-search-field .search-clear-btn:focus-visible { outline:2px solid var(--primary); }
 .premium-search-field .search-clear-btn:hover { color:var(--primary); }
+
+/* Gym entry first, exercise history in the journal. */
+#tab-workout > .workspace-block { margin-top: 0; }
+#tab-workout .workspace-block-head h1 { margin: 0; font-size: 26px; }
+.workout-watch-entry { margin: 12px 0 18px; color: var(--text-muted); }
+.workout-watch-entry summary { cursor: pointer; padding: 12px 4px; }
+.workout-watch-entry .watch-entry-card { margin-top: 10px; }
+button.diary-history-trigger { display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: var(--text-main); font: inherit; text-align: left; cursor: pointer; }
+.diary-history-hint { display: block; margin-top: 8px; color: var(--primary); font-size: 12px; }
+button.journal-exercise-history { width: 100%; color: var(--text-main); font: inherit; text-align: left; cursor: pointer; }
+.journal-exercise-history > span { min-width: 0; }
+.journal-exercise-history strong, .journal-exercise-history > span > span { display: block; overflow-wrap: anywhere; }
+.journal-exercise-history > span > span { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+.diary-history-trigger:focus-visible, .journal-exercise-history:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }

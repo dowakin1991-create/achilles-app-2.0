@@ -36,42 +36,6 @@
         root.logWorkoutEntry = wrapped;
     }
 
-    function decorateWorkoutCards() {
-        document.querySelectorAll('.exercise-card[data-exercise-id]').forEach(card => {
-            card.querySelector('.exercise-v9-history')?.remove();
-            const id = card.dataset.exerciseId;
-            const last = A.training.history.last(id);
-            if (!last) return;
-
-            const progression = A.training.progression.suggest(id);
-            const box = document.createElement('div');
-            box.className = 'exercise-v9-history';
-            const date = new Date(`${last.date}T12:00:00`).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
-            box.innerHTML = `
-                <div class="exercise-v9-history-row">
-                    <span class="exercise-v9-kicker">Останнє · ${date}</span>
-                    <strong>${A.training.history.format(last)}</strong>
-                </div>
-                ${progression ? `<div class="exercise-v9-next"><i class="fa-solid fa-arrow-trend-up"></i><span>${progression.label}</span></div>` : ''}
-            `;
-            const actions = card.querySelector('.exercise-actions');
-            if (actions) card.insertBefore(box, actions);
-            else card.appendChild(box);
-        });
-    }
-
-    function wrapWorkoutRenderer() {
-        if (typeof root.renderWorkouts !== 'function' || root.renderWorkouts.__v9Wrapped) return;
-        const legacy = root.renderWorkouts;
-        const wrapped = function (...args) {
-            const result = legacy.apply(this, args);
-            requestAnimationFrame(decorateWorkoutCards);
-            return result;
-        };
-        wrapped.__v9Wrapped = true;
-        root.renderWorkouts = wrapped;
-    }
-
     function wrapSyncStatus() {
         if (typeof root.syncToCloud !== 'function' || root.syncToCloud.__v9Wrapped) return;
         const legacy = root.syncToCloud;
@@ -95,10 +59,8 @@
         const migration = A.storage.migrate();
         A.state.hydrateFromLegacy();
         installWorkoutEntryAdapter();
-        wrapWorkoutRenderer();
         wrapSyncStatus();
         root.searchWorkout?.();
-        decorateWorkoutCards();
         console.info('[Achilles OS]', `V${A.core.version}`, migration);
     };
 
@@ -998,17 +960,28 @@
         return true;
     }
 
+    function prepareExerciseEntry(id, payload, message) {
+        const exercise = A.training?.model?.byId?.(id);
+        if (!exercise) return;
+        A.router.go('tab-workout');
+        const search = document.getElementById('workout-search');
+        if (search) search.value = exercise.name;
+        root.setWorkoutFilter('all');
+        // The router refreshes gym results after 40 ms; fill the resulting inputs.
+        setTimeout(() => { if (fillCard(id, payload)) A.toast(message, 'fa-dumbbell'); }, 60);
+    }
+
     root.repeatLastExercise = function (id) {
         const last = A.training?.history?.last?.(id);
         if (!last) return A.toast('Ще немає попереднього тренування', 'fa-clock-rotate-left');
         const payload = { sets:sessionSets(last), durationSec:Number(last.metrics?.durationSec || 0), distance:Number(last.metrics?.distance || 0) };
-        if (fillCard(id, payload)) A.toast('Минуле тренування підставлено', 'fa-rotate-left');
+        prepareExerciseEntry(id, payload, 'Минуле тренування підставлено');
     };
 
     root.applyExerciseProgression = function (id) {
         const suggestion = detailedSuggestion(id);
         if (!suggestion) return A.toast('Поки недостатньо даних для прогресії', 'fa-chart-line');
-        if (fillCard(id, suggestion)) A.toast(`План: ${suggestion.label}`, 'fa-arrow-trend-up', 2800);
+        prepareExerciseEntry(id, suggestion, `План: ${suggestion.label}`);
     };
 
     function sparklinePath(values, width = 560, height = 104) {
@@ -1088,93 +1061,35 @@
         A.haptics.tap();
     };
 
-    function decorateWorkoutCardsV10() {
-        document.querySelectorAll('.exercise-card[data-exercise-id]').forEach(card => {
-            card.querySelector('.exercise-v10-tools')?.remove();
-            card.querySelector('.exercise-v10-summary')?.remove();
-            const id = card.dataset.exerciseId;
-            const summary = trainingSummary(id);
-            if (!summary.sessions.length) return;
-            const suggestion = detailedSuggestion(id);
-            const tools = document.createElement('div');
-            tools.className = 'exercise-v10-tools';
-            tools.innerHTML = `
-                <button class="secondary" type="button" onclick="openExerciseHistory('${esc(id)}')"><i class="fa-solid fa-chart-line"></i>Історія</button>
-                <button class="secondary" type="button" onclick="repeatLastExercise('${esc(id)}')"><i class="fa-solid fa-rotate-left"></i>Повторити</button>
-                <button class="secondary" type="button" onclick="applyExerciseProgression('${esc(id)}')"><i class="fa-solid fa-arrow-trend-up"></i>Прогресія</button>`;
-            const summaryRow = document.createElement('div');
-            summaryRow.className = 'exercise-v10-summary';
-            const trend = A.training.v10.trendLabel(summary);
-            summaryRow.innerHTML = `
-                <span class="exercise-v10-chip ${summary.ratio && summary.ratio>1.01?'positive':''}">${esc(trend)}</span>
-                ${summary.plateau ? `<span class="exercise-v10-chip plateau">Плато ×3</span>` : ''}
-                ${suggestion ? `<span class="exercise-v10-chip">Далі: ${esc(suggestion.label)}</span>` : ''}`;
-            card.append(summaryRow, tools);
-        });
-    }
-
-    function wrapWorkoutRendererV10() {
-        if (typeof root.renderWorkouts !== 'function' || root.renderWorkouts.__v10Wrapped) return;
-        const prev = root.renderWorkouts;
-        const wrapped = function (...args) {
-            const result = prev.apply(this,args);
-            requestAnimationFrame(decorateWorkoutCardsV10);
-            requestAnimationFrame(renderTrainingIntelligence);
-            return result;
-        };
-        wrapped.__v10Wrapped = true;
-        root.renderWorkouts = wrapped;
-    }
-
-    /* -------------------- Training workspace summary -------------------- */
-    function insertTrainingIntelligence() {
-        if (document.getElementById('training-intel-card')) return;
-        const workoutTab = document.getElementById('tab-workout');
-        if (!workoutTab) return;
-        const blocks = Array.from(workoutTab.querySelectorAll('.workspace-block'));
-        const library = blocks.find(block => block.textContent.includes('БІБЛІОТЕКА'));
-        if (!library) return;
-        const section = document.createElement('section');
-        section.className = 'workspace-block premium-section';
-        section.id = 'training-intel-section';
-        section.innerHTML = `
-            <div class="workspace-block-head"><div><span class="eyebrow">30 ДНІВ</span><h2>Прогрес тренувань</h2></div><span class="section-note">історія + PR + тренд</span></div>
-            <div class="training-intel-card premium-surface" id="training-intel-card">
-                <div class="training-intel-grid">
-                    <div class="training-intel-stat"><span>Сесії</span><strong id="v10-train-sessions">0</strong><small>за 30 днів</small></div>
-                    <div class="training-intel-stat"><span>Вправи</span><strong id="v10-train-exercises">0</strong><small>різних вправ</small></div>
-                    <div class="training-intel-stat"><span>PR</span><strong id="v10-train-prs">0</strong><small>вправ із силовим PR</small></div>
-                    <div class="training-intel-stat"><span>Фокус</span><strong id="v10-train-focus">—</strong><small>найчастіша вправа</small></div>
-                </div>
-                <div class="training-intel-recent" id="v10-training-recent"></div>
-            </div>`;
-        workoutTab.insertBefore(section, library);
-    }
-
-    function renderTrainingIntelligence() {
-        insertTrainingIntelligence();
+    // History belongs to the journal; the gym only renders exercise entry controls.
+    function renderExerciseHistoryIndex() {
+        const journal = document.getElementById('tab-journal');
+        if (!journal) return;
+        let section = document.getElementById('exercise-history-index');
+        if (!section) {
+            section = document.createElement('section');
+            section.id = 'exercise-history-index';
+            section.className = 'workspace-block premium-section';
+            journal.appendChild(section);
+        }
         const history = A.training?.history?.all?.() || [];
-        const cutoff = Date.now() - 30*86400000;
-        const recent = history.filter(s => Number(s.createdAt || new Date(`${s.date}T12:00:00`).getTime()) >= cutoff);
-        const counts = new Map();
-        recent.forEach(s => counts.set(s.exerciseName, (counts.get(s.exerciseName)||0)+1));
-        const focus = [...counts.entries()].sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
-        const prs = A.storage?.json?.('achilles_prs', {}) || {};
-        const setText = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=String(value); };
-        setText('v10-train-sessions', recent.length);
-        setText('v10-train-exercises', counts.size);
-        setText('v10-train-prs', Object.keys(prs).length);
-        setText('v10-train-focus', focus === '—' ? focus : (focus.length > 15 ? `${focus.slice(0,14)}…` : focus));
-        const list = document.getElementById('v10-training-recent');
-        if (!list) return;
         const unique = [];
         const seen = new Set();
-        history.forEach(s => { if (!seen.has(s.exerciseId)) { seen.add(s.exerciseId); unique.push(s); } });
-        list.innerHTML = unique.length ? unique.slice(0,3).map(s => {
-            const summary = trainingSummary(s.exerciseId);
-            return `<div class="training-recent-row"><div><strong>${esc(s.exerciseName)}</strong><span>${esc(fmtDate(s.date))} · ${esc(A.training.history.format(s))}${summary.plateau?' · плато ×3':''}</span></div><button class="secondary" onclick="openExerciseHistory('${esc(s.exerciseId)}')">Історія</button></div>`;
-        }).join('') : `<div class="v10-empty"><i class="fa-solid fa-dumbbell"></i>Після першого тренування тут з’явиться прогрес.</div>`;
+        history.forEach(session => {
+            if (!seen.has(session.exerciseId) && A.training.model.byId(session.exerciseId)) {
+                seen.add(session.exerciseId);
+                unique.push(session);
+            }
+        });
+        section.hidden = !unique.length;
+        section.innerHTML = unique.length ? `
+            <div class="workspace-block-head"><h2>Історія вправ</h2></div>
+            <div class="training-intel-recent">${unique.map(s => `<button type="button" class="training-recent-row journal-exercise-history" data-exercise-id="${esc(s.exerciseId)}"><span><strong>${esc(s.exerciseName)}</strong><span>${esc(fmtDate(s.date))} · ${esc(A.training.history.format(s))}</span></span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>`).join('')}</div>` : '';
+        section.querySelectorAll('[data-exercise-id]').forEach(button => {
+            button.addEventListener('click', () => root.openExerciseHistory(button.dataset.exerciseId));
+        });
     }
+    root.renderExerciseHistoryIndex = renderExerciseHistoryIndex;
 
     /* -------------------- Analytics V2 -------------------- */
     function datesForRange(days) {
@@ -1389,7 +1304,7 @@
         try { result = typeof legacyProgressInsights==='function' ? legacyProgressInsights.apply(this,args) : undefined; } catch (error) { console.warn('[Achilles V10 legacy insights]',error); }
         requestAnimationFrame(()=>{
             try { A.weekly?.render?.(false); } catch (error) { console.warn('[Achilles V10 weekly]',error); }
-            renderTrainingIntelligence();
+            renderExerciseHistoryIndex();
         });
         return result;
     };
@@ -1424,7 +1339,7 @@
                 localStorage.setItem('achilles_last_pr',JSON.stringify({name,label:enriched.pr.label,date:root.todayDate,updatedAt:Date.now()}));
                 A.haptics.success(); A.toast(enriched.pr.label,'fa-trophy',3200);
             } else { A.haptics.tap(); }
-            setTimeout(()=>{ renderTrainingIntelligence(); renderAnalyticsV2(); renderCoachV2(); root.searchWorkout?.(); },80);
+            setTimeout(()=>{ renderExerciseHistoryIndex(); renderAnalyticsV2(); renderCoachV2(); root.searchWorkout?.(); },80);
             return result;
         };
         wrapped.__v10Wrapped=true;
@@ -1445,14 +1360,12 @@
     }
 
     function bootstrapV10() {
-        wrapWorkoutRendererV10();
         wrapWorkoutLoggerV10();
-        insertTrainingIntelligence();
         insertAnalyticsV2();
         addBuildBadge();
         installPolish();
         root.searchWorkout?.();
-        renderTrainingIntelligence();
+        renderExerciseHistoryIndex();
         renderAnalyticsV2();
         renderCoachV2();
         if(A.dashboard?.refresh){

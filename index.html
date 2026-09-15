@@ -10,12 +10,12 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=10.15.5" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=10.15.5" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=10.15.5" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=10.15.6" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=10.15.6" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=10.15.6" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="10.15.5" name="achilles-build"/>
+<meta content="10.15.6" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
@@ -40,7 +40,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=10.15.5" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=10.15.6" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -450,36 +450,8 @@
 </div>
 <!-- TRAINING WORKSPACE -->
 <div class="tab-content premium-workspace premium-training-workspace" id="tab-workout">
-<section class="workspace-header premium-surface premium-surface-ghost">
-<div>
-<span class="eyebrow">TRAINING</span>
-<h1>Твій <span class="gradient-text">ЗАЛ</span></h1>
-<p>Силові, власна вага та кардіо з правильними метриками для кожного типу вправ.</p>
-</div>
-<div class="workspace-header-chip"><i class="fa-solid fa-bolt"></i><span>Live + Manual</span></div>
-</section>
 <section class="workspace-block premium-section">
-<div class="workspace-block-head"><div><span class="eyebrow">РЕЖИМ</span><h2>Як записуємо</h2></div></div>
-<div class="command-surface premium-surface">
-<div class="premium-segmented-control filter-tabs" id="workout-mode-tabs">
-<div class="filter-tab active" id="btn-mode-extended" onclick="setWorkoutMode('extended')"><i class="fa-solid fa-play"></i> Live</div>
-<div class="filter-tab" id="btn-mode-simple" onclick="setWorkoutMode('simple')"><i class="fa-solid fa-keyboard"></i> Ручний ввід</div>
-</div>
-<div class="watch-entry-card" id="simple-aw-container" style="display: none;">
-<div class="watch-entry-head">
-<div class="watch-entry-icon"><i class="fa-brands fa-apple"></i></div>
-<div><strong>Apple Watch</strong><span>Запиши тренування за часом і калоріями.</span></div>
-</div>
-<div class="two-field-grid">
-<input id="simp-aw-time" inputmode="numeric" pattern="[0-9]*" placeholder="Час (хв)" type="number"/>
-<input id="simp-aw-kcal" inputmode="numeric" pattern="[0-9]*" placeholder="Ккал" type="number"/>
-</div>
-<button class="gradient-bg primary-btn full-width-btn" onclick="logAppleWatch()">Записати тренування</button>
-</div>
-</div>
-</section>
-<section class="workspace-block premium-section">
-<div class="workspace-block-head"><div><span class="eyebrow">БІБЛІОТЕКА</span><h2>Вправи</h2></div></div>
+<div class="workspace-block-head compact"><h1>Вправи</h1></div>
 <div class="command-surface premium-surface">
 <div class="premium-segmented-control filter-tabs">
 <div class="filter-tab active" id="btn-all-workouts" onclick="setWorkoutFilter('all')">Усі вправи</div>
@@ -491,6 +463,19 @@
 <button class="search-clear-btn" type="button" aria-label="Очистити пошук" onclick="clearSearchField('workout-search')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
 </div>
 </div>
+<details class="workout-watch-entry"><summary>Записати тренування з Apple Watch</summary>
+<div class="watch-entry-card" id="simple-aw-container">
+<div class="watch-entry-head">
+<div class="watch-entry-icon"><i class="fa-brands fa-apple"></i></div>
+<div><strong>Apple Watch</strong><span>Запиши тренування за часом і калоріями.</span></div>
+</div>
+<div class="two-field-grid">
+<input id="simp-aw-time" inputmode="numeric" pattern="[0-9]*" placeholder="Час (хв)" type="number"/>
+<input id="simp-aw-kcal" inputmode="numeric" pattern="[0-9]*" placeholder="Ккал" type="number"/>
+</div>
+<button class="gradient-bg primary-btn full-width-btn" onclick="logAppleWatch()">Записати тренування</button>
+</div>
+</details>
 <div class="premium-results-grid exercise-results-grid" id="workout-list-container"></div>
 </section>
 </div>
@@ -622,11 +607,11 @@
 </div>
 </div>
 <!-- ACHILLES FOOD CORE — 638 profiles / Ukrainian offline catalog — local/offline database -->
-<script src="./foods_ua_10000.js?v=10.15.5"></script>
-<script src="./foods_ua_extra.js?v=10.15.5"></script>
+<script src="./foods_ua_10000.js?v=10.15.6"></script>
+<script src="./foods_ua_extra.js?v=10.15.6"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.15.5"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=10.15.5"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.15.6"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=10.15.6"></script>
 
 
 
@@ -637,30 +622,30 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.15.5"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.15.6"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=10.15.5"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=10.15.6"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=10.15.5"></script>
+<script data-achilles-module="training.js" src="./training.js?v=10.15.6"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.15.5"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.15.5"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.15.5"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.15.6"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=10.15.5"></script>
 
-<script src="./food-search.js?v=10.15.5"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.15.5"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.15.6"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.15.6"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=10.15.6"></script>
+
+<script src="./food-search.js?v=10.15.6"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.15.6"></script>
 
 
 

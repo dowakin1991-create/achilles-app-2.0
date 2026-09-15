@@ -623,17 +623,7 @@
 
             if(prof) window.recalcAndSaveNorms(prof, true);
 
-            const modeTabs = document.getElementById('workout-mode-tabs');
-            const awContainer = document.getElementById('simple-aw-container');
-            
-            if(savedAppMode === 'simple') {
-                if(modeTabs) modeTabs.style.display = 'none';
-                if(awContainer) awContainer.style.display = 'none';
-                window.currentWorkoutMode = 'manual';
-            } else {
-                if(modeTabs) modeTabs.style.display = 'flex';
-                window.setWorkoutMode('extended'); 
-            }
+            window.currentWorkoutMode = savedAppMode === 'simple' ? 'manual' : 'extended';
 
             window.searchWorkout();
         };
@@ -1022,6 +1012,18 @@
             return snapshot;
         };
 
+        window.journalExercise = function(entry) {
+            if (entry?.type !== 'workout') return null;
+            const model = window.Achilles?.training?.model;
+            return model?.byId?.(entry.exerciseId || entry.trainingSession?.exerciseId)
+                || model?.byName?.(entry.exercise) || null;
+        };
+
+        window.openJournalExerciseHistory = function(index) {
+            const exercise = window.journalExercise(window.dailyLog?.[index]);
+            if (exercise) window.openExerciseHistory?.(exercise.id);
+        };
+
         window.renderDiary = function() {
             const foodList = document.getElementById('food-list');
             const workoutList = document.getElementById('workout-list');
@@ -1032,18 +1034,18 @@
             const foods = indexed.filter(x => x.entry?.type === 'food');
             const workouts = indexed.filter(x => x.entry?.type === 'workout');
 
-            const row = ({ entry, index }) => `
-                <div class="diary-row-v110">
-                    <div class="diary-entry-copy">${String(entry?.html || '')
-                        .replace(/^🥗\s*/, '<i class="fa-solid fa-utensils diary-entry-icon diary-food-icon" aria-hidden="true"></i> ')
-                        .replace(/^🏋️\s*/, '<i class="fa-solid fa-dumbbell diary-entry-icon diary-workout-icon" aria-hidden="true"></i> ')}</div>
-                    <button
-                        type="button"
-                        class="delete-btn diary-delete-v110"
-                        aria-label="Видалити запис"
-                        data-log-index="${index}"
-                    ><i class="fa-solid fa-trash-can"></i></button>
+            const row = ({ entry, index }) => {
+                const exercise = window.journalExercise(entry);
+                const copy = String(entry?.html || '')
+                    .replace(/^🥗\s*/, '<i class="fa-solid fa-utensils diary-entry-icon diary-food-icon" aria-hidden="true"></i> ')
+                    .replace(/^🏋️\s*/, '<i class="fa-solid fa-dumbbell diary-entry-icon diary-workout-icon" aria-hidden="true"></i> ');
+                return `<div class="diary-row-v110">
+                    ${exercise
+                        ? `<button type="button" class="diary-entry-copy diary-history-trigger" onclick="openJournalExerciseHistory(${index})">${copy}<span class="diary-history-hint">Історія вправи <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span></button>`
+                        : `<div class="diary-entry-copy">${copy}</div>`}
+                    <button type="button" class="delete-btn diary-delete-v110" aria-label="Видалити запис" data-log-index="${index}"><i class="fa-solid fa-trash-can"></i></button>
                 </div>`;
+            };
 
             foodList.innerHTML = foods.length
                 ? foods.map(row).join('')
@@ -1052,6 +1054,8 @@
             workoutList.innerHTML = workouts.length
                 ? workouts.map(row).join('')
                 : '<div class="journal-empty">Сьогодні без тренувань.</div>';
+
+            window.renderExerciseHistoryIndex?.();
 
             const countEl = document.getElementById('journal-count');
             if(countEl) {
@@ -1455,14 +1459,6 @@
 
         window.setWorkoutMode = function(mode) {
             window.currentWorkoutMode = mode;
-            let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
-            
-            if (appMode === 'pro') {
-                document.getElementById('btn-mode-extended').classList.toggle('active', mode === 'extended');
-                document.getElementById('btn-mode-simple').classList.toggle('active', mode === 'simple');
-                if(mode === 'simple') { document.getElementById('simple-aw-container').style.display = 'block'; } 
-                else { document.getElementById('simple-aw-container').style.display = 'none'; }
-            }
             window.searchWorkout();
         };
 
@@ -1562,7 +1558,7 @@
             container.innerHTML = db.map((w, index) => {
                 const isFav = favs.includes(w.name);
                 const inputUI = window.workoutInputTemplate(w, index);
-                const liveLabel = (w.kind === 'cardio_time' || w.kind === 'cardio_distance') ? '▶ Почати кардіо' : (w.kind === 'static_time' ? '▶ Почати таймер' : '▶ Почати Live');
+                const liveLabel = (w.kind === 'cardio_time' || w.kind === 'cardio_distance') ? '▶ Почати кардіо' : (w.kind === 'static_time' ? '▶ Почати таймер' : 'Почати з таймером');
 
                 const actionArea = (appMode === 'pro' && window.currentWorkoutMode === 'extended')
                     ? `<div class="exercise-actions">
