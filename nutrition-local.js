@@ -391,7 +391,7 @@
                 if(word===term) best=Math.max(best,1000-i*5);
                 else if(word.startsWith(term)) best=Math.max(best,850-i*5-Math.min(100,word.length-term.length));
                 else if(term.length>=4 && word.includes(term)) best=Math.max(best,650-i*5);
-                else if(term.length>=4){
+                else if(term.length>=5){
                     const maxDistance=term.length>=8?2:1;
                     const d=editDistanceLimited(word,term,maxDistance);
                     if(d<=maxDistance) best=Math.max(best,500-d*120-i*5);
@@ -536,7 +536,7 @@
     root.addEventListener('online',()=>setTimeout(()=>setStatus(`${meta.searchRecords || 5000} локальних позицій · інтернет для пошуку не потрібен`),20));
     root.addEventListener('offline',()=>setTimeout(()=>setStatus(`${meta.searchRecords || 5000} локальних позицій · офлайн режим активний`),20));
 
-    root.ACHILLES_BUILD='10.14.1';
-    console.info('[Achilles OS] V10.14.1 modular runtime + Food Core active', meta);
+    root.ACHILLES_BUILD='10.14.2';
+    console.info('[Achilles OS] V10.14.2 modular runtime + Food Core active', meta);
 })(window);
 
