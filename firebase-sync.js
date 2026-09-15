@@ -1,8 +1,5 @@
 /* ===== inline-script-3 ===== */
 
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
         const firebaseConfig = {
             apiKey: "AIzaSyDjT5UjvgTs396KGsVtPrOEUrnkUi6LD1I",
             authDomain: "achilles-8de53.firebaseapp.com",
@@ -12,8 +9,28 @@
             appId: "1:842206429977:web:eb78b2a92587395999bb88"
         };
         
-        let app, db;
-        try { app = initializeApp(firebaseConfig); db = getFirestore(app); } catch(e) { console.error("Firebase init error", e); }
+        let app, db, doc, setDoc, getDoc;
+
+        // V10.14.1: Firebase is optional transport, not a boot dependency.
+        // The local app initializes immediately; SDK modules are loaded in the background.
+        (async function initFirebaseTransport(){
+            try {
+                const [{ initializeApp }, firestore] = await Promise.all([
+                    import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"),
+                    import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js")
+                ]);
+                app = initializeApp(firebaseConfig);
+                db = firestore.getFirestore(app);
+                doc = firestore.doc;
+                setDoc = firestore.setDoc;
+                getDoc = firestore.getDoc;
+                window.dispatchEvent(new CustomEvent('achilles:firebase-ready'));
+                console.info('[Achilles OS] Firebase transport ready');
+            } catch(e) {
+                app = null; db = null;
+                console.warn('[Achilles OS] Firebase unavailable; local-first mode active', e);
+            }
+        })();
 
         window.foodDB = [
             { name: "👑 Сніданок Чемпіона (Вівсянка, Чіа, Яйця)", kcal: 418, p: 23, f: 21, c: 33, fiber: 0 },
