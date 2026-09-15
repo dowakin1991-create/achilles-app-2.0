@@ -112,6 +112,7 @@
             { id: "lateral-raise", name: "Махи гантелями в сторони", desc: "Середні дельти · гантелі", kind: "strength_weighted", factor: 0.3 },
             { id: "curl-barbell", name: "Підйом штанги на біцепс", desc: "Біцепс · штанга", kind: "strength_weighted", factor: 0.4 },
             { id: "curl-dumbbell", name: "Підйом гантелей на біцепс", desc: "Біцепс · гантелі", kind: "strength_weighted", factor: 0.3 },
+            { id: "concentration-curl", name: "Концентроване згинання на біцепс", desc: "Біцепс · гантель · сидячи, лікоть упертий у внутрішню частину стегна", kind: "strength_weighted", factor: 0.3 },
             { id: "hammer-curl", name: "Молотки (Хаммери)", desc: "Брахіаліс · гантелі", kind: "strength_weighted", factor: 0.3 },
             { id: "french-press", name: "Французький жим", desc: "Трицепс · зовнішня вага", kind: "strength_weighted", factor: 0.4 },
             { id: "squat-barbell", name: "Присідання зі штангою", desc: "Ноги · штанга", kind: "strength_weighted", factor: 0.8 },
