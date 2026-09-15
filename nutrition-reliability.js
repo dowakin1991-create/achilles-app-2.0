@@ -464,7 +464,7 @@
             id:`food-${now}-${Math.random().toString(36).slice(2,7)}`,
             createdAt:now,type:'food',foodId:n.id || repo.key(n),foodSource:n.source || 'local',
             barcode:n.barcode || '',weightG:weight,kcal,p,f,c,
-            html:`🥗 <strong style="color:var(--text-main);">${esc(n.name)} (${weight}г)</strong><br>`+
+            html:`<i class="fa-solid fa-utensils diary-entry-icon diary-food-icon" aria-hidden="true"></i> <strong style="color:var(--text-main);">${esc(n.name)} (${weight}г)</strong><br>`+
                  `<span style="font-size:14px;opacity:.8;" class="gradient-text">${kcal} ккал</span> `+
                  `<span style="font-size:12px;opacity:.6;color:var(--text-main);">| Б:${p} Ж:${f} В:${c}</span>`
         });

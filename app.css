@@ -2997,6 +2997,8 @@ html.ios-standalone #main-app-window .nav-bar {
 .diary-entry-copy{min-width:0;}
 .diary-entry-copy strong{color:var(--text-main);}
 .diary-entry-copy .gradient-text{font-weight:700;}
+.diary-entry-icon{display:inline-block;width:1.15em;margin-right:4px;color:var(--primary);font-size:.95em;vertical-align:-.04em;}
+.diary-workout-icon{color:var(--accent-2);}
 .diary-delete-v110{width:52px;height:52px;min-width:52px;border-radius:16px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.03);color:var(--text-muted);display:flex;align-items:center;justify-content:center;justify-self:end;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .18s ease,color .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;}
 .diary-delete-v110:hover,.diary-delete-v110:focus-visible{color:var(--danger);border-color:rgba(255,255,255,0.12);box-shadow:0 8px 18px rgba(0,0,0,0.22);}
 .diary-delete-v110:active{transform:scale(.96);}

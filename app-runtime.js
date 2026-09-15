@@ -449,7 +449,7 @@
                 barcode: normalized.barcode || '',
                 weightG: weight,
                 kcal: actualKcal, p: actualP, f: actualF, c: actualC,
-                html: `🥗 <strong style="color:var(--text-main);">${safeName} (${weight}г)</strong><br><span style="font-size:14px;opacity:.8;" class="gradient-text">${actualKcal} ккал</span> <span style="font-size:12px;opacity:.6;color:var(--text-main);">| Б:${actualP} Ж:${actualF} В:${actualC}</span>`
+                html: `<i class="fa-solid fa-utensils diary-entry-icon diary-food-icon" aria-hidden="true"></i> <strong style="color:var(--text-main);">${safeName} (${weight}г)</strong><br><span style="font-size:14px;opacity:.8;" class="gradient-text">${actualKcal} ккал</span> <span style="font-size:12px;opacity:.6;color:var(--text-main);">| Б:${actualP} Ж:${actualF} В:${actualC}</span>`
             };
 
             root.dailyLog = Array.isArray(root.dailyLog) ? root.dailyLog : [];

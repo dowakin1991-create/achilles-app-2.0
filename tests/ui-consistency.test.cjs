@@ -18,6 +18,16 @@ test('custom food delete decorator is a legacy fallback and cannot add a second 
     assert.match(source, /food-delete-live-v105, \.food-delete-btn, \.food-delete-btn-v104/);
 });
 
+test('diary entries use theme-aware icons instead of fixed food and workout emojis', () => {
+    for (const file of ['app-runtime.js', 'nutrition-local.js', 'nutrition-reliability.js']) {
+        const source = fs.readFileSync(path.join(root, file), 'utf8');
+        assert.doesNotMatch(source, /🥗/);
+    }
+    const sync = fs.readFileSync(path.join(root, 'firebase-sync.js'), 'utf8');
+    assert.match(sync, /diary-food-icon/);
+    assert.match(sync, /diary-workout-icon/);
+});
+
 test('calorie calculations use per-100g scaling and Mifflin-St Jeor inputs', () => {
     const app = fs.readFileSync(path.join(root, 'app-runtime.js'), 'utf8');
     const sync = fs.readFileSync(path.join(root, 'firebase-sync.js'), 'utf8');

@@ -1033,7 +1033,9 @@
 
             const row = ({ entry, index }) => `
                 <div class="diary-row-v110">
-                    <div class="diary-entry-copy">${entry?.html || ''}</div>
+                    <div class="diary-entry-copy">${String(entry?.html || '')
+                        .replace(/^🥗\s*/, '<i class="fa-solid fa-utensils diary-entry-icon diary-food-icon" aria-hidden="true"></i> ')
+                        .replace(/^🏋️\s*/, '<i class="fa-solid fa-dumbbell diary-entry-icon diary-workout-icon" aria-hidden="true"></i> ')}</div>
                     <button
                         type="button"
                         class="delete-btn diary-delete-v110"
@@ -1436,7 +1438,7 @@
                 type: 'food',
                 kcal: actualKcal,
                 p: actualP, f: actualF, c: actualC,
-                html: `🥗 <strong style="color: var(--text-main);">${item.name} (${weight}г)</strong><br><span style="font-size: 14px; opacity: 0.8;" class="gradient-text">${actualKcal} ккал</span> <span style="font-size: 12px; opacity: 0.6; color: var(--text-main);">| Б:${actualP} Ж:${actualF} В:${actualC}</span>`
+                html: `<i class="fa-solid fa-utensils diary-entry-icon diary-food-icon" aria-hidden="true"></i> <strong style="color: var(--text-main);">${item.name} (${weight}г)</strong><br><span style="font-size: 14px; opacity: 0.8;" class="gradient-text">${actualKcal} ккал</span> <span style="font-size: 12px; opacity: 0.6; color: var(--text-main);">| Б:${actualP} Ж:${actualF} В:${actualC}</span>`
             };
             
             window.dailyLog.push(entry);
@@ -1630,7 +1632,7 @@
 
         window.logWorkoutEntry = function(name, burnedKcal, detailsHtml, metadata = {}) {
             let appMode = localStorage.getItem('achilles_app_mode') || 'pro';
-            let htmlStr = `🏋️ <strong style="color: var(--text-main);">${name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${detailsHtml}</span>`;
+            let htmlStr = `<i class="fa-solid fa-dumbbell diary-entry-icon diary-workout-icon" aria-hidden="true"></i> <strong style="color: var(--text-main);">${name}</strong><br><span style="font-size: 14px; opacity: 0.8; margin-top:5px; display:block; color: var(--text-main);">${detailsHtml}</span>`;
             if(appMode === 'pro') {
                 window.workoutBonus += burnedKcal;
                 htmlStr += `<span style="font-size: 15px; margin-top: 5px; display:block; color: var(--text-main);">Спалено: <strong class="gradient-text">${burnedKcal} ккал</strong></span>`;

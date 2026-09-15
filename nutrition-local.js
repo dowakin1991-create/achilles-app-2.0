@@ -185,7 +185,7 @@
             foodSource:item.source || 'local',
             barcode:item.barcode || '',
             weightG:weight,kcal,p,f,c,
-            html:`🥗 <strong style="color:var(--text-main);">${cleanName(item.name)} (${weight}г)</strong><br>`+
+            html:`<i class="fa-solid fa-utensils diary-entry-icon diary-food-icon" aria-hidden="true"></i> <strong style="color:var(--text-main);">${cleanName(item.name)} (${weight}г)</strong><br>`+
                  `<span style="font-size:14px;opacity:.8;" class="gradient-text">${kcal} ккал</span> `+
                  `<span style="font-size:12px;opacity:.6;color:var(--text-main);">| Б:${p} Ж:${f} В:${c}</span>`
         });
