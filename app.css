@@ -3353,9 +3353,6 @@ html.ios-standalone .premium-surface {
 /* Gym entry first, exercise history in the journal. */
 #tab-workout > .workspace-block { margin-top: 0; }
 #tab-workout .workspace-block-head h1 { margin: 0; font-size: 26px; }
-.workout-watch-entry { margin: 12px 0 18px; color: var(--text-muted); }
-.workout-watch-entry summary { cursor: pointer; padding: 12px 4px; }
-.workout-watch-entry .watch-entry-card { margin-top: 10px; }
 button.diary-history-trigger { display: block; width: 100%; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; color: var(--text-main); font: inherit; text-align: left; cursor: pointer; }
 .diary-history-hint { display: block; margin-top: 8px; color: var(--primary); font-size: 12px; }
 button.journal-exercise-history { width: 100%; color: var(--text-main); font: inherit; text-align: left; cursor: pointer; }
@@ -3372,3 +3369,15 @@ html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: m
 #coach-enabled-toggle { appearance: auto; -webkit-appearance: checkbox; flex: 0 0 28px; width: 28px; height: 28px; min-height: 28px; margin: 8px; padding: 0; accent-color: var(--primary); cursor: pointer; }
 #coach-enabled-toggle:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 .coach-settings-description { margin: 10px 0 0; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+
+.coach-insights { display: grid; gap: 14px; width: 100%; }
+.coach-insight { min-width: 0; padding: 16px; border: 1px solid var(--glass-border); border-radius: 18px; background: var(--input-bg); }
+.coach-insight h3 { margin: 0 0 10px; font-size: 17px; color: var(--text-main); }
+.coach-insight p, .coach-limitations p { font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; color: var(--text-muted); }
+.coach-insight .coach-advice { color: var(--text-main); }
+.coach-source { display: inline-block; padding: 10px 0; margin-left: 8px; font-size: 12px; color: var(--primary); }
+.coach-limitations { width: 100%; margin-top: 12px; color: var(--text-muted); }
+.coach-limitations summary { padding: 10px 0; cursor: pointer; }
+
+.coach-more summary { padding: 12px 0; cursor: pointer; color: var(--primary); }
+.coach-more .coach-insight { margin-top: 12px; }

@@ -182,6 +182,8 @@
             createdAt:now,
             type:'food',
             foodId:item.id || `name:${canon(item.name)}|${num(item.kcal)}`,
+            foodName:item.name,
+            nutritionQuality:root.AchillesCoachEngine?.snapshot(item, weight),
             foodSource:item.source || 'local',
             barcode:item.barcode || '',
             weightG:weight,kcal,p,f,c,
@@ -463,6 +465,6 @@
     root.addEventListener('online',()=>setTimeout(()=>setStatus(`${productCount} продуктів · інтернет для пошуку не потрібен`),20));
     root.addEventListener('offline',()=>setTimeout(()=>setStatus(`${productCount} продуктів · офлайн режим активний`),20));
 
-    root.ACHILLES_BUILD='10.15.7';
-    console.info('[Achilles OS] V10.15.7 local food catalog active', meta);
+    root.ACHILLES_BUILD='10.15.8';
+    console.info('[Achilles OS] V10.15.8 local food catalog active', meta);
 })(window);

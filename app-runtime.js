@@ -112,7 +112,7 @@
             p: Math.max(0, Number(item.p || 0)),
             f: Math.max(0, Number(item.f || 0)),
             c: Math.max(0, Number(item.c || 0)),
-            fiber: Math.max(0, Number(item.fiber || 0)),
+            fiber: item.fiber === null || item.fiber === undefined || item.fiber === '' ? null : Math.max(0, Number(item.fiber)),
             barcode: String(item.barcode || ''),
             source: item.source || defaults.source || 'local',
             createdAt: Number(item.createdAt || defaults.createdAt || now),
@@ -406,6 +406,8 @@
                 id: now,
                 createdAt: now,
                 type: 'food',
+                foodName: normalized.name,
+                nutritionQuality: root.AchillesCoachEngine?.snapshot(normalized, weight),
                 foodId: normalized.id || foodKey(normalized),
                 foodSource: normalized.source || 'local',
                 barcode: normalized.barcode || '',
@@ -886,17 +888,10 @@
         if (type === A.training.types.STRENGTH_WEIGHTED && sets.length) {
             const valid = sets.filter(s => Number(s.reps) > 0 && Number(s.weightKg) > 0);
             if (!valid.length) return null;
-            const minReps = Math.min(...valid.map(s => Number(s.reps)));
-            const topWeight = Math.max(...valid.map(s => Number(s.weightKg)));
             const nextSets = valid.map(s => ({ reps:Number(s.reps), weightKg:Number(s.weightKg) }));
-            if (minReps >= 12) {
-                const nextWeight = round(topWeight + 2.5, 1);
-                nextSets.forEach(s => { s.weightKg = nextWeight; s.reps = Math.min(s.reps, 10); });
-                return { label:`${nextWeight} кг · ціль 8–10 повторів`, reason:'усі робочі підходи вже ≥12 повторів', nextSets };
-            }
             const weakestIndex = nextSets.reduce((best, s, i, arr) => Number(s.reps) < Number(arr[best].reps) ? i : best, 0);
             nextSets[weakestIndex].reps += 1;
-            return { label:`+1 повтор у найслабшому підході`, reason:'зберігаємо робочу вагу й додаємо обсяг', nextSets };
+            return { label:`+1 повтор у найслабшому підході`, reason:'лише якщо попередні підходи були без болю й зі стабільною технікою; вагу кожного підходу збережено', nextSets };
         }
 
         if ((type === A.training.types.STRENGTH_BODYWEIGHT || type === A.training.types.STRENGTH_BODYWEIGHT_OPTIONAL) && sets.length) {
@@ -1054,7 +1049,7 @@
             </div>
             <div class="v10-history-actions">
                 <button class="secondary" onclick="closeExerciseHistory(); repeatLastExercise('${esc(id)}')"><i class="fa-solid fa-rotate-left"></i> Повторити минуле</button>
-                <button data-coach-feature class="gradient-bg primary-btn" onclick="closeExerciseHistory(); applyExerciseProgression('${esc(id)}')"><i class="fa-solid fa-arrow-trend-up"></i> План прогресії</button>
+                <button data-coach-feature title="Умовний варіант, якщо попереднє тренування було без болю та з контрольованою технікою" class="gradient-bg primary-btn" onclick="closeExerciseHistory(); applyExerciseProgression('${esc(id)}')"><i class="fa-solid fa-arrow-trend-up"></i> Варіант прогресії</button>
             </div>`;
 
         const sheet = ensureHistorySheet();
@@ -1237,55 +1232,46 @@
     }
 
     /* -------------------- Coach V2 -------------------- */
-    function plateauCandidate() {
-        const seen=new Set();
-        for(const s of (A.training?.history?.all?.()||[])){
-            if(seen.has(s.exerciseId)) continue;
-            seen.add(s.exerciseId);
-            const sum=trainingSummary(s.exerciseId);
-            if(sum.plateau) return {session:s,summary:sum};
-        }
-        return null;
-    }
-
     function coachPlan() {
         if (A.coach?.isEnabled?.() === false) return null;
-        const snap=rangeSnapshot(7);
-        const targets=A.storage?.macroTargets?.()||{p:0,f:0,c:0};
-        const remainingProtein=Math.max(0,Math.round(Number(targets.p||0)-Number(root.macros?.p||0)));
-        const calorieGoal=Number(A.storage?.get?.('achilles_base_kcal',2000)||2000)+(A.storage?.get?.('achilles_app_mode','pro')==='pro'?Number(root.workoutBonus||0):0);
-        const plateau=plateauCandidate();
-        const coverage=Math.round(snap.coverage*100);
-        const confidence=coverage>=80&&snap.loggedDays>=5?'висока':coverage>=55&&snap.loggedDays>=3?'середня':'низька';
-
-        if(snap.loggedDays<3) return {status:'Потрібно більше даних',message:'Заповни харчування хоча б за 3 дні — тоді Coach зможе відрізняти випадковий день від тренду.',sub:`Зараз є ${snap.loggedDays}/7 днів із харчуванням.`,action:'Відкрити раціон',target:'tab-food',confidence};
-        if(snap.proteinRate<.6) return {status:'Фокус: білок',message:remainingProtein>0?`Сьогодні добери приблизно ${remainingProtein} г білка до своєї цілі.`:'Наступні кілька днів тримай білок ближче до цілі — це найслабше місце тижня.',sub:`Білок ≥90% виконано у ${snap.proteinHit} з ${snap.loggedDays} днів.`,action:'Додати їжу',target:'tab-food',confidence};
-        if(snap.calorieRate<.5) return {status:'Фокус: калорії',message:`Сьогодні орієнтир — близько ${Math.round(calorieGoal)} ккал. Намагайся тримати день у коридорі ±10%.`,sub:`За останні 7 днів у коридор потрапило ${snap.calorieHit} з ${snap.loggedDays} днів.`,action:'Відкрити раціон',target:'tab-food',confidence};
-        if(snap.workouts<Math.max(1,Math.ceil(snap.expectedWorkouts*.66))) return {status:'Фокус: тренування',message:'Додай одну якісну сесію замість спроби «наздогнати» весь тиждень одразу.',sub:`Записано ${snap.workouts} тренувань; орієнтир для Score — ${snap.expectedWorkouts}.`,action:'Відкрити зал',target:'tab-workout',confidence};
-        if(plateau) return {status:'Фокус: прогресія',message:`${plateau.session.exerciseName}: три останні сесії майже без росту. Спробуй малий крок прогресії, а не різкий стрибок ваги.`,sub:detailedSuggestion(plateau.session.exerciseId)?.reason||'Зміни лише один параметр: повтори, вагу або тривалість.',action:'Показати вправу',target:'tab-workout',exerciseId:plateau.session.exerciseId,confidence};
-        return {status:'Система стабільна',message:'Головні показники тижня збалансовані. Зараз найкраща стратегія — повторити цей ритм ще один тиждень.',sub:`Score ${snap.score}/100 · білок ${Math.round(snap.proteinRate*100)}% · калорійний коридор ${Math.round(snap.calorieRate*100)}% · тренувань ${snap.workouts}.`,action:'Переглянути аналітику',target:'tab-dashboard',confidence};
+        if (!root.AchillesCoachEngine) return null;
+        const days = { ...(A.storage?.days?.() || root.allDaysData || {}) };
+        const selected = root.currentViewDate || root.todayDate;
+        if (Array.isArray(root.dailyLog)) days[selected] = {
+            ...days[selected], log: root.dailyLog, workoutBonus: root.workoutBonus
+        };
+        return root.AchillesCoachEngine.analyze({
+            today: root.todayDate, selectedDate: selected, days,
+            profile: A.storage?.profile?.() || {}, targets: A.storage?.macroTargets?.() || {},
+            baseKcal: A.storage?.get?.('achilles_base_kcal', 0),
+            mode: A.storage?.get?.('achilles_app_mode', 'pro'),
+            weights: A.storage?.json?.('achilles_weight_history', []) || [],
+            sessions: A.training?.history?.all?.() || [],
+            catalog: root.ACHILLES_FOOD_CORE_CANONICAL || []
+        });
     }
 
     function renderCoachV2() {
         const plan=coachPlan();
         if (!plan) return;
-        const status=document.getElementById('coach-status'); if(status) status.textContent=plan.status;
-        const msg=document.getElementById('coach-message'); if(msg) msg.textContent=plan.message;
-        const sub=document.getElementById('coach-submessage'); if(sub) sub.textContent=plan.sub;
+        const status=document.getElementById('coach-status'); if(status) status.textContent='Аналіз записів';
+        const msg=document.getElementById('coach-message'); if(msg) msg.textContent=plan.summary;
+        const sub=document.getElementById('coach-submessage'); if(sub) sub.textContent='Конкретні спостереження й наступні кроки';
         const card=document.querySelector('.coach-card'); if(!card) return;
         let actions=card.querySelector('.coach-primary-action');
         if(!actions){ actions=document.createElement('div'); actions.className='coach-primary-action'; card.appendChild(actions); }
-        actions.innerHTML=`<button class="gradient-bg primary-btn" id="v10-coach-action"><i class="fa-solid fa-bolt"></i> ${esc(plan.action)}</button><span class="coach-confidence"><i class="fa-solid fa-signal"></i> Впевненість: ${esc(plan.confidence)}</span>`;
-        actions.querySelector('#v10-coach-action')?.addEventListener('click',()=>{
+        const cards=plan.insights.map(i=>`
+            <article class="coach-insight"><h3>${esc(i.title)}</h3><p>${esc(i.evidence)}</p><p class="coach-advice">${esc(i.advice)}</p>
+            <button type="button" class="secondary" data-coach-target="${esc(i.target)}">${i.target==='tab-journal'?'Відкрити журнал':i.target==='tab-dashboard'?'Переглянути вагу':i.target==='tab-profile'?'Відкрити профіль':'Відкрити раціон'}</button>
+            ${i.source ? `<a class="coach-source" href="${esc(i.source)}" target="_blank" rel="noopener noreferrer">Джерело орієнтира</a>`:''}</article>`);
+        actions.innerHTML=`<div class="coach-insights">${cards[0] || ''}${cards.length>1?`<details class="coach-more"><summary>Ще ${cards.length-1} спостереження</summary>${cards.slice(1).join('')}</details>`:''}</div>
+            <details class="coach-limitations"><summary>Що враховано та чого бракує</summary>${(plan.limitations||[]).map(t=>`<p>${esc(t)}</p>`).join('')}</details>`;
+        actions.querySelectorAll('[data-coach-target]').forEach(button=>button.addEventListener('click',()=>{
             if (A.coach?.isEnabled?.() === false) return;
-            if(plan.target && A.router?.go) A.router.go(plan.target,{source:document.querySelector(`.nav-item[data-target="${plan.target}"]`)});
-            if(plan.exerciseId) setTimeout(()=>{
-                const card=findExerciseCard(plan.exerciseId);
-                card?.scrollIntoView({behavior:'smooth',block:'center'});
-                card?.classList.add('v10-flash');
-            },180);
-            A.haptics.tap();
-        });
+            const target=button.dataset.coachTarget;
+            A.router?.go?.(target);
+            if(target==='tab-dashboard') document.querySelector('.body-section')?.scrollIntoView({behavior:'smooth',block:'start'});
+        }));
     }
 
     root.addEventListener('achilles:coach-changed', () => {

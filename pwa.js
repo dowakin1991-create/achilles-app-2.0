@@ -4,7 +4,7 @@
     if (!('serviceWorker' in navigator)) return;
     window.addEventListener('load', async () => {
         try {
-            const reg = await navigator.serviceWorker.register('./sw.js?v=10.15.7', { scope: './', updateViaCache: 'none' });
+            const reg = await navigator.serviceWorker.register('./sw.js?v=10.15.8', { scope: './', updateViaCache: 'none' });
             reg.addEventListener('updatefound', () => {
                 const worker = reg.installing;
                 if (!worker) return;

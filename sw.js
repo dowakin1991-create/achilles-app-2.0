@@ -1,9 +1,10 @@
-const CACHE_VERSION = 'achilles-os-v10-15-7';
+const CACHE_VERSION = 'achilles-os-v10-15-8';
 const APP_SHELL = [
   "./",
   "./index.html",
   "./app.css",
   "./coach-settings.js",
+  "./coach-engine.js",
   "./manifest.webmanifest",
   "./IMG_9302.png",
   "./icon-180.png",

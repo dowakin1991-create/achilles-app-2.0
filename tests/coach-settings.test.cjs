@@ -72,6 +72,7 @@ test('coach settings load before application code and are included in offline st
     const html=read('index.html');
     assert.ok(html.indexOf('./coach-settings.js')<html.indexOf('./firebase-sync.js'));
     assert.match(read('sw.js'),/"\.\/coach-settings\.js"/);
-    assert.match(html,/<div class="weekly-score-card" data-coach-feature>/);
+    assert.match(html,/<section class="premium-section weekly-section" data-coach-feature>/);
+    assert.doesNotMatch(html,/Apple Watch|simp-aw|logAppleWatch/);
     assert.match(read('app-runtime.js'),/button data-coach-feature[^>]+applyExerciseProgression/);
 });

@@ -178,12 +178,6 @@
             if (type === A.training.types.STRENGTH_WEIGHTED && sets.length) {
                 const valid = sets.filter(s => Number(s.weightKg) > 0 && Number(s.reps) > 0);
                 if (!valid.length) return null;
-                const minReps = Math.min(...valid.map(s => Number(s.reps)));
-                const maxWeight = Math.max(...valid.map(s => Number(s.weightKg)));
-                if (minReps >= 12) {
-                    const nextWeight = Math.round((maxWeight + 2.5) * 2) / 2;
-                    return { label: `Орієнтир: ${nextWeight} кг`, reason: 'усі робочі підходи ≥12 повторів' };
-                }
                 const weakest = Math.min(...valid.map(s => Number(s.reps)));
                 return { label: `Орієнтир: +1 повтор у підході з ${weakest}`, reason: 'залишаємо робочу вагу' };
             }
