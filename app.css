@@ -3363,3 +3363,12 @@ button.journal-exercise-history { width: 100%; color: var(--text-main); font: in
 .journal-exercise-history strong, .journal-exercise-history > span > span { display: block; overflow-wrap: anywhere; }
 .journal-exercise-history > span > span { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
 .diary-history-trigger:focus-visible, .journal-exercise-history:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+
+/* A shared marker also covers coaching controls inserted after startup. */
+html[data-coach-enabled="false"] [data-coach-feature] { display: none !important; }
+html[data-coach-enabled="false"] .weekly-top-grid { grid-template-columns: minmax(0, 1fr); }
+html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: minmax(0, 1fr); }
+.coach-setting-toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; cursor: pointer; color: var(--text-main); }
+#coach-enabled-toggle { appearance: auto; -webkit-appearance: checkbox; flex: 0 0 28px; width: 28px; height: 28px; min-height: 28px; margin: 8px; padding: 0; accent-color: var(--primary); cursor: pointer; }
+#coach-enabled-toggle:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.coach-settings-description { margin: 10px 0 0; color: var(--text-muted); font-size: 13px; line-height: 1.5; }

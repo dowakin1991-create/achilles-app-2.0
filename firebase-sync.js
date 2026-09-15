@@ -863,45 +863,47 @@
             document.getElementById('stat-weight-trend').textContent = weightTrend === null ? '—' : `${weightTrend > 0 ? '+' : ''}${weightTrend.toFixed(1)} кг`;
             document.getElementById('progress-score-badge').textContent = `${score} / 100`;
 
-            const coachStatus = document.getElementById('coach-status');
-            const coachMessage = document.getElementById('coach-message');
-            const coachSub = document.getElementById('coach-submessage');
-            const messages = [];
+            if (window.Achilles?.coach?.isEnabled?.() !== false) {
+                const coachStatus = document.getElementById('coach-status');
+                const coachMessage = document.getElementById('coach-message');
+                const coachSub = document.getElementById('coach-submessage');
+                const messages = [];
 
-            if(loggedDays < 3) {
-                coachStatus.textContent = 'Мало даних';
-                coachMessage.textContent = 'Занеси харчування хоча б за 3 дні — тоді рекомендації стануть значно точнішими.';
-                coachSub.textContent = `Зараз є дані за ${loggedDays} із 7 днів.`;
-            } else {
-                if(proteinRate < 0.6) messages.push(`білок виконано лише у ${proteinHit} з ${loggedDays} днів`);
-                if(calorieRate < 0.5) messages.push('калорії часто виходять за коридор ±10% від цілі');
-                if(workoutCount === 0) messages.push('за 7 днів немає записаних тренувань');
-
-                const goal = profile.goal || 'maintain';
-                let trendMessage = '';
-                if(weightTrend !== null) {
-                    if(goal === 'lose') {
-                        if(weightTrend < -1.2) trendMessage = 'Вага падає дуже швидко; перевір дефіцит і відновлення.';
-                        else if(weightTrend < -0.2) trendMessage = 'Вага рухається вниз у правильному напрямку.';
-                        else if(weightTrend >= 0.2) trendMessage = 'Вага поки росте — перевір середню калорійність і точність порцій.';
-                        else trendMessage = 'Вага майже стабільна; оцінюй тренд ще 1–2 тижні, не один день.';
-                    } else if(goal === 'gain') {
-                        if(weightTrend > 0.2 && weightTrend <= 1.0) trendMessage = 'Маса росте помірно — напрямок нормальний.';
-                        else if(weightTrend > 1.0) trendMessage = 'Маса росте швидко; частина приросту може бути не м’язовою.';
-                        else trendMessage = 'Для набору маси темп поки слабкий — перевір профіцит калорій.';
-                    } else {
-                        trendMessage = Math.abs(weightTrend) <= 0.5 ? 'Вага близька до стабільної.' : 'Вага помітно змінюється відносно режиму підтримки.';
-                    }
-                }
-
-                if(messages.length === 0) {
-                    coachStatus.textContent = score >= 80 ? 'Система стабільна' : 'Нормальний темп';
-                    coachMessage.textContent = trendMessage || 'Харчування й тренування виглядають стабільно. Продовжуй збирати дані без різких змін.';
-                    coachSub.textContent = `Виконання: білок ${Math.round(proteinRate*100)}%, калорійний коридор ${Math.round(calorieRate*100)}%, тренувань ${workoutCount}.`;
+                if(loggedDays < 3) {
+                    coachStatus.textContent = 'Мало даних';
+                    coachMessage.textContent = 'Занеси харчування хоча б за 3 дні — тоді рекомендації стануть значно точнішими.';
+                    coachSub.textContent = `Зараз є дані за ${loggedDays} із 7 днів.`;
                 } else {
-                    coachStatus.textContent = 'Є що покращити';
-                    coachMessage.textContent = `Головне зараз: ${messages[0]}.`;
-                    coachSub.textContent = [trendMessage, messages.slice(1).join('; ')].filter(Boolean).join(' ');
+                    if(proteinRate < 0.6) messages.push(`білок виконано лише у ${proteinHit} з ${loggedDays} днів`);
+                    if(calorieRate < 0.5) messages.push('калорії часто виходять за коридор ±10% від цілі');
+                    if(workoutCount === 0) messages.push('за 7 днів немає записаних тренувань');
+
+                    const goal = profile.goal || 'maintain';
+                    let trendMessage = '';
+                    if(weightTrend !== null) {
+                        if(goal === 'lose') {
+                            if(weightTrend < -1.2) trendMessage = 'Вага падає дуже швидко; перевір дефіцит і відновлення.';
+                            else if(weightTrend < -0.2) trendMessage = 'Вага рухається вниз у правильному напрямку.';
+                            else if(weightTrend >= 0.2) trendMessage = 'Вага поки росте — перевір середню калорійність і точність порцій.';
+                            else trendMessage = 'Вага майже стабільна; оцінюй тренд ще 1–2 тижні, не один день.';
+                        } else if(goal === 'gain') {
+                            if(weightTrend > 0.2 && weightTrend <= 1.0) trendMessage = 'Маса росте помірно — напрямок нормальний.';
+                            else if(weightTrend > 1.0) trendMessage = 'Маса росте швидко; частина приросту може бути не м’язовою.';
+                            else trendMessage = 'Для набору маси темп поки слабкий — перевір профіцит калорій.';
+                        } else {
+                            trendMessage = Math.abs(weightTrend) <= 0.5 ? 'Вага близька до стабільної.' : 'Вага помітно змінюється відносно режиму підтримки.';
+                        }
+                    }
+
+                    if(messages.length === 0) {
+                        coachStatus.textContent = score >= 80 ? 'Система стабільна' : 'Нормальний темп';
+                        coachMessage.textContent = trendMessage || 'Харчування й тренування виглядають стабільно. Продовжуй збирати дані без різких змін.';
+                        coachSub.textContent = `Виконання: білок ${Math.round(proteinRate*100)}%, калорійний коридор ${Math.round(calorieRate*100)}%, тренувань ${workoutCount}.`;
+                    } else {
+                        coachStatus.textContent = 'Є що покращити';
+                        coachMessage.textContent = `Головне зараз: ${messages[0]}.`;
+                        coachSub.textContent = [trendMessage, messages.slice(1).join('; ')].filter(Boolean).join(' ');
+                    }
                 }
             }
 

@@ -167,6 +167,7 @@
 
     A.training.progression = {
         suggest(idOrName) {
+            if (A.coach?.isEnabled?.() === false) return null;
             const exercise = A.training.model.byId(idOrName) || A.training.model.byName(idOrName);
             const last = A.training.history.last(idOrName);
             if (!exercise || !last) return null;

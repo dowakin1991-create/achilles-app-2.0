@@ -876,6 +876,7 @@
     };
 
     function detailedSuggestion(idOrName) {
+        if (A.coach?.isEnabled?.() === false) return null;
         const exercise = A.training?.model?.byId?.(idOrName) || A.training?.model?.byName?.(idOrName);
         const last = A.training?.history?.last?.(idOrName);
         if (!exercise || !last) return null;
@@ -979,6 +980,7 @@
     };
 
     root.applyExerciseProgression = function (id) {
+        if (A.coach?.isEnabled?.() === false) return;
         const suggestion = detailedSuggestion(id);
         if (!suggestion) return A.toast('Поки недостатньо даних для прогресії', 'fa-chart-line');
         prepareExerciseEntry(id, suggestion, `План: ${suggestion.label}`);
@@ -1045,14 +1047,14 @@
             ${spark.path ? `<div class="v10-sparkline"><svg viewBox="0 0 560 104" preserveAspectRatio="none" aria-label="Графік прогресу"><path d="${spark.path}"></path>${spark.points.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3"></circle>`).join('')}</svg></div>` : ''}
             <div class="exercise-v10-summary">
                 <span class="exercise-v10-chip ${summary.ratio && summary.ratio>1.01?'positive':''}"><i class="fa-solid fa-chart-line"></i>&nbsp;${esc(trend)}</span>
-                ${summary.plateau ? `<span class="exercise-v10-chip plateau"><i class="fa-solid fa-equals"></i>&nbsp;3 сесії без помітного росту</span>` : ''}
+                ${summary.plateau ? `<span class="exercise-v10-chip plateau" data-coach-feature><i class="fa-solid fa-equals"></i>&nbsp;3 сесії без помітного росту</span>` : ''}
             </div>
             <div class="v10-history-list">
                 ${sessions.length ? sessions.map(s => `<div class="v10-history-row"><div class="v10-history-row-head"><strong>${esc(fmtDate(s.date))}</strong><span>${esc(sessionMetric(s).label)}</span></div><p>${esc(A.training.history.format(s))}</p></div>`).join('') : `<div class="v10-empty"><i class="fa-solid fa-clock-rotate-left"></i>Історія цієї вправи ще порожня.</div>`}
             </div>
             <div class="v10-history-actions">
                 <button class="secondary" onclick="closeExerciseHistory(); repeatLastExercise('${esc(id)}')"><i class="fa-solid fa-rotate-left"></i> Повторити минуле</button>
-                <button class="gradient-bg primary-btn" onclick="closeExerciseHistory(); applyExerciseProgression('${esc(id)}')"><i class="fa-solid fa-arrow-trend-up"></i> План прогресії</button>
+                <button data-coach-feature class="gradient-bg primary-btn" onclick="closeExerciseHistory(); applyExerciseProgression('${esc(id)}')"><i class="fa-solid fa-arrow-trend-up"></i> План прогресії</button>
             </div>`;
 
         const sheet = ensureHistorySheet();
@@ -1195,6 +1197,7 @@
         if(!coachSection) return;
         const section=document.createElement('section');
         section.className='premium-section analytics-v2-section';
+        section.setAttribute('data-coach-feature', '');
         section.innerHTML=`
             <div class="section-heading-row"><div><span class="eyebrow">АНАЛІТИКА</span><h2>Що формує Score</h2></div><span class="section-note">прозорий розрахунок</span></div>
             <div class="analytics-v2-shell premium-surface" id="analytics-v2-shell">
@@ -1221,6 +1224,7 @@
     }
 
     function renderAnalyticsV2(days = Number(localStorage.getItem('achilles_analytics_range')||7)) {
+        if (A.coach?.isEnabled?.() === false) return;
         insertAnalyticsV2();
         const snap=rangeSnapshot(days);
         const score=document.getElementById('v10-analytics-score'); if(score) score.textContent=String(snap.score);
@@ -1245,6 +1249,7 @@
     }
 
     function coachPlan() {
+        if (A.coach?.isEnabled?.() === false) return null;
         const snap=rangeSnapshot(7);
         const targets=A.storage?.macroTargets?.()||{p:0,f:0,c:0};
         const remainingProtein=Math.max(0,Math.round(Number(targets.p||0)-Number(root.macros?.p||0)));
@@ -1263,6 +1268,7 @@
 
     function renderCoachV2() {
         const plan=coachPlan();
+        if (!plan) return;
         const status=document.getElementById('coach-status'); if(status) status.textContent=plan.status;
         const msg=document.getElementById('coach-message'); if(msg) msg.textContent=plan.message;
         const sub=document.getElementById('coach-submessage'); if(sub) sub.textContent=plan.sub;
@@ -1271,6 +1277,7 @@
         if(!actions){ actions=document.createElement('div'); actions.className='coach-primary-action'; card.appendChild(actions); }
         actions.innerHTML=`<button class="gradient-bg primary-btn" id="v10-coach-action"><i class="fa-solid fa-bolt"></i> ${esc(plan.action)}</button><span class="coach-confidence"><i class="fa-solid fa-signal"></i> Впевненість: ${esc(plan.confidence)}</span>`;
         actions.querySelector('#v10-coach-action')?.addEventListener('click',()=>{
+            if (A.coach?.isEnabled?.() === false) return;
             if(plan.target && A.router?.go) A.router.go(plan.target,{source:document.querySelector(`.nav-item[data-target="${plan.target}"]`)});
             if(plan.exerciseId) setTimeout(()=>{
                 const card=findExerciseCard(plan.exerciseId);
@@ -1280,6 +1287,12 @@
             A.haptics.tap();
         });
     }
+
+    root.addEventListener('achilles:coach-changed', () => {
+        if (A.coach?.isEnabled?.() === false) return;
+        renderCoachV2();
+        renderAnalyticsV2();
+    });
 
     /* -------------------- Dashboard bridge -------------------- */
     const oldWeeklyRender = A.weekly?.render?.bind(A.weekly);
