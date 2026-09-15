@@ -1496,10 +1496,12 @@
         window.workoutInputTemplate = function(w, index) {
             const base = `wx-${w.id}-${index}`;
             const addBtn = (handler) => `<button class="add-btn primary-btn gradient-bg workout-add" onclick="${handler}">+</button>`;
+            const separatorBtn = (inputId) => `<button class="set-separator-btn" type="button" onclick="insertSetSeparator('${inputId}')" aria-label="Додати роздільник між підходами" title="Додати наступний підхід">;</button>`;
 
             if (w.kind === 'strength_weighted') {
                 return `<div class="exercise-input-row">
                     <input type="text" inputmode="numeric" id="${base}-reps" placeholder="Повтори: 12,10,8">
+                    ${separatorBtn(`${base}-reps`)}
                     <input type="text" inputmode="decimal" id="${base}-weight" placeholder="Вага, кг">
                     ${addBtn(`logStrengthExercise('${w.id}','${base}-reps','${base}-weight')`)}
                 </div>`;
@@ -1513,6 +1515,7 @@
                 return `<div class="exercise-input-stack">
                     <div class="exercise-input-row">
                         <input type="text" inputmode="numeric" id="${base}-reps" placeholder="Повтори: 15,12,10">
+                        ${separatorBtn(`${base}-reps`)}
                         ${addBtn(`logBodyweightExercise('${w.id}','${base}-reps','${base}-weight')`)}
                     </div>
                     ${extra}
@@ -1596,6 +1599,15 @@
                 .map(v => Number(String(v).replace(',', '.')))
                 .filter(v => Number.isFinite(v) && v >= 0)
                 .map(v => integer ? Math.round(v) : v);
+        };
+
+        window.insertSetSeparator = function(inputId) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const value = String(input.value || '').replace(/[;,\s]+$/, '');
+            input.value = value ? `${value};` : '';
+            input.focus();
+            try { input.setSelectionRange(input.value.length, input.value.length); } catch (_) {}
         };
 
         window.evaluateStrengthPR = function(name, sets) {

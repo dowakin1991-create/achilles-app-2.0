@@ -25,12 +25,12 @@ test('an offline versioned catalog request uses the current precached shell', as
         fetch: async () => {throw new Error('offline');}
     });
     handlers.get('fetch')({
-        request: new Request('https://example.test/achilles/foods_ua_10000.js?v=10.15.1'),
+        request: new Request('https://example.test/achilles/foods_ua_10000.js?v=10.15.2'),
         respondWith: promise => {response = promise;},
         waitUntil: promise => waits.push(promise)
     });
     assert.equal(await (await response).text(), 'local catalog');
-    assert.equal(requestedCache, 'achilles-os-v10-15-1');
+    assert.equal(requestedCache, 'achilles-os-v10-15-2');
     assert.equal(matched.ignoreSearch, true);
     await Promise.all(waits);
 });

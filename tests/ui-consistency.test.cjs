@@ -37,3 +37,11 @@ test('calorie calculations use per-100g scaling and Mifflin-St Jeor inputs', () 
     assert.match(sync, /\(10 \* weight\) \+ \(6\.25 \* height\) - \(5 \* age\)/);
     assert.match(sync, /bmr \+= \(gender === 'male'\) \? 5 : -161/);
 });
+
+test('strength input offers a visible set separator on mobile keyboards', () => {
+    const sync = fs.readFileSync(path.join(root, 'firebase-sync.js'), 'utf8');
+    const css = fs.readFileSync(path.join(root, 'app.css'), 'utf8');
+    assert.match(sync, /insertSetSeparator/);
+    assert.match(sync, /value \? `\$\{value\};`/);
+    assert.match(css, /\.set-separator-btn/);
+});
