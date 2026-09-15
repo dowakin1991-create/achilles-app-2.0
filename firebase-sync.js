@@ -763,7 +763,7 @@
             const linePath = buildSmoothPath(points);
             const areaPath = `${linePath} L ${points.at(-1).x} ${height - padBottom + 4} L ${points[0].x} ${height - padBottom + 4} Z`;
             const current = points.at(-1)?.weight ?? 0;
-            const trend = points.length > 1 ? Math.round((points.at(-1).weight - points[0].weight) * 10) / 10 : 0;
+            const trend = points.length > 1 ? Math.round((points.at(-1).weight - points[0].weight) * 10) / 10 : null;
             const avg = Math.round((chartData.reduce((sum, p) => sum + p.weight, 0) / chartData.length) * 10) / 10;
 
             const labels = chartData.map(d => `<span>${window.formatWeightDate(d.date)}</span>`).join('');
@@ -777,7 +777,7 @@
                 <div class="weight-chart-shell">
                     <div class="weight-chart-headline">
                         <div class="weight-chip"><span>Поточна</span><strong>${current.toFixed(1)} кг</strong></div>
-                        <div class="weight-chip"><span>Тренд 7 днів</span><strong>${trend > 0 ? '+' : ''}${trend.toFixed(1)} кг</strong></div>
+                        <div class="weight-chip"><span>Зміна між записами</span><strong>${trend === null ? '—' : `${trend > 0 ? '+' : ''}${trend.toFixed(1)} кг`}</strong></div>
                         <div class="weight-chip"><span>Середня</span><strong>${avg.toFixed(1)} кг</strong></div>
                     </div>
                     <div class="weight-svg-wrap">

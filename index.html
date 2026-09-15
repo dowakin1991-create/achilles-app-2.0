@@ -10,12 +10,12 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=10.14.2" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=10.14.2" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=10.14.2" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=10.15.1" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=10.15.1" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=10.15.1" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="10.14.2" name="achilles-build"/>
+<meta content="10.15.1" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
@@ -40,7 +40,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=10.14.2" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=10.15.1" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -429,7 +429,7 @@
 <h1>Твій <span class="gradient-text">РАЦІОН</span></h1>
 <p>Локальна база, улюблені продукти та онлайн-пошук в одному потоці.</p>
 </div>
-<div class="workspace-header-chip"><i class="fa-solid fa-hard-drive"></i><span>Food Core 5000</span></div>
+<div class="workspace-header-chip"><i class="fa-solid fa-hard-drive"></i><span>638 продуктів</span></div>
 </section>
 <section class="workspace-block premium-section">
 <div class="workspace-block-head">
@@ -447,7 +447,7 @@
 <input id="food-search" oninput="onSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();onSearchInput();}" placeholder="Напр. гречка, сир 9%, куряче філе..." type="text"/>
 </div>
 </div>
-<div class="food-api-status" data-state="local" id="food-api-status"><span class="food-api-dot"></span><span>5000 локальних позицій · працює без інтернету</span></div>
+<div class="food-api-status" data-state="local" id="food-api-status"><span class="food-api-dot"></span><span>638 продуктів · працює без інтернету</span></div>
 </div>
 </section>
 <section class="workspace-block premium-section results-section">
@@ -629,11 +629,12 @@
 </nav>
 </div>
 </div>
-<!-- ACHILLES FOOD CORE 5000 — local/offline database -->
-<script src="./foods_ua_5000.js?v=10.14.2"></script>
+<!-- ACHILLES FOOD CORE — 638 profiles / Ukrainian offline catalog — local/offline database -->
+<script src="./foods_ua_10000.js?v=10.15.1"></script>
+<script src="./foods_ua_extra.js?v=10.15.1"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.14.2"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=10.14.2"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.15.1"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=10.15.1"></script>
 
 
 
@@ -644,29 +645,30 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.14.2"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.15.1"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=10.14.2"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=10.15.1"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=10.14.2"></script>
+<script data-achilles-module="training.js" src="./training.js?v=10.15.1"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.14.2"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.14.2"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.14.2"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.15.1"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=10.14.2"></script>
 
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.14.2"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.15.1"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.15.1"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=10.15.1"></script>
+
+<script src="./food-search.js?v=10.15.1"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.15.1"></script>
 
 
 

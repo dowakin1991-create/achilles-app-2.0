@@ -64,6 +64,9 @@
 
     function parseCard(card){
         if (!card) return null;
+        // Keep the original per-100g values and identity, not rounded display text.
+        const registered = A.foodCardRegistry?.get(card.dataset.foodKey);
+        if (registered) return norm(registered);
         const title = card.querySelector('strong');
         const name = cleanName(title?.textContent || '');
         if (!name) return null;
@@ -338,99 +341,19 @@
     const canonical = Array.isArray(root.ACHILLES_FOOD_CORE_CANONICAL) ? root.ACHILLES_FOOD_CORE_CANONICAL : [];
     const index = Array.isArray(root.ACHILLES_FOOD_SEARCH_INDEX) ? root.ACHILLES_FOOD_SEARCH_INDEX : [];
     const meta = root.ACHILLES_FOOD_CORE_META || {searchRecords:index.length, canonicalProfiles:canonical.length};
-    const byId = new Map(canonical.map(item => [String(item.canonicalId || item.id), item]));
+    const search = root.AchillesFoodSearch.create(canonical, index);
+    const norm = root.AchillesFoodSearch.normalize;
+    const productCount = canonical.length;
+    const aliasCount = index.length;
 
-    // Replace the tiny legacy array with the curated local catalog.
-    if(canonical.length) root.foodDB = canonical;
+    if (canonical.length) root.foodDB = canonical;
 
-    function norm(value){
-        return String(value || '')
-            .toLocaleLowerCase('uk-UA')
-            .replace(/[’`ʼ]/g, "'")
-            .replace(/ё/g,'е')
-            .replace(/ы/g,'и')
-            .replace(/э/g,'е')
-            .replace(/[\\/_–—-]+/g,' ')
-            .replace(/[^0-9a-zа-яіїєґ%+']+/giu,' ')
-            .replace(/\s+/g,' ')
-            .trim();
+    function searchCustom(query) {
+        return search.searchCustom(A.nutritionRepo?.custom?.() || [], query);
     }
 
-    function tokens(value){ return norm(value).split(' ').filter(Boolean); }
-
-    function editDistanceLimited(a,b,limit=2){
-        if(a===b) return 0;
-        if(Math.abs(a.length-b.length)>limit) return limit+1;
-        const prev=Array.from({length:b.length+1},(_,i)=>i);
-        for(let i=1;i<=a.length;i++){
-            const cur=[i]; let rowMin=cur[0];
-            for(let j=1;j<=b.length;j++){
-                const cost=a[i-1]===b[j-1]?0:1;
-                cur[j]=Math.min(cur[j-1]+1,prev[j]+1,prev[j-1]+cost);
-                rowMin=Math.min(rowMin,cur[j]);
-            }
-            if(rowMin>limit) return limit+1;
-            for(let j=0;j<cur.length;j++) prev[j]=cur[j];
-        }
-        return prev[b.length];
-    }
-
-    function scoreText(text, query){
-        const t=norm(text), q=norm(query);
-        if(!q || !t) return -Infinity;
-        if(t===q) return 10000;
-        if(t.startsWith(q)) return 9000 - Math.min(500,t.length-q.length);
-        if(t.includes(q)) return 8000 - Math.min(700,t.indexOf(q)*5);
-
-        const tt=tokens(t), qt=tokens(q);
-        let score=0;
-        for(const term of qt){
-            let best=-Infinity;
-            for(let i=0;i<tt.length;i++){
-                const word=tt[i];
-                if(word===term) best=Math.max(best,1000-i*5);
-                else if(word.startsWith(term)) best=Math.max(best,850-i*5-Math.min(100,word.length-term.length));
-                else if(term.length>=4 && word.includes(term)) best=Math.max(best,650-i*5);
-                else if(term.length>=5){
-                    const maxDistance=term.length>=8?2:1;
-                    const d=editDistanceLimited(word,term,maxDistance);
-                    if(d<=maxDistance) best=Math.max(best,500-d*120-i*5);
-                }
-            }
-            if(best===-Infinity) return -Infinity;
-            score+=best;
-        }
-        return 5000+score;
-    }
-
-    function searchCustom(query){
-        const custom = A.nutritionRepo?.custom?.() || [];
-        return custom
-            .map(item=>({item,score:scoreText(item.name,query)}))
-            .filter(x=>Number.isFinite(x.score))
-            .sort((a,b)=>b.score-a.score)
-            .map(x=>x.item);
-    }
-
-    function searchCore(query, limit=48){
-        const q=norm(query);
-        if(!q) return [];
-        const bestById=new Map();
-        for(const rec of index){
-            const s=scoreText(rec.q,q);
-            if(!Number.isFinite(s)) continue;
-            const id=String(rec.id);
-            const old=bestById.get(id);
-            if(!old || s>old.score) bestById.set(id,{score:s,term:rec.q});
-        }
-        return [...bestById.entries()]
-            .sort((a,b)=>b[1].score-a[1].score || String(byId.get(a[0])?.name||'').localeCompare(String(byId.get(b[0])?.name||''),'uk'))
-            .slice(0,limit)
-            .map(([id,match])=>{
-                const item=byId.get(id);
-                return item ? {...item, source:'built-in', matchTerm:match.term} : null;
-            })
-            .filter(Boolean);
+    function searchCore(query, limit = 48) {
+        return search.search(query, limit);
     }
 
     function dedupeCanonical(items){
@@ -468,10 +391,11 @@
         const recent=(A.nutritionRepo?.recent?.()||[]).filter(x=>x && x.name);
         if(recent.length){
             render(recent);
-            setStatus(`Нещодавні · Food Core ${meta.searchRecords || 5000} · без інтернету`);
+            setStatus(`Нещодавні · ${productCount} продуктів · без інтернету`);
         } else {
-            render([]);
-            setStatus(`Food Core ${meta.searchRecords || 5000} · введи назву продукту`);
+            const box = document.getElementById('food-results');
+            if (box) box.innerHTML = '<div class="list-item food-core-empty"><strong>Знайди продукт</strong><span>Введи назву, наприклад «гречка варена» або «сир 9%».</span></div>';
+            setStatus(`${productCount} продуктів · ${aliasCount.toLocaleString('uk-UA')} пошукових назв · офлайн`);
         }
     }
 
@@ -500,8 +424,8 @@
         const combined=dedupeCanonical([...custom,...core]);
         render(combined);
         setStatus(combined.length
-            ? `${combined.length} збігів · ${meta.searchRecords || 5000} локальних позицій`
-            : `Збігів немає · ${meta.searchRecords || 5000} локальних позицій`);
+            ? `${combined.length} збігів · ${productCount} продуктів`
+            : `Збігів немає · ${productCount} продуктів`);
     };
 
     // Compatibility: all old online-search entry points are now strictly local.
@@ -522,10 +446,10 @@
             input.onkeydown=function(event){ if(event.key==='Enter'){event.preventDefault();root.onSearchInput();} };
         }
         const chip=document.querySelector('#tab-food .workspace-header-chip span');
-        if(chip) chip.textContent=`Food Core ${meta.searchRecords || 5000}`;
+        if(chip) { chip.textContent=`${productCount} продуктів`; chip.title=`${aliasCount.toLocaleString('uk-UA')} пошукових назв та синонімів`; }
         const chipIcon=document.querySelector('#tab-food .workspace-header-chip i');
         if(chipIcon){ chipIcon.className='fa-solid fa-hard-drive'; }
-        setStatus(`${meta.searchRecords || 5000} локальних позицій · без API · працює офлайн`);
+        setStatus(`${productCount} продуктів · без API · працює офлайн`);
         try{ localStorage.removeItem('achilles_food_cache_v2'); }catch(_){}
         if(root.currentFoodFilter!=='fav') root.onSearchInput();
     }
@@ -533,10 +457,9 @@
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(installUi,0),{once:true});
     else setTimeout(installUi,0);
     root.addEventListener('pageshow',()=>setTimeout(installUi,80));
-    root.addEventListener('online',()=>setTimeout(()=>setStatus(`${meta.searchRecords || 5000} локальних позицій · інтернет для пошуку не потрібен`),20));
-    root.addEventListener('offline',()=>setTimeout(()=>setStatus(`${meta.searchRecords || 5000} локальних позицій · офлайн режим активний`),20));
+    root.addEventListener('online',()=>setTimeout(()=>setStatus(`${productCount} продуктів · інтернет для пошуку не потрібен`),20));
+    root.addEventListener('offline',()=>setTimeout(()=>setStatus(`${productCount} продуктів · офлайн режим активний`),20));
 
-    root.ACHILLES_BUILD='10.14.2';
-    console.info('[Achilles OS] V10.14.2 modular runtime + Food Core active', meta);
+    root.ACHILLES_BUILD='10.15.1';
+    console.info('[Achilles OS] V10.15.1 local food catalog active', meta);
 })(window);
-

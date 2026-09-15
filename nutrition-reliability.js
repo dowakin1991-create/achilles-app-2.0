@@ -543,8 +543,8 @@
         if (!key) return '';
         const inputId = `food-input-${key}`;
         const online = n.source && !['local','built-in','custom'].includes(n.source);
-        const sourceLabel = custom ? 'Свій продукт' : (n.source === 'cache' ? 'Кеш' : (online ? 'Open Food Facts' : 'Локально'));
-        return `<div class="list-item" style="${online ? 'border-left:3px solid var(--primary);' : ''}">
+        const sourceLabel = custom ? 'Свій продукт' : (n.nutrientSource || (n.source === 'cache' ? 'Кеш' : (online ? 'Open Food Facts' : 'Локально')));
+        return `<div class="list-item" data-food-key="${key}" style="${online ? 'border-left:3px solid var(--primary);' : ''}">
             <div style="display:flex;justify-content:space-between;width:100%;align-items:flex-start;margin-bottom:12px;gap:12px;">
                 <div style="min-width:0;">
                     <strong style="font-size:18px;overflow-wrap:anywhere;">${esc(n.name)}</strong><br>
@@ -610,4 +610,3 @@
 
     console.info('[Achilles OS] V10.4 food compatibility hotfix active');
 })(window);
-

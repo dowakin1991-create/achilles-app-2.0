@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'achilles-os-v10-14-2';
+const CACHE_VERSION = 'achilles-os-v10-15-1';
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,7 +9,8 @@ const APP_SHELL = [
   "./icon-192.png",
   "./icon-512.png",
   "./icon-maskable-512.png",
-  "./foods_ua_5000.js",
+  "./foods_ua_10000.js",
+  "./foods_ua_extra.js",
   "./firebase-sync.js",
   "./platform.js",
   "./legacy-runtime.js",
@@ -19,7 +20,8 @@ const APP_SHELL = [
   "./system-ui.js",
   "./nutrition-reliability.js",
   "./pwa.js",
-  "./nutrition-local.js"
+  "./nutrition-local.js",
+  "./food-search.js"
 ];
 
 self.addEventListener('install', event => {
@@ -67,7 +69,11 @@ self.addEventListener('fetch', event => {
 
   // App assets: instant cached response, refresh quietly in the background.
   event.respondWith((async () => {
-    const cached = await caches.match(request);
+    const cache = await caches.open(CACHE_VERSION);
+    // HTML versions its assets with ?v=. Precached shell keys have no query.
+    // Only the current cache may supply this fallback, never an older release.
+    const shellAsset = APP_SHELL.some(path => new URL(path, self.location.href).pathname === url.pathname);
+    const cached = await cache.match(request, { ignoreSearch: shellAsset });
     if (cached) {
       event.waitUntil(fetch(request, { cache: 'no-cache' })
         .then(async response => {

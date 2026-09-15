@@ -2196,7 +2196,8 @@ body::after {
 .weight-entry-controls { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; }
 .weight-entry-controls input,.weight-entry-controls button { margin:0 !important; min-height:54px !important; }
 .weight-entry-controls button { padding:0 20px !important; }
-.premium-weight-chart { height:230px !important; margin-top:24px !important; padding:20px 12px 0 !important; border-radius:24px !important; background:color-mix(in srgb,var(--input-bg) 45%,transparent) !important; border:1px solid var(--glass-border) !important; }
+/* The summary stacks on mobile; the chart must contribute its full height. */
+.premium-weight-chart { display:block; height:auto !important; min-height:0; min-width:0; width:100%; margin-top:24px !important; padding:20px 12px !important; border-radius:24px !important; background:color-mix(in srgb,var(--input-bg) 45%,transparent) !important; border:1px solid var(--glass-border) !important; }
 .chart-bar { border-radius:999px 999px 6px 6px !important; box-shadow:0 0 18px rgba(var(--primary-rgb),.18); }
 
 /* BLOCK 06 */
@@ -3000,13 +3001,12 @@ html.ios-standalone #main-app-window .nav-bar {
 .diary-delete-v110:hover,.diary-delete-v110:focus-visible{color:var(--danger);border-color:rgba(255,255,255,0.12);box-shadow:0 8px 18px rgba(0,0,0,0.22);}
 .diary-delete-v110:active{transform:scale(.96);}
 .journal-empty{padding:26px 18px;text-align:center;color:var(--text-muted);font-size:14px;}
-.premium-weight-chart{min-height:340px;height:auto;padding:0;margin-top:18px;background:transparent;border:0;}
-.weight-chart-shell{display:grid;gap:16px;}
+.weight-chart-shell{display:grid;gap:16px;min-width:0;width:100%;}
 .weight-chart-headline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
 .weight-chip{padding:14px 16px;border-radius:18px;background:var(--input-bg);border:1px solid var(--glass-border);}
 .weight-chip span{display:block;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
 .weight-chip strong{display:block;font-size:20px;line-height:1.1;color:var(--text-main);font-weight:800;}
-.weight-svg-wrap{padding:18px;border-radius:24px;background:linear-gradient(180deg,rgba(var(--primary-rgb),0.08),rgba(255,255,255,0.02));border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);}
+.weight-svg-wrap{min-width:0;padding:18px;border-radius:24px;background:linear-gradient(180deg,rgba(var(--primary-rgb),0.08),rgba(255,255,255,0.02));border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);}
 .weight-svg{display:block;width:100%;height:auto;overflow:visible;}
 .weight-axis-line{stroke:rgba(255,255,255,0.12);stroke-width:2;}
 .weight-svg-label{font-size:13px;font-weight:800;fill:var(--primary);}
@@ -3326,4 +3326,3 @@ html.ios-standalone .premium-surface {
     .v1013-bolt,.v1013-branch,.v1013-impact-flash,.v1013-shockwave,.v1013-sparks i,.v1013-splash-logo,.v1013-splash-stage { animation:none !important; }
     #splash-screen.v1013-logo-visible .v1013-splash-logo { opacity:1; transform:translate3d(-50%,-50%,0) scale(1); }
 }
-
