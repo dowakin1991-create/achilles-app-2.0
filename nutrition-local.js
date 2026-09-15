@@ -267,7 +267,10 @@
             if (!isCustomItem(item,card)) return;
 
             const fav=card.querySelector('.fav-btn');
-            if (!fav || card.querySelector('.food-delete-live-v105')) return;
+            // Current cards already contain a delete control from the renderer.
+            // Keep this decorator only as a fallback for legacy cards; otherwise
+            // it creates a second trash button on custom products.
+            if (!fav || card.querySelector('.food-delete-live-v105, .food-delete-btn, .food-delete-btn-v104')) return;
 
             const btn=document.createElement('button');
             btn.type='button';
