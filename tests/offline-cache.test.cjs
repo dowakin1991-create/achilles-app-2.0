@@ -30,7 +30,8 @@ test('an offline versioned catalog request uses the current precached shell', as
         waitUntil: promise => waits.push(promise)
     });
     assert.equal(await (await response).text(), 'local catalog');
-    assert.equal(requestedCache, 'achilles-os-v10-15-2');
+    const build = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8').match(/content="([0-9.]+)" name="achilles-build"/)[1];
+    assert.equal(requestedCache, 'achilles-os-v' + build.replaceAll('.', '-'));
     assert.equal(matched.ignoreSearch, true);
     await Promise.all(waits);
 });

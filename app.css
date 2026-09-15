@@ -1665,7 +1665,7 @@ button,
 .exercise-card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; }
 .exercise-card-head h4 { font-size:19px; margin:0 0 5px; font-weight:760; letter-spacing:-.3px; }
 .exercise-card-head p { font-size:13px; line-height:1.35; opacity:.58; margin:0; }
-.exercise-input-row { display:grid; grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr) 58px; gap:9px; align-items:stretch; }
+.exercise-input-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) 58px; gap:9px; align-items:stretch; }
 .exercise-input-row > input { margin:0 !important; min-width:0; min-height:54px; padding:13px 14px !important; font-size:14px !important; }
 .exercise-input-row > input:only-of-type { grid-column:1 / 3; }
 .set-separator-btn { margin:0; min-width:0; min-height:54px; padding:0 !important; border-radius:17px; border:1px solid var(--glass-border); background:var(--input-bg); color:var(--primary); font-size:22px; font-weight:800; cursor:pointer; }
@@ -1682,11 +1682,10 @@ button,
 #live-cardio-fields { grid-template-columns:1fr; }
 
 @media (max-width: 620px) {
-    .exercise-input-row { grid-template-columns:minmax(0,1fr) 42px 56px; }
+    .exercise-input-row { grid-template-columns:minmax(0,1fr) 56px; }
     .exercise-input-row > input:nth-of-type(2) { grid-column:1 / 2; }
-    .exercise-input-row > .workout-add { grid-column:3; grid-row:1 / span 2; }
+    .exercise-input-row > .workout-add { grid-column:2; grid-row:1 / span 2; }
     .exercise-input-row > input:only-of-type { grid-column:1; }
-    .exercise-input-row > input:only-of-type + .set-separator-btn { grid-column:2; grid-row:1; }
     .live-field-grid { grid-template-columns:1fr; }
 }
 
@@ -3331,3 +3330,22 @@ html.ios-standalone .premium-surface {
     .v1013-bolt,.v1013-branch,.v1013-impact-flash,.v1013-shockwave,.v1013-sparks i,.v1013-splash-logo,.v1013-splash-stage { animation:none !important; }
     #splash-screen.v1013-logo-visible .v1013-splash-logo { opacity:1; transform:translate3d(-50%,-50%,0) scale(1); }
 }
+
+/* Set lists have their own grid so cardio fields keep their original layout. */
+.exercise-set-row { grid-template-columns:minmax(0,1fr) 44px 56px; }
+.exercise-set-row > input:first-of-type { grid-column:1; grid-row:1; }
+.exercise-set-row > input:nth-of-type(2) { grid-column:1; grid-row:2; }
+.exercise-set-row > .set-separator-btn { grid-column:2; grid-row:1; }
+.exercise-set-row > input:nth-of-type(2) + .set-separator-btn { grid-row:2; }
+.exercise-set-row > .workout-add { grid-column:3; grid-row:1 / span 2; }
+.exercise-reps-only > .workout-add { grid-row:1; }
+.premium-search-field input { padding-right:56px !important; }
+.premium-search-field .search-clear-btn {
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    display:flex; align-items:center; justify-content:center;
+    width:44px; height:44px; min-width:44px; margin:0; padding:0;
+    border:0; border-radius:12px; background:transparent;
+    color:var(--text-muted); box-shadow:none; cursor:pointer;
+}
+.premium-search-field .search-clear-btn:focus-visible { outline:2px solid var(--primary); }
+.premium-search-field .search-clear-btn:hover { color:var(--primary); }

@@ -1496,13 +1496,14 @@
         window.workoutInputTemplate = function(w, index) {
             const base = `wx-${w.id}-${index}`;
             const addBtn = (handler) => `<button class="add-btn primary-btn gradient-bg workout-add" onclick="${handler}">+</button>`;
-            const separatorBtn = (inputId) => `<button class="set-separator-btn" type="button" onclick="insertSetSeparator('${inputId}')" aria-label="Додати роздільник між підходами" title="Додати наступний підхід">;</button>`;
+            const separatorBtn = (inputId) => `<button class="set-separator-btn" type="button" onpointerdown="event.preventDefault()" onclick="insertSetSeparator('${inputId}')" aria-label="Додати роздільник між підходами" title="Додати наступний підхід">;</button>`;
 
             if (w.kind === 'strength_weighted') {
-                return `<div class="exercise-input-row">
-                    <input type="text" inputmode="numeric" id="${base}-reps" placeholder="Повтори: 12,10,8">
+                return `<div class="exercise-input-row exercise-set-row">
+                    <input type="text" inputmode="numeric" id="${base}-reps" aria-label="Повтори за підходами" placeholder="Повтори: 12;10;8">
                     ${separatorBtn(`${base}-reps`)}
-                    <input type="text" inputmode="decimal" id="${base}-weight" placeholder="Вага, кг">
+                    <input type="text" inputmode="decimal" id="${base}-weight" aria-label="Вага за підходами, кг" placeholder="Вага, кг: 12,5;10;8">
+                    ${separatorBtn(`${base}-weight`)}
                     ${addBtn(`logStrengthExercise('${w.id}','${base}-reps','${base}-weight')`)}
                 </div>`;
             }
@@ -1513,8 +1514,8 @@
                        <input class="exercise-extra-weight" type="number" inputmode="decimal" step="0.5" id="${base}-weight" placeholder="Дод. вага, кг" style="display:none;">`
                     : '';
                 return `<div class="exercise-input-stack">
-                    <div class="exercise-input-row">
-                        <input type="text" inputmode="numeric" id="${base}-reps" placeholder="Повтори: 15,12,10">
+                    <div class="exercise-input-row exercise-set-row exercise-reps-only">
+                        <input type="text" inputmode="numeric" id="${base}-reps" aria-label="Повтори за підходами" placeholder="Повтори: 15;12;10">
                         ${separatorBtn(`${base}-reps`)}
                         ${addBtn(`logBodyweightExercise('${w.id}','${base}-reps','${base}-weight')`)}
                     </div>

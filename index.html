@@ -10,12 +10,12 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=10.15.3" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=10.15.3" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=10.15.3" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=10.15.4" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=10.15.4" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=10.15.4" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="10.15.3" name="achilles-build"/>
+<meta content="10.15.4" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
@@ -40,7 +40,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=10.15.3" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=10.15.4" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -435,6 +435,7 @@
 <div class="premium-search-field">
 <i class="fa-solid fa-magnifying-glass"></i>
 <input id="food-search" oninput="onSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();onSearchInput();}" placeholder="Напр. гречка, сир 9%, куряче філе..." type="text"/>
+<button class="search-clear-btn" type="button" aria-label="Очистити пошук" onclick="clearSearchField('food-search')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
 </div>
 </div>
 <div class="food-api-status" data-state="local" id="food-api-status"><span class="food-api-dot"></span><span>638 продуктів · працює без інтернету</span></div>
@@ -487,6 +488,7 @@
 <div class="premium-search-field">
 <i class="fa-solid fa-magnifying-glass"></i>
 <input id="workout-search" oninput="searchWorkout()" placeholder="Біг, груди, спина..." type="text"/>
+<button class="search-clear-btn" type="button" aria-label="Очистити пошук" onclick="clearSearchField('workout-search')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
 </div>
 </div>
 <div class="premium-results-grid exercise-results-grid" id="workout-list-container"></div>
@@ -620,11 +622,11 @@
 </div>
 </div>
 <!-- ACHILLES FOOD CORE — 638 profiles / Ukrainian offline catalog — local/offline database -->
-<script src="./foods_ua_10000.js?v=10.15.3"></script>
-<script src="./foods_ua_extra.js?v=10.15.3"></script>
+<script src="./foods_ua_10000.js?v=10.15.4"></script>
+<script src="./foods_ua_extra.js?v=10.15.4"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.15.3"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=10.15.3"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.15.4"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=10.15.4"></script>
 
 
 
@@ -635,30 +637,30 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.15.3"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.15.4"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=10.15.3"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=10.15.4"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=10.15.3"></script>
+<script data-achilles-module="training.js" src="./training.js?v=10.15.4"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.15.3"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.15.3"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.15.3"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.15.4"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=10.15.3"></script>
 
-<script src="./food-search.js?v=10.15.3"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.15.3"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.15.4"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.15.4"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=10.15.4"></script>
+
+<script src="./food-search.js?v=10.15.4"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.15.4"></script>
 
 
 

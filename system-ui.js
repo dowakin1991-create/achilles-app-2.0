@@ -17,3 +17,12 @@
     new MutationObserver(syncSystemChrome).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme','data-color'] });
 })();
 
+
+// Dispatch the same input event as typing to refresh results and active filters.
+window.clearSearchField = function(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.focus();
+};
