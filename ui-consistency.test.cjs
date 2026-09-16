@@ -1,0 +1,47 @@
+const {test} = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const root = path.join(__dirname, '..');
+
+test('status does not duplicate the journal workspace and navigation targets are valid', () => {
+    const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    assert.doesNotMatch(html, /journal-shortcut-section|Усі записи винесені в окрему вкладку/);
+    const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
+    assert.equal(new Set(ids).size, ids.length, 'duplicate HTML ids');
+    const targets = [...html.matchAll(/class="[^"]*\bnav-item\b[^"]*"[^>]*data-target="([^"]+)"/g)].map(m => m[1]);
+    for (const target of targets) assert.ok(ids.includes(target), `missing navigation target: ${target}`);
+});
+
+test('custom food delete decorator is a legacy fallback and cannot add a second trash button', () => {
+    const source = fs.readFileSync(path.join(root, 'nutrition-local.js'), 'utf8');
+    assert.match(source, /food-delete-live-v105, \.food-delete-btn, \.food-delete-btn-v104/);
+});
+
+test('diary entries use theme-aware icons instead of fixed food and workout emojis', () => {
+    for (const file of ['app-runtime.js', 'nutrition-local.js', 'nutrition-reliability.js']) {
+        const source = fs.readFileSync(path.join(root, file), 'utf8');
+        assert.doesNotMatch(source, /🥗/);
+    }
+    const sync = fs.readFileSync(path.join(root, 'firebase-sync.js'), 'utf8');
+    assert.match(sync, /diary-food-icon/);
+    assert.match(sync, /diary-workout-icon/);
+});
+
+test('calorie calculations use per-100g scaling and Mifflin-St Jeor inputs', () => {
+    const app = fs.readFileSync(path.join(root, 'app-runtime.js'), 'utf8');
+    const sync = fs.readFileSync(path.join(root, 'firebase-sync.js'), 'utf8');
+    assert.match(app, /const ratio = weight \/ 100/);
+    assert.match(app, /normalized\.kcal \* ratio/);
+    assert.match(app, /normalized\.p \* ratio/);
+    assert.match(sync, /\(10 \* weight\) \+ \(6\.25 \* height\) - \(5 \* age\)/);
+    assert.match(sync, /bmr \+= \(gender === 'male'\) \? 5 : -161/);
+});
+
+test('strength input offers a visible set separator on mobile keyboards', () => {
+    const sync = fs.readFileSync(path.join(root, 'firebase-sync.js'), 'utf8');
+    const css = fs.readFileSync(path.join(root, 'app.css'), 'utf8');
+    assert.match(sync, /insertSetSeparator/);
+    assert.match(sync, /value \? `\$\{value\};`/);
+    assert.match(css, /\.set-separator-btn/);
+});
