@@ -5,10 +5,10 @@
     const shift=(d,n)=>new Date(stamp(d)+n*86400000).toISOString().slice(0,10);
     const validDate=d=>Number.isFinite(stamp(d))&&shift(d,0)===d;
     function dates(from,to){const result=[];if(!validDate(from)||!validDate(to))return result;for(let d=from;d<=to&&result.length<370;d=shift(d,1))result.push(d);return result;}
-    const empty=()=>({version:1,config:null,completions:{},actions:{},feedback:{}});
+    const empty=()=>({version:2,config:null,preferences:null,completions:{},actions:{},feedback:{}});
     const newer=(a,b)=>{if(!a)return b;if(!b)return a;const delta=Number(b.updatedAt||0)-Number(a.updatedAt||0);return delta>0?b:delta<0?a:JSON.stringify(b)>JSON.stringify(a)?b:a;};
     function merge(a={},b={}){
-        const out=empty();out.config=newer(a.config,b.config)||null;
+        const out=empty();out.config=newer(a.config,b.config)||null;out.preferences=newer(a.preferences,b.preferences)||null;
         for(const bucket of ['completions','actions','feedback']){
             for(const source of [a[bucket],b[bucket]])for(const [key,value] of Object.entries(source||{})){
                 if(!/^[\w:.-]+$/.test(key)||!value||typeof value!=='object')continue;
@@ -77,9 +77,9 @@
         const baseline=stats(input,shift(input.today,-7),shift(input.today,-1),engine);
         const recently=Object.values(input.state.actions||{}).filter(a=>a.status!=='active'&&stamp(input.today)-stamp(a.closedDate||a.startDate)<7*86400000).map(a=>a.kind);
         const candidates=[];
-        if(baseline.completeDays<3)candidates.push({id:'data',evidence:`За попередні 7 днів підтверджено ${baseline.completeDays} повних днів. Без цього порівняння харчування ненадійне.`});
+        if(input.state.preferences?.nutrition!==false && baseline.completeDays<3)candidates.push({id:'data',evidence:`За попередні 7 днів підтверджено ${baseline.completeDays} повних днів. Без цього порівняння харчування ненадійне.`});
         candidates.push(...analysis.insights.filter(i=>tasks[i.id]&&i.id!=='data'));
-        if(schedule(input.state.config,input.today,shift(input.today,6)).length)candidates.push({id:'schedule',evidence:'Використаємо графік, який ти зберіг у профілі.'});
+        if(input.state.preferences?.training!==false && schedule(input.state.config,input.today,shift(input.today,6)).length)candidates.push({id:'schedule',evidence:'Використаємо графік, який ти зберіг у Coach.'});
         const selected=candidates.find(i=>!recently.includes(i.id));
         if(!selected)return null;
         return {...tasks[selected.id],kind:selected.id,evidence:selected.evidence,baseline};

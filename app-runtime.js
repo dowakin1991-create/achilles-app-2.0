@@ -1190,7 +1190,7 @@
 
     function insertAnalyticsV2() {
         if (document.getElementById('analytics-v2-shell')) return;
-        const coachSection=document.querySelector('#tab-dashboard .coach-section');
+        const coachSection=document.querySelector('#tab-coach .coach-section');
         if(!coachSection) return;
         const section=document.createElement('section');
         section.className='premium-section analytics-v2-section';
@@ -1267,7 +1267,7 @@
         if(!actions){ actions=document.createElement('div'); actions.className='coach-primary-action'; card.appendChild(actions); }
         const cards=plan.insights.map(i=>`
             <article class="coach-insight"><h3>${esc(i.title)}</h3><p>${esc(i.evidence)}</p><p class="coach-advice">${esc(i.advice)}</p>
-            <button type="button" class="secondary" data-coach-target="${esc(i.target)}">${i.target==='tab-journal'?'Відкрити журнал':i.target==='tab-dashboard'?'Переглянути вагу':i.target==='tab-profile'?'Відкрити профіль':'Відкрити раціон'}</button>
+            <button type="button" class="secondary" data-coach-target="${esc(i.target)}">${i.target==='tab-journal'?'Відкрити журнал':i.target==='tab-dashboard'?'Переглянути вагу':i.target==='tab-profile'?'Відкрити профіль':i.target==='tab-coach'?'Відкрити Coach':'Відкрити раціон'}</button>
             ${i.source ? `<a class="coach-source" href="${esc(i.source)}" target="_blank" rel="noopener noreferrer">Джерело орієнтира</a>`:''}</article>`);
         actions.innerHTML=`<details class="coach-more"><summary>Спостереження за записами (${cards.length})</summary><div class="coach-insights">${cards.join('')}</div></details>
             <details class="coach-limitations"><summary>Що враховано та чого бракує</summary>${(plan.limitations||[]).map(t=>`<p>${esc(t)}</p>`).join('')}</details>`;

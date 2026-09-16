@@ -10,17 +10,17 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=10.15.9" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=10.15.9" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=10.15.9" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=10.16.1" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=10.16.1" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=10.16.1" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="10.15.9" name="achilles-build"/>
+<meta content="10.16.1" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<script src="./coach-engine.js?v=10.15.9"></script>
-<script src="./coach-settings.js?v=10.15.9"></script>
-<script src="./coach-cycle.js?v=10.15.9"></script>
-<script src="./coach-workflow.js?v=10.15.9"></script>
+<script src="./coach-engine.js?v=10.16.1"></script>
+<script src="./coach-settings.js?v=10.16.1"></script>
+<script src="./coach-cycle.js?v=10.16.1"></script>
+<script src="./coach-workflow.js?v=10.16.1"></script>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
         (function() {
@@ -44,7 +44,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=10.15.9" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=10.16.1" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -296,6 +296,114 @@
 </div>
 </div>
 </section>
+<!-- BLOCK 05: BODY / WEIGHT -->
+<section class="premium-section body-section">
+<div class="section-heading-row">
+<div><span class="eyebrow">ТІЛО</span><h2>Вага</h2></div>
+</div>
+<div class="weight-premium-card premium-surface">
+<div class="weight-entry-row">
+<div class="weight-entry-copy">
+<strong>Нове зважування</strong>
+<span>Дивимось на тренд, а не на випадковий стрибок.</span>
+</div>
+<div class="weight-entry-controls">
+<input id="new-weight-input" inputmode="decimal" placeholder="Вага (кг)" type="number"/>
+<button class="gradient-bg primary-btn" onclick="logWeight()">Записати</button>
+</div>
+</div>
+<div class="chart-container premium-weight-chart" id="weight-chart-container"></div>
+</div>
+</section>
+</div>
+<!-- JOURNAL WORKSPACE -->
+<div class="tab-content premium-workspace premium-journal-workspace" id="tab-journal">
+<section class="workspace-header premium-surface premium-surface-ghost">
+<div>
+<span class="eyebrow">JOURNAL</span>
+<h1>Твій <span class="gradient-text">ЖУРНАЛ</span></h1>
+<p>Чіткий журнал за сьогодні: їжа, тренування і швидке керування записами без хаосу.</p>
+</div>
+<div class="workspace-header-chip"><i class="fa-solid fa-book-open"></i><span id="journal-count">0 записів</span></div>
+</section>
+<section class="workspace-block premium-section">
+<div class="workspace-block-head compact">
+<div><span class="eyebrow">СЬОГОДНІ</span><h2>Записи дня</h2></div>
+</div>
+<div class="journal-grid">
+<div class="journal-panel premium-surface">
+<div class="journal-panel-head"><span><i class="fa-solid fa-utensils"></i> Харчування</span></div>
+<div class="journal-list" id="food-list"></div>
+<div class="nutrition-completion"><label class="coach-setting-toggle"><span>Харчування за день внесено повністю</span><input id="nutrition-complete" type="checkbox" aria-describedby="nutrition-complete-status"/></label><p id="nutrition-complete-status" class="coach-settings-description" role="status"></p></div>
+</div>
+<div class="journal-panel premium-surface">
+<div class="journal-panel-head"><span><i class="fa-solid fa-dumbbell"></i> Тренування</span></div>
+<div class="journal-list" id="workout-list"></div>
+</div>
+</div>
+</section>
+</div>
+<!-- NUTRITION WORKSPACE -->
+<div class="tab-content premium-workspace premium-food-workspace" id="tab-food">
+<section class="workspace-header premium-surface premium-surface-ghost">
+<div>
+<span class="eyebrow">NUTRITION</span>
+<h1>Твій <span class="gradient-text">РАЦІОН</span></h1>
+<p>Локальна база, улюблені продукти та швидкий пошук в одному потоці.</p>
+</div>
+<div class="workspace-header-chip"><i class="fa-solid fa-hard-drive"></i><span>1000 продуктів</span></div>
+</section>
+<section class="workspace-block premium-section">
+<div class="workspace-block-head">
+<div><span class="eyebrow">ПОШУК</span><h2>Знайти продукт</h2></div>
+<button class="workspace-action-btn secondary" onclick="openCustomFood()"><i class="fa-solid fa-plus"></i><span>Свій продукт</span></button>
+</div>
+<div class="command-surface premium-surface">
+<div class="premium-segmented-control filter-tabs">
+<div class="filter-tab active" id="btn-food-all" onclick="setFoodFilter('all')">Пошук / Усі</div>
+<div class="filter-tab" id="btn-food-fav" onclick="setFoodFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
+</div>
+<div class="search-command-row food-search-v103-row">
+<div class="premium-search-field">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input id="food-search" oninput="onSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();onSearchInput();}" placeholder="Напр. гречка, сир 9%, куряче філе..." type="text"/>
+<button class="search-clear-btn" type="button" aria-label="Очистити пошук" onclick="clearSearchField('food-search')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+</div>
+</div>
+<div class="food-api-status" data-state="local" id="food-api-status"><span class="food-api-dot"></span><span>1000 продуктів · працює без інтернету</span></div>
+</div>
+</section>
+<section class="workspace-block premium-section results-section">
+<div class="workspace-block-head compact">
+<div><span class="eyebrow">РЕЗУЛЬТАТИ</span><h2>Продукти</h2></div>
+</div>
+<div class="premium-results-grid" id="food-results"></div>
+</section>
+</div>
+<!-- TRAINING WORKSPACE -->
+<div class="tab-content premium-workspace premium-training-workspace" id="tab-workout">
+<section class="workspace-block premium-section">
+<div class="workspace-block-head compact"><h1>Вправи</h1></div>
+<div class="command-surface premium-surface">
+<div class="premium-segmented-control filter-tabs">
+<div class="filter-tab active" id="btn-all-workouts" onclick="setWorkoutFilter('all')">Усі вправи</div>
+<div class="filter-tab" id="btn-fav-workouts" onclick="setWorkoutFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
+</div>
+<div class="premium-search-field">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input id="workout-search" oninput="searchWorkout()" placeholder="Біг, груди, спина..." type="text"/>
+<button class="search-clear-btn" type="button" aria-label="Очистити пошук" onclick="clearSearchField('workout-search')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+</div>
+</div>
+
+<div class="premium-results-grid exercise-results-grid" id="workout-list-container"></div>
+</section>
+</div>
+<!-- PROFILE WORKSPACE -->
+<div class="tab-content premium-workspace premium-coach-workspace" id="tab-coach">
+<section class="workspace-hero premium-surface premium-surface-ghost">
+<div class="profile-hero-copy"><span class="eyebrow">ACHILLES INTELLIGENCE</span><h1>Твій <span class="gradient-text">COACH</span></h1><p>Поради будуються лише на твоїх записах, цілях, навантаженні та відновленні.</p></div>
+</section>
 <!-- BLOCK 03: 7-DAY INTELLIGENCE -->
 <section class="premium-section weekly-section" data-coach-feature>
 <div class="section-heading-row">
@@ -370,110 +478,32 @@
 <div class="pr-chip" id="last-pr-chip" style="display:none;"><i class="fa-solid fa-trophy"></i><span id="last-pr-text"></span></div>
 </div>
 </section>
-<!-- BLOCK 05: BODY / WEIGHT -->
-<section class="premium-section body-section">
-<div class="section-heading-row">
-<div><span class="eyebrow">ТІЛО</span><h2>Вага</h2></div>
+<section class="premium-section coach-settings-panel">
+<div class="settings-card premium-surface">
+<div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-sliders"></i></div><div><span class="eyebrow">НАЛАШТУВАННЯ</span><h2>Що аналізувати</h2></div></div>
+<label class="coach-setting-toggle" for="coach-enabled-toggle"><span>Поради та оцінки Coach</span><input id="coach-enabled-toggle" type="checkbox" role="switch" checked aria-describedby="coach-settings-description" onchange="Achilles.coach.setEnabled(this.checked)"/></label>
+<p id="coach-settings-description" class="coach-settings-description">Вимкнення прибирає лише підказки й Score. Журнал та фактичні дані залишаються.</p><p id="coach-settings-status" class="coach-settings-description" role="status" aria-live="polite"></p>
+<div id="coach-preferences-fields" class="settings-fields coach-preferences">
+<label class="coach-setting-toggle"><span>Харчування й КБЖВ</span><input data-coach-focus="nutrition" type="checkbox" checked/></label>
+<label class="coach-setting-toggle"><span>Солодке та солодкі напої</span><input data-coach-focus="sweets" type="checkbox" checked/></label>
+<label class="coach-setting-toggle"><span>Вага й темп зміни</span><input data-coach-focus="weight" type="checkbox" checked/></label>
+<label class="coach-setting-toggle"><span>Тренування та відновлення</span><input data-coach-focus="training" type="checkbox" checked/></label>
+<label><span>Максимум спостережень</span><select id="coach-max-insights"><option value="2">2 — тільки пріоритетні</option><option value="4" selected>4 — збалансовано</option><option value="6">6 — детально</option></select></label>
+<label><span>Солодке: частка калорій, %</span><input id="coach-sweets-threshold" type="number" min="5" max="40" step="1" value="20" inputmode="numeric"/></label>
 </div>
-<div class="weight-premium-card premium-surface">
-<div class="weight-entry-row">
-<div class="weight-entry-copy">
-<strong>Нове зважування</strong>
-<span>Дивимось на тренд, а не на випадковий стрибок.</span>
-</div>
-<div class="weight-entry-controls">
-<input id="new-weight-input" inputmode="decimal" placeholder="Вага (кг)" type="number"/>
-<button class="gradient-bg primary-btn" onclick="logWeight()">Записати</button>
-</div>
-</div>
-<div class="chart-container premium-weight-chart" id="weight-chart-container"></div>
+<button id="coach-preferences-save" type="button" class="secondary">Зберегти налаштування Coach</button><p id="coach-preferences-status" class="coach-settings-description" role="status"></p>
 </div>
 </section>
-</div>
-<!-- JOURNAL WORKSPACE -->
-<div class="tab-content premium-workspace premium-journal-workspace" id="tab-journal">
-<section class="workspace-header premium-surface premium-surface-ghost">
-<div>
-<span class="eyebrow">JOURNAL</span>
-<h1>Твій <span class="gradient-text">ЖУРНАЛ</span></h1>
-<p>Чіткий журнал за сьогодні: їжа, тренування і швидке керування записами без хаосу.</p>
-</div>
-<div class="workspace-header-chip"><i class="fa-solid fa-book-open"></i><span id="journal-count">0 записів</span></div>
-</section>
-<section class="workspace-block premium-section">
-<div class="workspace-block-head compact">
-<div><span class="eyebrow">СЬОГОДНІ</span><h2>Записи дня</h2></div>
-</div>
-<div class="journal-grid">
-<div class="journal-panel premium-surface">
-<div class="journal-panel-head"><span><i class="fa-solid fa-utensils"></i> Харчування</span></div>
-<div class="journal-list" id="food-list"></div>
-<div class="nutrition-completion"><label class="coach-setting-toggle"><span>Харчування за день внесено повністю</span><input id="nutrition-complete" type="checkbox" aria-describedby="nutrition-complete-status"/></label><p id="nutrition-complete-status" class="coach-settings-description" role="status"></p></div>
-</div>
-<div class="journal-panel premium-surface">
-<div class="journal-panel-head"><span><i class="fa-solid fa-dumbbell"></i> Тренування</span></div>
-<div class="journal-list" id="workout-list"></div>
-</div>
-</div>
-</section>
-</div>
-<!-- NUTRITION WORKSPACE -->
-<div class="tab-content premium-workspace premium-food-workspace" id="tab-food">
-<section class="workspace-header premium-surface premium-surface-ghost">
-<div>
-<span class="eyebrow">NUTRITION</span>
-<h1>Твій <span class="gradient-text">РАЦІОН</span></h1>
-<p>Локальна база, улюблені продукти та швидкий пошук в одному потоці.</p>
-</div>
-<div class="workspace-header-chip"><i class="fa-solid fa-hard-drive"></i><span>638 продуктів</span></div>
-</section>
-<section class="workspace-block premium-section">
-<div class="workspace-block-head">
-<div><span class="eyebrow">ПОШУК</span><h2>Знайти продукт</h2></div>
-<button class="workspace-action-btn secondary" onclick="openCustomFood()"><i class="fa-solid fa-plus"></i><span>Свій продукт</span></button>
-</div>
-<div class="command-surface premium-surface">
-<div class="premium-segmented-control filter-tabs">
-<div class="filter-tab active" id="btn-food-all" onclick="setFoodFilter('all')">Пошук / Усі</div>
-<div class="filter-tab" id="btn-food-fav" onclick="setFoodFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
-</div>
-<div class="search-command-row food-search-v103-row">
-<div class="premium-search-field">
-<i class="fa-solid fa-magnifying-glass"></i>
-<input id="food-search" oninput="onSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();onSearchInput();}" placeholder="Напр. гречка, сир 9%, куряче філе..." type="text"/>
-<button class="search-clear-btn" type="button" aria-label="Очистити пошук" onclick="clearSearchField('food-search')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
-</div>
-</div>
-<div class="food-api-status" data-state="local" id="food-api-status"><span class="food-api-dot"></span><span>638 продуктів · працює без інтернету</span></div>
-</div>
-</section>
-<section class="workspace-block premium-section results-section">
-<div class="workspace-block-head compact">
-<div><span class="eyebrow">РЕЗУЛЬТАТИ</span><h2>Продукти</h2></div>
-</div>
-<div class="premium-results-grid" id="food-results"></div>
-</section>
-</div>
-<!-- TRAINING WORKSPACE -->
-<div class="tab-content premium-workspace premium-training-workspace" id="tab-workout">
-<section class="workspace-block premium-section">
-<div class="workspace-block-head compact"><h1>Вправи</h1></div>
-<div class="command-surface premium-surface">
-<div class="premium-segmented-control filter-tabs">
-<div class="filter-tab active" id="btn-all-workouts" onclick="setWorkoutFilter('all')">Усі вправи</div>
-<div class="filter-tab" id="btn-fav-workouts" onclick="setWorkoutFilter('fav')"><i class="fa-solid fa-heart"></i> Улюблені</div>
-</div>
-<div class="premium-search-field">
-<i class="fa-solid fa-magnifying-glass"></i>
-<input id="workout-search" oninput="searchWorkout()" placeholder="Біг, груди, спина..." type="text"/>
-<button class="search-clear-btn" type="button" aria-label="Очистити пошук" onclick="clearSearchField('workout-search')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
-</div>
-</div>
-
-<div class="premium-results-grid exercise-results-grid" id="workout-list-container"></div>
-</section>
-</div>
-<!-- PROFILE WORKSPACE -->
+<section class="premium-section coach-schedule-panel">
+<div class="settings-card premium-surface">
+<div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-calendar-check"></i></div><div><span class="eyebrow">ПЛАН</span><h2>Мій графік тренувань</h2></div></div>
+<div id="coach-plan-fields" class="settings-fields">
+<label><span>Тип графіка</span><select id="coach-schedule-mode"><option value="none">Без графіка</option><option value="cycle">Робочі дні / вихідні</option><option value="weekly">Дні тижня</option></select></label>
+<div id="coach-cycle-fields" class="coach-plan-group" hidden><label><span>Робочих днів поспіль</span><input id="coach-schedule-work" type="number" min="1" max="27" inputmode="numeric" value="2"/></label><label><span>Вихідних поспіль</span><input id="coach-schedule-rest" type="number" min="1" max="27" inputmode="numeric" value="2"/></label><label><span>Дата першого робочого дня циклу</span><input id="coach-schedule-anchor" type="date"/></label><label><span>Коли тренуватися</span><select id="coach-schedule-off"><option value="first">Перший вихідний</option><option value="all">Кожен вихідний</option></select></label></div>
+<fieldset id="coach-weekly-fields" class="coach-weekdays" hidden><legend>Тренувальні дні</legend><label><input type="checkbox" name="coach-weekday" value="1"/>Пн</label><label><input type="checkbox" name="coach-weekday" value="2"/>Вт</label><label><input type="checkbox" name="coach-weekday" value="3"/>Ср</label><label><input type="checkbox" name="coach-weekday" value="4"/>Чт</label><label><input type="checkbox" name="coach-weekday" value="5"/>Пт</label><label><input type="checkbox" name="coach-weekday" value="6"/>Сб</label><label><input type="checkbox" name="coach-weekday" value="0"/>Нд</label></fieldset>
+<label><span>Доступний час, хв</span><input id="coach-schedule-minutes" type="number" min="10" max="180" inputmode="numeric" value="30"/></label><label><span>Обладнання</span><input id="coach-schedule-equipment" type="text" maxlength="100" placeholder="Наприклад, гантеля 12 кг"/></label></div>
+<p class="coach-settings-description">Це план тренувань, а не окремий режим. Coach використовує його, щоб оцінювати регулярність і не пропонувати надолужувати пропуски.</p><button id="coach-plan-save" type="button" class="secondary">Зберегти графік</button><p id="coach-plan-status" class="coach-settings-description" role="status"></p>
+</div></section></div>
 <div class="tab-content premium-workspace premium-profile-workspace" id="tab-profile">
 <section class="profile-hero premium-surface premium-surface-ghost">
 <div class="profile-avatar-large"></div>
@@ -502,34 +532,6 @@
 </select>
 </label>
 </div>
-</section>
-<section class="settings-card premium-surface">
-<div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-lightbulb"></i></div><div><h2>Коуч-підказки</h2></div></div>
-<label class="coach-setting-toggle" for="coach-enabled-toggle">
-<span>Поради та оцінки Coach</span>
-<input id="coach-enabled-toggle" type="checkbox" role="switch" checked aria-describedby="coach-settings-description" onchange="Achilles.coach.setEnabled(this.checked)"/>
-</label>
-<p id="coach-settings-description" class="coach-settings-description">Поради щодо харчування й тренувань, плани прогресії та оцінки Score. Вимкнення залишає журнал, графіки й фактичні показники.</p>
-<p id="coach-settings-status" class="coach-settings-description" role="status" aria-live="polite"></p>
-</section>
-<section class="settings-card premium-surface">
-<div class="settings-card-head"><div><h2>Мій графік тренувань</h2></div></div>
-<div id="coach-plan-fields" class="settings-fields">
-<label><span>Тип графіка</span><select id="coach-schedule-mode"><option value="none">Поки без графіка</option><option value="cycle">Робочі дні / вихідні</option><option value="weekly">Дні тижня</option></select></label>
-<div id="coach-cycle-fields" class="coach-plan-group" hidden>
-<label><span>Робочих днів поспіль</span><input id="coach-schedule-work" type="number" min="1" max="27" inputmode="numeric" value="2"/></label>
-<label><span>Вихідних поспіль</span><input id="coach-schedule-rest" type="number" min="1" max="27" inputmode="numeric" value="2"/></label>
-<label><span>Дата першого робочого дня циклу</span><input id="coach-schedule-anchor" type="date"/></label>
-<label><span>Коли тренуватися</span><select id="coach-schedule-off"><option value="first">Перший вихідний</option><option value="all">Кожен вихідний</option></select></label>
-</div>
-<fieldset id="coach-weekly-fields" class="coach-weekdays" hidden><legend>Тренувальні дні</legend>
-<label><input type="checkbox" name="coach-weekday" value="1"/>Пн</label><label><input type="checkbox" name="coach-weekday" value="2"/>Вт</label><label><input type="checkbox" name="coach-weekday" value="3"/>Ср</label><label><input type="checkbox" name="coach-weekday" value="4"/>Чт</label><label><input type="checkbox" name="coach-weekday" value="5"/>Пт</label><label><input type="checkbox" name="coach-weekday" value="6"/>Сб</label><label><input type="checkbox" name="coach-weekday" value="0"/>Нд</label>
-</fieldset>
-<label><span>Доступний час, хв</span><input id="coach-schedule-minutes" type="number" min="10" max="180" inputmode="numeric" value="30"/></label>
-<label><span>Обладнання</span><input id="coach-schedule-equipment" type="text" maxlength="100" placeholder="Наприклад, гантеля 12 кг"/></label>
-</div>
-<p class="coach-settings-description">Коуч врахує обрані дати та доступний час. Графік — твій план, його можна змінювати.</p>
-<button id="coach-plan-save" type="button" class="secondary">Зберегти графік</button><p id="coach-plan-status" class="coach-settings-description" role="status"></p>
 </section>
 <section class="settings-card premium-surface">
 <div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-bullseye"></i></div><div><span class="eyebrow">ПЛАН</span><h2>Мета й раціон</h2></div></div>
@@ -603,7 +605,7 @@
 </section>
 </div>
 </div>
-<!-- ІДЕАЛЬНА НИЖНЯ НАВІГАЦІЯ (5 Вкладок) -->
+<!-- НИЖНЯ НАВІГАЦІЯ -->
 <nav class="nav-bar" id="bottom-nav">
 <div class="nav-item active" data-target="tab-dashboard">
 <span class="nav-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
@@ -612,6 +614,10 @@
 <div class="nav-item" data-target="tab-journal">
 <span class="nav-icon"><i class="fa-solid fa-book"></i></span>
 <span class="nav-text">Журнал</span>
+</div>
+<div class="nav-item" data-target="tab-coach">
+<span class="nav-icon"><i class="fa-solid fa-brain"></i></span>
+<span class="nav-text">Coach</span>
 </div>
 <div class="nav-item" data-target="tab-food">
 <span class="nav-icon"><i class="fa-solid fa-utensils"></i></span>
@@ -628,12 +634,11 @@
 </nav>
 </div>
 </div>
-<!-- ACHILLES FOOD CORE — 638 profiles / Ukrainian offline catalog — local/offline database -->
-<script src="./foods_ua_10000.js?v=10.15.9"></script>
-<script src="./foods_ua_extra.js?v=10.15.9"></script>
+<!-- ACHILLES FOOD CORE — 1000 profiles / Ukrainian offline catalog — local/offline database -->
+<script src="./food-catalog.js?v=10.16.1"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.15.9"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=10.15.9"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.16.1"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=10.16.1"></script>
 
 
 
@@ -644,30 +649,30 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.15.9"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.16.1"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=10.15.9"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=10.16.1"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=10.15.9"></script>
+<script data-achilles-module="training.js" src="./training.js?v=10.16.1"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.15.9"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.15.9"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.15.9"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.16.1"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=10.15.9"></script>
 
-<script src="./food-search.js?v=10.15.9"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.15.9"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.16.1"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.16.1"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=10.16.1"></script>
+
+<script src="./food-search.js?v=10.16.1"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.16.1"></script>
 
 
 

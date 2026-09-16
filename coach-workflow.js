@@ -39,6 +39,9 @@
         if(!save(input.state))syncCompletion();
     }
     function showMode(){const mode=field('coach-schedule-mode')?.value;for(const type of ['cycle','weekly'])if(field(`coach-${type}-fields`))field(`coach-${type}-fields`).hidden=mode!==type;}
+    function defaultPreferences(){return {nutrition:true,sweets:true,weight:true,training:true,maxInsights:4,sweetsThreshold:20};}
+    function hydratePreferences(preferences){const value={...defaultPreferences(),...(preferences||{})};document.querySelectorAll('[data-coach-focus]').forEach(box=>box.checked=value[box.dataset.coachFocus]!==false);if(field('coach-max-insights'))field('coach-max-insights').value=String([2,4,6].includes(Number(value.maxInsights))?Number(value.maxInsights):4);if(field('coach-sweets-threshold'))field('coach-sweets-threshold').value=String(Math.max(5,Math.min(40,Number(value.sweetsThreshold)||20)));}
+    function savePreferences(){const input=context();const preferences={updatedAt:Date.now(),maxInsights:Number(field('coach-max-insights')?.value)||4,sweetsThreshold:Number(field('coach-sweets-threshold')?.value)||20};document.querySelectorAll('[data-coach-focus]').forEach(box=>preferences[box.dataset.coachFocus]=box.checked);if(save({...input.state,preferences})){const status=field('coach-preferences-status');if(status)status.textContent='Налаштування Coach збережено.';}}
     function hydrate(){
         const user=localStorage.getItem('achilles_user');
         if(user!==hydratedUser){dirty=false;hydratedUser=user;}
@@ -46,7 +49,7 @@
         const input=context(),config=input.state.config||{mode:'none',anchor:input.today,workDays:input.profile.workDays||2,restDays:input.profile.restDays||2,offMode:'first',weekdays:[],minutes:30,equipment:''};
         for(const [id,prop] of [['mode','mode'],['anchor','anchor'],['work','workDays'],['rest','restDays'],['off','offMode'],['minutes','minutes'],['equipment','equipment']])field(`coach-schedule-${id}`).value=config[prop]??'';
         document.querySelectorAll('[name="coach-weekday"]').forEach(box=>box.checked=(config.weekdays||[]).includes(Number(box.value)));
-        showMode();syncCompletion();
+        showMode();syncCompletion();hydratePreferences(input.state.preferences);
     }
     function saveConfig(){
         const input=context();
@@ -102,13 +105,14 @@
         }else return;
         save(input.state);
     }
-    A.coachWorkflow={read,context,complete,syncCompletion,render,hydrate,
+    A.coachWorkflow={read,context,complete,syncCompletion,render,hydrate,defaultPreferences,savePreferences,
         mergeRemote(remote,user){const result=C.merge(read(user),remote||{});try{localStorage.setItem(key(user),JSON.stringify(result));}catch(_){return false;}hydrate();changed();return true;}
     };
     document.addEventListener('DOMContentLoaded',()=>{
         field('nutrition-complete')?.addEventListener('change',e=>complete(e.target.checked));
         field('coach-plan-fields')?.addEventListener('input',()=>{dirty=true;showMode();});
         field('coach-plan-save')?.addEventListener('click',saveConfig);
+        field('coach-preferences-save')?.addEventListener('click',savePreferences);
         hydrate();
     },{once:true});
     root.addEventListener('storage',event=>{if(event.key===key()){hydrate();changed();}});

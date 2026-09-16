@@ -72,6 +72,8 @@
                     percentages: normalize(byId.get(id).name).match(/\d+(?:\.\d+)?%/g) || []});
         }
         const prepared = [...entries.values()];
+        const cache = new Map();
+        const cacheKey = (query, limit) => `${query}\0${limit}`;
         function collect(query, terms, fuzzy) {
             const best = new Map();
             for (const rec of prepared) {
@@ -89,14 +91,19 @@
             search(value, limit = 48) {
                 const query = normalize(value);
                 if (!query) return [];
+                const key = cacheKey(query, limit);
+                if (cache.has(key)) return cache.get(key).map(item => ({...item}));
                 const terms = query.split(' ');
                 let best = collect(query, terms, false);
                 // Typos are a fallback; never mix approximate foods into exact results.
                 if (!best.size) best = collect(query, terms, true);
-                return [...best].sort((a, b) => b[1].score - a[1].score ||
+                const result = [...best].sort((a, b) => b[1].score - a[1].score ||
                     byId.get(a[0]).name.localeCompare(byId.get(b[0]).name, 'uk'))
                     .slice(0, limit).map(([id, match]) => ({...byId.get(id),
                         source: 'built-in', matchTerm: match.term}));
+                cache.set(key, result);
+                if (cache.size > 80) cache.delete(cache.keys().next().value);
+                return result.map(item => ({...item}));
             },
             searchCustom(items, value) {
                 const query = normalize(value), terms = query.split(' ');

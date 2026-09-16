@@ -41,6 +41,7 @@
     }
     function analyze(input) {
         const {today,days={},profile={},targets={},weights=[],sessions=[],catalog=[]}=input;
+        const preferences={nutrition:true,sweets:true,weight:true,training:true,maxInsights:4,sweetsThreshold:20,...(input.state?.preferences||input.preferences||{})};
         const todayN=dayNumber(today);
         const selected=input.selectedDate && dayNumber(input.selectedDate)<=todayN ? input.selectedDate : today;
         const day=days[selected] || {};
@@ -67,9 +68,9 @@
         }
         // Product calories are NOT sugar grams. This is a review prompt, not a sugar limit.
         if (sweets.length) {
-            add('sweets',sweetKcal>=goal*.2 && goal>0?85:35,'Солодке в раціоні',
+            add('sweets',sweetKcal>=goal*(Math.max(5,Math.min(40,Number(preferences.sweetsThreshold)||20))/100) && goal>0?85:35,'Солодке в раціоні',
                 `${dateLabel}: ${sweets.map(f=>`${f.name}: ${Math.round(f.kcal)} ккал`).join('; ')}. Разом ${Math.round(sweetKcal)} ккал — ${share}% внесеного раціону.`,
-                sweetKcal>=goal*.2 && goal>0 ? 'Це помітна частка калорій. Якщо десерт витісняє основну їжу, зменш його порцію або заміни солодкий напій водою. Не компенсуй його голодуванням чи додатковим тренуванням.' : 'Сам факт десерту не означає зрив. Враховуй порцію в загальному раціоні; залишай місце для звичайної їжі.');
+                sweetKcal>=goal*(Math.max(5,Math.min(40,Number(preferences.sweetsThreshold)||20))/100) && goal>0 ? 'Це помітна частка калорій. Якщо десерт витісняє основну їжу, зменш його порцію або заміни солодкий напій водою. Не компенсуй його голодуванням чи додатковим тренуванням.' : 'Сам факт десерту не означає зрив. Враховуй порцію в загальному раціоні; залишай місце для звичайної їжі.');
         }
         if (freeSugar>0 && goal>0 && freeSugar*4>=goal*.1) {
             add('free-sugar',90,'Вільні цукри',`У відомих даних щонайменше ${round(freeSugar)} г вільних цукрів. Орієнтир 10% від цілі ${Math.round(goal)} ккал — ${round(goal*.1/4)} г.`, 'Переглянь порції солодких напоїв, меду, сиропів і десертів. Загальні вуглеводи або всі цукри продукту не дорівнюють вільним цукрам.','tab-food',WHO);
@@ -80,6 +81,18 @@
             const protein=sum(foods.map(f=>number(f.p)||0));
             if (number(targets.p)>0 && protein<targets.p*.9) add('protein',55,'Білок у записах',`Внесено ${round(protein)} г із заданої в профілі цілі ${round(targets.p)} г.`, day.nutritionComplete?'У підтвердженому дні білок нижчий за задану ціль. Плануючи наступний день, включи джерело білка в основний прийом їжі.':'Якщо плануєш ще прийом їжі, включи джерело білка: яйця, рибу, кисломолочний продукт або бобові. Неповний журнал не доводить нестачу білка.');
             if (goal>0 && kcal>goal*1.1) add('energy',80,'Калорії понад поточну ціль',`Внесено ${Math.round(kcal)} ккал за цілі ${Math.round(goal)} ккал.`, 'Перевір порції та дублікати записів. Один день не визначає прогрес; повернись до звичного плану без покарання голодом.');
+        }
+        // Repeated patterns require completed days; missing days are never zero intake.
+        const completeWeek=history.filter(([date,d])=>dayNumber(date)>=todayN-7 && d.nutritionComplete);
+        if (completeWeek.length>=3) {
+            const threshold=Math.max(5,Math.min(40,Number(preferences.sweetsThreshold)||20))/100;
+            const highSweetDays=completeWeek.filter(([,d])=>{
+                const rows=(d.log||[]).filter(e=>e.type==='food');
+                const total=sum(rows.map(e=>number(e.kcal)||0));
+                const sweet=sum(rows.filter(e=>['dessert','sweet-drink'].includes(foodDetails(e,byId).group)).map(e=>number(e.kcal)||0));
+                return total>0 && sweet/total>=threshold;
+            }).length;
+            if(highSweetDays>=3 && preferences.sweets!==false) add('sweets-pattern',86,'Солодке повторюється протягом тижня',`${highSweetDays} із ${completeWeek.length} підтверджених днів: десерти та солодкі напої становили щонайменше ${Math.round(threshold*100)}% внесених калорій.`, 'Обери одну повторювану порцію або напій і спробуй менший розмір протягом тижня. Порівняємо повні дні; за одним десертом висновків не робимо.','tab-journal');
         }
         // One weight per date and >=3 dates in EACH seven-day window.
         const uniqueWeights=new Map();
@@ -119,8 +132,10 @@
         if(items.some(f=>number(f.freeSugarG)===null))limitations.push('Повної кількості вільних цукрів немає. Калорії десертів не є кількістю цукру.');
         if(delta===null)limitations.push('Для тренду ваги потрібно хоча б по 3 зважування в кожному з двох тижнів.');
         if(!insights.length)add('data',0,'Почнімо з даних','Поки немає достатньої основи для персональної поради.','Додай харчування з порціями та регулярні зважування.','tab-journal');
+        const focus={sweets:['sweets','free-sugar'],nutrition:['fiber','produce','protein','energy','data'],weight:['fast-loss','weight-review','weight-trend'],training:['training-review','training-progress']};
+        const allowed=id=>Object.entries(focus).every(([group,ids])=>!ids.includes(id)||preferences[group]!==false);
         insights.sort((a,b)=>b.priority-a.priority);
-        return {insights:insights.slice(0,4),summary:`${dateLabel}: ${foods.length} записів їжі. За 14 днів: ${workoutDays} днів із тренуваннями.`,limitations,metrics:{sweetKcal,share,fiber:knownFiber.length===items.length?fiber:null,freeSugar,produce,weightDelta:delta,workoutDays}};
+        return {insights:insights.filter(i=>allowed(i.id)).slice(0,[2,4,6].includes(Number(preferences.maxInsights))?Number(preferences.maxInsights):4),summary:`${dateLabel}: ${foods.length} записів їжі. За 14 днів: ${workoutDays} днів із тренуваннями.`,limitations,metrics:{sweetKcal,share,fiber:knownFiber.length===items.length?fiber:null,freeSugar,produce,weightDelta:delta,workoutDays}};
     }
     return {analyze,classify,snapshot};
 });

@@ -387,9 +387,9 @@
     function setStatus(text){
         const el=document.getElementById('food-api-status');
         if(!el) return;
-        el.dataset.state='local';
+        el.dataset.state=productCount ? 'local' : 'error';
         const span=el.querySelector('span:last-child');
-        if(span) span.textContent=text;
+        if(span) span.textContent=productCount ? text : 'База продуктів не завантажилась';
     }
 
     function renderRecentLocal(){
@@ -417,6 +417,15 @@
     }
 
     root.onSearchInput=function(){
+        if (!productCount) {
+            setStatus('');
+            const box=document.getElementById('food-results');
+            if(box){
+                box.innerHTML='<div class="list-item food-core-empty"><strong>Не вдалося завантажити базу</strong><span>Перевір інтернет і повтори завантаження. Твої записи залишаються збереженими.</span><button type="button" id="retry-food-catalog">Повторити завантаження</button></div>';
+                document.getElementById('retry-food-catalog')?.addEventListener('click',()=>location.reload());
+            }
+            return;
+        }
         const input=document.getElementById('food-search');
         const q=norm(input?.value||'');
         if(root.currentFoodFilter==='fav'){
@@ -465,6 +474,6 @@
     root.addEventListener('online',()=>setTimeout(()=>setStatus(`${productCount} продуктів · інтернет для пошуку не потрібен`),20));
     root.addEventListener('offline',()=>setTimeout(()=>setStatus(`${productCount} продуктів · офлайн режим активний`),20));
 
-    root.ACHILLES_BUILD='10.15.9';
-    console.info('[Achilles OS] V10.15.9 local food catalog active', meta);
+    root.ACHILLES_BUILD='10.16.1';
+    console.info('[Achilles OS] V10.16.1 local food catalog active', meta);
 })(window);
