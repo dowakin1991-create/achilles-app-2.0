@@ -105,7 +105,7 @@
         }else return;
         save(input.state);
     }
-    A.coachWorkflow={read,context,complete,syncCompletion,render,hydrate,defaultPreferences,savePreferences,
+    A.coachWorkflow={read,context,complete,syncCompletion,render,hydrate,defaultPreferences,savePreferences,save,
         mergeRemote(remote,user){const result=C.merge(read(user),remote||{});try{localStorage.setItem(key(user),JSON.stringify(result));}catch(_){return false;}hydrate();changed();return true;}
     };
     document.addEventListener('DOMContentLoaded',()=>{

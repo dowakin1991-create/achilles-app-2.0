@@ -882,6 +882,11 @@
         const exercise = A.training?.model?.byId?.(idOrName) || A.training?.model?.byName?.(idOrName);
         const last = A.training?.history?.last?.(idOrName);
         if (!exercise || !last) return null;
+        if(A.coachWorkflow && root.AchillesCoachTraining){
+            const input=A.coachWorkflow.context();
+            if(input.state.preferences?.training===false)return null;
+            return root.AchillesCoachTraining.suggest(last,input.state,input.today);
+        }
         const sets = sessionSets(last);
         const type = exercise.type;
 
@@ -1387,4 +1392,3 @@
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bootstrapV10,{once:true});
     else bootstrapV10();
 })(window);
-

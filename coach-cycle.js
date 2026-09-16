@@ -9,7 +9,8 @@
     const newer=(a,b)=>{if(!a)return b;if(!b)return a;const delta=Number(b.updatedAt||0)-Number(a.updatedAt||0);return delta>0?b:delta<0?a:JSON.stringify(b)>JSON.stringify(a)?b:a;};
     function merge(a={},b={}){
         const out=empty();out.config=newer(a.config,b.config)||null;out.preferences=newer(a.preferences,b.preferences)||null;
-        for(const bucket of ['completions','actions','feedback']){
+        for(const bucket of ['completions','actions','feedback','readiness','effort']){
+            out[bucket]=out[bucket]||{};
             for(const source of [a[bucket],b[bucket]])for(const [key,value] of Object.entries(source||{})){
                 if(!/^[\w:.-]+$/.test(key)||!value||typeof value!=='object')continue;
                 out[bucket][key]=newer(out[bucket][key],value);
@@ -66,7 +67,6 @@
         data:{title:'Підтвердити повні дні харчування',text:'Протягом тижня внеси всі прийоми їжі й напої та підтверджуй день у журналі. Для порівняння потрібно щонайменше 3 повні дні.',metric:'completeDays'},
         sweets:{title:'Спробувати меншу порцію солодкого',text:'Протягом тижня в дні з десертом обери трохи меншу порцію або заміни солодкий напій водою. Записуй фактичну порцію; не пропускай основну їжу заради компенсації.',metric:'sweets'},
         protein:{title:'Додати джерело білка до прийому їжі',text:'Протягом тижня плануй джерело білка в основному прийомі їжі та записуй порцію. Порівняємо записи з минулим тижнем, без автоматичної зміни твоєї цілі.',metric:'protein'},
-        fiber:{title:'Додати звичний продукт із клітковиною',text:'Протягом тижня додавай до одного прийому їжі звичні овочі, бобові або цільнозерновий продукт відповідно до переносимості. Записуй порцію.',metric:'fiber'},
         produce:{title:'Додати овочі або цілий фрукт',text:'Протягом тижня додавай порцію овочів або цілого фрукта до основного прийому їжі та записуй її вагу.',metric:'produce'},
         energy:{title:'Перевіряти порції та повноту записів',text:'Протягом тижня перевіряй вагу порцій, олію, соуси, напої та дублікати. Не компенсуй окремий день голодуванням.',metric:'kcal'},
         schedule:{title:'Спробувати свій графік тренувань',text:'Виконай доступні заплановані тренування без спроб надолужити пропущені подвійним навантаженням. Записуй вправи; якщо день не підходить, відзнач труднощі.',metric:'workoutDays'},
@@ -100,7 +100,7 @@
         if(metric==='feedback')return {due,ready:true,text:`Виконання відзначено за ${done} дн.; труднощі — за ${hard} дн. За цими позначками неможливо визначити зміну сили чи відновлення. Оціни зручність кроку.`};
         if(base.completeDays<3||follow.completeDays<3||base[metric]===null||follow[metric]===null||(metric==='fiber'&&(base.fiberDays<3||follow.fiberDays<3)))return {due,ready:true,text:`Даних для порівняння недостатньо: повних днів до — ${base.completeDays||0}, після — ${follow.completeDays}; потрібні також відомі значення показника. Успіх чи невдачу не визначаю.`};
         const label={sweets:'Калорії розпізнаних десертів і напоїв',protein:'Білок, г',fiber:'Відома клітковина, г',produce:'Розпізнані овочі та фрукти, г',kcal:'Калорійність'}[metric];
-        return {due,ready:true,text:`${label}: у середньому ${base[metric]} → ${follow[metric]} на підтверджений день. Це спостереження, а не доказ ефекту поради. Для клітковини й груп продуктів враховуй повноту даних.`};
+        return {due,ready:true,text:`${label}: у середньому ${base[metric]} → ${follow[metric]} на підтверджений день. Це спостереження, а не доказ ефекту поради. Для груп продуктів враховуй повноту даних.`};
     }
     return {empty,merge,signature,isComplete,validateConfig,scheduled,schedule,dates,shift,active,stats,proposal,review};
 });
