@@ -465,6 +465,6 @@
     root.addEventListener('online',()=>setTimeout(()=>setStatus(`${productCount} продуктів · інтернет для пошуку не потрібен`),20));
     root.addEventListener('offline',()=>setTimeout(()=>setStatus(`${productCount} продуктів · офлайн режим активний`),20));
 
-    root.ACHILLES_BUILD='10.15.8';
-    console.info('[Achilles OS] V10.15.8 local food catalog active', meta);
+    root.ACHILLES_BUILD='10.15.9';
+    console.info('[Achilles OS] V10.15.9 local food catalog active', meta);
 })(window);

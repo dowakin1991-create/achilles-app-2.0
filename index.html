@@ -10,15 +10,17 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=10.15.8" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=10.15.8" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=10.15.8" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=10.15.9" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=10.15.9" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=10.15.9" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="10.15.8" name="achilles-build"/>
+<meta content="10.15.9" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<script src="./coach-engine.js?v=10.15.8"></script>
-<script src="./coach-settings.js?v=10.15.8"></script>
+<script src="./coach-engine.js?v=10.15.9"></script>
+<script src="./coach-settings.js?v=10.15.9"></script>
+<script src="./coach-cycle.js?v=10.15.9"></script>
+<script src="./coach-workflow.js?v=10.15.9"></script>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
         (function() {
@@ -42,7 +44,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=10.15.8" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=10.15.9" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -364,6 +366,7 @@
 </div>
 <div class="coach-message" id="coach-message">Додай кілька днів даних — я зберу картину прогресу.</div>
 <div class="coach-submessage" id="coach-submessage"></div>
+<div id="coach-weekly-action" class="coach-weekly-action"></div>
 <div class="pr-chip" id="last-pr-chip" style="display:none;"><i class="fa-solid fa-trophy"></i><span id="last-pr-text"></span></div>
 </div>
 </section>
@@ -405,6 +408,7 @@
 <div class="journal-panel premium-surface">
 <div class="journal-panel-head"><span><i class="fa-solid fa-utensils"></i> Харчування</span></div>
 <div class="journal-list" id="food-list"></div>
+<div class="nutrition-completion"><label class="coach-setting-toggle"><span>Харчування за день внесено повністю</span><input id="nutrition-complete" type="checkbox" aria-describedby="nutrition-complete-status"/></label><p id="nutrition-complete-status" class="coach-settings-description" role="status"></p></div>
 </div>
 <div class="journal-panel premium-surface">
 <div class="journal-panel-head"><span><i class="fa-solid fa-dumbbell"></i> Тренування</span></div>
@@ -509,6 +513,25 @@
 <p id="coach-settings-status" class="coach-settings-description" role="status" aria-live="polite"></p>
 </section>
 <section class="settings-card premium-surface">
+<div class="settings-card-head"><div><h2>Мій графік тренувань</h2></div></div>
+<div id="coach-plan-fields" class="settings-fields">
+<label><span>Тип графіка</span><select id="coach-schedule-mode"><option value="none">Поки без графіка</option><option value="cycle">Робочі дні / вихідні</option><option value="weekly">Дні тижня</option></select></label>
+<div id="coach-cycle-fields" class="coach-plan-group" hidden>
+<label><span>Робочих днів поспіль</span><input id="coach-schedule-work" type="number" min="1" max="27" inputmode="numeric" value="2"/></label>
+<label><span>Вихідних поспіль</span><input id="coach-schedule-rest" type="number" min="1" max="27" inputmode="numeric" value="2"/></label>
+<label><span>Дата першого робочого дня циклу</span><input id="coach-schedule-anchor" type="date"/></label>
+<label><span>Коли тренуватися</span><select id="coach-schedule-off"><option value="first">Перший вихідний</option><option value="all">Кожен вихідний</option></select></label>
+</div>
+<fieldset id="coach-weekly-fields" class="coach-weekdays" hidden><legend>Тренувальні дні</legend>
+<label><input type="checkbox" name="coach-weekday" value="1"/>Пн</label><label><input type="checkbox" name="coach-weekday" value="2"/>Вт</label><label><input type="checkbox" name="coach-weekday" value="3"/>Ср</label><label><input type="checkbox" name="coach-weekday" value="4"/>Чт</label><label><input type="checkbox" name="coach-weekday" value="5"/>Пт</label><label><input type="checkbox" name="coach-weekday" value="6"/>Сб</label><label><input type="checkbox" name="coach-weekday" value="0"/>Нд</label>
+</fieldset>
+<label><span>Доступний час, хв</span><input id="coach-schedule-minutes" type="number" min="10" max="180" inputmode="numeric" value="30"/></label>
+<label><span>Обладнання</span><input id="coach-schedule-equipment" type="text" maxlength="100" placeholder="Наприклад, гантеля 12 кг"/></label>
+</div>
+<p class="coach-settings-description">Коуч врахує обрані дати та доступний час. Графік — твій план, його можна змінювати.</p>
+<button id="coach-plan-save" type="button" class="secondary">Зберегти графік</button><p id="coach-plan-status" class="coach-settings-description" role="status"></p>
+</section>
+<section class="settings-card premium-surface">
 <div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-bullseye"></i></div><div><span class="eyebrow">ПЛАН</span><h2>Мета й раціон</h2></div></div>
 <div class="settings-fields">
 <label><span>Режим додатку</span>
@@ -606,11 +629,11 @@
 </div>
 </div>
 <!-- ACHILLES FOOD CORE — 638 profiles / Ukrainian offline catalog — local/offline database -->
-<script src="./foods_ua_10000.js?v=10.15.8"></script>
-<script src="./foods_ua_extra.js?v=10.15.8"></script>
+<script src="./foods_ua_10000.js?v=10.15.9"></script>
+<script src="./foods_ua_extra.js?v=10.15.9"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.15.8"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=10.15.8"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.15.9"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=10.15.9"></script>
 
 
 
@@ -621,30 +644,30 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.15.8"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.15.9"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=10.15.8"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=10.15.9"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=10.15.8"></script>
+<script data-achilles-module="training.js" src="./training.js?v=10.15.9"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.15.8"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.15.8"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.15.8"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.15.9"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=10.15.8"></script>
 
-<script src="./food-search.js?v=10.15.8"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.15.8"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.15.9"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.15.9"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=10.15.9"></script>
+
+<script src="./food-search.js?v=10.15.9"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.15.9"></script>
 
 
 

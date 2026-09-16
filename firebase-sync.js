@@ -274,6 +274,7 @@
 
             const dataToSave = {
                 profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
+                coachWorkflow: window.Achilles?.coachWorkflow?.read?.() || null,
                 appMode: localStorage.getItem('achilles_app_mode') || 'pro',
                 themeColor: localStorage.getItem('achilles_theme_color') || 'gold',
                 themeMode: localStorage.getItem('achilles_theme_mode') || 'auto',
@@ -305,6 +306,7 @@
                 const docSnap = await getDoc(doc(db, "users", userName));
                 if (docSnap.exists()) {
                     const d = docSnap.data();
+                    window.Achilles?.coachWorkflow?.mergeRemote?.(d.coachWorkflow, userName);
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile || {}));
                     localStorage.setItem('achilles_app_mode', d.appMode || 'pro');
@@ -626,6 +628,7 @@
             window.currentWorkoutMode = savedAppMode === 'simple' ? 'manual' : 'extended';
 
             window.searchWorkout();
+            window.Achilles?.coachWorkflow?.hydrate?.();
         };
 
         window.saveProfile = function() {
@@ -1014,6 +1017,7 @@
                 : '<div class="journal-empty">Сьогодні без тренувань.</div>';
 
             window.renderExerciseHistoryIndex?.();
+            window.Achilles?.coachWorkflow?.syncCompletion?.();
 
             const countEl = document.getElementById('journal-count');
             if(countEl) {

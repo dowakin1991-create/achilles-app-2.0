@@ -43,3 +43,36 @@ medical targets. The interface links the relevant observations to this source.
 accessed 2026-09-15: gradual weight loss and the role of tracking patterns. The engine's
 sampling window and screening thresholds are implementation choices, not validated
 clinical rules.
+
+## 10.15.9 — explicit tracking and weekly review
+
+- In the journal, users confirm a day's food and drink are fully logged. Confirmation
+  is tied to a compact change detector over that day's food entries. Adding, deleting
+  or editing food invalidates confirmation; adding a workout does not. Confirmation
+  can be revoked. Empty and future days cannot be confirmed. Existing days are not
+  automatically marked complete.
+- Coach workflow records use a separate account-scoped local key and a `coachWorkflow`
+  field in the existing cloud document. Date confirmations, settings, actions and
+  per-date checkins merge independently by modification time. A newer revocation is
+  retained as a tombstone. Concurrent offline accepted steps are retained in history,
+  with only the most recent remaining active.
+- Schedule can be unset, a work/rest cycle with an explicit first-workday anchor,
+  or chosen weekdays. Cycle training can occur on the first or every rest day.
+  Duration and equipment are stored as context; they do not generate an exercise
+  programme automatically. New settings apply from their save date; accepted actions
+  retain their original schedule snapshot. No universal three-session target is used.
+- The primary card proposes one seven-day action. Acceptance is explicit. It retains
+  the reason, baseline and start date through reloads and changes to daily observations.
+  Users can check in once per date (done/difficult), stop early, or assess convenience
+  at review. Recently completed or rejected kinds have a seven-day cooldown.
+- Baseline is the seven calendar days before acceptance; follow-up is the seven days
+  beginning on acceptance. Nutrition comparisons use at least three currently
+  confirmed days per period; fiber additionally needs three known-value days. Other
+  days are omitted, never counted as zero intake. A data-collection action instead
+  compares how many days were confirmed. Workout review counts distinct dates.
+- Review describes measurements and user-reported feasibility. It does not declare
+  effectiveness or causality. Missing data produces an explicit insufficient-data
+  result. The completed review is retained with the action. Safety observations can
+  remain visible above an active action. Coach-off preserves state but disables actions.
+- Detailed observations are collapsed beneath the primary action. The workflow is
+  deterministic and offline-capable; there is no conversational AI integration yet.

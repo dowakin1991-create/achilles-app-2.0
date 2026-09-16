@@ -1146,13 +1146,15 @@
             const kHit=hasNutrition && goal>0 && Math.abs(consumed-goal)/goal<=.10;
             const dayWorkouts=log.filter(x=>x?.type==='workout').length;
             if(hasNutrition){ loggedDays++; kcalTotal+=consumed; if(pHit) proteinHit++; if(kHit) calorieHit++; }
-            workouts+=dayWorkouts;
+            workouts+=dayWorkouts>0?1:0;
             rows.push({date,consumed,goal,pHit,kHit,workouts:dayWorkouts,hasNutrition});
         });
 
         const proteinRate=loggedDays?proteinHit/loggedDays:0;
         const calorieRate=loggedDays?calorieHit/loggedDays:0;
-        const expectedWorkouts=Math.max(1,Math.round(days/7*3));
+        const config=A.coachWorkflow?.read?.().config;
+        const planned=root.AchillesCoachCycle?.schedule(config,dates[0],dates[dates.length-1]) || [];
+        const expectedWorkouts=planned.length;
         const weight=weightTrend(days);
         const strength=strengthMomentum(days);
 
@@ -1160,7 +1162,7 @@
         const push=(key,label,max,available,ratio,detail)=>metrics.push({key,label,max,available,points:available?Math.round(clamp(ratio)*max):null,ratio:available?clamp(ratio):null,detail});
         push('calories','Калорії',25,loggedDays>=2,calorieRate,loggedDays?`${calorieHit}/${loggedDays} днів у ±10%`:'немає даних');
         push('protein','Білок',20,loggedDays>=2 && Number(targets.p)>0,proteinRate,loggedDays?`${proteinHit}/${loggedDays} днів ≥90%`:'немає даних');
-        push('workouts','Тренування',20,true,workouts/expectedWorkouts,`${workouts}/${expectedWorkouts} цільових сесій`);
+        push('workouts','Тренувальні дні',20,expectedWorkouts>0,expectedWorkouts?workouts/expectedWorkouts:0,expectedWorkouts?`${workouts}/${expectedWorkouts} днів за твоїм планом`:`${workouts} днів · графік не задано для періоду`);
 
         let weightRatio=null, weightDetail='потрібно ≥2 зважувань';
         if(weight){
@@ -1240,6 +1242,8 @@
         if (Array.isArray(root.dailyLog)) days[selected] = {
             ...days[selected], log: root.dailyLog, workoutBonus: root.workoutBonus
         };
+        const workflow = A.coachWorkflow?.context?.();
+        if (workflow) return root.AchillesCoachEngine.analyze({...workflow, selectedDate:selected});
         return root.AchillesCoachEngine.analyze({
             today: root.todayDate, selectedDate: selected, days,
             profile: A.storage?.profile?.() || {}, targets: A.storage?.macroTargets?.() || {},
@@ -1254,6 +1258,7 @@
     function renderCoachV2() {
         const plan=coachPlan();
         if (!plan) return;
+        A.coachWorkflow?.render?.();
         const status=document.getElementById('coach-status'); if(status) status.textContent='Аналіз записів';
         const msg=document.getElementById('coach-message'); if(msg) msg.textContent=plan.summary;
         const sub=document.getElementById('coach-submessage'); if(sub) sub.textContent='Конкретні спостереження й наступні кроки';
@@ -1264,7 +1269,7 @@
             <article class="coach-insight"><h3>${esc(i.title)}</h3><p>${esc(i.evidence)}</p><p class="coach-advice">${esc(i.advice)}</p>
             <button type="button" class="secondary" data-coach-target="${esc(i.target)}">${i.target==='tab-journal'?'Відкрити журнал':i.target==='tab-dashboard'?'Переглянути вагу':i.target==='tab-profile'?'Відкрити профіль':'Відкрити раціон'}</button>
             ${i.source ? `<a class="coach-source" href="${esc(i.source)}" target="_blank" rel="noopener noreferrer">Джерело орієнтира</a>`:''}</article>`);
-        actions.innerHTML=`<div class="coach-insights">${cards[0] || ''}${cards.length>1?`<details class="coach-more"><summary>Ще ${cards.length-1} спостереження</summary>${cards.slice(1).join('')}</details>`:''}</div>
+        actions.innerHTML=`<details class="coach-more"><summary>Спостереження за записами (${cards.length})</summary><div class="coach-insights">${cards.join('')}</div></details>
             <details class="coach-limitations"><summary>Що враховано та чого бракує</summary>${(plan.limitations||[]).map(t=>`<p>${esc(t)}</p>`).join('')}</details>`;
         actions.querySelectorAll('[data-coach-target]').forEach(button=>button.addEventListener('click',()=>{
             if (A.coach?.isEnabled?.() === false) return;
@@ -1273,6 +1278,11 @@
             if(target==='tab-dashboard') document.querySelector('.body-section')?.scrollIntoView({behavior:'smooth',block:'start'});
         }));
     }
+
+    root.addEventListener('achilles:coach-workflow-changed', () => {
+        renderCoachV2();
+        renderAnalyticsV2();
+    });
 
     root.addEventListener('achilles:coach-changed', () => {
         if (A.coach?.isEnabled?.() === false) return;

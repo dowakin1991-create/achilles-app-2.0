@@ -3381,3 +3381,17 @@ html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: m
 
 .coach-more summary { padding: 12px 0; cursor: pointer; color: var(--primary); }
 .coach-more .coach-insight { margin-top: 12px; }
+
+.coach-plan-group { display: grid; gap: 12px; }
+.coach-plan-group[hidden], .coach-weekdays[hidden] { display: none !important; }
+.coach-weekdays { border: 1px solid var(--glass-border); border-radius: 14px; display: flex; flex-wrap: wrap; gap: 10px; padding: 12px; }
+.coach-weekdays label { display: flex; align-items: center; gap: 6px; min-height: 44px; }
+.settings-fields .coach-weekdays input, #nutrition-complete { appearance: auto; -webkit-appearance: checkbox; width: 24px; height: 24px; min-height: 24px !important; margin: 8px !important; padding: 0; flex: 0 0 24px; accent-color: var(--primary); }
+.nutrition-completion { padding: 14px 18px; }
+.coach-weekly-action { padding-top: 16px; width: 100%; }
+.coach-weekly-action h3, .coach-weekly-action h4 { color: var(--text-main); margin: 10px 0; }
+.coach-weekly-action p { color: var(--text-muted); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+.coach-weekly-action button { min-height: 44px; padding: 10px 14px; margin: 6px 0; }
+.coach-action-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.coach-action-buttons [aria-pressed="true"] { outline: 2px solid var(--primary); }
+.coach-priority { border-left: 3px solid var(--primary); padding-left: 12px; }
