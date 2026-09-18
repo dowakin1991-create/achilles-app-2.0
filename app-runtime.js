@@ -1429,11 +1429,6 @@
         root.logWorkoutEntry=wrapped;
     }
 
-    function addBuildBadge() {
-        const hero=document.querySelector('#tab-profile .profile-hero-copy');
-        if(hero && !hero.querySelector('.v10-build-badge')) hero.insertAdjacentHTML('beforeend','<span class="v10-build-badge"><i class="fa-solid fa-code-branch"></i> Achilles OS 10.14 · local-first</span>');
-    }
-
     function installPolish() {
         document.addEventListener('keydown',e=>{ if(e.key==='Escape') root.closeExerciseHistory?.(); });
         document.addEventListener('pointerdown',e=>{
@@ -1445,7 +1440,6 @@
     function bootstrapV10() {
         wrapWorkoutLoggerV10();
         insertAnalyticsV2();
-        addBuildBadge();
         installPolish();
         root.searchWorkout?.();
         renderExerciseHistoryIndex();
