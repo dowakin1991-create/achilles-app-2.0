@@ -13,7 +13,7 @@
 
         // V10.14.1: Firebase is optional transport, not a boot dependency.
         // The local app initializes immediately; SDK modules are loaded in the background.
-        (async function initFirebaseTransport(){
+        window.AchillesFirebaseReady = (async function initFirebaseTransport(){
             try {
                 const [{ initializeApp }, firestore] = await Promise.all([
                     import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"),
@@ -26,11 +26,23 @@
                 getDoc = firestore.getDoc;
                 window.dispatchEvent(new CustomEvent('achilles:firebase-ready'));
                 console.info('[Achilles OS] Firebase transport ready');
+                return true;
             } catch(e) {
                 app = null; db = null;
                 console.warn('[Achilles OS] Firebase unavailable; local-first mode active', e);
+                return false;
             }
         })();
+
+        window.waitForFirebaseTransport = async function() {
+            if (db && doc && setDoc && getDoc) return true;
+            try {
+                const ready = await window.AchillesFirebaseReady;
+                return Boolean(ready && db && doc && setDoc && getDoc);
+            } catch (_) {
+                return false;
+            }
+        };
 
         window.foodDB = [
             { name: "👑 Сніданок Чемпіона (Вівсянка, Чіа, Яйця)", kcal: 418, p: 23, f: 21, c: 33, fiber: 0 },
@@ -267,7 +279,8 @@
 
         window.syncToCloud = async function() {
             const userName = localStorage.getItem('achilles_user');
-            if(!userName || !db) return;
+            if(!userName) return false;
+            if(!(await window.waitForFirebaseTransport())) return false;
 
             const icon = document.getElementById('sync-icon');
             if(icon) { icon.style.opacity = '1'; setTimeout(() => icon.style.opacity = '0', 2000); }
@@ -301,7 +314,8 @@
         };
 
         window.loadFromCloud = async function(userName) {
-            if(!db) return false;
+            if(!userName) return false;
+            if(!(await window.waitForFirebaseTransport())) return false;
             try {
                 const docSnap = await getDoc(doc(db, "users", userName));
                 if (docSnap.exists()) {
@@ -455,6 +469,51 @@
             }
         });
 
+        let achillesLastCloudRefreshAt = 0;
+        let achillesCloudRefreshInFlight = null;
+
+        window.refreshFromCloud = async function(force = false) {
+            const userName = localStorage.getItem('achilles_user');
+            if(!userName) return false;
+            const now = Date.now();
+            if(!force && now - achillesLastCloudRefreshAt < 10000) return false;
+            if(achillesCloudRefreshInFlight) return achillesCloudRefreshInFlight;
+
+            achillesLastCloudRefreshAt = now;
+            achillesCloudRefreshInFlight = (async () => {
+                const loaded = await window.loadFromCloud(userName);
+                if(loaded) {
+                    window.loadUserData();
+                    window.loadDailyData();
+                    window.renderWeightChart();
+                    window.updateGoalDisplay();
+                    window.renderDiary();
+                    window.renderProgressInsights();
+                    if(window.currentFoodFilter === 'all') window.onSearchInput();
+                    else window.renderFavFoods();
+                    // Re-save the merged state so changes made offline on either device
+                    // converge instead of remaining only on the device that created them.
+                    try { await window.syncToCloud(); } catch(e) {
+                        console.warn('[Achilles OS] merged cloud state was not pushed', e);
+                    }
+                }
+                return loaded;
+            })();
+
+            try {
+                return await achillesCloudRefreshInFlight;
+            } finally {
+                achillesCloudRefreshInFlight = null;
+            }
+        };
+
+        window.addEventListener('online', () => window.refreshFromCloud(true));
+        window.addEventListener('focus', () => window.refreshFromCloud(false));
+        window.addEventListener('pageshow', () => window.refreshFromCloud(false));
+        document.addEventListener('visibilitychange', () => {
+            if(document.visibilityState === 'visible') window.refreshFromCloud(false);
+        });
+
         window.attemptLogin = async function() {
             const user = document.getElementById('login-username').value.trim();
             const pass = document.getElementById('login-password').value;
@@ -464,7 +523,7 @@
             btn.innerText = "Завантаження...";
             
             try {
-                if(!db) throw new Error("Firebase not ready");
+                if(!(await window.waitForFirebaseTransport())) throw new Error("Firebase not ready");
                 const docSnap = await getDoc(doc(db, "users", user));
                 
                 if(docSnap.exists()) {
@@ -571,7 +630,7 @@
             const btn = document.getElementById('reg-btn');
             btn.innerText = "Створення...";
 
-            if(db) {
+            if(await window.waitForFirebaseTransport()) {
                 try {
                     const docSnap = await getDoc(doc(db, "users", name));
                     if(docSnap.exists()) {
