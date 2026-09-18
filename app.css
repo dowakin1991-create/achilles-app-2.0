@@ -3496,3 +3496,61 @@ html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: m
  .coach-v3-quick-grid{grid-template-columns:1fr 1fr;}
  .coach-v3-quick{min-height:58px;padding:10px;font-size:13px;}
 }
+
+
+/* ===== achilles-v10-17-6-cleanup ===== */
+/* Dashboard nutrition rings + macros are intentionally preserved. */
+#tab-dashboard .dash-header-block{
+    padding:20px 22px!important;
+    margin-bottom:22px!important;
+    gap:18px!important;
+}
+#tab-dashboard .dash-greeting-wrap{gap:6px!important;}
+#tab-dashboard .dash-subtitle{font-size:13px!important;line-height:1.4!important;}
+#tab-dashboard .date-switcher{min-height:84px!important;}
+#tab-dashboard .today-section{margin-top:2px!important;}
+#tab-dashboard .section-heading-row{margin-bottom:14px!important;}
+
+/* Profile: denser hero, larger logo inside its frame. */
+#tab-profile .profile-hero{
+    padding:20px 22px!important;
+    margin-bottom:20px!important;
+    gap:16px!important;
+}
+#tab-profile .profile-avatar-large{
+    width:92px!important;
+    height:92px!important;
+    margin:0 0 10px!important;
+    background-size:158% 158%!important;
+    background-position:50% 50%!important;
+}
+#tab-profile .profile-hero-copy h1{margin:2px 0 5px!important;}
+#tab-profile .profile-hero-copy p{font-size:13px!important;line-height:1.4!important;}
+
+/* Remove dead patch/build UI if an older cached runtime ever injects it. */
+.v10-build-badge{display:none!important;}
+
+/* Navigation labels: allow full "Тренування" without clipping. */
+#bottom-nav .nav-text{
+    font-size:9.5px!important;
+    white-space:nowrap;
+    letter-spacing:-.03em;
+}
+#bottom-nav .nav-item{min-width:0!important;}
+
+/* Existing transparent padding in the source logo needs a tighter visual crop. */
+.splash-logo,
+.main-avatar{
+    background-size:150% 150%!important;
+    background-position:50% 50%!important;
+}
+.v1013-logo-visual{
+    background-size:150% 150%!important;
+    background-position:50% 50%!important;
+}
+@media(max-width:520px){
+    #tab-dashboard .dash-header-block{padding:17px 18px!important;margin-bottom:18px!important;}
+    #tab-dashboard .date-switcher{min-height:74px!important;}
+    #tab-profile .profile-hero{padding:17px 18px!important;}
+    #tab-profile .profile-avatar-large{width:86px!important;height:86px!important;background-size:160% 160%!important;}
+}
