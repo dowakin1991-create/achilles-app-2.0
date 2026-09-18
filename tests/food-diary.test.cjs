@@ -42,3 +42,17 @@ test('the live card click saves original nutrition and product identity once', (
     assert.equal(recent.id, item.id);
     assert.equal(input.value, '');
 });
+
+
+test('journal has separate diet/workout tabs and renders newest entries first', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const source = fs.readFileSync(path.join(__dirname, '../firebase-sync.js'), 'utf8');
+    assert.match(html, /journal-mode-food[\s\S]*>Раціон</);
+    assert.match(html, /journal-mode-workout[\s\S]*>Тренування</);
+    assert.match(html, /journal-workout-panel[^>]*hidden/);
+    assert.match(source, /window\.setJournalMode\s*=\s*function/);
+    assert.match(source, /const newestFirst = \(a, b\)/);
+    assert.match(source, /return bTime - aTime \|\| b\.index - a\.index/);
+    assert.match(source, /filter\(x => x\.entry\?\.type === 'food'\)\.sort\(newestFirst\)/);
+    assert.match(source, /filter\(x => x\.entry\?\.type === 'workout'\)\.sort\(newestFirst\)/);
+});
