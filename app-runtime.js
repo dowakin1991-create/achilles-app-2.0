@@ -1195,8 +1195,8 @@
 
     function insertAnalyticsV2() {
         if (document.getElementById('analytics-v2-shell')) return;
-        const coachSection=document.querySelector('#tab-coach .coach-section');
-        if(!coachSection) return;
+        const analysisHost=document.getElementById('coach-analysis-host');
+        if(!analysisHost) return;
         const section=document.createElement('section');
         section.className='premium-section analytics-v2-section';
         section.setAttribute('data-coach-feature', '');
@@ -1213,7 +1213,7 @@
                 <div class="analytics-breakdown" id="v10-analytics-breakdown"></div>
                 <div class="analytics-v2-note" id="v10-analytics-note">Категорії без достатньої кількості даних не знижують загальний Score.</div>
             </div>`;
-        coachSection.parentNode.insertBefore(section, coachSection);
+        analysisHost.appendChild(section);
         section.querySelectorAll('.analytics-range-btn').forEach(btn=>btn.addEventListener('click',()=>{
             section.querySelectorAll('.analytics-range-btn').forEach(x=>x.classList.toggle('active',x===btn));
             localStorage.setItem('achilles_analytics_range',btn.dataset.days);
@@ -1264,24 +1264,93 @@
         const plan=coachPlan();
         if (!plan) return;
         A.coachWorkflow?.render?.();
-        const status=document.getElementById('coach-status'); if(status) status.textContent='Аналіз записів';
-        const msg=document.getElementById('coach-message'); if(msg) msg.textContent=plan.summary;
-        const sub=document.getElementById('coach-submessage'); if(sub) sub.textContent='Конкретні спостереження й наступні кроки';
-        const card=document.querySelector('.coach-card'); if(!card) return;
-        let actions=card.querySelector('.coach-primary-action');
-        if(!actions){ actions=document.createElement('div'); actions.className='coach-primary-action'; card.appendChild(actions); }
-        const cards=plan.insights.map(i=>`
-            <article class="coach-insight"><h3>${esc(i.title)}</h3><p>${esc(i.evidence)}</p><p class="coach-advice">${esc(i.advice)}</p>
-            <button type="button" class="secondary" data-coach-target="${esc(i.target)}">${i.target==='tab-journal'?'Відкрити журнал':i.target==='tab-dashboard'?'Переглянути вагу':i.target==='tab-profile'?'Відкрити профіль':i.target==='tab-coach'?'Відкрити Coach':'Відкрити раціон'}</button>
-            ${i.source ? `<a class="coach-source" href="${esc(i.source)}" target="_blank" rel="noopener noreferrer">Джерело орієнтира</a>`:''}</article>`);
-        actions.innerHTML=`<details class="coach-more"><summary>Спостереження за записами (${cards.length})</summary><div class="coach-insights">${cards.join('')}</div></details>
-            <details class="coach-limitations"><summary>Що враховано та чого бракує</summary>${(plan.limitations||[]).map(t=>`<p>${esc(t)}</p>`).join('')}</details>`;
-        actions.querySelectorAll('[data-coach-target]').forEach(button=>button.addEventListener('click',()=>{
-            if (A.coach?.isEnabled?.() === false) return;
-            const target=button.dataset.coachTarget;
-            A.router?.go?.(target);
-            if(target==='tab-dashboard') document.querySelector('.body-section')?.scrollIntoView({behavior:'smooth',block:'start'});
-        }));
+        const snap=rangeSnapshot(7);
+
+        const status=document.getElementById('coach-status');
+        if(status) status.textContent=snap.loggedDays >= 3 ? 'Актуально' : 'Збираю дані';
+
+        const msg=document.getElementById('coach-message');
+        if(msg) msg.textContent=plan.summary;
+        const sub=document.getElementById('coach-submessage');
+        if(sub) sub.textContent=snap.loggedDays >= 3 ? 'Ось найважливіше без зайвого шуму.' : 'Ще кілька записів зроблять підказки точнішими.';
+
+        const first=plan.insights?.[0] || null;
+        const goodTitle=document.getElementById('coach-good-title');
+        const goodText=document.getElementById('coach-good-text');
+        if(goodTitle && goodText) {
+            if(snap.proteinRate >= .9) { goodTitle.textContent='Білок тримається добре'; goodText.textContent=`${Math.round(snap.proteinRate*100)}% цілі за доступні дні.`; }
+            else if(snap.calorieRate >= .7) { goodTitle.textContent='Калорійність стабільна'; goodText.textContent=`${Math.round(snap.calorieRate*100)}% днів близько до цілі.`; }
+            else if(snap.workouts > 0) { goodTitle.textContent='Тренування є в ритмі'; goodText.textContent=`${snap.workouts} тренувальних днів за 7 днів.`; }
+            else { goodTitle.textContent='Журнал уже дає основу'; goodText.textContent=`Заповнено ${snap.loggedDays} із 7 днів.`; }
+        }
+
+        const gapTitle=document.getElementById('coach-gap-title');
+        const gapText=document.getElementById('coach-gap-text');
+        if(gapTitle && gapText) {
+            gapTitle.textContent=first?.title || 'Недостатньо даних';
+            gapText.textContent=first?.evidence || 'Coach не вигадує проблему, якщо її не видно в записах.';
+        }
+
+        const focusTitle=document.getElementById('coach-focus-title');
+        const focusText=document.getElementById('coach-focus-text');
+        if(focusTitle && focusText) {
+            focusTitle.textContent=first ? 'Один крок на сьогодні' : 'Продовжуй вести журнал';
+            focusText.textContent=first?.advice || 'Додай сьогоднішні прийоми їжі або тренування.';
+        }
+
+        const insightHost=document.getElementById('coach-analysis-insights');
+        if(insightHost) {
+            insightHost.innerHTML=(plan.insights||[]).map(i=>`
+                <article class="coach-insight">
+                    <h3>${esc(i.title)}</h3>
+                    <p>${esc(i.evidence)}</p>
+                    <p class="coach-advice">${esc(i.advice)}</p>
+                    <button type="button" class="secondary" data-coach-target="${esc(i.target)}">${i.target==='tab-journal'?'Відкрити журнал':i.target==='tab-dashboard'?'Переглянути вагу':i.target==='tab-profile'?'Відкрити профіль':i.target==='tab-workout'?'Відкрити тренування':'Відкрити раціон'}</button>
+                    ${i.source ? `<a class="coach-source" href="${esc(i.source)}" target="_blank" rel="noopener noreferrer">Джерело орієнтира</a>`:''}
+                </article>`).join('') || '<div class="coach-v3-empty">Поки немає окремих зауважень. Продовжуй вести записи.</div>';
+
+            insightHost.querySelectorAll('[data-coach-target]').forEach(button=>button.addEventListener('click',()=>{
+                if (A.coach?.isEnabled?.() === false) return;
+                A.router?.go?.(button.dataset.coachTarget);
+            }));
+        }
+
+        const limitHost=document.getElementById('coach-limitations-list');
+        if(limitHost) limitHost.innerHTML=(plan.limitations||[]).map(t=>`<p>${esc(t)}</p>`).join('') || '<p>Критичних обмежень у поточному аналізі немає.</p>';
+    }
+
+    root.setCoachView = function(view) {
+        const allowed=['today','analysis','plan','settings'];
+        const next=allowed.includes(view)?view:'today';
+        localStorage.setItem('achilles_coach_view',next);
+        document.querySelectorAll('#tab-coach [data-coach-view]').forEach(panel=>{
+            const active=panel.dataset.coachView===next;
+            panel.classList.toggle('active',active);
+            panel.hidden=!active;
+        });
+        document.querySelectorAll('#tab-coach .coach-v3-tab').forEach(button=>{
+            const active=button.dataset.coachViewTarget===next;
+            button.classList.toggle('active',active);
+            button.setAttribute('aria-selected',active?'true':'false');
+        });
+        if(next==='analysis') renderAnalyticsV2();
+        if(next==='plan') A.coachWorkflow?.render?.();
+    };
+
+    if (!root.__achillesCoachV3Bound) {
+        root.__achillesCoachV3Bound=true;
+        document.addEventListener('click',event=>{
+            const viewButton=event.target.closest?.('#tab-coach [data-coach-view-target]');
+            if(viewButton){ event.preventDefault(); root.setCoachView(viewButton.dataset.coachViewTarget); return; }
+            const quick=event.target.closest?.('#tab-coach [data-coach-quick]');
+            if(!quick) return;
+            event.preventDefault();
+            const target={food:'tab-food',journal:'tab-journal',training:'tab-workout'}[quick.dataset.coachQuick];
+            if(target) A.router?.go?.(target);
+        });
+        document.addEventListener('DOMContentLoaded',()=>{
+            root.setCoachView(localStorage.getItem('achilles_coach_view')||'today');
+        },{once:true});
     }
 
     root.addEventListener('achilles:coach-workflow-changed', () => {
