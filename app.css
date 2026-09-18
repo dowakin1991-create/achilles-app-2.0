@@ -3456,3 +3456,43 @@ html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: m
 #tab-journal .journal-training-history{margin-top:18px;padding:18px 20px;border-top:1px solid var(--glass-border);}
 #tab-journal .journal-training-history .workspace-block-head{margin-bottom:12px;}
 #tab-journal .journal-training-history .workspace-block-head h2{margin:0;font-size:18px;}
+
+
+/* ===== achilles-v10-17-5-coach-v3 ===== */
+#tab-coach.coach-v3{max-width:980px;margin:0 auto;}
+.coach-v3-hero{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;padding:20px;border-radius:26px;margin-bottom:14px;}
+.coach-v3-avatar{width:62px;height:62px;border-radius:20px;display:grid;place-items:center;font-size:27px;color:#08120d;background:linear-gradient(145deg,var(--primary),var(--accent-1));box-shadow:0 12px 30px rgba(var(--primary-rgb),.22);}
+.coach-v3-hero-copy{min-width:0;}
+.coach-v3-hero-copy h1{margin:3px 0 5px!important;font-size:clamp(24px,5vw,34px)!important;line-height:1.05;}
+.coach-v3-hero-copy p{margin:0;color:var(--text-muted);font-size:14px;line-height:1.45;}
+.coach-v3-settings-shortcut{width:46px;height:46px;border-radius:15px;border:1px solid var(--glass-border);background:var(--input-bg);color:var(--text-main);cursor:pointer;font-size:17px;}
+.coach-v3-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;margin-bottom:20px;border:1px solid var(--glass-border);border-radius:18px;background:rgba(255,255,255,.025);}
+.coach-v3-tab{min-height:46px;border:0;border-radius:13px;background:transparent;color:var(--text-muted);font:inherit;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;touch-action:manipulation;}
+.coach-v3-tab.active{color:#07130d;background:linear-gradient(135deg,var(--primary),var(--accent-1));box-shadow:0 8px 20px rgba(var(--primary-rgb),.18);}
+.coach-v3-view[hidden]{display:none!important;}
+.coach-v3-main-card{padding:20px!important;border-radius:26px!important;}
+.coach-v3-main-card .coach-message{font-size:18px;line-height:1.4;font-weight:750;margin-top:14px;}
+.coach-v3-main-card .coach-submessage{font-size:13px;color:var(--text-muted);margin-top:6px;}
+.coach-v3-signal-grid{display:grid;gap:10px;margin-top:18px;}
+.coach-v3-signal{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;align-items:start;padding:14px;border:1px solid var(--glass-border);border-radius:18px;background:var(--input-bg);}
+.coach-v3-signal-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:rgba(var(--primary-rgb),.10);color:var(--primary);}
+.coach-v3-signal.gap .coach-v3-signal-icon{color:var(--danger);background:rgba(255,69,58,.10);}
+.coach-v3-signal.focus .coach-v3-signal-icon{color:var(--accent-2);background:rgba(10,132,255,.10);}
+.coach-v3-signal span{display:block;color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.coach-v3-signal strong{display:block;color:var(--text-main);font-size:15px;line-height:1.3;}
+.coach-v3-signal p{margin:5px 0 0;color:var(--text-muted);font-size:13px;line-height:1.4;}
+.coach-v3-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.coach-v3-quick{min-height:66px;padding:12px 14px;border:1px solid var(--glass-border);border-radius:18px;background:var(--input-bg);color:var(--text-main);font:inherit;font-weight:800;display:flex;align-items:center;gap:11px;cursor:pointer;text-align:left;}
+.coach-v3-quick i{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(var(--primary-rgb),.10);color:var(--primary);}
+.coach-v3-empty{padding:18px;border:1px dashed var(--glass-border);border-radius:16px;color:var(--text-muted);font-size:14px;}
+#coach-analysis-host .analytics-v2-section{margin-top:0;}
+#tab-coach .coach-settings-panel,#tab-coach .coach-schedule-panel{margin-top:0;}
+#tab-coach .coach-v3-view > .premium-section:first-child{margin-top:0;}
+@media(max-width:620px){
+ .coach-v3-hero{grid-template-columns:auto minmax(0,1fr) auto;padding:16px;gap:12px;}
+ .coach-v3-avatar{width:52px;height:52px;border-radius:17px;font-size:23px;}
+ .coach-v3-hero-copy p{font-size:12px;}
+ .coach-v3-tab span{font-size:12px;}
+ .coach-v3-quick-grid{grid-template-columns:1fr 1fr;}
+ .coach-v3-quick{min-height:58px;padding:10px;font-size:13px;}
+}
