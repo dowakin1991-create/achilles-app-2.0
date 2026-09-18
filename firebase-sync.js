@@ -1268,7 +1268,7 @@
             }, true);
         }
 
-        window.ACHILLES_BUILD = '10.14';
+        window.ACHILLES_BUILD = '10.17.6';
 
         window.openProfileTab = function() {
             if(!localStorage.getItem('achilles_user')) return;
