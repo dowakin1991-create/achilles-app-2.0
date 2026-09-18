@@ -61,3 +61,22 @@ test('Coach V3 keeps other workspaces untouched and uses focused subviews', () =
     assert.match(runtime, /coach-analysis-host/);
     assert.match(runtime, /coach-analysis-insights/);
 });
+
+
+test('10.17.6 cleanup keeps dashboard rings/macros and removes obsolete patch UI', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const runtime = fs.readFileSync(path.join(__dirname, '../app-runtime.js'), 'utf8');
+    const nutrition = fs.readFileSync(path.join(__dirname, '../nutrition-local.js'), 'utf8');
+    assert.match(html, /id="ring-kcal"/);
+    assert.match(html, /id="ring-protein"/);
+    assert.match(html, /id="ring-fat"/);
+    assert.match(html, /id="ring-carb"/);
+    assert.match(html, /id="macro-p"/);
+    assert.match(html, /id="macro-f"/);
+    assert.match(html, /id="macro-c"/);
+    assert.match(html, /<h2>Раціон<\/h2>/);
+    assert.match(html, />Тренування<\/span>/);
+    assert.doesNotMatch(html, /calorie-summary-note/);
+    assert.doesNotMatch(runtime, /Achilles OS 10\.14 · local-first/);
+    assert.doesNotMatch(nutrition, /V10\.5 Food Fix активний/);
+});
