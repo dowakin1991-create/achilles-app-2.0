@@ -9,7 +9,7 @@
             appId: "1:842206429977:web:eb78b2a92587395999bb88"
         };
         
-        let app, db, doc, setDoc, getDoc;
+        let app, db, doc, setDoc, getDoc, onSnapshot;
 
         // V10.14.1: Firebase is optional transport, not a boot dependency.
         // The local app initializes immediately; SDK modules are loaded in the background.
@@ -24,6 +24,7 @@
                 doc = firestore.doc;
                 setDoc = firestore.setDoc;
                 getDoc = firestore.getDoc;
+                onSnapshot = firestore.onSnapshot;
                 window.dispatchEvent(new CustomEvent('achilles:firebase-ready'));
                 console.info('[Achilles OS] Firebase transport ready');
                 return true;
@@ -35,10 +36,10 @@
         })();
 
         window.waitForFirebaseTransport = async function() {
-            if (db && doc && setDoc && getDoc) return true;
+            if (db && doc && setDoc && getDoc && onSnapshot) return true;
             try {
                 const ready = await window.AchillesFirebaseReady;
-                return Boolean(ready && db && doc && setDoc && getDoc);
+                return Boolean(ready && db && doc && setDoc && getDoc && onSnapshot);
             } catch (_) {
                 return false;
             }
@@ -361,11 +362,23 @@
                             const name = String(item?.name || '').replace(/^[^\p{L}\p{N}]+/u, '').trim().toLowerCase();
                             return `name:${name}|${Number(item?.kcal || 0)}`;
                         };
-                        [...(cloudList || []), ...(localList || [])].forEach(item => {
+                        const mergeOne = (item, sourceRank) => {
                             if (!item || !item.name) return;
-                            map.set(keyOf(item), item); // локальна версія йде другою і має пріоритет
-                        });
-                        return [...map.values()];
+                            const key = keyOf(item);
+                            const previous = map.get(key);
+                            if (!previous) {
+                                map.set(key, { item, sourceRank });
+                                return;
+                            }
+                            const prevUpdated = Number(previous.item?.updatedAt || 0);
+                            const nextUpdated = Number(item?.updatedAt || 0);
+                            if (nextUpdated > prevUpdated || (nextUpdated === prevUpdated && sourceRank >= previous.sourceRank)) {
+                                map.set(key, { item, sourceRank });
+                            }
+                        };
+                        (cloudList || []).forEach(item => mergeOne(item, 2));
+                        (localList || []).forEach(item => mergeOne(item, 1));
+                        return [...map.values()].map(entry => entry.item);
                     };
 
                     let localCF = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
@@ -442,6 +455,70 @@
             return false;
         };
 
+        let achillesCloudRealtimeUnsubscribe = null;
+        let achillesCloudRealtimeUser = '';
+        let achillesCloudRealtimeApplyTimer = 0;
+
+        window.stopCloudRealtimeSync = function() {
+            clearTimeout(achillesCloudRealtimeApplyTimer);
+            achillesCloudRealtimeApplyTimer = 0;
+            if (typeof achillesCloudRealtimeUnsubscribe === 'function') {
+                try { achillesCloudRealtimeUnsubscribe(); } catch (_) {}
+            }
+            achillesCloudRealtimeUnsubscribe = null;
+            achillesCloudRealtimeUser = '';
+        };
+
+        window.startCloudRealtimeSync = async function(userName) {
+            const wantedUser = String(userName || '').trim();
+            if (!wantedUser) return false;
+            if (achillesCloudRealtimeUnsubscribe && achillesCloudRealtimeUser === wantedUser) return true;
+            if (!(await window.waitForFirebaseTransport()) || typeof onSnapshot !== 'function') return false;
+
+            window.stopCloudRealtimeSync();
+            achillesCloudRealtimeUser = wantedUser;
+
+            try {
+                achillesCloudRealtimeUnsubscribe = onSnapshot(
+                    doc(db, "users", wantedUser),
+                    snapshot => {
+                        if (!snapshot.exists()) return;
+                        if (snapshot.metadata?.hasPendingWrites) return;
+
+                        clearTimeout(achillesCloudRealtimeApplyTimer);
+                        achillesCloudRealtimeApplyTimer = setTimeout(async () => {
+                            if (localStorage.getItem('achilles_user') !== wantedUser) return;
+                            try {
+                                const loaded = await window.loadFromCloud(wantedUser);
+                                if (!loaded) return;
+                                window.loadUserData();
+                                window.loadDailyData();
+                                window.renderWeightChart();
+                                window.updateGoalDisplay();
+                                window.renderDiary();
+                                window.renderProgressInsights();
+                                if (window.currentFoodFilter === 'all') window.onSearchInput();
+                                else window.renderFavFoods();
+                                console.info('[Achilles OS] Realtime cloud update applied');
+                            } catch (error) {
+                                console.warn('[Achilles OS] Realtime cloud apply failed', error);
+                            }
+                        }, 120);
+                    },
+                    error => {
+                        console.warn('[Achilles OS] Realtime cloud listener failed', error);
+                    }
+                );
+                console.info('[Achilles OS] Realtime cloud sync active');
+                return true;
+            } catch (error) {
+                achillesCloudRealtimeUnsubscribe = null;
+                achillesCloudRealtimeUser = '';
+                console.warn('[Achilles OS] Realtime cloud sync unavailable', error);
+                return false;
+            }
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
             window.applyTheme(); 
             const splash = document.getElementById('splash-screen');
@@ -453,6 +530,7 @@
                 window.renderWeightChart();
                 window.renderProgressInsights();
                 window.showScreen('main-app-window');
+                window.startCloudRealtimeSync(userName);
                 
                 window.loadFromCloud(userName).then(loaded => {
                     if(loaded) {
@@ -535,6 +613,7 @@
                         window.loadDailyData();
                         window.renderWeightChart();
                         window.showScreen('main-app-window');
+                        window.startCloudRealtimeSync(user);
                     } else { alert("Неправильний пароль!"); }
                 } else { alert("Користувача не знайдено. Створіть профіль!"); }
             } catch(e) {
@@ -656,6 +735,7 @@
             window.loadDailyData();
             window.renderWeightChart(); 
             window.showScreen('main-app-window');
+            window.startCloudRealtimeSync(name);
         };
 
         window.loadUserData = function() {
@@ -1934,5 +2014,9 @@
             window.closeLiveOverlay();
         };
 
-        window.logout = function() { localStorage.clear(); location.reload(); };
+        window.logout = function() {
+            window.stopCloudRealtimeSync?.();
+            localStorage.clear();
+            location.reload();
+        };
     
