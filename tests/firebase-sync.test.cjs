@@ -21,3 +21,13 @@ test('app refreshes cloud state when it becomes active again', () => {
     assert.match(source, /visibilitychange/);
     assert.match(source, /await window\.syncToCloud\(\)/);
 });
+
+
+test('realtime listener applies remote changes while the app stays open', () => {
+    assert.match(source, /onSnapshot\s*=\s*firestore\.onSnapshot/);
+    assert.match(source, /window\.startCloudRealtimeSync\s*=\s*async function/);
+    assert.match(source, /snapshot\.metadata\?\.hasPendingWrites/);
+    assert.match(source, /await window\.loadFromCloud\(wantedUser\)/);
+    assert.match(source, /window\.startCloudRealtimeSync\(userName\)/);
+    assert.match(source, /window\.stopCloudRealtimeSync/);
+});
