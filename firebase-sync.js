@@ -1144,6 +1144,16 @@
             });
         };
 
+        if (!window.__achillesJournalModeBound) {
+            window.__achillesJournalModeBound = true;
+            document.addEventListener('click', event => {
+                const button = event.target.closest?.('[data-journal-mode-target]');
+                if (!button) return;
+                event.preventDefault();
+                window.setJournalMode(button.dataset.journalModeTarget);
+            });
+        }
+
         window.renderDiary = function() {
             const foodList = document.getElementById('food-list');
             const workoutList = document.getElementById('workout-list');
