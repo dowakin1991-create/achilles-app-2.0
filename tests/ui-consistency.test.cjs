@@ -45,3 +45,19 @@ test('strength input offers a visible set separator on mobile keyboards', () => 
     assert.match(sync, /value \? `\$\{value\};`/);
     assert.match(css, /\.set-separator-btn/);
 });
+
+
+test('Coach V3 keeps other workspaces untouched and uses focused subviews', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const runtime = fs.readFileSync(path.join(__dirname, '../app-runtime.js'), 'utf8');
+    assert.match(html, /id="tab-coach"[\s\S]*data-coach-view="today"/);
+    assert.match(html, /data-coach-view="analysis"/);
+    assert.match(html, /data-coach-view="plan"/);
+    assert.match(html, /data-coach-view="settings"/);
+    assert.match(html, /id="coach-good-title"/);
+    assert.match(html, /id="coach-gap-title"/);
+    assert.match(html, /id="coach-focus-title"/);
+    assert.match(runtime, /root\.setCoachView\s*=\s*function/);
+    assert.match(runtime, /coach-analysis-host/);
+    assert.match(runtime, /coach-analysis-insights/);
+});
