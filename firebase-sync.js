@@ -1124,6 +1124,26 @@
             if (exercise) window.openExerciseHistory?.(exercise.id);
         };
 
+        window.currentJournalMode = localStorage.getItem('achilles_journal_mode') === 'workout' ? 'workout' : 'food';
+
+        window.setJournalMode = function(mode) {
+            const next = mode === 'workout' ? 'workout' : 'food';
+            window.currentJournalMode = next;
+            localStorage.setItem('achilles_journal_mode', next);
+
+            document.querySelectorAll('.journal-mode-btn').forEach(button => {
+                const active = button.id === `journal-mode-${next}`;
+                button.classList.toggle('active', active);
+                button.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+
+            document.querySelectorAll('.journal-mode-panel').forEach(panel => {
+                const active = panel.dataset.journalMode === next;
+                panel.classList.toggle('active', active);
+                panel.hidden = !active;
+            });
+        };
+
         window.renderDiary = function() {
             const foodList = document.getElementById('food-list');
             const workoutList = document.getElementById('workout-list');
@@ -1131,8 +1151,13 @@
 
             window.dailyLog = Array.isArray(window.dailyLog) ? window.dailyLog : [];
             const indexed = window.dailyLog.map((entry, index) => ({ entry, index }));
-            const foods = indexed.filter(x => x.entry?.type === 'food');
-            const workouts = indexed.filter(x => x.entry?.type === 'workout');
+            const newestFirst = (a, b) => {
+                const aTime = Number(a.entry?.createdAt || a.entry?.id || 0);
+                const bTime = Number(b.entry?.createdAt || b.entry?.id || 0);
+                return bTime - aTime || b.index - a.index;
+            };
+            const foods = indexed.filter(x => x.entry?.type === 'food').sort(newestFirst);
+            const workouts = indexed.filter(x => x.entry?.type === 'workout').sort(newestFirst);
 
             const row = ({ entry, index }) => {
                 const exercise = window.journalExercise(entry);
@@ -1157,6 +1182,7 @@
 
             window.renderExerciseHistoryIndex?.();
             window.Achilles?.coachWorkflow?.syncCompletion?.();
+            window.setJournalMode(window.currentJournalMode);
 
             const countEl = document.getElementById('journal-count');
             if(countEl) {
@@ -1555,6 +1581,7 @@
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
             if(window.currentFoodFilter === 'fav') window.renderFavFoods();
             
+            window.setJournalMode('food');
             document.querySelector('.nav-item[data-target="tab-journal"]')?.click();
         };
 
@@ -1755,6 +1782,7 @@
             window.updateGoalDisplay();
             window.renderDiary();
             window.renderProgressInsights();
+            window.setJournalMode('workout');
             const journalNav = document.querySelector('.nav-item[data-target="tab-journal"]');
             if(journalNav) journalNav.click();
         };
