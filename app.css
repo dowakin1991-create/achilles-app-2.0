@@ -3447,3 +3447,12 @@ html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: m
 #tab-journal .journal-mode-panel[hidden]{display:none!important;}
 #tab-journal .journal-grid{display:block!important;}
 #tab-journal .journal-mode-panel{width:100%;}
+
+
+/* ===== achilles-v10-17-4-journal-interaction ===== */
+#tab-journal .journal-mode-switch,
+#tab-journal .journal-mode-btn{pointer-events:auto!important;}
+#tab-journal .journal-mode-btn{position:relative;z-index:2;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+#tab-journal .journal-training-history{margin-top:18px;padding:18px 20px;border-top:1px solid var(--glass-border);}
+#tab-journal .journal-training-history .workspace-block-head{margin-bottom:12px;}
+#tab-journal .journal-training-history .workspace-block-head h2{margin:0;font-size:18px;}
