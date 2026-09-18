@@ -56,3 +56,18 @@ test('journal has separate diet/workout tabs and renders newest entries first', 
     assert.match(source, /filter\(x => x\.entry\?\.type === 'food'\)\.sort\(newestFirst\)/);
     assert.match(source, /filter\(x => x\.entry\?\.type === 'workout'\)\.sort\(newestFirst\)/);
 });
+
+
+test('journal mode buttons use delegated handlers and workout history lives inside workout panel', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const sync = fs.readFileSync(path.join(__dirname, '../firebase-sync.js'), 'utf8');
+    const runtime = fs.readFileSync(path.join(__dirname, '../app-runtime.js'), 'utf8');
+    assert.match(html, /data-journal-mode-target="food"/);
+    assert.match(html, /data-journal-mode-target="workout"/);
+    assert.doesNotMatch(html, /onclick="setJournalMode/);
+    assert.match(sync, /closest\?\.\('\[data-journal-mode-target\]'\)/);
+    assert.match(sync, /button\.dataset\.journalModeTarget/);
+    assert.match(html, /journal-workout-panel[\s\S]*exercise-history-index/);
+    assert.match(runtime, /document\.getElementById\('journal-workout-panel'\)/);
+    assert.match(runtime, /workoutPanel\.appendChild\(section\)/);
+});
