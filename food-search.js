@@ -61,13 +61,13 @@
         if (item && item.state) return String(item.state);
         const name = normalize(item && item.name);
         const states = [
-            [/\b(сирий|сира|сире|сирі|raw)\b/u, 'raw'],
-            [/\b(варений|варена|варене|варені|boiled|cooked)\b/u, 'boiled'],
-            [/\b(смажений|смажена|смажене|смажені|fried)\b/u, 'fried'],
-            [/\b(запечений|запечена|запечене|запечені|baked|roasted)\b/u, 'baked'],
-            [/\b(сушений|сушена|сушене|сушені|dry|dried|сухий|суха|сухе)\b/u, 'dry'],
-            [/\b(консервований|консервована|консервоване|canned)\b/u, 'canned'],
-            [/\b(заморожений|заморожена|заморожене|frozen)\b/u, 'frozen']
+            [/(^| )(сирий|сира|сире|сирі|raw)( |$)/u, 'raw'],
+            [/(^| )(варений|варена|варене|варені|boiled|cooked)( |$)/u, 'boiled'],
+            [/(^| )(смажений|смажена|смажене|смажені|fried)( |$)/u, 'fried'],
+            [/(^| )(запечений|запечена|запечене|запечені|baked|roasted)( |$)/u, 'baked'],
+            [/(^| )(сушений|сушена|сушене|сушені|dry|dried|сухий|суха|сухе)( |$)/u, 'dry'],
+            [/(^| )(консервований|консервована|консервоване|canned)( |$)/u, 'canned'],
+            [/(^| )(заморожений|заморожена|заморожене|frozen)( |$)/u, 'frozen']
         ];
         for (const [pattern, state] of states) if (pattern.test(name)) return state;
         return 'unspecified';
