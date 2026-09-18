@@ -57,12 +57,49 @@
         return 50000 + Math.min(10000, total);
     }
 
+    function deriveState(item) {
+        if (item && item.state) return String(item.state);
+        const name = normalize(item && item.name);
+        const states = [
+            [/\b(сирий|сира|сире|сирі|raw)\b/u, 'raw'],
+            [/\b(варений|варена|варене|варені|boiled|cooked)\b/u, 'boiled'],
+            [/\b(смажений|смажена|смажене|смажені|fried)\b/u, 'fried'],
+            [/\b(запечений|запечена|запечене|запечені|baked|roasted)\b/u, 'baked'],
+            [/\b(сушений|сушена|сушене|сушені|dry|dried|сухий|суха|сухе)\b/u, 'dry'],
+            [/\b(консервований|консервована|консервоване|canned)\b/u, 'canned'],
+            [/\b(заморожений|заморожена|заморожене|frozen)\b/u, 'frozen']
+        ];
+        for (const [pattern, state] of states) if (pattern.test(name)) return state;
+        return 'unspecified';
+    }
+
+    function qualityOf(item) {
+        const numbers = ['kcal', 'p', 'f', 'c'];
+        const nutritionComplete = numbers.every(key => Number.isFinite(Number(item && item[key])));
+        const fiberKnown = item && item.fiber !== null && item.fiber !== undefined &&
+            item.fiber !== '' && Number.isFinite(Number(item.fiber));
+        const trustedSource = Boolean(item && (item.source || item.sourceId || item.ndb || item.barcode));
+        const stateKnown = deriveState(item) !== 'unspecified';
+        const brandKnown = Boolean(item && item.brand);
+        const score = (nutritionComplete ? 45 : 0) + (fiberKnown ? 20 : 0) +
+            (trustedSource ? 20 : 0) + (stateKnown ? 10 : 0) + (brandKnown ? 5 : 0);
+        return {nutritionComplete, fiberKnown, trustedSource, stateKnown, brandKnown, score};
+    }
+
+    function enrichFood(item) {
+        return {...item, state: deriveState(item), quality: qualityOf(item)};
+    }
+
     function create(canonical, index) {
+        canonical = (canonical || []).map(enrichFood);
         const byId = new Map(canonical.map(item => [String(item.canonicalId || item.id), item]));
         const entries = new Map();
         // Canonical names remain searchable even if an imported index is incomplete.
-        for (const rec of [...canonical.flatMap(item => [item.name, ...(item.aliases || [])]
-            .map(q => ({q, id: item.canonicalId || item.id, boost: 260}))), ...index]) {
+        for (const rec of [...canonical.flatMap(item => [
+            item.name,
+            ...(item.aliases || []),
+            item.brand && !normalize(item.name).includes(normalize(item.brand)) ? `${item.brand} ${item.name}` : null
+        ].filter(Boolean).map(q => ({q, id: item.canonicalId || item.id, boost: 260}))), ...(index || [])]) {
             const text = normalize(rec.q), id = String(rec.id);
             if (!text || !byId.has(id)) continue;
             const key = id + '\0' + text;
@@ -98,6 +135,7 @@
                 // Typos are a fallback; never mix approximate foods into exact results.
                 if (!best.size) best = collect(query, terms, true);
                 const result = [...best].sort((a, b) => b[1].score - a[1].score ||
+                    Number(byId.get(b[0])?.quality?.score || 0) - Number(byId.get(a[0])?.quality?.score || 0) ||
                     byId.get(a[0]).name.localeCompare(byId.get(b[0]).name, 'uk'))
                     .slice(0, limit).map(([id, match]) => ({...byId.get(id),
                         source: 'built-in', matchTerm: match.term}));
@@ -115,5 +153,5 @@
             }
         };
     }
-    return {normalize, create};
+    return {normalize, deriveState, qualityOf, enrichFood, create};
 });
