@@ -10,18 +10,18 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=10.17.4" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=10.17.4" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=10.17.4" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=10.17.5" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=10.17.5" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=10.17.5" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="10.17.4" name="achilles-build"/>
+<meta content="10.17.5" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<script src="./coach-training.js?v=10.17.4"></script>
-<script src="./coach-engine.js?v=10.17.4"></script>
-<script src="./coach-settings.js?v=10.17.4"></script>
-<script src="./coach-cycle.js?v=10.17.4"></script>
-<script src="./coach-workflow.js?v=10.17.4"></script>
+<script src="./coach-training.js?v=10.17.5"></script>
+<script src="./coach-engine.js?v=10.17.5"></script>
+<script src="./coach-settings.js?v=10.17.5"></script>
+<script src="./coach-cycle.js?v=10.17.5"></script>
+<script src="./coach-workflow.js?v=10.17.5"></script>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
         (function() {
@@ -45,7 +45,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=10.17.4" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=10.17.5" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -406,85 +406,106 @@
 </section>
 </div>
 <!-- PROFILE WORKSPACE -->
-<div class="tab-content premium-workspace premium-coach-workspace" id="tab-coach">
-<section class="workspace-hero premium-surface premium-surface-ghost">
-<div class="profile-hero-copy"><span class="eyebrow">ACHILLES INTELLIGENCE</span><h1>Твій <span class="gradient-text">COACH</span></h1><p>Поради будуються лише на твоїх записах, цілях, навантаженні та відновленні.</p></div>
+<div class="tab-content premium-workspace premium-coach-workspace coach-v3" id="tab-coach">
+<section class="coach-v3-hero premium-surface">
+<div class="coach-v3-avatar"><i class="fa-solid fa-robot"></i></div>
+<div class="coach-v3-hero-copy">
+<span class="eyebrow">ACHILLES COACH</span>
+<h1>Твій локальний помічник</h1>
+<p>Коротко підказує, що важливо саме зараз. Без API — лише твої записи та прогрес.</p>
+</div>
+<button type="button" class="coach-v3-settings-shortcut" data-coach-view-target="settings" aria-label="Налаштування Coach"><i class="fa-solid fa-gear"></i></button>
 </section>
-<!-- BLOCK 03: 7-DAY INTELLIGENCE -->
-<section class="premium-section weekly-section" data-coach-feature>
-<div class="section-heading-row">
-<div>
-<span class="eyebrow">7 ДНІВ</span>
-<h2>Прогрес</h2>
+
+<div class="coach-v3-tabs" role="tablist" aria-label="Розділи Coach">
+<button type="button" class="coach-v3-tab active" data-coach-view-target="today" role="tab" aria-selected="true"><i class="fa-solid fa-sparkles"></i><span>Сьогодні</span></button>
+<button type="button" class="coach-v3-tab" data-coach-view-target="analysis" role="tab" aria-selected="false"><i class="fa-solid fa-chart-line"></i><span>Аналіз</span></button>
+<button type="button" class="coach-v3-tab" data-coach-view-target="plan" role="tab" aria-selected="false"><i class="fa-solid fa-calendar-check"></i><span>План</span></button>
 </div>
-<span class="section-note">Тренд, не один день</span>
-</div>
-<div class="weekly-premium-panel premium-surface">
-<div class="weekly-top-grid">
-<div class="weekly-score-card" data-coach-feature>
-<div aria-label="Загальна оцінка прогресу" class="week-score-ring">
-<svg aria-hidden="true" viewbox="0 0 180 180">
-<circle class="week-score-track" cx="90" cy="90" r="69"></circle>
-<circle class="week-score-progress" cx="90" cy="90" id="week-score-progress" r="69"></circle>
-</svg>
-<div class="week-score-center">
-<span class="week-score-label">SCORE</span>
-<span id="progress-score-badge">0 / 100</span>
-</div>
-</div>
-<div class="weekly-score-copy">
-<strong id="week-score-title">Збираємо дані</strong>
-<span id="week-score-caption">Що більше стабільних днів — то точніша оцінка.</span>
-</div>
-</div>
-<div class="weekly-chart-card">
-<div class="weekly-chart-head">
-<div>
-<span class="weekly-chart-kicker">КАЛОРІЇ / ЦІЛЬ</span>
-<strong>Ритм тижня</strong>
-</div>
-<span class="weekly-chart-legend"><i></i> білок ≥ 90%</span>
-</div>
-<div aria-label="Калорійність за останні 7 днів" class="week-bars" id="week-bars"></div>
-</div>
-</div>
-<div class="weekly-kpi-grid">
-<div class="weekly-kpi-card" id="kpi-calories" style="--kpi-color: var(--primary); --kpi-pct: 0deg;">
-<div class="mini-progress-ring"><i class="fa-solid fa-fire"></i></div>
-<div><span>Середні ккал</span><strong id="stat-avg-kcal">—</strong></div>
-</div>
-<div class="weekly-kpi-card" id="kpi-protein" style="--kpi-color: var(--ring-green); --kpi-pct: 0deg;">
-<div class="mini-progress-ring"><i class="fa-solid fa-dumbbell"></i></div>
-<div><span>Білок ≥90%</span><strong id="stat-protein-hit">—</strong></div>
-</div>
-<div class="weekly-kpi-card" id="kpi-workouts" style="--kpi-color: var(--ring-blue); --kpi-pct: 0deg;">
-<div class="mini-progress-ring"><i class="fa-solid fa-person-running"></i></div>
-<div><span>Тренування</span><strong id="stat-workouts">0</strong></div>
-</div>
-<div class="weekly-kpi-card" id="kpi-weight" style="--kpi-color: var(--ring-yellow); --kpi-pct: 0deg;">
-<div class="mini-progress-ring"><i class="fa-solid fa-scale-balanced"></i></div>
-<div><span>Тренд ваги</span><strong id="stat-weight-trend">—</strong></div>
-</div>
-</div>
-</div>
-</section>
-<!-- BLOCK 04: COACH -->
+
+<div class="coach-v3-view active" data-coach-view="today">
 <section class="premium-section coach-section" data-coach-feature>
-<div class="coach-card premium-surface premium-accent-edge">
+<div class="coach-card coach-v3-main-card premium-surface">
 <div class="coach-head">
-<div>
-<span class="eyebrow">РОЗУМНИЙ АНАЛІЗ</span>
-<div class="coach-title gradient-text">ACHILLES COACH</div>
-</div>
+<div><span class="eyebrow">СЬОГОДНІ</span><div class="coach-title">Coach</div></div>
 <div class="coach-status" id="coach-status">Аналізую...</div>
 </div>
 <div class="coach-message" id="coach-message">Додай кілька днів даних — я зберу картину прогресу.</div>
 <div class="coach-submessage" id="coach-submessage"></div>
-<div id="coach-weekly-action" class="coach-weekly-action"></div>
-<div id="coach-training-checkin" class="settings-fields" data-coach-feature></div>
+<div class="coach-v3-signal-grid">
+<article class="coach-v3-signal good"><div class="coach-v3-signal-icon"><i class="fa-solid fa-chart-column"></i></div><div><span>Що добре</span><strong id="coach-good-title">Збираю дані</strong><p id="coach-good-text">Потрібно трохи більше записів.</p></div></article>
+<article class="coach-v3-signal gap"><div class="coach-v3-signal-icon"><i class="fa-solid fa-arrow-trend-down"></i></div><div><span>Що просідає</span><strong id="coach-gap-title">Ще рано оцінювати</strong><p id="coach-gap-text">Coach не робитиме висновок без достатніх даних.</p></div></article>
+<article class="coach-v3-signal focus"><div class="coach-v3-signal-icon"><i class="fa-solid fa-bullseye"></i></div><div><span>Фокус дня</span><strong id="coach-focus-title">Продовжуй вести журнал</strong><p id="coach-focus-text">Один конкретний крок зʼявиться тут.</p></div></article>
+</div>
 <div class="pr-chip" id="last-pr-chip" style="display:none;"><i class="fa-solid fa-trophy"></i><span id="last-pr-text"></span></div>
 </div>
 </section>
+
+<section class="premium-section">
+<div class="section-heading-row"><div><span class="eyebrow">ШВИДКІ ДІЇ</span><h2>Куди далі</h2></div></div>
+<div class="coach-v3-quick-grid">
+<button type="button" class="coach-v3-quick" data-coach-quick="food"><i class="fa-solid fa-utensils"></i><span>Раціон</span></button>
+<button type="button" class="coach-v3-quick" data-coach-quick="journal"><i class="fa-solid fa-book-open"></i><span>Журнал</span></button>
+<button type="button" class="coach-v3-quick" data-coach-quick="training"><i class="fa-solid fa-dumbbell"></i><span>Тренування</span></button>
+<button type="button" class="coach-v3-quick" data-coach-view-target="plan"><i class="fa-regular fa-calendar"></i><span>План</span></button>
+</div>
+</section>
+</div>
+
+<div class="coach-v3-view" data-coach-view="analysis" hidden>
+<section class="premium-section weekly-section" data-coach-feature>
+<div class="section-heading-row"><div><span class="eyebrow">7 ДНІВ</span><h2>Глибший аналіз</h2></div><span class="section-note">Тренд, не один день</span></div>
+<div class="weekly-premium-panel premium-surface">
+<div class="weekly-top-grid">
+<div class="weekly-score-card" data-coach-feature>
+<div aria-label="Загальна оцінка прогресу" class="week-score-ring"><svg aria-hidden="true" viewbox="0 0 180 180"><circle class="week-score-track" cx="90" cy="90" r="69"></circle><circle class="week-score-progress" cx="90" cy="90" id="week-score-progress" r="69"></circle></svg><div class="week-score-center"><span class="week-score-label">SCORE</span><span id="progress-score-badge">0 / 100</span></div></div>
+<div class="weekly-score-copy"><strong id="week-score-title">Збираємо дані</strong><span id="week-score-caption">Що більше стабільних днів — то точніша оцінка.</span></div>
+</div>
+<div class="weekly-chart-card"><div class="weekly-chart-head"><div><span class="weekly-chart-kicker">КАЛОРІЇ / ЦІЛЬ</span><strong>Ритм тижня</strong></div><span class="weekly-chart-legend"><i></i> білок ≥ 90%</span></div><div aria-label="Калорійність за останні 7 днів" class="week-bars" id="week-bars"></div></div>
+</div>
+<div class="weekly-kpi-grid">
+<div class="weekly-kpi-card" id="kpi-calories" style="--kpi-color: var(--primary); --kpi-pct: 0deg;"><div class="mini-progress-ring"><i class="fa-solid fa-fire"></i></div><div><span>Середні ккал</span><strong id="stat-avg-kcal">—</strong></div></div>
+<div class="weekly-kpi-card" id="kpi-protein" style="--kpi-color: var(--ring-green); --kpi-pct: 0deg;"><div class="mini-progress-ring"><i class="fa-solid fa-dumbbell"></i></div><div><span>Білок ≥90%</span><strong id="stat-protein-hit">—</strong></div></div>
+<div class="weekly-kpi-card" id="kpi-workouts" style="--kpi-color: var(--ring-blue); --kpi-pct: 0deg;"><div class="mini-progress-ring"><i class="fa-solid fa-person-running"></i></div><div><span>Тренування</span><strong id="stat-workouts">0</strong></div></div>
+<div class="weekly-kpi-card" id="kpi-weight" style="--kpi-color: var(--ring-yellow); --kpi-pct: 0deg;"><div class="mini-progress-ring"><i class="fa-solid fa-scale-balanced"></i></div><div><span>Тренд ваги</span><strong id="stat-weight-trend">—</strong></div></div>
+</div>
+</div>
+</section>
+<div id="coach-analysis-host"></div>
+<section class="premium-section" data-coach-feature>
+<div class="settings-card premium-surface">
+<div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-lightbulb"></i></div><div><span class="eyebrow">СПОСТЕРЕЖЕННЯ</span><h2>Що бачить Coach</h2></div></div>
+<div id="coach-analysis-insights" class="coach-insights"></div>
+<details class="coach-limitations" id="coach-analysis-limitations"><summary>Що враховано та чого бракує</summary><div id="coach-limitations-list"></div></details>
+</div>
+</section>
+</div>
+
+<div class="coach-v3-view" data-coach-view="plan" hidden>
+<section class="premium-section">
+<div class="settings-card premium-surface">
+<div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-bullseye"></i></div><div><span class="eyebrow">ПОТОЧНИЙ ФОКУС</span><h2>Один крок за раз</h2></div></div>
+<div id="coach-weekly-action" class="coach-weekly-action"></div>
+<div id="coach-training-checkin" class="settings-fields" data-coach-feature></div>
+</div>
+</section>
+<section class="premium-section coach-schedule-panel">
+<div class="settings-card premium-surface">
+<div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-calendar-check"></i></div><div><span class="eyebrow">ГРАФІК</span><h2>Мій план тренувань</h2></div></div>
+<div id="coach-plan-fields" class="settings-fields">
+<label><span>Тип графіка</span><select id="coach-schedule-mode"><option value="none">Без графіка</option><option value="cycle">Робочі дні / вихідні</option><option value="weekly">Дні тижня</option></select></label>
+<div id="coach-cycle-fields" class="coach-plan-group" hidden><label><span>Робочих днів поспіль</span><input id="coach-schedule-work" type="number" min="1" max="27" inputmode="numeric" value="2"/></label><label><span>Вихідних поспіль</span><input id="coach-schedule-rest" type="number" min="1" max="27" inputmode="numeric" value="2"/></label><label><span>Дата першого робочого дня циклу</span><input id="coach-schedule-anchor" type="date"/></label><label><span>Коли тренуватися</span><select id="coach-schedule-off"><option value="first">Перший вихідний</option><option value="all">Кожен вихідний</option></select></label></div>
+<fieldset id="coach-weekly-fields" class="coach-weekdays" hidden><legend>Тренувальні дні</legend><label><input type="checkbox" name="coach-weekday" value="1"/>Пн</label><label><input type="checkbox" name="coach-weekday" value="2"/>Вт</label><label><input type="checkbox" name="coach-weekday" value="3"/>Ср</label><label><input type="checkbox" name="coach-weekday" value="4"/>Чт</label><label><input type="checkbox" name="coach-weekday" value="5"/>Пт</label><label><input type="checkbox" name="coach-weekday" value="6"/>Сб</label><label><input type="checkbox" name="coach-weekday" value="0"/>Нд</label></fieldset>
+<label><span>Доступний час, хв</span><input id="coach-schedule-minutes" type="number" min="10" max="180" inputmode="numeric" value="30"/></label>
+<label><span>Обладнання</span><input id="coach-schedule-equipment" type="text" maxlength="100" placeholder="Наприклад, гантеля 12 кг"/></label>
+</div>
+<p class="coach-settings-description">Coach використовує графік для оцінки регулярності, але не змушує «надолужувати» пропуски.</p>
+<button id="coach-plan-save" type="button" class="secondary">Зберегти графік</button><p id="coach-plan-status" class="coach-settings-description" role="status"></p>
+</div>
+</section>
+</div>
+
+<div class="coach-v3-view" data-coach-view="settings" hidden>
 <section class="premium-section coach-settings-panel">
 <div class="settings-card premium-surface">
 <div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-sliders"></i></div><div><span class="eyebrow">НАЛАШТУВАННЯ</span><h2>Що аналізувати</h2></div></div>
@@ -501,16 +522,8 @@
 <button id="coach-preferences-save" type="button" class="secondary">Зберегти налаштування Coach</button><p id="coach-preferences-status" class="coach-settings-description" role="status"></p>
 </div>
 </section>
-<section class="premium-section coach-schedule-panel">
-<div class="settings-card premium-surface">
-<div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-calendar-check"></i></div><div><span class="eyebrow">ПЛАН</span><h2>Мій графік тренувань</h2></div></div>
-<div id="coach-plan-fields" class="settings-fields">
-<label><span>Тип графіка</span><select id="coach-schedule-mode"><option value="none">Без графіка</option><option value="cycle">Робочі дні / вихідні</option><option value="weekly">Дні тижня</option></select></label>
-<div id="coach-cycle-fields" class="coach-plan-group" hidden><label><span>Робочих днів поспіль</span><input id="coach-schedule-work" type="number" min="1" max="27" inputmode="numeric" value="2"/></label><label><span>Вихідних поспіль</span><input id="coach-schedule-rest" type="number" min="1" max="27" inputmode="numeric" value="2"/></label><label><span>Дата першого робочого дня циклу</span><input id="coach-schedule-anchor" type="date"/></label><label><span>Коли тренуватися</span><select id="coach-schedule-off"><option value="first">Перший вихідний</option><option value="all">Кожен вихідний</option></select></label></div>
-<fieldset id="coach-weekly-fields" class="coach-weekdays" hidden><legend>Тренувальні дні</legend><label><input type="checkbox" name="coach-weekday" value="1"/>Пн</label><label><input type="checkbox" name="coach-weekday" value="2"/>Вт</label><label><input type="checkbox" name="coach-weekday" value="3"/>Ср</label><label><input type="checkbox" name="coach-weekday" value="4"/>Чт</label><label><input type="checkbox" name="coach-weekday" value="5"/>Пт</label><label><input type="checkbox" name="coach-weekday" value="6"/>Сб</label><label><input type="checkbox" name="coach-weekday" value="0"/>Нд</label></fieldset>
-<label><span>Доступний час, хв</span><input id="coach-schedule-minutes" type="number" min="10" max="180" inputmode="numeric" value="30"/></label><label><span>Обладнання</span><input id="coach-schedule-equipment" type="text" maxlength="100" placeholder="Наприклад, гантеля 12 кг"/></label></div>
-<p class="coach-settings-description">Це план тренувань, а не окремий режим. Coach використовує його, щоб оцінювати регулярність і не пропонувати надолужувати пропуски.</p><button id="coach-plan-save" type="button" class="secondary">Зберегти графік</button><p id="coach-plan-status" class="coach-settings-description" role="status"></p>
-</div></section></div>
+</div>
+</div>
 <div class="tab-content premium-workspace premium-profile-workspace" id="tab-profile">
 <section class="profile-hero premium-surface premium-surface-ghost">
 <div class="profile-avatar-large"></div>
@@ -642,10 +655,10 @@
 </div>
 </div>
 <!-- ACHILLES FOOD CORE — 1000 profiles / Ukrainian offline catalog — local/offline database -->
-<script src="./food-catalog.js?v=10.17.4"></script>
+<script src="./food-catalog.js?v=10.17.5"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.17.4"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=10.17.4"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=10.17.5"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=10.17.5"></script>
 
 
 
@@ -656,31 +669,31 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.17.4"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=10.17.5"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=10.17.4"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=10.17.5"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=10.17.4"></script>
+<script data-achilles-module="training.js" src="./training.js?v=10.17.5"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.17.4"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.17.4"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.17.4"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=10.17.5"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=10.17.4"></script>
 
-<script src="./coach-training-ui.js?v=10.17.4"></script>
-<script src="./food-search.js?v=10.17.4"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.17.4"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=10.17.5"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=10.17.5"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=10.17.5"></script>
+
+<script src="./coach-training-ui.js?v=10.17.5"></script>
+<script src="./food-search.js?v=10.17.5"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=10.17.5"></script>
 
 
 
