@@ -318,12 +318,6 @@
         setTimeout(decorate,800);
         setTimeout(decorate,1800);
 
-        try {
-            if (sessionStorage.getItem('achilles_v105_seen') !== '1') {
-                sessionStorage.setItem('achilles_v105_seen','1');
-                A.toast?.('V10.5 Food Fix активний','fa-wrench',1800);
-            }
-        } catch(_) {}
     };
 
     if (document.readyState === 'loading') {
