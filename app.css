@@ -3409,3 +3409,41 @@ html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: m
  #bottom-nav .nav-icon{font-size:19px;}
  #bottom-nav .nav-item{padding-inline:2px;}
 }
+
+
+/* ===== achilles-v10-17-3-journal-tabs ===== */
+#tab-journal .journal-mode-switch{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    margin:0 0 18px;
+    padding:6px;
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    background:rgba(255,255,255,0.025);
+}
+#tab-journal .journal-mode-btn{
+    min-height:52px;
+    border:0;
+    border-radius:15px;
+    background:transparent;
+    color:var(--text-muted);
+    font:inherit;
+    font-weight:800;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition:background .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+#tab-journal .journal-mode-btn.active{
+    color:var(--text-main);
+    background:var(--input-bg);
+    box-shadow:0 8px 22px rgba(0,0,0,.16), inset 0 0 0 1px rgba(255,255,255,.05);
+}
+#tab-journal .journal-mode-btn.active i{color:var(--primary);}
+#tab-journal .journal-mode-btn:active{transform:scale(.98);}
+#tab-journal .journal-mode-panel[hidden]{display:none!important;}
+#tab-journal .journal-grid{display:block!important;}
+#tab-journal .journal-mode-panel{width:100%;}
