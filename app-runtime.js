@@ -1065,14 +1065,14 @@
 
     // History belongs to the journal; the gym only renders exercise entry controls.
     function renderExerciseHistoryIndex() {
-        const journal = document.getElementById('tab-journal');
-        if (!journal) return;
+        const workoutPanel = document.getElementById('journal-workout-panel');
+        if (!workoutPanel) return;
         let section = document.getElementById('exercise-history-index');
         if (!section) {
-            section = document.createElement('section');
+            section = document.createElement('div');
             section.id = 'exercise-history-index';
-            section.className = 'workspace-block premium-section';
-            journal.appendChild(section);
+            section.className = 'exercise-history-index journal-training-history';
+            workoutPanel.appendChild(section);
         }
         const history = A.training?.history?.all?.() || [];
         const unique = [];
