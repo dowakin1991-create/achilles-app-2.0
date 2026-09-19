@@ -4994,3 +4994,59 @@ html[data-theme="light"] #tab-food #food-list-container{
 }
 
 /* Explicit invariant: dashboard rings/macros remain governed by their existing Status styles. */
+
+
+/* ===== achilles-v10-20-1-coach-engine-2 ===== */
+#coach-question-host:empty{display:none}
+.coach-question-host{margin-top:14px}
+.coach-question-card,
+.coach-answer-response{
+    padding:16px;
+    border-radius:20px;
+    border:1px solid var(--surface-border);
+    background:color-mix(in srgb,var(--input-bg) 88%,var(--card-bg));
+    box-shadow:var(--shadow-soft);
+}
+.coach-question-card h3{margin:5px 0 7px;color:var(--text-main)!important;font-size:17px;line-height:1.3}
+.coach-question-card>p,.coach-answer-response p{margin:0;color:var(--text-muted)!important;font-size:13px;line-height:1.5}
+.coach-question-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.coach-question-options button,
+.coach-question-scale button{
+    min-height:48px;padding:10px;border:1px solid var(--surface-border);border-radius:15px;
+    background:var(--card-bg);color:var(--text-main);font:inherit;font-weight:750
+}
+.coach-question-options.multi label{
+    min-height:48px;padding:9px 11px;border:1px solid var(--surface-border);border-radius:15px;
+    background:var(--card-bg);display:flex;align-items:center;gap:9px
+}
+.coach-question-options.multi label span{color:var(--text-main)!important;font-size:13px;font-weight:700}
+.coach-question-options.multi input{width:20px!important;height:20px!important;min-height:20px!important;margin:0!important;box-shadow:none!important}
+.coach-question-submit{margin-top:10px;width:100%}
+.coach-question-scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:14px}
+.coach-question-scale button{min-width:0;padding:8px 3px}
+.coach-question-scale strong{display:block;font-size:16px}
+.coach-question-scale span{display:block;margin-top:4px;color:var(--text-muted)!important;font-size:9px;line-height:1.1}
+.coach-question-text{display:grid;gap:9px;margin-top:14px}
+.coach-question-text textarea{resize:vertical;min-height:86px}
+.coach-answer-response{margin-top:9px;border-color:rgba(var(--primary-rgb),.22)}
+.coach-insight-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.coach-insight-head h3{margin-right:auto}
+.coach-confidence{
+    flex:0 0 auto;padding:5px 8px;border-radius:999px;font-size:10px!important;font-weight:800;
+    color:var(--text-muted)!important;background:var(--input-bg);border:1px solid var(--surface-border)
+}
+.coach-confidence.high{color:#43d66b!important;background:rgba(67,214,107,.10)}
+.coach-confidence.medium{color:var(--primary)!important;background:rgba(var(--primary-rgb),.10)}
+.coach-confidence.low{color:var(--text-soft)!important}
+.coach-evidence strong,.coach-interpretation strong,.coach-advice strong{color:var(--text-main)!important}
+.coach-interpretation{color:var(--text-muted)!important}
+.coach-confidence-reason{font-size:11px!important;color:var(--text-soft)!important;margin-top:8px!important}
+@media(max-width:520px){
+    .coach-question-options{grid-template-columns:1fr}
+    .coach-question-scale{grid-template-columns:repeat(5,1fr)}
+    .coach-question-scale span{display:none}
+}
+
+/* Food browse cards should feel like useful local content, not an empty state. */
+#tab-food #food-results:not(:empty){display:grid;gap:10px}
+#tab-food .food-source-badge{display:inline-flex;margin-top:6px;color:var(--text-soft)!important;font-size:10px!important;font-weight:750}
