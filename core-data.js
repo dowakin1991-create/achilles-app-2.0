@@ -59,6 +59,7 @@
             workoutBonus: Number(d.workoutBonus || 0),
             macros: normalizeMacros(d.macros),
             log: Array.isArray(d.log) ? d.log : [],
+            nutritionComplete: d.nutritionComplete === true,
             updatedAt: Number(d.updatedAt || 0)
         };
     }
