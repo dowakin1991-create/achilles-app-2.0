@@ -137,3 +137,14 @@ test('10.19 Coach 2.0 UI contains contextual question host',()=>{
     const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8'); const css=fs.readFileSync(path.join(__dirname,'../app.css'),'utf8');
     assert.match(html,/id="coach-question-host"/); assert.match(css,/coach-question-options/); assert.match(css,/coach-question-scale/); assert.match(css,/coach-answer-response/);
 });
+
+
+test('10.20 mobile AAA pass simplifies non-dashboard workspaces only',()=>{
+    const css=fs.readFileSync(path.join(__dirname,'../app.css'),'utf8');
+    assert.match(css,/achilles-v10-20-0-mobile-aaa-pass/);
+    assert.match(css,/#tab-food \.workspace-header[\s\S]*background:transparent!important/);
+    assert.match(css,/#tab-coach \.coach-v3-signal[\s\S]*border-radius:0!important/);
+    assert.match(css,/#tab-profile \.profile-hero[\s\S]*grid-template-columns:68px minmax\(0,1fr\)/);
+    const block=css.slice(css.indexOf('achilles-v10-20-0-mobile-aaa-pass'));
+    assert.doesNotMatch(block,/#tab-dashboard/);
+});
