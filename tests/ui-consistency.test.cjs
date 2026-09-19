@@ -222,3 +222,15 @@ test('11.2 avatar progression and durable custom-food backup are wired', () => {
     assert.match(sw, /avatar-system\.js/);
     assert.match(sw, /achilles-avatar-atlas\.webp/);
 });
+
+
+test('11.2 progression keeps nutrition completion and immediately backs up custom foods', () => {
+    const runtime = fs.readFileSync(path.join(__dirname, '../app-runtime.js'), 'utf8');
+    const reliability = fs.readFileSync(path.join(__dirname, '../nutrition-reliability.js'), 'utf8');
+    const core = fs.readFileSync(path.join(__dirname, '../core-data.js'), 'utf8');
+    const avatar = fs.readFileSync(path.join(__dirname, '../avatar-system.js'), 'utf8');
+    assert.match(runtime, /syncCustomFoodsBackup\?\.\(\)/);
+    assert.match(reliability, /syncCustomFoodsBackup\?\.\(\)/);
+    assert.match(core, /nutritionComplete: d\.nutritionComplete === true/);
+    assert.match(avatar, /safeJson\('achilles_all_days',\{\}\)/);
+});
