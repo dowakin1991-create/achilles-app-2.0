@@ -6192,3 +6192,139 @@ html[data-theme="light"] #tab-food #food-list-container{
         font-size:8.5px!important;
     }
 }
+
+
+/* ===== Achilles 11.1.1 — numeric input / modal stability audit ===== */
+
+/* Reusable fix for horizontally grouped inputs.
+   Width:100% + flex-shrink on iOS can visually desync caret and placeholder. */
+.numeric-input-row{
+    display:flex;
+    gap:10px;
+    width:100%;
+    min-width:0;
+}
+.numeric-input-row-spaced{
+    gap:12px;
+    margin-bottom:8px;
+}
+.numeric-input-row > input,
+.numeric-input-row > select{
+    flex:1 1 0!important;
+    width:0!important;
+    min-width:0!important;
+    max-width:100%!important;
+}
+
+/* Normalize all number inputs. Prevent Safari from inheriting odd indentation/alignment. */
+input[type="number"]{
+    text-indent:0!important;
+    text-align:left!important;
+    padding-left:18px!important;
+    padding-right:18px!important;
+    font-variant-numeric:tabular-nums;
+    -moz-appearance:textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{
+    -webkit-appearance:none;
+    margin:0;
+}
+
+/* Custom food is a proper sheet, not an inline-styled desktop form. */
+#custom-food-overlay{
+    justify-content:center!important;
+    align-items:center!important;
+    padding:
+        max(16px, env(safe-area-inset-top, 0px))
+        16px
+        max(16px, env(safe-area-inset-bottom, 0px))!important;
+}
+.custom-food-sheet{
+    width:min(100%, 420px);
+    max-height:min(86dvh, 720px);
+    overflow:auto;
+    overscroll-behavior:contain;
+    padding:22px 18px 18px;
+    border-radius:26px;
+    background:var(--card-bg);
+    border:1px solid var(--glass-border);
+    box-shadow:0 22px 60px rgba(0,0,0,.30);
+}
+.custom-food-title{
+    text-align:left!important;
+    margin:0 0 14px!important;
+    font-size:22px!important;
+}
+.custom-food-sheet > input{
+    width:100%!important;
+    min-width:0!important;
+    margin:0 0 10px!important;
+    padding:0 16px!important;
+    min-height:54px!important;
+    border-radius:16px!important;
+}
+.custom-food-macros{
+    margin-top:0;
+}
+.custom-food-macros input{
+    margin:0!important;
+    min-height:54px!important;
+    padding:0 14px!important;
+    border-radius:16px!important;
+    font-size:16px!important;
+    line-height:1.2!important;
+}
+.custom-food-macros input::placeholder{
+    opacity:.76!important;
+}
+.custom-food-save,
+.custom-food-cancel{
+    width:100%!important;
+    min-height:52px!important;
+    margin:12px 0 0!important;
+    padding:0 16px!important;
+    border-radius:16px!important;
+    font-size:16px!important;
+}
+.custom-food-cancel{
+    margin-top:8px!important;
+}
+
+/* Focus state: caret starts exactly where text/placeholder starts. */
+#custom-food-overlay input:focus{
+    padding-left:14px!important;
+    text-indent:0!important;
+    outline:none!important;
+    box-shadow:0 0 0 3px rgba(var(--primary-rgb),.10)!important;
+}
+
+/* iPhone: avoid three tiny fields fighting for space. */
+@media (max-width:430px){
+    .custom-food-sheet{
+        width:100%;
+        padding:18px 14px 14px;
+        border-radius:22px;
+    }
+    .custom-food-macros{
+        display:grid!important;
+        grid-template-columns:repeat(3,minmax(0,1fr))!important;
+        gap:8px!important;
+    }
+    .custom-food-macros > input{
+        width:100%!important;
+        min-width:0!important;
+        padding-left:12px!important;
+        padding-right:8px!important;
+        font-size:15px!important;
+    }
+    #custom-food-overlay input:focus{
+        padding-left:12px!important;
+    }
+}
+
+@media (max-width:360px){
+    .custom-food-macros{
+        grid-template-columns:1fr!important;
+    }
+}
