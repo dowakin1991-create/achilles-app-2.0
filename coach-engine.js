@@ -81,20 +81,67 @@
     function questionFor(input,analysis) {
         const q=analysis.dataQuality||{};
         const has=id=>analysis.insights.some(i=>i.id===id);
-        if(has('protein-week')&&!answerFresh(input.state,'protein-barrier',30)) return {id:'protein-barrier',type:'single',title:'Що найбільше заважає добирати білок?',prompt:'Це допоможе Coach дати практичнішу пораду замість загального «їж більше білка».',options:[{value:'time',label:'Не вистачає часу'},{value:'appetite',label:'Не хочеться / важко зʼїсти'},{value:'planning',label:'Не планую наперед'},{value:'cost',label:'Дорого'},{value:'unknown',label:'Не знаю, чим добрати'}]};
-        if((q.trainingDays<2||has('training-review'))&&!answerFresh(input.state,'training-barrier',21)) return {id:'training-barrier',type:'multi',title:'Що найчастіше заважає тренуватись?',prompt:'Можна обрати кілька причин.',options:[{value:'time',label:'Немає часу'},{value:'fatigue',label:'Втома після роботи'},{value:'pain',label:'Біль / дискомфорт'},{value:'motivation',label:'Немає бажання'},{value:'schedule',label:'Незручний графік'}]};
-        if(q.weightDays<3&&!answerFresh(input.state,'weighing-routine',30)) return {id:'weighing-routine',type:'single',title:'Коли тобі реально найзручніше зважуватись?',prompt:'Coach підлаштує рекомендацію під реальний режим, а не під «ідеальну» схему.',options:[{value:'morning',label:'Вранці'},{value:'after-work',label:'Після роботи'},{value:'days-off',label:'У вихідні'},{value:'irregular',label:'Коли вийде'}]};
-        if(q.trainingDays>=1&&!answeredAfterLastSession(input,'last-workout-effort')) return {id:'last-workout-effort',type:'scale',title:'Наскільки важким було останнє тренування?',prompt:'1 — дуже легке, 5 — майже на межі.',min:1,max:5,labels:['Дуже легко','Легко','Нормально','Важко','На межі']};
-        if(q.completeDays>=3&&!answerFresh(input.state,'weekly-focus',7)) return {id:'weekly-focus',type:'text',title:'Що ти хочеш покращити цього тижня?',prompt:'Напиши коротко: наприклад «добирати білок», «не пропускати тренування» або «краще контролювати порції».',maxLength:140};
+        const selected=input.selectedDate||input.today;
+        const selectedDay=input.days?.[selected]||{};
+
+        if(q.loggedDays>=2 && q.completeDays<2 && !answerFresh(input.state,'logging-barrier',21)) {
+            return {
+                id:'logging-barrier',type:'multi',
+                title:'Що заважає вести журнал повністю?',
+                prompt:'Coach не буде трактувати неповний день як реальний дефіцит. Обери все, що заважає — це змінить наступні поради.',
+                options:[
+                    {value:'forgot',label:'Забуваю записувати'},
+                    {value:'time',label:'Немає часу'},
+                    {value:'portion',label:'Складно оцінити порцію'},
+                    {value:'database',label:'Не знаходжу продукт'},
+                    {value:'later',label:'Вношу все наприкінці дня'}
+                ]
+            };
+        }
+        if(has('protein-week')&&!answerFresh(input.state,'protein-barrier',30)) return {id:'protein-barrier',type:'single',title:'Що найбільше заважає добирати білок?',prompt:'Відповідь потрібна не для оцінки, а щоб наступна рекомендація була реально виконуваною.',options:[{value:'time',label:'Не вистачає часу'},{value:'appetite',label:'Важко зʼїсти потрібну кількість'},{value:'planning',label:'Не планую наперед'},{value:'cost',label:'Дорого'},{value:'unknown',label:'Не знаю, чим добрати'}]};
+        if(has('energy') && selectedDay.nutritionComplete && !answerFresh(input.state,'energy-context',14)) return {
+            id:'energy-context',type:'single',
+            title:'Що найбільше вплинуло на сьогоднішню калорійність?',
+            prompt:'Один день не визначає прогрес. Контекст допоможе не робити хибний висновок із числа.',
+            options:[
+                {value:'portion',label:'Більші порції'},
+                {value:'snacks',label:'Перекуси / солодке'},
+                {value:'sauce',label:'Соуси / олія / напої'},
+                {value:'event',label:'Незвичний день / подія'},
+                {value:'normal',label:'Звичайний день'}
+            ]
+        };
+        if((q.trainingDays<2||has('training-review'))&&!answerFresh(input.state,'training-barrier',21)) return {id:'training-barrier',type:'multi',title:'Що найчастіше заважає тренуватись?',prompt:'Можна обрати кілька причин. Coach використає їх при виборі довжини й моменту тренування.',options:[{value:'time',label:'Немає часу'},{value:'fatigue',label:'Втома після роботи'},{value:'pain',label:'Біль / дискомфорт'},{value:'motivation',label:'Немає бажання'},{value:'schedule',label:'Незручний графік'}]};
+        if(q.weightDays<3&&!answerFresh(input.state,'weighing-routine',30)) return {id:'weighing-routine',type:'single',title:'Коли тобі реально найзручніше зважуватись?',prompt:'Coach підлаштує оцінку тренду під реальний режим, а не під «ідеальну» схему.',options:[{value:'morning',label:'Вранці'},{value:'after-work',label:'Після роботи'},{value:'days-off',label:'У вихідні'},{value:'irregular',label:'Коли вийде'}]};
+        if(q.trainingDays>=1&&!answeredAfterLastSession(input,'last-workout-effort')) return {id:'last-workout-effort',type:'scale',title:'Наскільки важким було останнє тренування?',prompt:'Оціни загальне зусилля: це допоможе не радити прогресію лише тому, що цифри виросли.',min:1,max:5,labels:['Дуже легко','Легко','Нормально','Важко','На межі']};
+        if(q.completeDays>=3&&!answerFresh(input.state,'weekly-focus',7)) return {id:'weekly-focus',type:'text',title:'Що ти хочеш покращити цього тижня?',prompt:'Коротка відповідь стане додатковим контекстом. Фактичні дані журналу все одно мають пріоритет.',maxLength:140};
         return null;
     }
     function responseFor(answerId,value) {
         const values=Array.isArray(value)?value:[value];
-        if(answerId==='protein-barrier'){const map={time:'Тоді не ускладнюємо: Coach шукатиме варіанти, які додаються за 1–2 хвилини — яйця, кисломолочний сир, йогурт, тунець або готова порція мʼяса.',appetite:'Тоді краще розподіляти білок між прийомами їжі, а не намагатися добрати велику порцію ввечері.',planning:'Зробимо акцент на одному заздалегідь вибраному білковому продукті на день.',cost:'Coach віддаватиме перевагу доступнішим джерелам: яйця, кисломолочний сир, курятина, бобові.',unknown:'Coach показуватиме конкретний орієнтир у грамах і кілька простих джерел білка.'};return map[value]||'Врахую це в наступних порадах.';}
-        if(answerId==='training-barrier'){const parts=[];if(values.includes('time'))parts.push('коротші тренування');if(values.includes('fatigue'))parts.push('менше навантаження після робочих днів');if(values.includes('pain'))parts.push('обережніший підбір вправ без автоматичного збільшення навантаження');if(values.includes('motivation'))parts.push('мінімальний план із дуже низьким порогом входу');if(values.includes('schedule'))parts.push('привʼязку до реального циклу роботи/відпочинку');return parts.length?'Врахую: '+parts.join(', ')+'.':'Врахую це в плані.';}
-        if(answerId==='weighing-routine'){const map={morning:'Добре. Для тренду Coach орієнтуватиметься насамперед на ранкові вимірювання за схожих умов.','after-work':'Після роботи вага сильніше залежить від їжі та рідини, тому Coach дивитиметься на середню тенденцію, а не на окреме число.','days-off':'Тоді краще мати 2–3 стабільні вимірювання на тиждень у схожих умовах, навіть якщо це лише вихідні.',irregular:'Тоді не буду робити сильних висновків з окремих вимірювань — лише з довшої тенденції.'};return map[value]||'Врахую це при аналізі ваги.';}
-        if(answerId==='last-workout-effort'){const n=Number(value);if(n<=2)return 'Останнє тренування відчувалось легким. Якщо техніка стабільна й повтори виконані впевнено, наступного разу можна розглядати невеликий прогрес.';if(n===3)return 'Нормальна складність. Найкращий варіант — повторити або трохи покращити один параметр, а не різко додавати вагу.';return 'Тренування було важким. Coach не радитиме автоматично підвищувати вагу; спершу варто повторити навантаження або покращити відновлення.';}
-        if(answerId==='weekly-focus')return 'Фокус збережено: «'+String(value).slice(0,140)+'». Я використаю його як контекст, але не буду підміняти ним фактичні дані журналу.';
+        if(answerId==='logging-barrier'){
+            const parts=[];
+            if(values.includes('forgot'))parts.push('показувати простіший ритуал: вносити їжу одразу після прийому, а не відновлювати день з памʼяті');
+            if(values.includes('time'))parts.push('віддавати перевагу недавнім та улюбленим продуктам, щоб запис займав кілька секунд');
+            if(values.includes('portion'))parts.push('не вимагати фальшивої точності: краще приблизна чесна порція, ніж пропущений запис');
+            if(values.includes('database'))parts.push('враховувати проблему пошуку — локальна UA-база має бути першим джерелом, а власний продукт лишається запасним варіантом');
+            if(values.includes('later'))parts.push('нагадувати підтвердити день лише після того, як записи завершені');
+            return 'Зрозумів причину неповних днів. Далі буду '+(parts.length?parts.join('; '):'обережніше трактувати неповні записи')+'. Поки день не підтверджений, низькі калорії або білок не вважатиму фактичним дефіцитом.';
+        }
+        if(answerId==='protein-barrier'){const map={time:'Тоді стратегія має бути швидкою: 1–2 передбачувані джерела білка, які можна додати за кілька хвилин. Coach не вимагатиме складного меню — дивитиметься, чи покращилась середня кількість білка в підтверджених днях.',appetite:'Тоді не варто «доганяти» великий обсяг ввечері. Раціональніше рознести білок на 2–3 менші порції й дивитися на тижневу середню, а не на один ідеальний день.',planning:'Тоді проблема не в знаннях, а в підготовці. Coach робитиме акцент на одному заздалегідь вибраному білковому продукті на день і перевірятиме, чи це реально покращило тижневий результат.',cost:'Тоді рекомендації мають враховувати бюджет. Пріоритет — яйця, кисломолочний сир, курятина та бобові; дорогі «фітнес-продукти» не потрібні.',unknown:'Тоді Coach показуватиме не абстрактне «більше білка», а скільки приблизно бракує за підтвердженими днями й кілька звичайних продуктів, якими це можна закрити.'};return map[value]||'Врахую це в наступних порадах.';}
+        if(answerId==='energy-context'){
+            const map={
+                portion:'Схоже, головний контекст — розмір порцій. Я не пропонуватиму «компенсувати» день голодом; корисніше порівняти кілька підтверджених днів і подивитися, чи великі порції повторюються.',
+                snacks:'Перекуси могли помітно підняти калорійність. Coach дивитиметься, чи це повторюваний патерн, а не робитиме висновок з одного дня.',
+                sauce:'Соуси, олія й напої легко губляться в обліку. Наступний крок — перевірити саме їх, не урізаючи автоматично основну їжу.',
+                event:'Це нетиповий день, тому не використовую його як підставу змінювати план. Важливіша середня картина кількох звичайних підтверджених днів.',
+                normal:'Якщо це був звичайний день, подивимось, чи така калорійність повториться ще в кількох повних днях. Лише тоді варто шукати системну причину.'
+            };return map[value]||'Контекст збережено. Один день сам по собі не змінює план.';
+        }
+        if(answerId==='training-barrier'){const parts=[];if(values.includes('time'))parts.push('робити коротший мінімальний варіант замість пропуску');if(values.includes('fatigue'))parts.push('не ставити важку прогресію одразу після виснажливого робочого дня');if(values.includes('pain'))parts.push('не радити автоматично збільшувати навантаження при болю або дискомфорті');if(values.includes('motivation'))parts.push('знижувати поріг входу: почати з короткого плану, а не вимагати повного тренування');if(values.includes('schedule'))parts.push('привʼязувати рекомендацію до реального циклу роботи/відпочинку');return parts.length?'Врахую це в тренувальних порадах: '+parts.join('; ')+'. Я все одно перевірятиму фактичну історію вправ, а не робитиму висновок лише з цієї відповіді.':'Врахую це в плані.';}
+        if(answerId==='weighing-routine'){const map={morning:'Добре. Для тренду Coach орієнтуватиметься насамперед на ранкові вимірювання за схожих умов і не реагуватиме на одиничний стрибок ваги.','after-work':'Після роботи вага сильніше залежить від їжі та рідини. Тому Coach оцінюватиме лише довшу середню тенденцію, а не окремі вечірні числа.','days-off':'Це робочий компроміс: 2–3 стабільні вимірювання на тиждень у схожих умовах корисніші, ніж щоденні випадкові.','irregular':'Тоді впевненість у висновках про вагу буде нижчою. Окремі вимірювання не використовуватиму як причину змінювати калорії.'};return map[value]||'Врахую це при аналізі ваги.';}
+        if(answerId==='last-workout-effort'){const n=Number(value);if(n<=2)return 'Останнє тренування відчувалось легким. Якщо техніка стабільна, наступного разу можна покращити лише один параметр — наприклад, 1–2 повтори в одному підході — а не стрибати одразу по всіх вагах.';if(n===3)return 'Нормальна складність. Найкращий варіант — повторити навантаження або трохи покращити один параметр. Coach порівняє це з попередніми записами тієї самої вправи.';return 'Тренування було важким. Автоматично підвищувати вагу зараз не буду радити. Логічніше повторити навантаження, оцінити відновлення й звернути увагу на техніку; при болю прогресію не форсуємо.';}
+        if(answerId==='weekly-focus')return 'Фокус збережено: «'+String(value).slice(0,140)+'». Я використаю його як контекст для пріоритету порад, але не підмінятиму ним фактичні дані журналу, ваги й тренувань.';
         return 'Відповідь збережено й буде врахована в наступному аналізі.';
     }
 
@@ -213,7 +260,28 @@
         if(goal>0&&kcal>0&&Math.abs(kcal-goal)/goal<=.1)positives.push({id:'calories',title:'Калорійність близько до цілі',text:Math.round(kcal)+' із '+Math.round(goal)+' ккал сьогодні.'});
         if(number(targets.p)>0&&sum(foods.map(f=>number(f.p)||0))>=Number(targets.p)*.9)positives.push({id:'protein',title:'Білок близько до цілі',text:round(sum(foods.map(f=>number(f.p)||0)))+' г із '+round(targets.p)+' г.'});
         if(workoutDays>=2)positives.push({id:'training',title:'Тренування є в ритмі',text:workoutDays+' тренувальних днів за 14 днів.'});
-        const result={insights:filtered,summary:dateLabel+': '+foods.length+' записів їжі. За 14 днів: '+workoutDays+' днів із тренуваннями.',limitations,metrics:{sweetKcal,share,fiber:knownFiber.length===items.length?fiber:null,freeSugar,produce,weightDelta:delta,workoutDays},dataQuality:quality,positives};
+        const insightConfidence = insight => {
+            if(['fast-loss','weight-review','weight-trend'].includes(insight.id) && delta!==null) return {level:'high',label:'Висока',reason:'є дві тижневі середні щонайменше з 3 зважувань кожна'};
+            if(['protein-week','sweets-pattern','energy-stable'].includes(insight.id) && completeWeek.length>=5) return {level:'high',label:'Висока',reason:'патерн повторюється у кількох підтверджених днях'};
+            if(['protein-week','sweets-pattern','energy-stable'].includes(insight.id) && completeWeek.length>=3) return {level:'medium',label:'Середня',reason:'є щонайменше 3 підтверджені дні'};
+            if(insight.id.startsWith('training-')) return {level:'medium',label:'Середня',reason:'порівнюються записи тієї самої вправи, але немає повних даних про техніку та відновлення'};
+            if(day.nutritionComplete) return {level:'medium',label:'Середня',reason:'день підтверджений, але це ще не довгостроковий патерн'};
+            return {level:'low',label:'Низька',reason:'поточний день не підтверджений або даних поки мало'};
+        };
+        const interpretationFor = insight => ({
+            'protein-week':'Це повторюваний тижневий патерн, тому корисніше змінити одну звичку, а не «рятувати» окремий день.',
+            'sweets-pattern':'Проблема не в самому факті десерту, а в повторюваній частці калорій у повних днях.',
+            'energy-stable':'Середнє близьке до цілі, тому різка корекція калорій зараз не виправдана.',
+            'weight-review':'Короткий тренд ще не пояснює причину зміни ваги; спершу потрібна стабільність вимірювань і журналу.',
+            'fast-loss':'Темп виглядає швидким за тижневими середніми, тому посилювати дефіцит без додаткової перевірки не варто.',
+            'training-review':'За однакової записаної ваги повтори не ростуть. Це сигнал перевірити відновлення й виконання, а не автоматично додавати вагу.',
+            'training-progress':'У порівнюваних записах є прогрес, але Coach не знає, чи однаковими були техніка та зусилля.',
+            'protein':'Це показник поточного внесеного дня. Якщо день неповний, він не доводить реальний недобір.',
+            'energy':'Це факт про один підтверджений день, а не причина змінювати весь план.',
+            'data':'Поки якість даних важливіша за будь-яку «розумну» пораду.'
+        }[insight.id] || 'Це спостереження з наявних записів. Його сила залежить від повноти й повторюваності даних.');
+        const explained=filtered.map(insight=>({...insight,interpretation:interpretationFor(insight),confidence:insightConfidence(insight)}));
+        const result={insights:explained,summary:dateLabel+': '+foods.length+' записів їжі. За 14 днів: '+workoutDays+' днів із тренуваннями.',limitations,metrics:{sweetKcal,share,fiber:knownFiber.length===items.length?fiber:null,freeSugar,produce,weightDelta:delta,workoutDays},dataQuality:quality,positives};
         result.question=questionFor(input,result);result.lastAnswerResponse=input.state?.lastAnswer?.response||null;return result;
     }
     return {analyze,classify,snapshot,dataQuality,questionFor,responseFor};
