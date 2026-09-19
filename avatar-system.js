@@ -4,7 +4,7 @@
 
     const A = root.Achilles = root.Achilles || {};
     const STATE_KEY = 'achilles_avatar_state_v1';
-    const ATLAS = './assets/avatars/achilles-avatar-atlas.webp?v=11.2.0';
+    const ATLAS = './assets/avatars/achilles-avatar-atlas.webp?v=11.2.1';
 
     const CATALOG = Object.freeze([
         {id:1,  name:'Новобранець',        tier:'I',   kind:'base'},
