@@ -109,3 +109,14 @@ test('10.18.2 mobile nav cannot render desktop brand or shift six tabs', () => {
     assert.match(css, /#bottom-nav \.desktop-nav-brand[\s\S]*display:none!important/);
     assert.match(css, /@media \(min-width:1180px\)[\s\S]*\.desktop-nav-brand\{[\s\S]*display:flex!important/);
 });
+
+
+test('10.18.4 restores color themes and keeps workspace wrappers structural', () => {
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.match(css, /html\[data-theme="dark"\]\[data-color="blood"\][\s\S]*--primary:#FF453A/);
+    assert.match(css, /html\[data-theme="dark"\]\[data-color="sky"\][\s\S]*--primary:#0A84FF/);
+    assert.match(css, /html\[data-theme="light"\]\[data-color="blood"\][\s\S]*--primary:#D70015/);
+    assert.match(css, /html\[data-theme="light"\]\[data-color="sky"\][\s\S]*--primary:#007AFF/);
+    assert.match(css, /\.premium-workspace > \.workspace-block[\s\S]*background:transparent!important[\s\S]*border:0!important[\s\S]*box-shadow:none!important/);
+    assert.match(css, /#tab-food > \.workspace-block\.results-section[\s\S]*border-radius:0!important/);
+});
