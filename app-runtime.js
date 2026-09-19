@@ -240,12 +240,48 @@
 
         localSearch(query) {
             const q = normalizedQuery(query);
-            const local = [
-                ...this.custom(),
-                ...(root.foodDB || []).map(x => normalizeFood(x, { source: 'built-in' })).filter(Boolean)
-            ];
+            const custom = this.custom();
+            const canonical = Array.isArray(root.ACHILLES_FOOD_CORE_CANONICAL) ? root.ACHILLES_FOOD_CORE_CANONICAL : [];
+            const index = Array.isArray(root.ACHILLES_FOOD_SEARCH_INDEX) ? root.ACHILLES_FOOD_SEARCH_INDEX : [];
+
+            if (root.AchillesFoodSearch?.create && canonical.length) {
+                const stamp = canonical.length + ':' + index.length;
+                if (!this._localSearchEngine || this._localSearchStamp !== stamp) {
+                    this._localSearchEngine = root.AchillesFoodSearch.create(canonical, index);
+                    this._localSearchStamp = stamp;
+                }
+                if (!q) return dedupeFoods([...custom, ...canonical.map(x => normalizeFood(x, {source:'built-in'})).filter(Boolean)]);
+                return dedupeFoods([
+                    ...this._localSearchEngine.searchCustom(custom, q),
+                    ...this._localSearchEngine.search(q, 64).map(x => normalizeFood(x, {source:x.source || 'built-in'})).filter(Boolean)
+                ]);
+            }
+
+            const local = [...custom, ...(root.foodDB || []).map(x => normalizeFood(x, { source: 'built-in' })).filter(Boolean)];
             if (!q) return dedupeFoods(local);
             return dedupeFoods(local.filter(item => stripDecorations(item.name).toLocaleLowerCase('uk-UA').includes(q)));
+        },
+
+        browse(limit = 18) {
+            const canonical = Array.isArray(root.ACHILLES_FOOD_CORE_CANONICAL) ? root.ACHILLES_FOOD_CORE_CANONICAL : [];
+            const market = canonical.filter(item => item?.source === 'ua-market');
+            const source = market.length ? market : canonical;
+            const groups = new Map();
+            for (const item of source) {
+                const category = String(item.category || 'Інше');
+                if (!groups.has(category)) groups.set(category, []);
+                groups.get(category).push(item);
+            }
+            const picked = [], buckets = [...groups.values()];
+            let row = 0;
+            while (picked.length < limit && buckets.some(bucket => row < bucket.length)) {
+                for (const bucket of buckets) {
+                    if (picked.length >= limit) break;
+                    if (bucket[row]) picked.push(normalizeFood(bucket[row], {source:bucket[row].source || 'built-in'}));
+                }
+                row++;
+            }
+            return dedupeFoods(picked.filter(Boolean)).slice(0, limit);
         },
 
         sanitize() {
@@ -1301,9 +1337,11 @@
         if(insightHost) {
             insightHost.innerHTML=(plan.insights||[]).map(i=>`
                 <article class="coach-insight">
-                    <h3>${esc(i.title)}</h3>
-                    <p>${esc(i.evidence)}</p>
-                    <p class="coach-advice">${esc(i.advice)}</p>
+                    <div class="coach-insight-head"><h3>${esc(i.title)}</h3><span class="coach-confidence ${esc(i.confidence?.level||'low')}">Впевненість: ${esc(i.confidence?.label||'низька')}</span></div>
+                    <p class="coach-evidence"><strong>Що бачу:</strong> ${esc(i.evidence)}</p>
+                    <p class="coach-interpretation"><strong>Що це означає:</strong> ${esc(i.interpretation||'Це спостереження з наявних записів.')}</p>
+                    <p class="coach-advice"><strong>Що робити:</strong> ${esc(i.advice)}</p>
+                    <p class="coach-confidence-reason">${esc(i.confidence?.reason||'')}</p>
                     <button type="button" class="secondary" data-coach-target="${esc(i.target)}">${i.target==='tab-journal'?'Відкрити журнал':i.target==='tab-dashboard'?'Переглянути вагу':i.target==='tab-profile'?'Відкрити профіль':i.target==='tab-workout'?'Відкрити тренування':'Відкрити раціон'}</button>
                     ${i.source ? `<a class="coach-source" href="${esc(i.source)}" target="_blank" rel="noopener noreferrer">Джерело орієнтира</a>`:''}
                 </article>`).join('') || '<div class="coach-v3-empty">Поки немає окремих зауважень. Продовжуй вести записи.</div>';
