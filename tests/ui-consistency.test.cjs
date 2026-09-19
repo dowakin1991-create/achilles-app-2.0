@@ -131,3 +131,9 @@ test('10.18.5 cohesive UI fixes Coach contrast and structural sheets', () => {
     assert.match(css, /#tab-food \.results-section[\s\S]*background:transparent!important/);
     assert.match(css, /Keep Dashboard nutrition rings\/macros untouched/);
 });
+
+
+test('10.19 Coach 2.0 UI contains contextual question host',()=>{
+    const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8'); const css=fs.readFileSync(path.join(__dirname,'../app.css'),'utf8');
+    assert.match(html,/id="coach-question-host"/); assert.match(css,/coach-question-options/); assert.match(css,/coach-question-scale/); assert.match(css,/coach-answer-response/);
+});
