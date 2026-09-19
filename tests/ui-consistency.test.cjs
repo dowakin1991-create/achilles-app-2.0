@@ -175,3 +175,11 @@ test('Mobile 11 release keeps dashboard rings and flattens profile/nav on mobile
     assert.match(css, /#main-app-window \.nav-bar[\s\S]*border-radius:22px!important/);
     assert.match(css, /#tab-dashboard \.nutrition-macro-cards[\s\S]*repeat\(3,minmax\(0,1fr\)\)/);
 });
+
+
+test('11.0.1 protects iOS top safe area and profile fields from floating actions', () => {
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.match(css, /padding-top:max\(calc\(env\(safe-area-inset-top, 0px\) \+ 10px\), 54px\)!important/);
+    assert.match(css, /#tab-profile \.profile-actions[\s\S]*position:static!important/);
+    assert.match(css, /#tab-profile \.profile-actions[\s\S]*bottom:auto!important/);
+});
