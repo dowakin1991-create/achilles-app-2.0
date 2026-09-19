@@ -120,3 +120,14 @@ test('10.18.4 restores color themes and keeps workspace wrappers structural', ()
     assert.match(css, /\.premium-workspace > \.workspace-block[\s\S]*background:transparent!important[\s\S]*border:0!important[\s\S]*box-shadow:none!important/);
     assert.match(css, /#tab-food > \.workspace-block\.results-section[\s\S]*border-radius:0!important/);
 });
+
+
+test('10.18.5 cohesive UI fixes Coach contrast and structural sheets', () => {
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.match(css, /#tab-coach \.coach-v3-tab\.active[\s\S]*background:color-mix/);
+    assert.match(css, /html\[data-theme="dark"\] #tab-coach \.coach-v3-tab\.active[\s\S]*color:#fff4d8!important/);
+    assert.match(css, /#tab-coach \.coach-v3-signal strong[\s\S]*color:var\(--text-main\)!important/);
+    assert.match(css, /#tab-journal > \.workspace-block[\s\S]*background:transparent!important/);
+    assert.match(css, /#tab-food \.results-section[\s\S]*background:transparent!important/);
+    assert.match(css, /Keep Dashboard nutrition rings\/macros untouched/);
+});
