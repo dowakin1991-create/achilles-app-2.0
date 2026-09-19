@@ -80,3 +80,18 @@ fried / baked / dry / canned / frozen / unspecified) і внутрішню оц�
 
 Ціль подальшого розширення: 2500–4000 реальних канонічних профілів із
 перевіреним джерелом, а не штучне збільшення лічильника синонімами.
+
+
+## UA Market Pack (10.19.1)
+
+Achilles additionally ships 500 canonical retail SKUs sampled from a 2026-06-13 snapshot of public Auchan Lviv and Silpo Lviv catalogs.
+
+- 253 Silpo SKUs
+- 247 Auchan SKUs
+- alcohol, pet products, out-of-stock rows and duplicate title+brand pairs excluded
+- rows with >50% mismatch between stated kcal and Atwater estimate (4P + 9F + 4C) excluded
+- retailer K/P/F/C values are stored per 100 g
+- fiber is stored as `null`, never fabricated as zero, because the source does not expose fiber
+- each row keeps store, brand/barcode when available, source record id, source URL and snapshot date
+
+The market layer is isolated in `foods_ua_market.js`; it augments the curated core and USDA supplement without rewriting either source.
