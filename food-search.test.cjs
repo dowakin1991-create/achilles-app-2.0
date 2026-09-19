@@ -68,3 +68,11 @@ test('the HTML and offline shell both load the new catalog and search engine', (
     assert.ok(!html.includes('5000 локальних позицій'));
     assert.ok(worker.includes('ignoreSearch: shellAsset'));
 });
+
+
+test('UA market profiles are part of the canonical local database source',()=>{
+    const marketSource=fs.readFileSync(path.join(__dirname,'../foods_ua_market.js'),'utf8');
+    assert.match(marketSource,/UA Market Pack — 500 real SKUs/);
+    assert.match(marketSource,/source":"ua-market"/);
+    assert.match(marketSource,/uaMarketProfiles:added/);
+});
