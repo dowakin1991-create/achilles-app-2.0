@@ -6328,3 +6328,43 @@ input[type="number"]::-webkit-inner-spin-button{
         grid-template-columns:1fr!important;
     }
 }
+
+
+/* 11.1.1 audit hardening: remaining grouped controls */
+.live-field-grid,
+.two-field-grid{
+    min-width:0!important;
+}
+.live-field-grid > input,
+.live-field-grid > select{
+    min-width:0!important;
+    max-width:100%!important;
+}
+.live-field-grid input[type="number"]{
+    text-align:center!important;
+    text-indent:0!important;
+    padding-left:12px!important;
+    padding-right:12px!important;
+}
+.two-field-grid > label{
+    min-width:0!important;
+}
+.two-field-grid > label > input,
+.two-field-grid > label > select{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+}
+
+/* When the iOS keyboard opens, keep the custom product sheet reachable from the top. */
+@media (max-width:767px){
+    #custom-food-overlay{
+        align-items:flex-start!important;
+        overflow-y:auto!important;
+        -webkit-overflow-scrolling:touch;
+    }
+    .custom-food-sheet{
+        margin:auto 0!important;
+        flex:0 0 auto;
+    }
+}
