@@ -148,3 +148,15 @@ test('10.20 mobile AAA pass simplifies non-dashboard workspaces only',()=>{
     const block=css.slice(css.indexOf('achilles-v10-20-0-mobile-aaa-pass'));
     assert.doesNotMatch(block,/#tab-dashboard/);
 });
+
+
+test('Mobile 11 preview is isolated to mobile and Coach has one question host', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.equal((html.match(/id="coach-question-host"/g) || []).length, 1);
+    assert.match(css, /ACHILLES MOBILE 11 — PREVIEW 1/);
+    assert.match(css, /@media \(max-width:767px\)/);
+    assert.match(css, /#tab-food \.results-section > \.workspace-block-head[\s\S]*display:none!important/);
+    assert.match(css, /#tab-journal \.journal-panel-head[\s\S]*display:none!important/);
+    assert.match(css, /#tab-coach \.coach-v3-signal-grid[\s\S]*border-radius:18px/);
+});
