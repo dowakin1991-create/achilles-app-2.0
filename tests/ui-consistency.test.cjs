@@ -162,10 +162,10 @@ test('Mobile 11 preview is isolated to mobile and Coach has one question host', 
 });
 
 
-test('Mobile 11 preview 2 keeps dashboard rings and flattens profile/nav on mobile', () => {
+test('Mobile 11 release keeps dashboard rings and flattens profile/nav on mobile', () => {
     const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
     const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
-    assert.match(html, /11\.0\.0-preview2/);
+    assert.match(html, /11\.0\.0/);
     assert.match(html, /id="ring-kcal"/);
     assert.match(html, /id="macro-p"/);
     assert.match(html, /id="macro-f"/);
