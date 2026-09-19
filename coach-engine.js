@@ -65,15 +65,27 @@
         return {score,level,...signals,reasons};
     }
     function answerFor(state,id){return state?.answers?.[id]?.value ?? null;}
+    function answerFresh(state,id,maxAgeDays) {
+        const answer=state?.answers?.[id];
+        if(!answer) return false;
+        const updated=Number(answer.updatedAt||0);
+        return updated>0 && Date.now()-updated < maxAgeDays*86400000;
+    }
+    function answeredAfterLastSession(input,id) {
+        const answer=input.state?.answers?.[id];
+        if(!answer) return false;
+        const latest=(input.sessions||[]).map(s=>dayNumber(s.date)).filter(Number.isFinite).sort((a,b)=>b-a)[0];
+        if(!Number.isFinite(latest)) return answerFresh(input.state,id,7);
+        return Number(answer.updatedAt||0) >= latest*86400000;
+    }
     function questionFor(input,analysis) {
-        const q=analysis.dataQuality||{}, answers=input.state?.answers||{};
-        const unanswered=id=>!answers[id];
+        const q=analysis.dataQuality||{};
         const has=id=>analysis.insights.some(i=>i.id===id);
-        if(has('protein-week')&&unanswered('protein-barrier')) return {id:'protein-barrier',type:'single',title:'Що найбільше заважає добирати білок?',prompt:'Це допоможе Coach дати практичнішу пораду замість загального «їж більше білка».',options:[{value:'time',label:'Не вистачає часу'},{value:'appetite',label:'Не хочеться / важко зʼїсти'},{value:'planning',label:'Не планую наперед'},{value:'cost',label:'Дорого'},{value:'unknown',label:'Не знаю, чим добрати'}]};
-        if((q.trainingDays<2||has('training-review'))&&unanswered('training-barrier')) return {id:'training-barrier',type:'multi',title:'Що найчастіше заважає тренуватись?',prompt:'Можна обрати кілька причин.',options:[{value:'time',label:'Немає часу'},{value:'fatigue',label:'Втома після роботи'},{value:'pain',label:'Біль / дискомфорт'},{value:'motivation',label:'Немає бажання'},{value:'schedule',label:'Незручний графік'}]};
-        if(q.weightDays<3&&unanswered('weighing-routine')) return {id:'weighing-routine',type:'single',title:'Коли тобі реально найзручніше зважуватись?',prompt:'Coach підлаштує рекомендацію під реальний режим, а не під «ідеальну» схему.',options:[{value:'morning',label:'Вранці'},{value:'after-work',label:'Після роботи'},{value:'days-off',label:'У вихідні'},{value:'irregular',label:'Коли вийде'}]};
-        if(q.trainingDays>=1&&unanswered('last-workout-effort')) return {id:'last-workout-effort',type:'scale',title:'Наскільки важким було останнє тренування?',prompt:'1 — дуже легке, 5 — майже на межі.',min:1,max:5,labels:['Дуже легко','Легко','Нормально','Важко','На межі']};
-        if(q.completeDays>=3&&unanswered('weekly-focus')) return {id:'weekly-focus',type:'text',title:'Що ти хочеш покращити цього тижня?',prompt:'Напиши коротко: наприклад «добирати білок», «не пропускати тренування» або «краще контролювати порції».',maxLength:140};
+        if(has('protein-week')&&!answerFresh(input.state,'protein-barrier',30)) return {id:'protein-barrier',type:'single',title:'Що найбільше заважає добирати білок?',prompt:'Це допоможе Coach дати практичнішу пораду замість загального «їж більше білка».',options:[{value:'time',label:'Не вистачає часу'},{value:'appetite',label:'Не хочеться / важко зʼїсти'},{value:'planning',label:'Не планую наперед'},{value:'cost',label:'Дорого'},{value:'unknown',label:'Не знаю, чим добрати'}]};
+        if((q.trainingDays<2||has('training-review'))&&!answerFresh(input.state,'training-barrier',21)) return {id:'training-barrier',type:'multi',title:'Що найчастіше заважає тренуватись?',prompt:'Можна обрати кілька причин.',options:[{value:'time',label:'Немає часу'},{value:'fatigue',label:'Втома після роботи'},{value:'pain',label:'Біль / дискомфорт'},{value:'motivation',label:'Немає бажання'},{value:'schedule',label:'Незручний графік'}]};
+        if(q.weightDays<3&&!answerFresh(input.state,'weighing-routine',30)) return {id:'weighing-routine',type:'single',title:'Коли тобі реально найзручніше зважуватись?',prompt:'Coach підлаштує рекомендацію під реальний режим, а не під «ідеальну» схему.',options:[{value:'morning',label:'Вранці'},{value:'after-work',label:'Після роботи'},{value:'days-off',label:'У вихідні'},{value:'irregular',label:'Коли вийде'}]};
+        if(q.trainingDays>=1&&!answeredAfterLastSession(input,'last-workout-effort')) return {id:'last-workout-effort',type:'scale',title:'Наскільки важким було останнє тренування?',prompt:'1 — дуже легке, 5 — майже на межі.',min:1,max:5,labels:['Дуже легко','Легко','Нормально','Важко','На межі']};
+        if(q.completeDays>=3&&!answerFresh(input.state,'weekly-focus',7)) return {id:'weekly-focus',type:'text',title:'Що ти хочеш покращити цього тижня?',prompt:'Напиши коротко: наприклад «добирати білок», «не пропускати тренування» або «краще контролювати порції».',maxLength:140};
         return null;
     }
     function responseFor(answerId,value) {
