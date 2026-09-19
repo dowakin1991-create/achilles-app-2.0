@@ -10,18 +10,18 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=11.1.0" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=11.1.0" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=11.1.0" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=11.1.1" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=11.1.1" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=11.1.1" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="11.1.0" name="achilles-build"/>
+<meta content="11.1.1" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<script src="./coach-training.js?v=11.1.0"></script>
-<script src="./coach-engine.js?v=11.1.0"></script>
-<script src="./coach-settings.js?v=11.1.0"></script>
-<script src="./coach-cycle.js?v=11.1.0"></script>
-<script src="./coach-workflow.js?v=11.1.0"></script>
+<script src="./coach-training.js?v=11.1.1"></script>
+<script src="./coach-engine.js?v=11.1.1"></script>
+<script src="./coach-settings.js?v=11.1.1"></script>
+<script src="./coach-cycle.js?v=11.1.1"></script>
+<script src="./coach-workflow.js?v=11.1.1"></script>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
         (function() {
@@ -45,7 +45,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=11.1.0" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=11.1.1" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -128,18 +128,18 @@
 </div>
 </div>
 <!-- ВІКНО СТВОРЕННЯ СВОГО ПРОДУКТУ -->
-<div class="live-overlay" id="custom-food-overlay" style="justify-content: center;">
-<div style="background: var(--card-bg); padding: 30px 20px; border-radius: 30px; width: 100%; max-width: 400px; border: 1px solid var(--glass-border); box-shadow: 0 20px 50px var(--shadow-color);">
-<h3 class="gradient-text" style="text-align: center; margin-bottom: 20px; font-size: 22px;">Новий продукт</h3>
+<div class="live-overlay" id="custom-food-overlay">
+<div class="custom-food-sheet">
+<h3 class="gradient-text custom-food-title">Новий продукт</h3>
 <input id="cf-name" placeholder="Назва (напр. Вівсянка 'Козуб')" type="text"/>
 <input id="cf-kcal" inputmode="numeric" pattern="[0-9]*" placeholder="Ккал (на 100г)" type="number"/>
-<div style="display: flex; gap: 10px;">
-<input id="cf-p" inputmode="decimal" placeholder="Білки" type="number"/>
-<input id="cf-f" inputmode="decimal" placeholder="Жири" type="number"/>
-<input id="cf-c" inputmode="decimal" placeholder="Вугл." type="number"/>
+<div class="numeric-input-row custom-food-macros">
+<input id="cf-p" inputmode="decimal" min="0" step="0.1" placeholder="Білки" type="number"/>
+<input id="cf-f" inputmode="decimal" min="0" step="0.1" placeholder="Жири" type="number"/>
+<input id="cf-c" inputmode="decimal" min="0" step="0.1" placeholder="Вугл." type="number"/>
 </div>
-<button class="gradient-bg primary-btn" onclick="saveCustomFood()" style="width: 100%; padding: 20px; border-radius: 20px; font-size: 18px; margin-top: 20px;">Зберегти продукт</button>
-<button class="danger" onclick="closeCustomFood()" style="width: 100%; padding: 15px; border-radius: 20px; margin-top: 10px;">Скасувати</button>
+<button class="gradient-bg primary-btn custom-food-save" onclick="saveCustomFood()">Зберегти продукт</button>
+<button class="danger custom-food-cancel" onclick="closeCustomFood()">Скасувати</button>
 </div>
 </div>
 <!-- ВІКНО ЛОГІНЕННЯ -->
@@ -177,13 +177,13 @@
 <option value="keto">Кето-дієта (75% Жирів, 5% Вугл.)</option>
 </select>
 <select id="reg-gender" required=""><option disabled="" selected="" value="">Стать</option><option value="male">Чоловік</option><option value="female">Жінка</option></select>
-<div style="display: flex; gap: 10px;">
+<div class="numeric-input-row">
 <input id="reg-age" inputmode="numeric" pattern="[0-9]*" placeholder="Вік (років)" required="" type="number"/>
 <input id="reg-height" inputmode="numeric" pattern="[0-9]*" placeholder="Зріст (см)" required="" type="number"/>
 </div>
 <input id="reg-weight" inputmode="decimal" placeholder="Поточна вага (кг)" required="" type="number"/>
 <span class="label-text">Твій графік (днів підряд):</span>
-<div style="display: flex; gap: 12px; margin-bottom: 8px;">
+<div class="numeric-input-row numeric-input-row-spaced">
 <input id="reg-work-days" inputmode="numeric" pattern="[0-9]*" placeholder="Робочих (напр. 2)" required="" type="number" value="2"/>
 <input id="reg-rest-days" inputmode="numeric" pattern="[0-9]*" placeholder="Вихідних (напр. 2)" required="" type="number" value="2"/>
 </div>
@@ -659,13 +659,13 @@
 </div>
 </div>
 <!-- ACHILLES FOOD CORE — local/offline database -->
-<script src="./foods_ua_10000.js?v=11.1.0"></script>
-<script src="./foods_ua_extra.js?v=11.1.0"></script>
-<script src="./foods_ua_market.js?v=11.1.0"></script>
-<script src="./food-catalog.js?v=11.1.0"></script>
+<script src="./foods_ua_10000.js?v=11.1.1"></script>
+<script src="./foods_ua_extra.js?v=11.1.1"></script>
+<script src="./foods_ua_market.js?v=11.1.1"></script>
+<script src="./food-catalog.js?v=11.1.1"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=11.1.0"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=11.1.0"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=11.1.1"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=11.1.1"></script>
 
 
 
@@ -676,31 +676,31 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=11.1.0"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=11.1.1"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=11.1.0"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=11.1.1"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=11.1.0"></script>
+<script data-achilles-module="training.js" src="./training.js?v=11.1.1"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=11.1.0"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=11.1.0"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=11.1.0"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=11.1.1"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=11.1.0"></script>
 
-<script src="./coach-training-ui.js?v=11.1.0"></script>
-<script src="./food-search.js?v=11.1.0"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=11.1.0"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=11.1.1"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=11.1.1"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=11.1.1"></script>
+
+<script src="./coach-training-ui.js?v=11.1.1"></script>
+<script src="./food-search.js?v=11.1.1"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=11.1.1"></script>
 
 
 
