@@ -278,6 +278,56 @@
             window.syncToCloud(); 
         };
 
+        const customFoodKey = item => {
+            const barcode = String(item?.barcode || '').trim();
+            if (barcode) return `barcode:${barcode}`;
+            const name = String(item?.name || '').replace(/^[^\p{L}\p{N}]+/u, '').trim().toLowerCase();
+            return `name:${name}|${Number(item?.kcal || 0)}`;
+        };
+
+        window.mergeCustomFoodLists = function(...lists) {
+            const map = new Map();
+            lists.forEach((list, sourceRank) => (list || []).forEach(item => {
+                if (!item || !item.name) return;
+                const key = customFoodKey(item);
+                const previous = map.get(key);
+                if (!previous) { map.set(key, {item, sourceRank}); return; }
+                const prevUpdated = Number(previous.item?.updatedAt || 0);
+                const nextUpdated = Number(item?.updatedAt || 0);
+                if (nextUpdated > prevUpdated || (nextUpdated === prevUpdated && sourceRank >= previous.sourceRank)) {
+                    map.set(key, {item, sourceRank});
+                }
+            }));
+            return [...map.values()].map(entry => entry.item);
+        };
+
+        window.syncCustomFoodsBackup = async function(userName = localStorage.getItem('achilles_user')) {
+            if(!userName || !(await window.waitForFirebaseTransport())) return false;
+            const items = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
+            await setDoc(doc(db, "users", userName, "backups", "customFoods"), {
+                items,
+                schemaVersion: 1,
+                updatedAt: Date.now()
+            });
+            return true;
+        };
+
+        window.loadCustomFoodsBackup = async function(userName = localStorage.getItem('achilles_user')) {
+            if(!userName || !(await window.waitForFirebaseTransport())) return false;
+            try {
+                const snap = await getDoc(doc(db, "users", userName, "backups", "customFoods"));
+                if(!snap.exists()) return false;
+                const local = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
+                const backup = snap.data()?.items || [];
+                const merged = window.mergeCustomFoodLists(backup, local);
+                localStorage.setItem('achilles_custom_foods', JSON.stringify(merged));
+                return true;
+            } catch(error) {
+                console.warn('[Achilles] Custom food backup unavailable', error);
+                return false;
+            }
+        };
+
         window.syncToCloud = async function() {
             const userName = localStorage.getItem('achilles_user');
             if(!userName) return false;
@@ -299,6 +349,7 @@
                 favWorkouts: JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [],
                 customFoods: JSON.parse(localStorage.getItem('achilles_custom_foods')) || [],
                 favFoods: JSON.parse(localStorage.getItem('achilles_fav_foods')) || [],
+                avatarState: JSON.parse(localStorage.getItem('achilles_avatar_state_v1')) || null,
                 prs: JSON.parse(localStorage.getItem('achilles_prs')) || {},
                 lastPR: JSON.parse(localStorage.getItem('achilles_last_pr')) || null,
                 allDaysData: window.allDaysData,
@@ -307,6 +358,7 @@
             };
             try {
                 await setDoc(doc(db, "users", userName), dataToSave);
+                await window.syncCustomFoodsBackup(userName);
                 return true;
             } catch(e) {
                 console.error("Cloud Sync Error", e);
@@ -354,40 +406,15 @@
                     let cloudFW = d.favWorkouts || [];
                     if(cloudFW.length > localFW.length) localStorage.setItem('achilles_fav_workouts', JSON.stringify(cloudFW));
 
-                    const mergeFoods = (cloudList, localList) => {
-                        const map = new Map();
-                        const keyOf = item => {
-                            const barcode = String(item?.barcode || '').trim();
-                            if (barcode) return `barcode:${barcode}`;
-                            const name = String(item?.name || '').replace(/^[^\p{L}\p{N}]+/u, '').trim().toLowerCase();
-                            return `name:${name}|${Number(item?.kcal || 0)}`;
-                        };
-                        const mergeOne = (item, sourceRank) => {
-                            if (!item || !item.name) return;
-                            const key = keyOf(item);
-                            const previous = map.get(key);
-                            if (!previous) {
-                                map.set(key, { item, sourceRank });
-                                return;
-                            }
-                            const prevUpdated = Number(previous.item?.updatedAt || 0);
-                            const nextUpdated = Number(item?.updatedAt || 0);
-                            if (nextUpdated > prevUpdated || (nextUpdated === prevUpdated && sourceRank >= previous.sourceRank)) {
-                                map.set(key, { item, sourceRank });
-                            }
-                        };
-                        (cloudList || []).forEach(item => mergeOne(item, 2));
-                        (localList || []).forEach(item => mergeOne(item, 1));
-                        return [...map.values()].map(entry => entry.item);
-                    };
-
                     let localCF = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
                     let cloudCF = d.customFoods || [];
-                    localStorage.setItem('achilles_custom_foods', JSON.stringify(mergeFoods(cloudCF, localCF)));
+                    localStorage.setItem('achilles_custom_foods', JSON.stringify(window.mergeCustomFoodLists(cloudCF, localCF)));
 
                     let localFF = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
                     let cloudFF = d.favFoods || [];
-                    localStorage.setItem('achilles_fav_foods', JSON.stringify(mergeFoods(cloudFF, localFF)));
+                    localStorage.setItem('achilles_fav_foods', JSON.stringify(window.mergeCustomFoodLists(cloudFF, localFF)));
+
+                    window.Achilles?.avatars?.mergeRemote?.(d.avatarState);
 
                     const localPRs = JSON.parse(localStorage.getItem('achilles_prs')) || {};
                     const cloudPRs = d.prs || {};
@@ -447,8 +474,15 @@
                     window.macros = dayData.macros || {p:0, f:0, c:0};
                     window.dailyLog = dayData.log || [];
                     
+                    await window.loadCustomFoodsBackup(userName);
                     window.applyTheme();
+                    window.Achilles?.avatars?.render?.();
                     window.renderProgressInsights();
+                    return true;
+                }
+                const backupRecovered = await window.loadCustomFoodsBackup(userName);
+                if(backupRecovered) {
+                    window.Achilles?.avatars?.render?.();
                     return true;
                 }
             } catch(e) { console.error("Cloud Load Error", e); }
