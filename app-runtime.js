@@ -190,6 +190,7 @@
             favorites.unshift({ ...normalized, updatedAt: Date.now() });
             this.setFavorites(favorites);
             A.sync?.push?.('custom-food');
+            root.syncCustomFoodsBackup?.().catch?.(error => console.warn('[Achilles] immediate custom food backup', error));
             return normalized;
         },
 
