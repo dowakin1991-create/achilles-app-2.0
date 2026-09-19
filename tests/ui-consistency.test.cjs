@@ -97,3 +97,15 @@ test('10.18 desktop mode is isolated to wide screens and preserves mobile status
     assert.match(html, /id="macro-f"/);
     assert.match(html, /id="macro-c"/);
 });
+
+
+test('10.18.2 mobile nav cannot render desktop brand or shift six tabs', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.match(html, /desktop-nav-brand" aria-hidden="true" hidden/);
+    assert.match(css, /\.desktop-nav-brand\{display:none!important\}/);
+    assert.match(css, /@media \(max-width:1179\.98px\)/);
+    assert.match(css, /grid-template-columns:repeat\(6,minmax\(0,1fr\)\)!important/);
+    assert.match(css, /#bottom-nav \.desktop-nav-brand[\s\S]*display:none!important/);
+    assert.match(css, /@media \(min-width:1180px\)[\s\S]*\.desktop-nav-brand\{[\s\S]*display:flex!important/);
+});
