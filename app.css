@@ -4343,3 +4343,15 @@ html[data-theme="light"] #main-app-window .nav-item:not(.active) .nav-icon,
 html[data-theme="light"] #main-app-window .nav-item:not(.active) .nav-text{
     color:#777268!important;
 }
+
+
+/* ===== achilles-v10-18-3-icon-refresh ===== */
+.splash-logo,
+.profile-avatar-large,
+.main-avatar,
+.desktop-nav-logo,
+.v1013-logo-visual{
+    background-image:url('IMG_9302.png?v=10.18.3')!important;
+    background-size:cover!important;
+    background-position:center!important;
+}
