@@ -3557,7 +3557,7 @@ html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: m
 
 
 /* ===== achilles-v10-18-0-desktop-mode ===== */
-.desktop-nav-brand{display:none}
+.desktop-nav-brand{display:none!important}
 
 /* PC workspace: activates only on wide screens, mobile/PWA rules above stay untouched. */
 @media (min-width:1180px){
@@ -3602,7 +3602,7 @@ html[data-coach-enabled="false"] .v10-history-actions { grid-template-columns: m
     }
 
     .desktop-nav-brand{
-        display:flex;
+        display:flex!important;
         align-items:center;
         gap:12px;
         padding:2px 8px 20px;
@@ -4243,4 +4243,103 @@ textarea:focus {
 .v1013-logo-visual {
     background-size: 168% 168% !important;
     background-position: 50% 50% !important;
+}
+
+
+/* ===== achilles-v10-18-2-mobile-nav-hotfix ===== */
+/* Desktop branding must never take space in phone/tablet navigation. */
+@media (max-width:1179.98px){
+    #bottom-nav .desktop-nav-brand{
+        display:none!important;
+        visibility:hidden!important;
+        width:0!important;
+        height:0!important;
+        min-width:0!important;
+        min-height:0!important;
+        flex:0 0 0!important;
+        margin:0!important;
+        padding:0!important;
+        border:0!important;
+        overflow:hidden!important;
+    }
+
+    #main-app-window .nav-bar{
+        display:grid!important;
+        grid-template-columns:repeat(6,minmax(0,1fr))!important;
+        grid-auto-flow:column;
+        align-items:stretch!important;
+        justify-items:stretch!important;
+        column-gap:0!important;
+        padding-left:6px!important;
+        padding-right:6px!important;
+    }
+
+    #main-app-window .nav-item{
+        width:100%!important;
+        min-width:0!important;
+        max-width:none!important;
+        flex:none!important;
+        overflow:hidden!important;
+        padding-left:1px!important;
+        padding-right:1px!important;
+        gap:3px!important;
+    }
+
+    #main-app-window .nav-icon{
+        width:auto!important;
+        min-width:0!important;
+        font-size:19px!important;
+    }
+
+    #main-app-window .nav-text{
+        display:block!important;
+        width:100%!important;
+        min-width:0!important;
+        overflow:hidden!important;
+        text-overflow:clip!important;
+        white-space:nowrap!important;
+        text-align:center!important;
+        font-size:10px!important;
+        line-height:1.05!important;
+        letter-spacing:-.035em!important;
+        font-weight:750!important;
+    }
+
+    #main-app-window .nav-item.active::before{
+        inset:2px!important;
+        border-radius:15px!important;
+    }
+}
+
+/* Very narrow iPhones: preserve all six labels without overlap. */
+@media (max-width:390px){
+    #main-app-window .nav-text{
+        font-size:9.2px!important;
+        letter-spacing:-.05em!important;
+    }
+    #main-app-window .nav-icon{font-size:18px!important;}
+}
+
+/* Dark mode: inactive navigation must remain readable, not washed out. */
+html[data-theme="dark"] #main-app-window .nav-item:not(.active){
+    color:#9d9991!important;
+}
+html[data-theme="dark"] #main-app-window .nav-item:not(.active) .nav-icon,
+html[data-theme="dark"] #main-app-window .nav-item:not(.active) .nav-text{
+    color:#9d9991!important;
+}
+html[data-theme="dark"] #main-app-window .nav-item.active .nav-text,
+html[data-theme="dark"] #main-app-window .nav-item.active .nav-icon{
+    color:#e3bd62!important;
+}
+
+/* Light mode: stronger separation from the page and clearer inactive items. */
+html[data-theme="light"] #main-app-window .nav-bar{
+    background:rgba(252,249,242,.98)!important;
+    border-top-color:rgba(70,56,26,.14)!important;
+    box-shadow:0 -8px 24px rgba(43,33,13,.10)!important;
+}
+html[data-theme="light"] #main-app-window .nav-item:not(.active) .nav-icon,
+html[data-theme="light"] #main-app-window .nav-item:not(.active) .nav-text{
+    color:#777268!important;
 }
