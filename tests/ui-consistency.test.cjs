@@ -80,3 +80,20 @@ test('10.17.6 cleanup keeps dashboard rings/macros and removes obsolete patch UI
     assert.doesNotMatch(runtime, /Achilles OS 10\.14 · local-first/);
     assert.doesNotMatch(nutrition, /V10\.5 Food Fix активний/);
 });
+
+
+test('10.18 desktop mode is isolated to wide screens and preserves mobile status nutrition', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.match(html, /class="desktop-nav-brand"/);
+    assert.match(css, /@media \(min-width:1180px\)/);
+    assert.match(css, /--desktop-sidebar:248px/);
+    assert.match(css, /grid-template-areas:[\s\S]*"nutrition weight"/);
+    assert.match(css, /#tab-food\.active[\s\S]*grid-template-columns:350px minmax\(0,1fr\)/);
+    assert.match(css, /#tab-workout #workout-list-container[\s\S]*repeat\(3,minmax\(0,1fr\)\)/);
+    assert.match(css, /#tab-profile \.profile-settings-grid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+    assert.match(html, /id="ring-kcal"/);
+    assert.match(html, /id="macro-p"/);
+    assert.match(html, /id="macro-f"/);
+    assert.match(html, /id="macro-c"/);
+});
