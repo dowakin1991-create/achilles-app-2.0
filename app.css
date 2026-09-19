@@ -5928,3 +5928,267 @@ html[data-theme="light"] #tab-food #food-list-container{
         padding-top:max(calc(env(safe-area-inset-top, 0px) + 8px), 50px)!important;
     }
 }
+
+
+/* =========================================================
+   ACHILLES MOBILE 11.1.0 — STABLE MOBILE SYSTEM
+   Final authoritative mobile layer. Keep this block last.
+   ========================================================= */
+@media (max-width:767px){
+    /* --- Global shell --- */
+    #main-app-window > .app-window > .main-content{
+        padding:
+            max(calc(env(safe-area-inset-top, 0px) + 10px), 54px)
+            16px
+            calc(92px + env(safe-area-inset-bottom, 0px))
+            16px!important;
+    }
+
+    /* --- Dashboard header --- */
+    #tab-dashboard .dash-header-block{
+        display:grid!important;
+        grid-template-columns:minmax(0,1fr) auto!important;
+        align-items:center!important;
+        gap:12px!important;
+        padding:10px 2px 16px!important;
+        margin:0!important;
+        overflow:visible!important;
+    }
+    #tab-dashboard #greeting-header{
+        display:flex!important;
+        flex-wrap:wrap!important;
+        align-items:baseline!important;
+        column-gap:.18em!important;
+        row-gap:0!important;
+        font-size:26px!important;
+        line-height:1.06!important;
+        letter-spacing:-.035em!important;
+        white-space:normal!important;
+    }
+    #tab-dashboard #greeting-header .greeting-prefix,
+    #tab-dashboard #display-username{
+        display:inline-block!important;
+        margin:0!important;
+    }
+
+    /* Date switcher must always fit BOTH arrows. */
+    #tab-dashboard .date-switcher{
+        display:grid!important;
+        grid-template-columns:34px minmax(76px,1fr) 34px!important;
+        gap:5px!important;
+        width:168px!important;
+        min-width:168px!important;
+        max-width:168px!important;
+        min-height:48px!important;
+        padding:5px!important;
+        overflow:visible!important;
+        border-radius:17px!important;
+    }
+    #tab-dashboard .date-switcher-center{
+        min-width:0!important;
+        width:auto!important;
+        overflow:visible!important;
+    }
+    #tab-dashboard .date-caption{
+        font-size:8px!important;
+        line-height:1!important;
+        margin-bottom:3px!important;
+    }
+    #tab-dashboard #display-date{
+        font-size:12px!important;
+        line-height:1.05!important;
+        white-space:nowrap!important;
+    }
+    #tab-dashboard .date-arrow{
+        display:grid!important;
+        visibility:visible!important;
+        opacity:1!important;
+        width:34px!important;
+        height:38px!important;
+        min-width:34px!important;
+        min-height:38px!important;
+        padding:0!important;
+        border-radius:12px!important;
+        place-items:center!important;
+    }
+    #tab-dashboard .date-arrow:disabled{
+        display:grid!important;
+        visibility:visible!important;
+        opacity:.28!important;
+        pointer-events:none!important;
+    }
+
+    /* --- Nutrition hero --- */
+    #tab-dashboard .nutrition-hero-card{
+        overflow:hidden!important;
+        padding:16px!important;
+        border-radius:22px!important;
+    }
+    #tab-dashboard .nutrition-rings-widget{
+        width:min(68vw,268px)!important;
+        max-width:268px!important;
+    }
+
+    /* B/J/V: readable compact stat tiles, never broken across lines. */
+    #tab-dashboard .nutrition-macro-cards{
+        display:grid!important;
+        grid-template-columns:repeat(3,minmax(0,1fr))!important;
+        gap:8px!important;
+        width:100%!important;
+    }
+    #tab-dashboard .nutrition-macro-card{
+        display:grid!important;
+        grid-template-columns:24px minmax(0,1fr)!important;
+        grid-template-rows:auto auto!important;
+        column-gap:7px!important;
+        row-gap:6px!important;
+        align-items:center!important;
+        min-width:0!important;
+        min-height:82px!important;
+        padding:10px!important;
+        border-radius:17px!important;
+        box-shadow:none!important;
+    }
+    #tab-dashboard .macro-icon{
+        grid-column:1!important;
+        grid-row:1!important;
+        width:24px!important;
+        height:24px!important;
+        min-width:24px!important;
+        border-radius:8px!important;
+        font-size:10px!important;
+    }
+    #tab-dashboard .nutrition-macro-copy{
+        display:contents!important;
+    }
+    #tab-dashboard .nutrition-macro-name{
+        grid-column:2!important;
+        grid-row:1!important;
+        min-width:0!important;
+        font-size:9px!important;
+        line-height:1.05!important;
+        font-weight:800!important;
+        letter-spacing:.01em!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+    }
+    #tab-dashboard .nutrition-macro-value-line{
+        grid-column:1 / -1!important;
+        grid-row:2!important;
+        display:flex!important;
+        align-items:baseline!important;
+        justify-content:center!important;
+        gap:4px!important;
+        min-width:0!important;
+        white-space:nowrap!important;
+    }
+    #tab-dashboard .nutrition-macro-value-line strong{
+        font-size:22px!important;
+        line-height:1!important;
+        letter-spacing:-.03em!important;
+        white-space:nowrap!important;
+    }
+    #tab-dashboard .nutrition-macro-value-line span{
+        font-size:10px!important;
+        line-height:1!important;
+        white-space:nowrap!important;
+        opacity:.76!important;
+    }
+
+    /* --- Weight card --- */
+    #tab-dashboard .weight-premium-card{
+        padding:14px!important;
+        border-radius:20px!important;
+    }
+    #tab-dashboard .weight-entry-controls{
+        display:grid!important;
+        grid-template-columns:minmax(0,1fr) auto!important;
+        gap:8px!important;
+        align-items:center!important;
+    }
+    #tab-dashboard .weight-entry-controls input{
+        min-width:0!important;
+    }
+
+    /* --- Journal / Nutrition / Coach / Training shared rhythm --- */
+    #tab-journal .workspace-header,
+    #tab-food .workspace-header,
+    #tab-coach .coach-v3-hero,
+    #tab-profile .profile-hero{
+        margin-top:0!important;
+    }
+    #tab-journal .journal-mode-switch,
+    #tab-coach .coach-v3-tabs{
+        top:max(env(safe-area-inset-top, 0px), 0px)!important;
+    }
+
+    /* --- Profile actions: guaranteed non-floating --- */
+    #tab-profile .profile-actions{
+        position:relative!important;
+        inset:auto!important;
+        bottom:auto!important;
+        left:auto!important;
+        right:auto!important;
+        transform:none!important;
+        margin:18px 0 10px!important;
+        z-index:1!important;
+    }
+
+    /* --- Bottom navigation --- */
+    #main-app-window .nav-bar{
+        grid-template-columns:repeat(6,minmax(0,1fr))!important;
+        overflow:hidden!important;
+    }
+    #main-app-window .nav-item{
+        min-width:0!important;
+        overflow:hidden!important;
+    }
+    #main-app-window .nav-text{
+        max-width:100%!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:clip!important;
+    }
+}
+
+/* iPhone widths around 390 CSS px */
+@media (max-width:400px){
+    #tab-dashboard .dash-header-block{
+        grid-template-columns:1fr!important;
+        gap:10px!important;
+    }
+    #tab-dashboard .date-switcher{
+        width:100%!important;
+        min-width:0!important;
+        max-width:none!important;
+        grid-template-columns:38px 1fr 38px!important;
+    }
+    #tab-dashboard .date-arrow{
+        width:38px!important;
+        min-width:38px!important;
+    }
+    #tab-dashboard .nutrition-macro-cards{
+        gap:6px!important;
+    }
+    #tab-dashboard .nutrition-macro-card{
+        grid-template-columns:20px minmax(0,1fr)!important;
+        padding:9px 7px!important;
+        column-gap:5px!important;
+    }
+    #tab-dashboard .macro-icon{
+        width:20px!important;
+        height:20px!important;
+        min-width:20px!important;
+        font-size:9px!important;
+    }
+    #tab-dashboard .nutrition-macro-name{
+        font-size:8px!important;
+    }
+    #tab-dashboard .nutrition-macro-value-line strong{
+        font-size:19px!important;
+    }
+    #tab-dashboard .nutrition-macro-value-line span{
+        font-size:8.5px!important;
+    }
+}
