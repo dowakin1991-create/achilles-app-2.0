@@ -5887,3 +5887,44 @@ html[data-theme="light"] #tab-food #food-list-container{
         font-size:8.2px!important;
     }
 }
+
+
+/* ===== Achilles Mobile 11.0.1 — iOS safe-area + profile actions fix ===== */
+@media (max-width:767px){
+    /* Never let content slide under the iOS status bar / Dynamic Island.
+       The fixed minimum also protects standalone mode when env() reports 0. */
+    #main-app-window > .app-window > .main-content{
+        padding-top:max(calc(env(safe-area-inset-top, 0px) + 10px), 54px)!important;
+    }
+
+    /* Dashboard header must start in the visible content area, not behind iOS chrome. */
+    #tab-dashboard .dash-header-block{
+        margin-top:0!important;
+    }
+
+    /* Profile actions belong to document flow. Sticky/floating controls covered fields
+       while scrolling on iPhone. */
+    #tab-profile .profile-actions{
+        position:static!important;
+        inset:auto!important;
+        bottom:auto!important;
+        z-index:auto!important;
+        margin:18px 0 6px!important;
+        padding:10px!important;
+        transform:none!important;
+    }
+    #tab-profile .profile-action-buttons{
+        position:static!important;
+    }
+
+    /* Keep enough room after the final profile controls for the floating nav. */
+    #tab-profile{
+        padding-bottom:18px!important;
+    }
+}
+
+@media (max-width:390px){
+    #main-app-window > .app-window > .main-content{
+        padding-top:max(calc(env(safe-area-inset-top, 0px) + 8px), 50px)!important;
+    }
+}
