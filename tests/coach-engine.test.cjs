@@ -89,3 +89,17 @@ test('progression retains different weights and cannot jump every set to the max
     assert.deepEqual(Array.from(next.nextSets,s=>s.weightKg),[20,12]);
     assert.deepEqual(sets,[{reps:12,weightKg:20},{reps:12,weightKg:12}]);
 });
+
+
+test('Coach 2.0 reports data quality and asks contextual non-binary questions',()=>{
+    const days={};
+    for(const d of ['2026-09-09','2026-09-10','2026-09-11','2026-09-12']) days[d]={nutritionComplete:true,log:[{type:'food',foodName:'Яйце',kcal:900,p:60,weightG:100}]};
+    const result=engine.analyze({today,selectedDate:today,days,profile:{age:28,goal:'lose'},targets:{p:140},baseKcal:2000,weights:[],sessions:[],catalog:[],state:{answers:{}}});
+    assert.ok(result.dataQuality); assert.equal(result.dataQuality.completeDays,4); assert.ok(result.insights.some(i=>i.id==='protein-week')); assert.equal(result.question.id,'protein-barrier'); assert.equal(result.question.type,'single'); assert.ok(result.question.options.length>=4);
+});
+
+test('Coach 2.0 creates expanded response from multi and scale answers',()=>{
+    assert.match(engine.responseFor('training-barrier',['time','fatigue']),/коротші тренування/);
+    assert.match(engine.responseFor('training-barrier',['time','fatigue']),/робочих днів/);
+    assert.match(engine.responseFor('last-workout-effort',5),/не радитиме автоматично підвищувати вагу/);
+});
