@@ -39,6 +39,7 @@
             A.storage?.setJSON?.(RECENT_KEY, recents);
         } catch (_) {}
         A.sync?.push?.('custom-food-delete');
+        root.syncCustomFoodsBackup?.().catch?.(error => console.warn('[Achilles] immediate custom food delete backup', error));
         return true;
     };
 
