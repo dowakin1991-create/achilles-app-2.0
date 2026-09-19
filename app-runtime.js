@@ -1267,21 +1267,20 @@
         const snap=rangeSnapshot(7);
 
         const status=document.getElementById('coach-status');
-        if(status) status.textContent=snap.loggedDays >= 3 ? 'Актуально' : 'Збираю дані';
+        if(status) { const q=plan.dataQuality||{}; status.textContent=q.level==='high'?'Висока якість даних':q.level==='medium'?'Дані достатні':'Збираю дані'; }
 
         const msg=document.getElementById('coach-message');
         if(msg) msg.textContent=plan.summary;
         const sub=document.getElementById('coach-submessage');
-        if(sub) sub.textContent=snap.loggedDays >= 3 ? 'Ось найважливіше без зайвого шуму.' : 'Ще кілька записів зроблять підказки точнішими.';
+        if(sub) { const q=plan.dataQuality||{}; sub.textContent=q.level==='high'?'Висновки спираються на кілька підтверджених днів, тренування та зважування.':q.reasons?.length?'Щоб поради стали точнішими: '+q.reasons.slice(0,2).join('; ')+'.':'Ще кілька записів зроблять підказки точнішими.'; }
 
         const first=plan.insights?.[0] || null;
         const goodTitle=document.getElementById('coach-good-title');
         const goodText=document.getElementById('coach-good-text');
         if(goodTitle && goodText) {
-            if(snap.proteinRate >= .9) { goodTitle.textContent='Білок тримається добре'; goodText.textContent=`${Math.round(snap.proteinRate*100)}% цілі за доступні дні.`; }
-            else if(snap.calorieRate >= .7) { goodTitle.textContent='Калорійність стабільна'; goodText.textContent=`${Math.round(snap.calorieRate*100)}% днів близько до цілі.`; }
-            else if(snap.workouts > 0) { goodTitle.textContent='Тренування є в ритмі'; goodText.textContent=`${snap.workouts} тренувальних днів за 7 днів.`; }
-            else { goodTitle.textContent='Журнал уже дає основу'; goodText.textContent=`Заповнено ${snap.loggedDays} із 7 днів.`; }
+            const positive=plan.positives?.[0];
+            if(positive){ goodTitle.textContent=positive.title; goodText.textContent=positive.text; }
+            else { const q=plan.dataQuality||{}; goodTitle.textContent=q.completeDays>0?'Дані вже накопичуються':'Починаємо з бази'; goodText.textContent=q.completeDays>0?'Підтверджено '+q.completeDays+' дн. харчування за останні 14 днів.':'Заповнюй журнал і підтверджуй повні дні — Coach не буде вигадувати висновки.'; }
         }
 
         const gapTitle=document.getElementById('coach-gap-title');
