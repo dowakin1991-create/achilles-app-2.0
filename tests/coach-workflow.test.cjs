@@ -41,3 +41,9 @@ test('disabled coaching preserves active task without creating or changing check
     b.window.Achilles.coach.isEnabled=()=>false;b.callbacks.done();b.W.render();
     assert.equal(JSON.stringify(b.W.read()),saved);assert.equal(b.elements['coach-weekly-action'].innerHTML,'');
 });
+
+
+test('Coach 2.0 state merge preserves contextual answers',()=>{
+    const b=boot(); const state=b.W.read(); state.answers={q1:{value:['time','fatigue'],updatedAt:10}}; state.lastAnswer={id:'q1',response:'ok',updatedAt:10}; b.W.save(state);
+    const next=boot(b.storage).W.read(); assert.deepEqual(Array.from(next.answers.q1.value),['time','fatigue']); assert.equal(next.lastAnswer.response,'ok');
+});
