@@ -5,11 +5,11 @@
     const shift=(d,n)=>new Date(stamp(d)+n*86400000).toISOString().slice(0,10);
     const validDate=d=>Number.isFinite(stamp(d))&&shift(d,0)===d;
     function dates(from,to){const result=[];if(!validDate(from)||!validDate(to))return result;for(let d=from;d<=to&&result.length<370;d=shift(d,1))result.push(d);return result;}
-    const empty=()=>({version:2,config:null,preferences:null,completions:{},actions:{},feedback:{}});
+    const empty=()=>({version:3,config:null,preferences:null,completions:{},actions:{},feedback:{},answers:{},lastAnswer:null});
     const newer=(a,b)=>{if(!a)return b;if(!b)return a;const delta=Number(b.updatedAt||0)-Number(a.updatedAt||0);return delta>0?b:delta<0?a:JSON.stringify(b)>JSON.stringify(a)?b:a;};
     function merge(a={},b={}){
-        const out=empty();out.config=newer(a.config,b.config)||null;out.preferences=newer(a.preferences,b.preferences)||null;
-        for(const bucket of ['completions','actions','feedback','readiness','effort']){
+        const out=empty();out.config=newer(a.config,b.config)||null;out.preferences=newer(a.preferences,b.preferences)||null;out.lastAnswer=newer(a.lastAnswer,b.lastAnswer)||null;
+        for(const bucket of ['completions','actions','feedback','answers','readiness','effort']){
             out[bucket]=out[bucket]||{};
             for(const source of [a[bucket],b[bucket]])for(const [key,value] of Object.entries(source||{})){
                 if(!/^[\w:.-]+$/.test(key)||!value||typeof value!=='object')continue;
