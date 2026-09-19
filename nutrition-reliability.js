@@ -67,8 +67,14 @@
         const cardKey = register(normalized);
         if (!cardKey) return '';
         const inputId = `food-input-${cardKey}`;
-        const online = normalized.source && !['local','built-in','custom'].includes(normalized.source);
-        const sourceLabel = custom ? 'Свій продукт' : (normalized.source === 'cache' ? 'Кеш' : (online ? 'Open Food Facts' : 'Локально'));
+        const source = String(normalized.source || 'local');
+        const online = /open food facts/i.test(source) || source === 'cache';
+        const sourceLabel = custom ? 'Свій продукт'
+            : source === 'ua-market' ? (normalized.store === 'silpo' ? 'Сільпо · локальна БД' : normalized.store === 'auchan' ? 'Ашан · локальна БД' : 'UA Market · локальна БД')
+            : source === 'usda' || normalized.ndb ? 'USDA · локальна БД'
+            : source === 'cache' ? 'Кеш'
+            : online ? 'Open Food Facts'
+            : 'Локальна БД';
 
         return `
             <div class="list-item" style="${online ? 'border-left:3px solid var(--primary);' : ''}">
@@ -122,10 +128,14 @@
                 ? 'Нещодавні продукти · введи назву або натисни «Знайти»'
                 : 'Офлайн · нещодавні продукти доступні');
         } else {
-            render([]);
-            root.setFoodApiStatus?.(navigator.onLine ? 'ready' : 'offline', navigator.onLine
-                ? 'Локальний пошук одразу · онлайн — кнопкою «Знайти»'
-                : 'Офлайн · локальна база працює');
+            const browse = repo.browse?.(18) || [];
+            render(browse);
+            const meta = root.ACHILLES_FOOD_CORE_META || {};
+            const total = Number(meta.canonicalProfiles || root.ACHILLES_FOOD_CORE_CANONICAL?.length || 0);
+            const ua = Number(meta.uaMarketProfiles || root.ACHILLES_FOOD_CORE_CANONICAL?.filter?.(x=>x?.source==='ua-market')?.length || 0);
+            root.setFoodApiStatus?.(navigator.onLine ? 'ready' : 'offline',
+                (ua ? `Локальна БД: ${total} профілів · ${ua} товарів українського ритейлу · підбірка нижче`
+                    : `Локальна БД: ${total} профілів · введи назву для пошуку`));
         }
     }
 
