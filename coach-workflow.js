@@ -59,10 +59,49 @@
             if(save(input.state)){dirty=false;field('coach-plan-status').textContent='Графік збережено. Нові дати рахуються від сьогодні.';}
         }catch(error){field('coach-plan-status').textContent=error.message;}
     }
+    function renderQuestion(analysis){
+        const host=field('coach-question-host');if(!host)return;
+        const q=analysis?.question;
+        const response=analysis?.lastAnswerResponse;
+        if(!q){
+            host.innerHTML=response?'<div class="coach-answer-response"><span class="eyebrow">COACH ВРАХУВАВ</span><p>'+esc(response)+'</p></div>':'';
+            return;
+        }
+        let control='';
+        if(q.type==='single'){
+            control='<div class="coach-question-options">'+(q.options||[]).map(o=>'<button type="button" data-coach-answer="'+esc(o.value)+'">'+esc(o.label)+'</button>').join('')+'</div>';
+        }else if(q.type==='multi'){
+            control='<div class="coach-question-options multi">'+(q.options||[]).map(o=>'<label><input type="checkbox" value="'+esc(o.value)+'" data-coach-multi/><span>'+esc(o.label)+'</span></label>').join('')+'</div><button type="button" class="primary-btn coach-question-submit" data-coach-submit-multi>Врахувати відповідь</button>';
+        }else if(q.type==='scale'){
+            control='<div class="coach-question-scale">'+Array.from({length:(q.max||5)-(q.min||1)+1},(_,i)=>i+(q.min||1)).map((n,i)=>'<button type="button" data-coach-answer="'+n+'"><strong>'+n+'</strong><span>'+esc(q.labels?.[i]||'')+'</span></button>').join('')+'</div>';
+        }else if(q.type==='text'){
+            control='<div class="coach-question-text"><textarea id="coach-question-text" maxlength="'+Number(q.maxLength||140)+'" rows="3" placeholder="Напиши коротко"></textarea><button type="button" class="primary-btn" data-coach-submit-text>Зберегти фокус</button></div>';
+        }
+        host.innerHTML='<article class="coach-question-card"><span class="eyebrow">ПИТАННЯ ВІД COACH</span><h3>'+esc(q.title)+'</h3><p>'+esc(q.prompt||'')+'</p>'+control+'</article>'+(response?'<div class="coach-answer-response"><span class="eyebrow">ОСТАННЯ ВІДПОВІДЬ COACH</span><p>'+esc(response)+'</p></div>':'');
+        host.querySelectorAll('[data-coach-answer]').forEach(btn=>btn.addEventListener('click',()=>submitAnswer(q,btn.dataset.coachAnswer)));
+        host.querySelector('[data-coach-submit-multi]')?.addEventListener('click',()=>{
+            const values=Array.from(host.querySelectorAll('[data-coach-multi]:checked'),x=>x.value);
+            if(values.length)submitAnswer(q,values);
+        });
+        host.querySelector('[data-coach-submit-text]')?.addEventListener('click',()=>{
+            const value=field('coach-question-text')?.value?.trim();
+            if(value)submitAnswer(q,value);
+        });
+    }
+    function submitAnswer(question,value){
+        if(!question?.id)return;
+        const input=context(),now=Date.now();
+        const answer={value,updatedAt:now};
+        const response=E.responseFor?.(question.id,value)||'Відповідь збережено.';
+        input.state.answers={...(input.state.answers||{}),[question.id]:answer};
+        input.state.lastAnswer={id:question.id,value,response,updatedAt:now};
+        save(input.state);
+    }
     function render(){
         const host=field('coach-weekly-action');if(!host)return;
         const input=context();if(A.coach?.isEnabled?.()===false){host.innerHTML='';return;}
         const analysis=E.analyze(input),action=C.active(input.state);
+        renderQuestion(analysis);
         const config=input.state.config,upcoming=C.schedule(config,input.today,C.shift(input.today,13));
         const scheduleText=config?.mode&&config.mode!=='none'?`Наступне тренування: ${upcoming[0]||'немає у найближчі 14 днів'}. Час: ${config.minutes} хв. Обладнання: ${config.equipment||'не вказано'}.`:'Графік тренувань ще не задано — обов’язкову частоту не припускаю.';
         let html=`<h3>Один крок на тиждень</h3><p>${esc(scheduleText)}</p>`;
@@ -105,7 +144,7 @@
         }else return;
         save(input.state);
     }
-    A.coachWorkflow={read,context,complete,syncCompletion,render,hydrate,defaultPreferences,savePreferences,save,
+    A.coachWorkflow={read,context,complete,syncCompletion,render,hydrate,defaultPreferences,savePreferences,save,submitAnswer,
         mergeRemote(remote,user){const result=C.merge(read(user),remote||{});try{localStorage.setItem(key(user),JSON.stringify(result));}catch(_){return false;}hydrate();changed();return true;}
     };
     document.addEventListener('DOMContentLoaded',()=>{
