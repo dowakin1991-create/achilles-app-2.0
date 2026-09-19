@@ -76,7 +76,7 @@
 
     function metrics(){
         const profile=A.storage?.profile?.() || safeJson('achilles_profile',{});
-        const days=A.storage?.days?.() || safeJson('achilles_all_days',{});
+        const days=safeJson('achilles_all_days',{});
         const weights=(A.storage?.json?.('achilles_weight_history',[]) || safeJson('achilles_weight_history',[]))
             .filter(x=>x?.date && Number(x.weight)>0)
             .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
