@@ -99,3 +99,24 @@ test('coach preferences filter disabled topics and use the configured sweets thr
     const relaxed=run(log,{state:{preferences:{sweetsThreshold:35,maxInsights:6}}});
     assert.match(insight(relaxed,'sweets').advice,/Сам факт десерту/);
 });
+
+
+test('Coach questions include practical multi-select logging barriers and expanded responses',()=>{
+    const input={today,selectedDate:today,days:{
+        '2026-09-14':{log:[food('Яйце',200)]},
+        '2026-09-15':{log:[food('Йогурт',200)]}
+    },profile:{age:28},targets:{p:100},baseKcal:2000,state:{answers:{}},weights:[],sessions:[],catalog:[]};
+    const result=engine.analyze(input);
+    assert.equal(result.question?.id,'logging-barrier');
+    assert.equal(result.question?.type,'multi');
+    const response=engine.responseFor('logging-barrier',['time','database']);
+    assert.match(response,/кілька секунд/);
+    assert.match(response,/локальна UA-база/);
+});
+test('Coach insights expose interpretation and confidence instead of bare advice',()=>{
+    const result=run([food('Яйце',100)]);
+    assert.ok(result.insights.length);
+    assert.ok(result.insights[0].interpretation);
+    assert.ok(result.insights[0].confidence?.level);
+    assert.ok(result.insights[0].confidence?.reason);
+});
