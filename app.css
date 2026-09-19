@@ -4463,3 +4463,243 @@ html[data-theme="light"] #tab-journal .journal-mode-btn.active{
     color:var(--primary-dark)!important;
     border-color:rgba(var(--primary-rgb),.20)!important;
 }
+
+
+/* ===== achilles-v10-18-5-cohesive-ui ===== */
+/* One visual system for both themes. Structural sections stay invisible;
+   only real cards/controls get surfaces. */
+:root{
+    --ui-radius-card:26px;
+    --ui-radius-control:18px;
+}
+html[data-theme="dark"]{
+    --text-main:#f7f5f0;
+    --text-muted:#c4c0b7;
+    --text-soft:#969188;
+    --surface-border:rgba(255,255,255,.10);
+    --card-bg:#111216;
+    --input-bg:#1a1b20;
+    --shadow-card:0 12px 32px rgba(0,0,0,.28);
+    --shadow-soft:0 6px 18px rgba(0,0,0,.22);
+}
+html[data-theme="light"]{
+    --text-main:#24211d;
+    --text-muted:#716b61;
+    --text-soft:#9a9388;
+    --surface-border:rgba(72,58,28,.11);
+    --card-bg:#fffdf9;
+    --input-bg:#faf7f0;
+    --shadow-card:0 10px 26px rgba(61,46,14,.08),0 2px 8px rgba(61,46,14,.04);
+    --shadow-soft:0 5px 16px rgba(61,46,14,.06);
+}
+
+/* The old global span rule was too aggressive. Component states now own their text color. */
+.eyebrow{color:var(--text-soft)!important;}
+.gradient-text{color:var(--primary)!important;}
+.workspace-header p,
+.profile-hero-copy p,
+.coach-v3-hero-copy p,
+.coach-submessage,
+.coach-v3-signal p,
+.coach-weekly-action p,
+.coach-insight p,
+.coach-limitations p{
+    color:var(--text-muted)!important;
+}
+
+/* Journal and food sections are layout wrappers, never rectangular cards. */
+#tab-journal > .workspace-block,
+#tab-food > .workspace-block,
+#tab-workout > .workspace-block,
+#tab-coach > .premium-section,
+#tab-coach .coach-v3-view > .premium-section{
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+}
+#tab-journal > .workspace-block{
+    padding:0!important;
+    border-radius:0!important;
+}
+#tab-journal .workspace-block-head{
+    padding:0 4px!important;
+    margin-bottom:14px!important;
+}
+
+/* Unified card language. */
+#tab-journal .journal-panel,
+#tab-food .command-surface,
+#tab-food #food-list-container,
+#tab-food .list-item,
+#tab-workout .command-surface,
+#tab-workout .exercise-card,
+#tab-coach .coach-v3-main-card,
+#tab-coach .coach-v3-signal,
+#tab-coach .weekly-premium-panel,
+#tab-coach .weekly-score-card,
+#tab-coach .weekly-chart-card,
+#tab-coach .weekly-kpi-card,
+#tab-coach .settings-card,
+#tab-profile .settings-card{
+    border-radius:var(--ui-radius-card)!important;
+    background:var(--card-bg)!important;
+    border:1px solid var(--surface-border)!important;
+    box-shadow:var(--shadow-card)!important;
+}
+
+/* Segmented controls: same shape and selected-state behavior everywhere. */
+#tab-journal .journal-mode-switch,
+#tab-coach .coach-v3-tabs,
+.premium-segmented-control{
+    padding:5px!important;
+    border-radius:22px!important;
+    background:color-mix(in srgb,var(--input-bg) 92%,transparent)!important;
+    border:1px solid var(--surface-border)!important;
+    box-shadow:var(--shadow-soft)!important;
+}
+#tab-journal .journal-mode-btn,
+#tab-coach .coach-v3-tab,
+.premium-segmented-control .filter-tab{
+    border-radius:16px!important;
+    color:var(--text-muted)!important;
+    background:transparent!important;
+    border:1px solid transparent!important;
+    box-shadow:none!important;
+}
+#tab-journal .journal-mode-btn span,
+#tab-coach .coach-v3-tab span,
+.premium-segmented-control .filter-tab span{
+    color:inherit!important;
+}
+#tab-journal .journal-mode-btn.active,
+#tab-coach .coach-v3-tab.active,
+.premium-segmented-control .filter-tab.active{
+    color:var(--primary-dark)!important;
+    background:color-mix(in srgb,var(--primary) 18%,var(--card-bg))!important;
+    border-color:rgba(var(--primary-rgb),.24)!important;
+    box-shadow:0 6px 16px rgba(var(--primary-rgb),.10)!important;
+}
+html[data-theme="dark"] #tab-journal .journal-mode-btn.active,
+html[data-theme="dark"] #tab-coach .coach-v3-tab.active,
+html[data-theme="dark"] .premium-segmented-control .filter-tab.active{
+    color:#fff4d8!important;
+    background:linear-gradient(180deg,rgba(var(--primary-rgb),.24),rgba(var(--primary-rgb),.10))!important;
+}
+html[data-theme="dark"] #tab-journal .journal-mode-btn.active span,
+html[data-theme="dark"] #tab-coach .coach-v3-tab.active span,
+html[data-theme="dark"] .premium-segmented-control .filter-tab.active span{
+    color:#fff4d8!important;
+}
+
+/* Coach readability + hierarchy. */
+#tab-coach .coach-v3-hero{
+    background:var(--card-bg)!important;
+    border:1px solid var(--surface-border)!important;
+    box-shadow:var(--shadow-card)!important;
+}
+#tab-coach .coach-v3-hero-copy h1,
+#tab-coach .coach-title,
+#tab-coach .coach-message,
+#tab-coach .coach-v3-signal strong,
+#tab-coach .weekly-score-copy strong,
+#tab-coach .weekly-kpi-card strong,
+#tab-coach .settings-card h2{
+    color:var(--text-main)!important;
+}
+#tab-coach .coach-status{
+    color:var(--primary)!important;
+    font-weight:800!important;
+}
+#tab-coach .coach-v3-signal span,
+#tab-coach .weekly-kpi-card span,
+#tab-coach .week-score-label,
+#tab-coach .weekly-chart-kicker{
+    color:var(--text-soft)!important;
+}
+#tab-coach .coach-v3-signal{
+    background:color-mix(in srgb,var(--card-bg) 86%,var(--input-bg))!important;
+}
+#tab-coach .coach-v3-signal-icon{
+    background:rgba(var(--primary-rgb),.12)!important;
+    color:var(--primary)!important;
+}
+#tab-coach .coach-v3-signal.gap .coach-v3-signal-icon{
+    color:#ff5a52!important;
+    background:rgba(255,90,82,.12)!important;
+}
+#tab-coach .coach-v3-signal.focus .coach-v3-signal-icon{
+    color:#4b9fff!important;
+    background:rgba(75,159,255,.12)!important;
+}
+#tab-coach .coach-v3-settings-shortcut,
+#tab-coach .coach-v3-quick{
+    background:var(--input-bg)!important;
+    border:1px solid var(--surface-border)!important;
+    color:var(--text-main)!important;
+    box-shadow:var(--shadow-soft)!important;
+}
+#tab-coach .coach-v3-quick span{color:var(--text-main)!important;}
+
+/* Journal readability. */
+#tab-journal .journal-panel-head,
+#tab-journal .journal-panel-head span{
+    color:var(--text-main)!important;
+}
+#tab-journal .journal-panel-head i{color:var(--primary)!important;}
+#tab-journal .nutrition-completion{
+    border-top:1px solid var(--surface-border)!important;
+}
+#tab-journal .nutrition-completion label > span{
+    color:var(--text-muted)!important;
+}
+#tab-journal #nutrition-complete-status{
+    color:var(--text-muted)!important;
+}
+
+/* Food result area: no square sheet behind the rounded cards. */
+#tab-food .results-section{
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    padding:0!important;
+}
+#tab-food .results-section > .workspace-block-head{
+    padding:0 4px!important;
+}
+#tab-food #food-list-container{
+    overflow:hidden!important;
+}
+
+/* Bottom navigation: same contrast logic in both themes. */
+#main-app-window .nav-item:not(.active) .nav-icon,
+#main-app-window .nav-item:not(.active) .nav-text{
+    color:var(--text-soft)!important;
+}
+#main-app-window .nav-item.active .nav-icon,
+#main-app-window .nav-item.active .nav-text{
+    color:var(--primary)!important;
+}
+html[data-theme="dark"] #main-app-window .nav-bar{
+    background:rgba(8,9,12,.97)!important;
+    border-top-color:rgba(255,255,255,.08)!important;
+}
+html[data-theme="light"] #main-app-window .nav-bar{
+    background:rgba(252,249,242,.98)!important;
+    border-top-color:rgba(72,58,28,.12)!important;
+}
+
+/* Light mode avoids the flat white-sheet effect. */
+html[data-theme="light"] .workspace-header,
+html[data-theme="light"] .profile-hero,
+html[data-theme="light"] #tab-coach .coach-v3-hero{
+    background:#fffdfa!important;
+}
+html[data-theme="light"] #tab-journal .journal-panel,
+html[data-theme="light"] #tab-food .command-surface,
+html[data-theme="light"] #tab-food #food-list-container{
+    background:#fffdf9!important;
+}
+
+/* Keep Dashboard nutrition rings/macros untouched. */
