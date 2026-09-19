@@ -1424,6 +1424,7 @@
         try { result = typeof legacyProgressInsights==='function' ? legacyProgressInsights.apply(this,args) : undefined; } catch (error) { console.warn('[Achilles V10 legacy insights]',error); }
         requestAnimationFrame(()=>{
             try { A.weekly?.render?.(false); } catch (error) { console.warn('[Achilles V10 weekly]',error); }
+            try { A.avatars?.render?.(); } catch (error) { console.warn('[Achilles avatars]',error); }
             renderExerciseHistoryIndex();
         });
         return result;
