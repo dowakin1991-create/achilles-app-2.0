@@ -4355,3 +4355,111 @@ html[data-theme="light"] #main-app-window .nav-item:not(.active) .nav-text{
     background-size:cover!important;
     background-position:center!important;
 }
+
+
+/* ===== achilles-v10-18-4-theme-and-workspace-fix ===== */
+/* Structural workspace sections are NOT cards. This removes the square outer frames
+   around Search / Products while preserving their inner rounded surfaces. */
+.premium-workspace > .workspace-block{
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+}
+#tab-food > .workspace-block.results-section,
+#tab-food > .workspace-block:not(.results-section){
+    border-radius:0!important;
+    overflow:visible!important;
+}
+#tab-food .command-surface,
+#tab-food #food-list-container,
+#tab-food .premium-results-grid > .list-item{
+    border-radius:var(--radius-xl)!important;
+}
+
+/* Restore real accent switching.
+   Readability variables must never pin every theme to gold. */
+html[data-theme="dark"][data-color="gold"]{
+    --primary:#E5C07B;
+    --primary-rgb:229,192,123;
+    --primary-dark:#c79a3c;
+    --accent-1:#c79a3c;
+    --accent-2:#E5C07B;
+    --accent-3:#fff0b8;
+    --btn-text:#000000;
+}
+html[data-theme="dark"][data-color="blood"]{
+    --primary:#FF453A;
+    --primary-rgb:255,69,58;
+    --primary-dark:#B32E27;
+    --accent-1:#B32E27;
+    --accent-2:#FF453A;
+    --accent-3:#ffaaa5;
+    --btn-text:#ffffff;
+}
+html[data-theme="dark"][data-color="sky"]{
+    --primary:#0A84FF;
+    --primary-rgb:10,132,255;
+    --primary-dark:#0056B3;
+    --accent-1:#0056B3;
+    --accent-2:#0A84FF;
+    --accent-3:#b7e0ff;
+    --btn-text:#ffffff;
+}
+html[data-theme="light"][data-color="gold"]{
+    --primary:#D4AF37;
+    --primary-rgb:212,175,55;
+    --primary-dark:#A68A2B;
+    --accent-1:#A68A2B;
+    --accent-2:#D4AF37;
+    --accent-3:#fff2b7;
+    --btn-text:#17130a;
+}
+html[data-theme="light"][data-color="blood"]{
+    --primary:#D70015;
+    --primary-rgb:215,0,21;
+    --primary-dark:#A60010;
+    --accent-1:#A60010;
+    --accent-2:#D70015;
+    --accent-3:#ff8b86;
+    --btn-text:#ffffff;
+}
+html[data-theme="light"][data-color="sky"]{
+    --primary:#007AFF;
+    --primary-rgb:0,122,255;
+    --primary-dark:#0056B3;
+    --accent-1:#0056B3;
+    --accent-2:#007AFF;
+    --accent-3:#c7e8ff;
+    --btn-text:#ffffff;
+}
+
+/* Theme-aware selected states: use the active accent instead of hardcoded gold. */
+html[data-theme] #main-app-window .nav-item.active .nav-icon,
+html[data-theme] #main-app-window .nav-item.active .nav-text{
+    color:var(--primary)!important;
+}
+html[data-theme="dark"] #main-app-window .nav-item.active::before{
+    background:linear-gradient(
+        180deg,
+        rgba(var(--primary-rgb),.25),
+        rgba(var(--primary-rgb),.10)
+    )!important;
+    border-color:rgba(var(--primary-rgb),.20)!important;
+    box-shadow:
+        0 10px 22px rgba(var(--primary-rgb),.13),
+        inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+html[data-theme="light"] #main-app-window .nav-item.active::before{
+    background:color-mix(in srgb,var(--primary) 22%,#fffdf8)!important;
+    border-color:rgba(var(--primary-rgb),.22)!important;
+    box-shadow:
+        0 8px 18px rgba(var(--primary-rgb),.14),
+        inset 0 1px 0 rgba(255,255,255,.65)!important;
+}
+html[data-theme="light"] .filter-tab.active,
+html[data-theme="light"] #tab-journal .journal-mode-btn.active{
+    color:var(--primary-dark)!important;
+    border-color:rgba(var(--primary-rgb),.20)!important;
+}
