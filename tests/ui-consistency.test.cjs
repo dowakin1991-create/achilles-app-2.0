@@ -160,3 +160,18 @@ test('Mobile 11 preview is isolated to mobile and Coach has one question host', 
     assert.match(css, /#tab-journal \.journal-panel-head[\s\S]*display:none!important/);
     assert.match(css, /#tab-coach \.coach-v3-signal-grid[\s\S]*border-radius:18px/);
 });
+
+
+test('Mobile 11 preview 2 keeps dashboard rings and flattens profile/nav on mobile', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.match(html, /11\.0\.0-preview2/);
+    assert.match(html, /id="ring-kcal"/);
+    assert.match(html, /id="macro-p"/);
+    assert.match(html, /id="macro-f"/);
+    assert.match(html, /id="macro-c"/);
+    assert.match(css, /ACHILLES MOBILE 11 — PREVIEW 2/);
+    assert.match(css, /#tab-profile \.settings-card[\s\S]*border-bottom:1px solid var\(--surface-border\)!important/);
+    assert.match(css, /#main-app-window \.nav-bar[\s\S]*border-radius:22px!important/);
+    assert.match(css, /#tab-dashboard \.nutrition-macro-cards[\s\S]*repeat\(3,minmax\(0,1fr\)\)/);
+});
