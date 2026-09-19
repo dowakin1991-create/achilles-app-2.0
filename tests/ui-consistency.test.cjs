@@ -183,3 +183,15 @@ test('11.0.1 protects iOS top safe area and profile fields from floating actions
     assert.match(css, /#tab-profile \.profile-actions[\s\S]*position:static!important/);
     assert.match(css, /#tab-profile \.profile-actions[\s\S]*bottom:auto!important/);
 });
+
+
+test('11.1.0 stable mobile header keeps greeting spacing, both date arrows and readable macros', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.match(html, /class="greeting-prefix">Привіт,<\/span><span class="gradient-text" id="display-username"/);
+    assert.match(html, /id="btn-next-date"/);
+    assert.match(css, /grid-template-columns:34px minmax\(76px,1fr\) 34px!important/);
+    assert.match(css, /#tab-dashboard \.date-arrow:disabled[\s\S]*opacity:\.28!important/);
+    assert.match(css, /#tab-dashboard \.nutrition-macro-value-line[\s\S]*white-space:nowrap!important/);
+    assert.match(css, /#tab-dashboard \.nutrition-macro-card[\s\S]*grid-template-columns:24px minmax\(0,1fr\)!important/);
+});
