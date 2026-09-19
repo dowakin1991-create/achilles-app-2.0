@@ -39,6 +39,53 @@
         if (food) return snapshot(food, entry.weightG);
         return {name,...classify({name}),fiberG:null,freeSugarG:null,sugarG:null};
     }
+
+    function completedDays(days,todayN,fromAgo=13,toAgo=0) {
+        return Object.entries(days).filter(([date,d])=>{
+            const n=dayNumber(date);
+            return Number.isFinite(n) && n>=todayN-fromAgo && n<=todayN-toAgo && d?.nutritionComplete && (d.log||[]).some(e=>e?.type==='food');
+        });
+    }
+    function dataQuality(input,byId) {
+        const todayN=dayNumber(input.today), days=input.days||{};
+        const logged=Object.entries(days).filter(([date,d])=>dayNumber(date)>=todayN-13&&dayNumber(date)<=todayN&&(d.log||[]).some(e=>e?.type==='food'));
+        const complete=logged.filter(([,d])=>d.nutritionComplete);
+        const foods=logged.flatMap(([,d])=>(d.log||[]).filter(e=>e?.type==='food'));
+        const knownFiber=foods.filter(e=>number(foodDetails(e,byId).fiberG)!==null).length;
+        const weights=new Set((input.weights||[]).filter(w=>number(w.weight)>0&&dayNumber(w.date)>=todayN-13&&dayNumber(w.date)<=todayN).map(w=>w.date));
+        const sessions=(input.sessions||[]).filter(s=>dayNumber(s.date)>=todayN-13&&dayNumber(s.date)<=todayN);
+        const signals={completeDays:complete.length,loggedDays:logged.length,fiberCoverage:foods.length?knownFiber/foods.length:0,weightDays:weights.size,trainingDays:new Set(sessions.map(s=>s.date)).size};
+        let score=0;score+=Math.min(40,complete.length/7*40);score+=Math.min(20,logged.length/7*20);score+=Math.min(15,signals.fiberCoverage*15);score+=Math.min(15,weights.size/6*15);score+=Math.min(10,signals.trainingDays/3*10);score=Math.round(score);
+        const level=score>=75?'high':score>=45?'medium':'low';
+        const reasons=[];
+        if(complete.length<3)reasons.push('менше 3 підтверджених днів харчування');
+        if(weights.size<3)reasons.push('мало зважувань для надійного тренду');
+        if(signals.trainingDays<2)reasons.push('мало тренувальних днів для порівняння');
+        if(foods.length&&signals.fiberCoverage<.7)reasons.push('клітковина відома не для всіх продуктів');
+        return {score,level,...signals,reasons};
+    }
+    function answerFor(state,id){return state?.answers?.[id]?.value ?? null;}
+    function questionFor(input,analysis) {
+        const q=analysis.dataQuality||{}, answers=input.state?.answers||{};
+        const unanswered=id=>!answers[id];
+        const has=id=>analysis.insights.some(i=>i.id===id);
+        if(has('protein-week')&&unanswered('protein-barrier')) return {id:'protein-barrier',type:'single',title:'Що найбільше заважає добирати білок?',prompt:'Це допоможе Coach дати практичнішу пораду замість загального «їж більше білка».',options:[{value:'time',label:'Не вистачає часу'},{value:'appetite',label:'Не хочеться / важко зʼїсти'},{value:'planning',label:'Не планую наперед'},{value:'cost',label:'Дорого'},{value:'unknown',label:'Не знаю, чим добрати'}]};
+        if((q.trainingDays<2||has('training-review'))&&unanswered('training-barrier')) return {id:'training-barrier',type:'multi',title:'Що найчастіше заважає тренуватись?',prompt:'Можна обрати кілька причин.',options:[{value:'time',label:'Немає часу'},{value:'fatigue',label:'Втома після роботи'},{value:'pain',label:'Біль / дискомфорт'},{value:'motivation',label:'Немає бажання'},{value:'schedule',label:'Незручний графік'}]};
+        if(q.weightDays<3&&unanswered('weighing-routine')) return {id:'weighing-routine',type:'single',title:'Коли тобі реально найзручніше зважуватись?',prompt:'Coach підлаштує рекомендацію під реальний режим, а не під «ідеальну» схему.',options:[{value:'morning',label:'Вранці'},{value:'after-work',label:'Після роботи'},{value:'days-off',label:'У вихідні'},{value:'irregular',label:'Коли вийде'}]};
+        if(q.trainingDays>=1&&unanswered('last-workout-effort')) return {id:'last-workout-effort',type:'scale',title:'Наскільки важким було останнє тренування?',prompt:'1 — дуже легке, 5 — майже на межі.',min:1,max:5,labels:['Дуже легко','Легко','Нормально','Важко','На межі']};
+        if(q.completeDays>=3&&unanswered('weekly-focus')) return {id:'weekly-focus',type:'text',title:'Що ти хочеш покращити цього тижня?',prompt:'Напиши коротко: наприклад «добирати білок», «не пропускати тренування» або «краще контролювати порції».',maxLength:140};
+        return null;
+    }
+    function responseFor(answerId,value) {
+        const values=Array.isArray(value)?value:[value];
+        if(answerId==='protein-barrier'){const map={time:'Тоді не ускладнюємо: Coach шукатиме варіанти, які додаються за 1–2 хвилини — яйця, кисломолочний сир, йогурт, тунець або готова порція мʼяса.',appetite:'Тоді краще розподіляти білок між прийомами їжі, а не намагатися добрати велику порцію ввечері.',planning:'Зробимо акцент на одному заздалегідь вибраному білковому продукті на день.',cost:'Coach віддаватиме перевагу доступнішим джерелам: яйця, кисломолочний сир, курятина, бобові.',unknown:'Coach показуватиме конкретний орієнтир у грамах і кілька простих джерел білка.'};return map[value]||'Врахую це в наступних порадах.';}
+        if(answerId==='training-barrier'){const parts=[];if(values.includes('time'))parts.push('коротші тренування');if(values.includes('fatigue'))parts.push('менше навантаження після робочих днів');if(values.includes('pain'))parts.push('обережніший підбір вправ без автоматичного збільшення навантаження');if(values.includes('motivation'))parts.push('мінімальний план із дуже низьким порогом входу');if(values.includes('schedule'))parts.push('привʼязку до реального циклу роботи/відпочинку');return parts.length?'Врахую: '+parts.join(', ')+'.':'Врахую це в плані.';}
+        if(answerId==='weighing-routine'){const map={morning:'Добре. Для тренду Coach орієнтуватиметься насамперед на ранкові вимірювання за схожих умов.','after-work':'Після роботи вага сильніше залежить від їжі та рідини, тому Coach дивитиметься на середню тенденцію, а не на окреме число.','days-off':'Тоді краще мати 2–3 стабільні вимірювання на тиждень у схожих умовах, навіть якщо це лише вихідні.',irregular:'Тоді не буду робити сильних висновків з окремих вимірювань — лише з довшої тенденції.'};return map[value]||'Врахую це при аналізі ваги.';}
+        if(answerId==='last-workout-effort'){const n=Number(value);if(n<=2)return 'Останнє тренування відчувалось легким. Якщо техніка стабільна й повтори виконані впевнено, наступного разу можна розглядати невеликий прогрес.';if(n===3)return 'Нормальна складність. Найкращий варіант — повторити або трохи покращити один параметр, а не різко додавати вагу.';return 'Тренування було важким. Coach не радитиме автоматично підвищувати вагу; спершу варто повторити навантаження або покращити відновлення.';}
+        if(answerId==='weekly-focus')return 'Фокус збережено: «'+String(value).slice(0,140)+'». Я використаю його як контекст, але не буду підміняти ним фактичні дані журналу.';
+        return 'Відповідь збережено й буде врахована в наступному аналізі.';
+    }
+
     function analyze(input) {
         const {today,days={},profile={},targets={},weights=[],sessions=[],catalog=[]}=input;
         const preferences={nutrition:true,sweets:true,weight:true,training:true,maxInsights:4,sweetsThreshold:20,...(input.state?.preferences||input.preferences||{})};
@@ -83,6 +130,20 @@
         }
         // Repeated patterns require completed days; missing days are never zero intake.
         const completeWeek=history.filter(([date,d])=>dayNumber(date)>=todayN-7 && d.nutritionComplete);
+        if (completeWeek.length>=3 && preferences.nutrition!==false) {
+            const proteinValues=completeWeek.map(([,d])=>sum((d.log||[]).filter(e=>e?.type==='food').map(e=>number(e.p)||0)));
+            const avgProtein=mean(proteinValues), targetProtein=number(targets.p), proteinHitDays=targetProtein?proteinValues.filter(v=>v>=targetProtein*.9).length:0;
+            if(targetProtein && avgProtein<targetProtein*.9) {
+                const answer=answerFor(input.state,'protein-barrier'); let tailored='Спробуй додати одне передбачуване джерело білка до першої половини дня — так менше шансів «доганяти» ввечері.';
+                if(answer==='time')tailored='Обери 1–2 швидкі варіанти без готування або з мінімальною підготовкою й повторюй їх у робочі дні.';
+                if(answer==='appetite')tailored='Розподіли білок на менші порції між 2–3 прийомами їжі замість великої порції наприкінці дня.';
+                if(answer==='cost')tailored='Почни з доступніших джерел: яйця, кисломолочний сир, курятина або бобові.';
+                add('protein-week',78,'Білок системно нижче цілі','За '+completeWeek.length+' підтверджених днів середнє — '+round(avgProtein)+' г при цілі '+round(targetProtein)+' г; ≥90% цілі було у '+proteinHitDays+'/'+completeWeek.length+' днів.',tailored,'tab-food');
+            }
+            const kcalValues=completeWeek.map(([,d])=>sum((d.log||[]).filter(e=>e?.type==='food').map(e=>number(e.kcal)||0))), avgKcal=mean(kcalValues);
+            if(goal>0 && avgKcal!==null){const deviation=Math.round((avgKcal-goal)/goal*100);if(Math.abs(deviation)<=10)add('energy-stable',18,'Калорійність стабільна','За '+completeWeek.length+' підтверджених днів середнє — '+Math.round(avgKcal)+' ккал при орієнтирі '+Math.round(goal)+' ккал ('+(deviation>=0?'+':'')+deviation+'%).','Поточний ритм виглядає стабільно. Не змінюй калорії через один окремий день.','tab-journal');}
+        }
+
         if (completeWeek.length>=3) {
             const threshold=Math.max(5,Math.min(40,Number(preferences.sweetsThreshold)||20))/100;
             const highSweetDays=completeWeek.filter(([,d])=>{
@@ -134,7 +195,14 @@
         const focus={sweets:['sweets','free-sugar'],nutrition:['fiber','produce','protein','energy','data'],weight:['fast-loss','weight-review','weight-trend'],training:['training-review','training-progress']};
         const allowed=id=>Object.entries(focus).every(([group,ids])=>!ids.includes(id)||preferences[group]!==false);
         insights.sort((a,b)=>b.priority-a.priority);
-        return {insights:insights.filter(i=>allowed(i.id)).slice(0,[2,4,6].includes(Number(preferences.maxInsights))?Number(preferences.maxInsights):4),summary:`${dateLabel}: ${foods.length} записів їжі. За 14 днів: ${workoutDays} днів із тренуваннями.`,limitations,metrics:{sweetKcal,share,fiber:knownFiber.length===items.length?fiber:null,freeSugar,produce,weightDelta:delta,workoutDays}};
+        const filtered=insights.filter(i=>allowed(i.id)).slice(0,[2,4,6].includes(Number(preferences.maxInsights))?Number(preferences.maxInsights):4);
+        const quality=dataQuality(input,byId), positives=[];
+        if(completeWeek.length>=3)positives.push({id:'logging',title:'Є база для аналізу',text:completeWeek.length+' підтверджених днів за останній тиждень.'});
+        if(goal>0&&kcal>0&&Math.abs(kcal-goal)/goal<=.1)positives.push({id:'calories',title:'Калорійність близько до цілі',text:Math.round(kcal)+' із '+Math.round(goal)+' ккал сьогодні.'});
+        if(number(targets.p)>0&&sum(foods.map(f=>number(f.p)||0))>=Number(targets.p)*.9)positives.push({id:'protein',title:'Білок близько до цілі',text:round(sum(foods.map(f=>number(f.p)||0)))+' г із '+round(targets.p)+' г.'});
+        if(workoutDays>=2)positives.push({id:'training',title:'Тренування є в ритмі',text:workoutDays+' тренувальних днів за 14 днів.'});
+        const result={insights:filtered,summary:dateLabel+': '+foods.length+' записів їжі. За 14 днів: '+workoutDays+' днів із тренуваннями.',limitations,metrics:{sweetKcal,share,fiber:knownFiber.length===items.length?fiber:null,freeSugar,produce,weightDelta:delta,workoutDays},dataQuality:quality,positives};
+        result.question=questionFor(input,result);result.lastAnswerResponse=input.state?.lastAnswer?.response||null;return result;
     }
-    return {analyze,classify,snapshot};
+    return {analyze,classify,snapshot,dataQuality,questionFor,responseFor};
 });
