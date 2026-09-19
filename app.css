@@ -4703,3 +4703,23 @@ html[data-theme="light"] #tab-food #food-list-container{
 }
 
 /* Keep Dashboard nutrition rings/macros untouched. */
+
+
+/* ===== achilles-v10-19-0-coach-engine-2 ===== */
+#tab-coach .coach-question-section{margin-top:16px!important;}
+#tab-coach #coach-question-host:empty{display:none;}
+#tab-coach .coach-question-card,#tab-coach .coach-answer-response{border-radius:var(--ui-radius-card,26px);background:var(--card-bg);border:1px solid var(--surface-border);box-shadow:var(--shadow-card);padding:18px;}
+#tab-coach .coach-question-card h3{margin:6px 0 8px;color:var(--text-main)!important;font-size:18px;line-height:1.28;}
+#tab-coach .coach-question-card>p,#tab-coach .coach-answer-response p{margin:0;color:var(--text-muted)!important;line-height:1.5;}
+#tab-coach .coach-question-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:16px;}
+#tab-coach .coach-question-options>button,#tab-coach .coach-question-options>label{min-height:48px;border-radius:15px;border:1px solid var(--surface-border);background:var(--input-bg);color:var(--text-main)!important;font:inherit;font-weight:750;padding:10px 12px;display:flex;align-items:center;gap:9px;text-align:left;}
+#tab-coach .coach-question-options label span{color:var(--text-main)!important;}
+#tab-coach .coach-question-submit{margin-top:10px!important;}
+#tab-coach .coach-question-scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:16px;}
+#tab-coach .coach-question-scale button{min-height:72px;border-radius:15px;border:1px solid var(--surface-border);background:var(--input-bg);color:var(--text-main)!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+#tab-coach .coach-question-scale strong{font-size:19px;color:var(--primary)!important;}
+#tab-coach .coach-question-scale span{color:var(--text-muted)!important;font-size:9px;line-height:1.15;}
+#tab-coach .coach-question-text{display:grid;gap:10px;margin-top:16px;}
+#tab-coach .coach-question-text textarea{width:100%;resize:vertical;min-height:86px;}
+#tab-coach .coach-answer-response{margin-top:10px;background:color-mix(in srgb,var(--primary) 7%,var(--card-bg))!important;border-color:rgba(var(--primary-rgb),.18)!important;}
+@media(max-width:520px){#tab-coach .coach-question-options{grid-template-columns:1fr;}#tab-coach .coach-question-scale{gap:5px;}#tab-coach .coach-question-scale button{padding:6px 2px;min-height:66px;}}
