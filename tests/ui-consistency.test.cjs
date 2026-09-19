@@ -206,3 +206,19 @@ test('11.1.1 numeric input audit prevents iOS caret/flex glitches', () => {
     assert.match(css, /input\[type="number"\][\s\S]*text-indent:0!important[\s\S]*text-align:left!important/);
     assert.match(css, /#custom-food-overlay input:focus[\s\S]*padding-left:14px!important/);
 });
+
+
+test('11.2 avatar progression and durable custom-food backup are wired', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    const sync = fs.readFileSync(path.join(__dirname, '../firebase-sync.js'), 'utf8');
+    const sw = fs.readFileSync(path.join(__dirname, '../sw.js'), 'utf8');
+    assert.match(html, /id="avatar-progression-grid"/);
+    assert.match(html, /avatar-system\.js\?v=11\.2\.0/);
+    assert.match(css, /achilles-avatar-atlas\.webp\?v=11\.2\.0/);
+    assert.match(sync, /"backups", "customFoods"/);
+    assert.match(sync, /avatarState:/);
+    assert.match(sync, /syncCustomFoodsBackup/);
+    assert.match(sw, /avatar-system\.js/);
+    assert.match(sw, /achilles-avatar-atlas\.webp/);
+});
