@@ -1100,35 +1100,45 @@
         A.haptics.tap();
     };
 
-    // History belongs to the journal; the gym only renders exercise entry controls.
-    function renderExerciseHistoryIndex() {
-        const workoutPanel = document.getElementById('journal-workout-panel');
-        if (!workoutPanel) return;
-        let section = document.getElementById('exercise-history-index');
-        if (!section) {
-            section = document.createElement('div');
-            section.id = 'exercise-history-index';
-            section.className = 'exercise-history-index journal-training-history';
-            workoutPanel.appendChild(section);
-        }
-        const history = A.training?.history?.all?.() || [];
-        const unique = [];
-        const seen = new Set();
-        history.forEach(session => {
-            if (!seen.has(session.exerciseId) && A.training.model.byId(session.exerciseId)) {
-                seen.add(session.exerciseId);
-                unique.push(session);
-            }
-        });
-        section.hidden = !unique.length;
-        section.innerHTML = unique.length ? `
-            <div class="workspace-block-head"><h2>Історія вправ</h2></div>
-            <div class="training-intel-recent">${unique.map(s => `<button type="button" class="training-recent-row journal-exercise-history" data-exercise-id="${esc(s.exerciseId)}"><span><strong>${esc(s.exerciseName)}</strong><span>${esc(fmtDate(s.date))} · ${esc(A.training.history.format(s))}</span></span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>`).join('')}</div>` : '';
-        section.querySelectorAll('[data-exercise-id]').forEach(button => {
-            button.addEventListener('click', () => root.openExerciseHistory(button.dataset.exerciseId));
-        });
+    // Journal training history is intentionally compact: one row per training date.
+    function ensureDayHistorySheet(){
+        let sheet=document.getElementById('training-day-history-sheet');
+        if(sheet) return sheet;
+        sheet=document.createElement('div');
+        sheet.id='training-day-history-sheet';
+        sheet.className='v10-sheet';
+        sheet.innerHTML='<div class="v10-sheet-card"><div class="v10-sheet-content" id="training-day-history-content"></div></div>';
+        document.body.appendChild(sheet);
+        sheet.addEventListener('click',e=>{ if(e.target===sheet) root.closeTrainingDayHistory?.(); });
+        return sheet;
     }
-    root.renderExerciseHistoryIndex = renderExerciseHistoryIndex;
+    root.closeTrainingDayHistory=function(){
+        const sheet=document.getElementById('training-day-history-sheet');
+        if(!sheet) return;
+        sheet.classList.remove('open');
+        setTimeout(()=>sheet.style.display='none',180);
+    };
+    root.openTrainingDayHistory=function(date){
+        const sessions=(A.training?.history?.all?.()||[]).filter(s=>s.date===date);
+        const content=document.getElementById('training-day-history-content')||ensureDayHistorySheet().querySelector('#training-day-history-content');
+        content.innerHTML=`<div class="v10-sheet-head"><div><span class="eyebrow">ТРЕНУВАННЯ</span><h2>${esc(fmtDate(date))}</h2><p>${sessions.length} ${sessions.length===1?'вправа':'вправ'}</p></div><button class="secondary v10-sheet-close" onclick="closeTrainingDayHistory()" aria-label="Закрити"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="training-day-detail-list">${sessions.map(s=>`<button type="button" class="training-day-detail-row" onclick="closeTrainingDayHistory();openExerciseHistory('${esc(s.exerciseId)}')"><span><strong>${esc(s.exerciseName||'Вправа')}</strong><small>${esc(A.training.history.format(s))}</small></span><i class="fa-solid fa-chevron-right"></i></button>`).join('')}</div>`;
+        const sheet=ensureDayHistorySheet(); sheet.style.display='flex'; requestAnimationFrame(()=>sheet.classList.add('open'));
+    };
+    function renderExerciseHistoryIndex(){
+        const workoutPanel=document.getElementById('journal-workout-panel');
+        if(!workoutPanel) return;
+        let section=document.getElementById('exercise-history-index');
+        if(!section){section=document.createElement('div');section.id='exercise-history-index';section.className='exercise-history-index journal-training-history';workoutPanel.appendChild(section);}
+        const history=A.training?.history?.all?.()||[];
+        const byDate=new Map();
+        history.forEach(s=>{ if(!byDate.has(s.date)) byDate.set(s.date,[]); byDate.get(s.date).push(s); });
+        const days=[...byDate.entries()].sort((a,b)=>String(b[0]).localeCompare(String(a[0])));
+        section.hidden=!days.length;
+        section.innerHTML=days.length?`<div class="workspace-block-head"><h2>Історія тренувань</h2></div><div class="training-history-days">${days.map(([date,sessions])=>`<button type="button" class="training-day-row" data-training-date="${esc(date)}"><span><strong>${esc(fmtDate(date))}</strong><small>${sessions.length} ${sessions.length===1?'вправа':'вправ'}</small></span><i class="fa-solid fa-chevron-right"></i></button>`).join('')}</div>`:'';
+        section.querySelectorAll('[data-training-date]').forEach(btn=>btn.addEventListener('click',()=>root.openTrainingDayHistory(btn.dataset.trainingDate)));
+    }
+    root.renderExerciseHistoryIndex=renderExerciseHistoryIndex;
 
     /* -------------------- Analytics V2 -------------------- */
     function datesForRange(days) {
