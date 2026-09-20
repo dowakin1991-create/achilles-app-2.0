@@ -261,3 +261,5 @@ test('11.2.3 keeps unapproved avatar artwork disabled in production', () => {
     assert.doesNotMatch(sw, /avatar-system\.js/);
     assert.doesNotMatch(sw, /achilles-avatar-atlas\.webp/);
 });
+
+test('11.3 avatars are hard-disabled until unlocked and training history is grouped by date',()=>{const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');const av=fs.readFileSync(path.join(__dirname,'../avatar-system.js'),'utf8');const rt=fs.readFileSync(path.join(__dirname,'../app-runtime.js'),'utf8');assert.match(html,/id="profile-avatar-trigger"/);assert.match(av,/aria-disabled="true"/);assert.match(rt,/Історія тренувань/);assert.match(rt,/data-training-date/);assert.match(rt,/openTrainingDayHistory/);});
