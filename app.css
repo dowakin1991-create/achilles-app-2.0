@@ -6372,8 +6372,9 @@ input[type="number"]::-webkit-inner-spin-button{
 
 /* ===== Achilles 11.2 — avatar progression ===== */
 .achilles-avatar-sprite{
-    background-image:url('./assets/avatars/achilles-avatar-atlas.webp?v=11.3.3');
-    background-size:500% 300%;
+    background-image:url('./assets/avatars/avatar-1.webp?v=11.3.6');
+    background-size:cover;
+    background-position:center;
     background-repeat:no-repeat;
     background-color:#0c0c0e;
 }

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'achilles-os-v11-3-5';
+const CACHE_VERSION = 'achilles-os-v11-3-6';
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -26,7 +26,21 @@ const APP_SHELL = [
   "./training.js",
   "./app-runtime.js",
   "./avatar-system.js",
-  "./assets/avatars/achilles-avatar-atlas.webp",
+  "./assets/avatars/avatar-1.webp",
+  "./assets/avatars/avatar-2.webp",
+  "./assets/avatars/avatar-3.webp",
+  "./assets/avatars/avatar-4.webp",
+  "./assets/avatars/avatar-5.webp",
+  "./assets/avatars/avatar-6.webp",
+  "./assets/avatars/avatar-7.webp",
+  "./assets/avatars/avatar-8.webp",
+  "./assets/avatars/avatar-9.webp",
+  "./assets/avatars/avatar-10.webp",
+  "./assets/avatars/avatar-11.webp",
+  "./assets/avatars/avatar-12.webp",
+  "./assets/avatars/avatar-13.webp",
+  "./assets/avatars/avatar-14.webp",
+  "./assets/avatars/avatar-15.webp",
   "./system-ui.js",
   "./nutrition-reliability.js",
   "./pwa.js",
