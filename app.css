@@ -6777,3 +6777,80 @@ box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 7px 20px rgba(0,0,0,.14)!import
 #main-app-window>.app-window>.main-content,#main-app-window .nav-bar{max-width:1240px!important}
 .nutrition-hero-body{grid-template-columns:minmax(500px,1.45fr) minmax(330px,.55fr)!important;gap:42px!important}
 }
+
+
+/* ===== Achilles 11.3.10 — profile avatar size correction ===== */
+#tab-profile .profile-avatar-trigger{
+    width:118px!important;
+    height:118px!important;
+    min-width:118px!important;
+    border-radius:30px!important;
+}
+#tab-profile .profile-avatar-trigger .profile-avatar-large,
+#tab-profile .profile-avatar-large{
+    width:118px!important;
+    height:118px!important;
+    min-width:118px!important;
+    border-radius:30px!important;
+    background-size:cover!important;
+    background-position:center!important;
+}
+#tab-profile .profile-avatar-edit-badge{
+    width:34px!important;
+    height:34px!important;
+    right:-6px!important;
+    bottom:-6px!important;
+    border-radius:11px!important;
+    font-size:12px!important;
+}
+#tab-profile .profile-hero{
+    grid-template-columns:118px minmax(0,1fr)!important;
+    gap:20px!important;
+    align-items:center!important;
+}
+@media (max-width: 767px){
+    #tab-profile .profile-avatar-trigger{
+        width:112px!important;
+        height:112px!important;
+        min-width:112px!important;
+        border-radius:28px!important;
+    }
+    #tab-profile .profile-avatar-trigger .profile-avatar-large,
+    #tab-profile .profile-avatar-large{
+        width:112px!important;
+        height:112px!important;
+        min-width:112px!important;
+        border-radius:28px!important;
+    }
+    #tab-profile .profile-avatar-edit-badge{
+        width:32px!important;
+        height:32px!important;
+        right:-5px!important;
+        bottom:-5px!important;
+        border-radius:10px!important;
+        font-size:11px!important;
+    }
+    #tab-profile .profile-hero{
+        grid-template-columns:112px minmax(0,1fr)!important;
+        gap:18px!important;
+        padding-top:16px!important;
+        padding-bottom:20px!important;
+    }
+}
+@media (max-width: 380px){
+    #tab-profile .profile-avatar-trigger{
+        width:104px!important;
+        height:104px!important;
+        min-width:104px!important;
+    }
+    #tab-profile .profile-avatar-trigger .profile-avatar-large,
+    #tab-profile .profile-avatar-large{
+        width:104px!important;
+        height:104px!important;
+        min-width:104px!important;
+    }
+    #tab-profile .profile-hero{
+        grid-template-columns:104px minmax(0,1fr)!important;
+        gap:16px!important;
+    }
+}
