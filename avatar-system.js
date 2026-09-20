@@ -4,7 +4,7 @@
 
     const A = root.Achilles = root.Achilles || {};
     const STATE_KEY = 'achilles_avatar_state_v1';
-    const ATLAS = './assets/avatars/achilles-avatar-atlas.webp?v=11.2.1';
+    const ATLAS = './assets/avatars/achilles-avatar-atlas.webp?v=11.2.2';
 
     const CATALOG = Object.freeze([
         {id:1,  name:'Новобранець',        tier:'I',   kind:'base'},
@@ -184,6 +184,26 @@
         return `${Number(current.toFixed?.(decimals)||current)}/${target}`;
     }
 
+    function openPicker(){
+        const overlay=document.getElementById('avatar-picker-overlay');
+        if(!overlay) return;
+        render();
+        overlay.hidden=false;
+        requestAnimationFrame(()=>overlay.classList.add('open'));
+        document.documentElement.classList.add('avatar-picker-open');
+        A.haptics?.tap?.();
+        setTimeout(()=>overlay.querySelector('.avatar-picker-close')?.focus?.(),120);
+    }
+
+    function closePicker(){
+        const overlay=document.getElementById('avatar-picker-overlay');
+        if(!overlay) return;
+        overlay.classList.remove('open');
+        document.documentElement.classList.remove('avatar-picker-open');
+        setTimeout(()=>{ overlay.hidden=true; },180);
+        document.getElementById('profile-avatar-trigger')?.focus?.();
+    }
+
     function render(){
         const host=document.getElementById('avatar-progression-grid');
         if(!host){ apply(); return; }
@@ -214,6 +234,7 @@
             render();
             A.haptics?.success?.();
             A.toast?.('Аватар змінено','fa-shield-halved',1600);
+            closePicker();
         }));
 
         const m=snapshot.metrics;
@@ -255,10 +276,20 @@
             render();
             return true;
         },
-        mergeRemote
+        mergeRemote,
+        openPicker,
+        closePicker
     };
 
-    root.addEventListener('DOMContentLoaded',()=>setTimeout(render,80),{once:true});
+    root.addEventListener('DOMContentLoaded',()=>{
+        setTimeout(render,80);
+        document.addEventListener('click',event=>{
+            if(event.target.closest('[data-avatar-picker-close]')) closePicker();
+        });
+        document.addEventListener('keydown',event=>{
+            if(event.key==='Escape' && !document.getElementById('avatar-picker-overlay')?.hidden) closePicker();
+        });
+    },{once:true});
     root.addEventListener('achilles:firebase-ready',()=>setTimeout(apply,80));
     root.addEventListener('achilles:coach-changed',()=>setTimeout(render,80));
     root.addEventListener('achilles:coach-workflow-changed',()=>setTimeout(render,80));
