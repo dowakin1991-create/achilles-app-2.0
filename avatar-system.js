@@ -4,7 +4,7 @@
 
     const A = root.Achilles = root.Achilles || {};
     const STATE_KEY = 'achilles_avatar_state_v1';
-    const ATLAS = './assets/avatars/achilles-avatar-atlas.webp?v=11.2.2';
+    const ATLAS = './assets/avatars/achilles-avatar-atlas.webp?v=11.3.0';
 
     const CATALOG = Object.freeze([
         {id:1,  name:'Новобранець',        tier:'I',   kind:'base'},
@@ -214,7 +214,7 @@
             const selected=state.selected===item.id;
             const c=snapshot.conditions[item.id];
             const pct=Math.max(0,Math.min(100,(Number(c.current||0)/Math.max(1,Number(c.target||1)))*100));
-            return `<button type="button" class="avatar-option ${unlocked?'unlocked':'locked'} ${selected?'selected':''}" data-avatar-id="${item.id}" ${unlocked?'':'disabled'} aria-label="${item.name}: ${c.label}">
+            return `<button type="button" class="avatar-option ${unlocked?'unlocked':'locked'} ${selected?'selected':''}" data-avatar-id="${item.id}" data-locked="${unlocked?'0':'1'}" ${unlocked?'':'disabled aria-disabled="true"'} aria-label="${item.name}: ${c.label}">
                 <span class="avatar-option-art achilles-avatar-sprite" data-avatar-sprite="${item.id}"></span>
                 <span class="avatar-option-body">
                     <span class="avatar-option-top"><strong>${item.name}</strong><small>${item.tier}</small></span>
