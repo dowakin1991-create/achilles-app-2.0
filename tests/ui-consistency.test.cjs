@@ -234,3 +234,19 @@ test('11.2 progression keeps nutrition completion and immediately backs up custo
     assert.match(core, /nutritionComplete: d\.nutritionComplete === true/);
     assert.match(avatar, /safeJson\('achilles_all_days',\{\}\)/);
 });
+
+
+test('11.2.2 avatar changes from clickable profile avatar and picker overlay', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const avatar = fs.readFileSync(path.join(__dirname, '../avatar-system.js'), 'utf8');
+    const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
+    assert.match(html, /id="profile-avatar-trigger"[^>]*Achilles\.avatars\.openPicker/);
+    assert.match(html, /id="avatar-picker-overlay" hidden/);
+    assert.match(html, /id="avatar-progression-grid"/);
+    assert.doesNotMatch(html, /class="avatar-progression-card premium-surface"/);
+    assert.match(avatar, /function openPicker\(/);
+    assert.match(avatar, /function closePicker\(/);
+    assert.match(avatar, /closePicker\(\);/);
+    assert.match(css, /\.avatar-picker-overlay\.open/);
+    assert.match(css, /\.profile-avatar-edit-badge/);
+});
