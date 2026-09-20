@@ -66,6 +66,19 @@
     };
 
     /* --------------------------- NUTRITION ---------------------------- */
+    function positionNutritionArrow(arrowId, ratio, radius){
+        const arrow=document.getElementById(arrowId);
+        if(!arrow) return;
+        const p=Math.max(0,Math.min(Number(ratio)||0,0.995));
+        if(p<=0.01){ arrow.style.opacity='0'; return; }
+        const angle=-Math.PI/2 + p*Math.PI*2;
+        const x=120 + radius*Math.cos(angle);
+        const y=120 + radius*Math.sin(angle);
+        const deg=p*360;
+        arrow.style.opacity='1';
+        arrow.setAttribute('transform', 'translate('+x.toFixed(2)+' '+y.toFixed(2)+') rotate('+deg.toFixed(2)+')');
+    }
+
     A.nutrition = {
         injectGradient(){
             const svg=document.querySelector('.nutrition-rings-svg');
@@ -102,10 +115,18 @@
             this.injectGradient();
             const target=this.targets();
             const macros=window.macros||{p:0,f:0,c:0};
-            A.motion.circle(document.getElementById('ring-kcal'),target.kcal?Number(window.consumedCalories||0)/target.kcal:0,animate,1180);
-            A.motion.circle(document.getElementById('ring-protein'),target.p?Number(macros.p||0)/target.p:0,animate,1080);
-            A.motion.circle(document.getElementById('ring-fat'),target.f?Number(macros.f||0)/target.f:0,animate,980);
-            A.motion.circle(document.getElementById('ring-carb'),target.c?Number(macros.c||0)/target.c:0,animate,900);
+            const kcalRatio=target.kcal?Number(window.consumedCalories||0)/target.kcal:0;
+            const pRatio=target.p?Number(macros.p||0)/target.p:0;
+            const fRatio=target.f?Number(macros.f||0)/target.f:0;
+            const cRatio=target.c?Number(macros.c||0)/target.c:0;
+            A.motion.circle(document.getElementById('ring-kcal'),kcalRatio,animate,1180);
+            A.motion.circle(document.getElementById('ring-protein'),pRatio,animate,1080);
+            A.motion.circle(document.getElementById('ring-fat'),fRatio,animate,980);
+            A.motion.circle(document.getElementById('ring-carb'),cRatio,animate,900);
+            positionNutritionArrow('ring-arrow-kcal',kcalRatio,92);
+            positionNutritionArrow('ring-arrow-protein',pRatio,72);
+            positionNutritionArrow('ring-arrow-fat',fRatio,54);
+            positionNutritionArrow('ring-arrow-carb',cRatio,38);
         },
         search(){ return typeof window.onSearchInput==='function' ? window.onSearchInput() : null; },
         favorites(){ return A.storage.json('achilles_fav_foods',[]); }
