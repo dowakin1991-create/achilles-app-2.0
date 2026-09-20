@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'achilles-os-v11-3-7';
+const CACHE_VERSION = 'achilles-os-v11-3-8';
 const APP_SHELL = [
   "./",
   "./index.html",
