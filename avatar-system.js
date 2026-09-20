@@ -4,7 +4,7 @@
 
     const A = root.Achilles = root.Achilles || {};
     const STATE_KEY = 'achilles_avatar_state_v1';
-    const ATLAS = './assets/avatars/achilles-avatar-atlas.webp?v=11.3.4';
+    const ATLAS = './assets/avatars/achilles-avatar-atlas.webp?v=11.3.5';
 
     const CATALOG = Object.freeze([
         {id:1,  name:'Новобранець',        tier:'I',   kind:'base'},
@@ -140,10 +140,13 @@
     function setSprite(el,id){
         if(!el) return;
         el.classList.add('achilles-avatar-sprite');
-        el.style.backgroundImage=`url("${ATLAS}")`;
-        el.style.backgroundSize='500% 300%';
-        el.style.backgroundPosition=spritePosition(id);
-        el.style.backgroundRepeat='no-repeat';
+        // Several legacy profile-logo rules use !important. Force the selected
+        // avatar sprite at the inline-important level so those rules cannot
+        // replace it with the old IMG_9302 app icon.
+        el.style.setProperty('background-image', `url("${ATLAS}")`, 'important');
+        el.style.setProperty('background-size', '500% 300%', 'important');
+        el.style.setProperty('background-position', spritePosition(id), 'important');
+        el.style.setProperty('background-repeat', 'no-repeat', 'important');
     }
 
     function evaluate({sync=true}={}){
