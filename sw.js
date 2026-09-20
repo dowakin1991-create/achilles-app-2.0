@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'achilles-os-v11-2-3';
+const CACHE_VERSION = 'achilles-os-v11-3-0';
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -25,6 +25,8 @@ const APP_SHELL = [
   "./core-data.js",
   "./training.js",
   "./app-runtime.js",
+  "./avatar-system.js",
+  "./assets/avatars/achilles-avatar-atlas.webp",
   "./system-ui.js",
   "./nutrition-reliability.js",
   "./pwa.js",
