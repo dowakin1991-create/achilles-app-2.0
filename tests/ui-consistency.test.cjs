@@ -250,3 +250,14 @@ test('11.2.2 avatar changes from clickable profile avatar and picker overlay', (
     assert.match(css, /\.avatar-picker-overlay\.open/);
     assert.match(css, /\.profile-avatar-edit-badge/);
 });
+
+
+test('11.2.3 keeps unapproved avatar artwork disabled in production', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+    const sw = fs.readFileSync(path.join(__dirname, '../sw.js'), 'utf8');
+    assert.match(html, /<div class="profile-avatar-large"><\/div>/);
+    assert.doesNotMatch(html, /id="avatar-picker-overlay"/);
+    assert.doesNotMatch(html, /data-achilles-module="avatar-system\.js"/);
+    assert.doesNotMatch(sw, /avatar-system\.js/);
+    assert.doesNotMatch(sw, /achilles-avatar-atlas\.webp/);
+});
