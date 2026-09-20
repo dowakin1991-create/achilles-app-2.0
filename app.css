@@ -6706,3 +6706,16 @@ html.avatar-picker-open body{
     .avatar-picker-intro strong{display:block;margin-bottom:3px}
     .avatar-picker-intro span{font-size:10px}
 }
+
+/* Achilles 11.3 compact training history + locked avatar UX */
+.avatar-option.locked{pointer-events:none!important;opacity:.42!important;filter:saturate(.35)!important}
+.avatar-option.locked .avatar-option-art{filter:grayscale(1) brightness(.32)!important}
+.avatar-option.locked .avatar-option-art:after{content:"\f023";font-family:"Font Awesome 6 Free";font-weight:900;position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:20px;background:rgba(0,0,0,.28)}
+.avatar-option-art{position:relative;overflow:hidden}
+.training-history-days{display:grid;gap:8px}
+.training-day-row,.training-day-detail-row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:14px 16px!important;border-radius:16px!important;background:var(--input-bg)!important;border:1px solid var(--surface-border)!important;color:var(--text-main)!important;box-shadow:none!important}
+.training-day-row span,.training-day-detail-row span{min-width:0;display:grid;gap:3px}
+.training-day-row strong,.training-day-detail-row strong{font-size:14px}
+.training-day-row small,.training-day-detail-row small{font-size:11px;color:var(--text-muted)}
+.training-day-detail-list{display:grid;gap:9px}
+@media(max-width:767px){.training-day-row{padding:13px 14px!important}.training-day-row strong{font-size:13px}.training-day-row small{font-size:10px}}
