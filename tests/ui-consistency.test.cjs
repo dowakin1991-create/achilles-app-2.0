@@ -268,3 +268,6 @@ test('11.3.1 uses approved avatar atlas and keeps locked avatars disabled',()=>{
 
 
 test('11.3.2 refreshes approved avatar atlas cache',()=>{const av=fs.readFileSync(path.join(__dirname,'../avatar-system.js'),'utf8');const css=fs.readFileSync(path.join(__dirname,'../app.css'),'utf8');assert.match(av,/achilles-avatar-atlas\.webp\?v=11\.3\.2/);assert.match(css,/achilles-avatar-atlas\.webp\?v=11\.3\.2/);});
+
+
+test('11.3.3 uses verified approved avatar atlas',()=>{const av=fs.readFileSync(path.join(__dirname,'../avatar-system.js'),'utf8');const css=fs.readFileSync(path.join(__dirname,'../app.css'),'utf8');assert.match(av,/achilles-avatar-atlas\.webp\?v=11\.3\.3/);assert.match(css,/achilles-avatar-atlas\.webp\?v=11\.3\.3/);});
