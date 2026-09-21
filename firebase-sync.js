@@ -1333,7 +1333,7 @@
             if(filter === 'fav') {
                 document.getElementById('food-search').style.display = 'none';
                 clearTimeout(searchTimeout);
-                document.getElementById('loading-spinner').style.display = 'none';
+                { const spinner = document.getElementById('loading-spinner'); if (spinner) spinner.style.display = 'none'; }
                 window.renderFavFoods();
             } else {
                 document.getElementById('food-search').style.display = 'block';
@@ -1416,7 +1416,7 @@
 
             if (query.length < 2) {
                 document.getElementById('food-results').innerHTML = '';
-                document.getElementById('loading-spinner').style.display = 'none';
+                { const spinner = document.getElementById('loading-spinner'); if (spinner) spinner.style.display = 'none'; }
                 window.setFoodApiStatus('ready', 'Онлайн-база Open Food Facts готова');
                 return;
             }
@@ -1511,7 +1511,7 @@
         window.searchOnlineFood = async function(query) {
             const resultsBox = document.getElementById('food-results');
             const spinner = document.getElementById('loading-spinner');
-            spinner.style.display = 'block';
+            if (spinner) spinner.style.display = 'block';
             window.setFoodApiStatus('loading', 'Шукаю в онлайн-базі…');
 
             currentAbortController = new AbortController();
@@ -1556,7 +1556,7 @@
                     window.setFoodApiStatus('error', 'Онлайн-база тимчасово недоступна · локальні продукти працюють');
                 }
             } finally {
-                if (!signal.aborted) spinner.style.display = 'none';
+                if (!signal.aborted && spinner) spinner.style.display = 'none';
             }
         };
 
