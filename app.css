@@ -6885,3 +6885,52 @@ box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 7px 20px rgba(0,0,0,.14)!import
 html[data-theme="light"] #tab-journal .journal-mode-switch{background:rgba(255,255,255,.52)!important;border-color:rgba(111,80,80,.09)!important}
 html[data-theme="light"] #tab-journal .journal-mode-btn.active,html[data-theme="light"] #tab-journal .journal-empty,html[data-theme="light"] #tab-journal .diary-row-v110,html[data-theme="light"] #tab-journal .journal-list .list-item,html[data-theme="light"] #tab-journal .journal-completion-toggle{background:rgba(255,253,250,.88)!important;border-color:rgba(98,71,71,.10)!important;box-shadow:0 8px 24px rgba(91,61,61,.055)!important}
 @media(max-width:520px){#tab-journal{padding-left:18px!important;padding-right:18px!important}#tab-journal>.workspace-header{padding-top:2px!important}#tab-journal .journal-empty{padding:18px 16px!important}#tab-journal .journal-completion-toggle{padding:14px 15px!important;grid-template-columns:40px minmax(0,1fr) 46px!important;gap:11px!important}#tab-journal .journal-completion-icon,#tab-journal .journal-empty-icon{width:40px!important;height:40px!important;border-radius:13px!important}}
+
+/* ===== Achilles 11.3.13 — Journal corner bleed fix ===== */
+#tab-journal #journal-food-panel,
+#tab-journal #journal-workout-panel,
+#tab-journal .journal-mode-panel,
+#tab-journal .journal-grid,
+#tab-journal .journal-list,
+#tab-journal .nutrition-completion{
+    background:transparent!important;
+    background-image:none!important;
+    border:0!important;
+    box-shadow:none!important;
+    outline:0!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+}
+#tab-journal #journal-food-panel,
+#tab-journal #journal-workout-panel,
+#tab-journal .journal-mode-panel,
+#tab-journal .journal-list{
+    border-radius:0!important;
+    overflow:visible!important;
+}
+#tab-journal .journal-empty,
+#tab-journal .journal-completion-toggle,
+#tab-journal .diary-row-v110,
+#tab-journal .journal-list .list-item{
+    position:relative!important;
+    isolation:isolate!important;
+    overflow:hidden!important;
+    background-clip:padding-box!important;
+    -webkit-mask-image:-webkit-radial-gradient(white,black)!important;
+}
+#tab-journal .journal-empty::before,
+#tab-journal .journal-empty::after,
+#tab-journal .journal-completion-toggle::before,
+#tab-journal .journal-completion-toggle::after{
+    content:none!important;
+    display:none!important;
+}
+html[data-theme="light"] #tab-journal #journal-food-panel,
+html[data-theme="light"] #tab-journal #journal-workout-panel,
+html[data-theme="light"] #tab-journal .journal-mode-panel,
+html[data-theme="light"] #tab-journal .journal-grid,
+html[data-theme="light"] #tab-journal .journal-list,
+html[data-theme="light"] #tab-journal .nutrition-completion{
+    background:transparent!important;
+    box-shadow:none!important;
+}
