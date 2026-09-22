@@ -502,7 +502,7 @@
             const results = document.getElementById('food-results');
             if (results) results.innerHTML = '';
         }
-        document.querySelector('.nav-item[data-target="tab-dashboard"]')?.click();
+        // Keep the user in Раціон after adding a product.
         return true;
     }
 
