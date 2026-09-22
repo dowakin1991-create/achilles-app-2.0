@@ -30,7 +30,7 @@
         const input=context(),date=root.currentViewDate||input.today,day=input.days[date]||{};
         toggle.checked=C.isComplete(date,day,input.state.completions);
         toggle.disabled=date>input.today||!(day.log||[]).some(e=>e?.type==='food');
-        if(label)label.textContent=`${date}: ${toggle.checked?'усю їжу й напої підтверджено':'день не підтверджено'}. Після зміни їжі підтвердь знову.`;
+        if(label){const pretty=new Intl.DateTimeFormat('uk-UA',{day:'numeric',month:'long'}).format(new Date(`${date}T12:00:00`));label.textContent=toggle.disabled?'Додай хоча б один прийом їжі, щоб підтвердити день.':(toggle.checked?`Підтверджено · ${pretty}`:`Не підтверджено · ${pretty}`);}
     }
     function complete(value){
         const input=context(),date=root.currentViewDate||input.today,day=input.days[date]||{};
