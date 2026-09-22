@@ -474,7 +474,7 @@
             if (search) search.value = '';
             if (results) results.innerHTML = '';
             if (root.currentFoodFilter === 'fav') root.renderFavFoods();
-            document.querySelector('.nav-item[data-target="tab-dashboard"]')?.click();
+            // Keep the user in Раціон after adding a product.
             return true;
         } catch (error) {
             console.error('[Achilles.food] add failed', error, normalized);
