@@ -1218,11 +1218,11 @@
 
             foodList.innerHTML = foods.length
                 ? foods.map(row).join('')
-                : '<div class="journal-empty">Поки що нічого. Час підкріпитися.</div>';
+                : '<div class="journal-empty"><span class="journal-empty-icon"><i class="fa-solid fa-bowl-food"></i></span><strong>Раціон порожній</strong><small>Додай перший прийом їжі — він одразу з’явиться тут.</small></div>';
 
             workoutList.innerHTML = workouts.length
                 ? workouts.map(row).join('')
-                : '<div class="journal-empty">Сьогодні без тренувань.</div>';
+                : '<div class="journal-empty"><span class="journal-empty-icon"><i class="fa-solid fa-dumbbell"></i></span><strong>Тренувань ще немає</strong><small>Записане тренування автоматично з’явиться в журналі.</small></div>';
 
             window.renderExerciseHistoryIndex?.();
             window.Achilles?.coachWorkflow?.syncCompletion?.();
