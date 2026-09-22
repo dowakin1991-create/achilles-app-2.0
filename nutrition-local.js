@@ -208,9 +208,7 @@
         A.haptics?.success?.();
         A.toast?.(`Додано: ${cleanName(item.name)} · ${weight} г`,'fa-check',1800);
 
-        setTimeout(()=>{
-            document.querySelector('.nav-item[data-target="tab-journal"]')?.click();
-        },40);
+        // Stay in Раціон after adding a product; Journal updates in the background.
         return true;
     }
 
