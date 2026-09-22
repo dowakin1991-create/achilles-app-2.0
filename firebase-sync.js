@@ -1625,8 +1625,7 @@
             document.getElementById('food-search').value = ''; document.getElementById('food-results').innerHTML = '';
             if(window.currentFoodFilter === 'fav') window.renderFavFoods();
             
-            window.setJournalMode('food');
-            document.querySelector('.nav-item[data-target="tab-journal"]')?.click();
+            // Journal is refreshed above, but do not navigate away from Раціон.
         };
 
         window.setWorkoutMode = function(mode) {
