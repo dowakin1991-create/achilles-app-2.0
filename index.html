@@ -10,18 +10,18 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=11.3.11" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=11.3.11" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=11.3.11" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=11.3.12" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=11.3.12" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=11.3.12" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="11.3.11" name="achilles-build"/>
+<meta content="11.3.12" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<script src="./coach-training.js?v=11.3.11"></script>
-<script src="./coach-engine.js?v=11.3.11"></script>
-<script src="./coach-settings.js?v=11.3.11"></script>
-<script src="./coach-cycle.js?v=11.3.11"></script>
-<script src="./coach-workflow.js?v=11.3.11"></script>
+<script src="./coach-training.js?v=11.3.12"></script>
+<script src="./coach-engine.js?v=11.3.12"></script>
+<script src="./coach-settings.js?v=11.3.12"></script>
+<script src="./coach-cycle.js?v=11.3.12"></script>
+<script src="./coach-workflow.js?v=11.3.12"></script>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
         (function() {
@@ -45,7 +45,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=11.3.11" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=11.3.12" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -342,7 +342,15 @@
 <div class="journal-panel journal-mode-panel active premium-surface" id="journal-food-panel" data-journal-mode="food" role="tabpanel" aria-labelledby="journal-mode-food">
 <div class="journal-panel-head"><span><i class="fa-solid fa-utensils"></i> Раціон</span></div>
 <div class="journal-list" id="food-list"></div>
-<div class="nutrition-completion"><label class="coach-setting-toggle"><span>Харчування за день внесено повністю</span><input id="nutrition-complete" type="checkbox" aria-describedby="nutrition-complete-status"/></label><p id="nutrition-complete-status" class="coach-settings-description" role="status"></p></div>
+<div class="nutrition-completion">
+<label class="journal-completion-toggle" for="nutrition-complete">
+<span class="journal-completion-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
+<span class="journal-completion-copy"><strong>День заповнений?</strong><small>Увімкни, коли внесеш усю їжу та напої за день.</small></span>
+<input id="nutrition-complete" type="checkbox" aria-describedby="nutrition-complete-status"/>
+<span class="journal-toggle-ui" aria-hidden="true"><span></span></span>
+</label>
+<p id="nutrition-complete-status" class="journal-completion-status" role="status"></p>
+</div>
 </div>
 <div class="journal-panel journal-mode-panel premium-surface" id="journal-workout-panel" data-journal-mode="workout" role="tabpanel" aria-labelledby="journal-mode-workout" hidden>
 <div class="journal-panel-head"><span><i class="fa-solid fa-dumbbell"></i> Тренування</span></div>
@@ -671,13 +679,13 @@
 </div>
 </div>
 <!-- ACHILLES FOOD CORE — local/offline database -->
-<script src="./foods_ua_10000.js?v=11.3.11"></script>
-<script src="./foods_ua_extra.js?v=11.3.11"></script>
-<script src="./foods_ua_market.js?v=11.3.11"></script>
-<script src="./food-catalog.js?v=11.3.11"></script>
+<script src="./foods_ua_10000.js?v=11.3.12"></script>
+<script src="./foods_ua_extra.js?v=11.3.12"></script>
+<script src="./foods_ua_market.js?v=11.3.12"></script>
+<script src="./food-catalog.js?v=11.3.12"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=11.3.11"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=11.3.11"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=11.3.12"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=11.3.12"></script>
 
 
 
@@ -688,32 +696,32 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=11.3.11"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=11.3.12"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=11.3.11"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=11.3.12"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=11.3.11"></script>
+<script data-achilles-module="training.js" src="./training.js?v=11.3.12"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=11.3.11"></script>
-<script data-achilles-module="avatar-system.js" src="./avatar-system.js?v=11.3.11"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=11.3.11"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=11.3.11"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=11.3.12"></script>
+<script data-achilles-module="avatar-system.js" src="./avatar-system.js?v=11.3.12"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=11.3.11"></script>
 
-<script src="./coach-training-ui.js?v=11.3.11"></script>
-<script src="./food-search.js?v=11.3.11"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=11.3.11"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=11.3.12"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=11.3.12"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=11.3.12"></script>
+
+<script src="./coach-training-ui.js?v=11.3.12"></script>
+<script src="./food-search.js?v=11.3.12"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=11.3.12"></script>
 
 
 
