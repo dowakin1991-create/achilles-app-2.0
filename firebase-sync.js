@@ -1322,6 +1322,104 @@
             setTimeout(() => { overlay.style.display = 'none'; }, 400);
         };
 
+        const calculatedDishFields = ['dish-weight','dish-kcal','dish-p','dish-f','dish-c'];
+        const readDishNumber = (id) => {
+            const raw = String(document.getElementById(id)?.value ?? '').replace(',', '.').trim();
+            const value = Number.parseFloat(raw);
+            return Number.isFinite(value) ? value : 0;
+        };
+        window.updateCalculatedDishPreview = function() {
+            const weight = readDishNumber('dish-weight');
+            const preview = document.getElementById('calculated-dish-preview');
+            if(!preview) return;
+            if(!(weight > 0)) {
+                preview.innerHTML = '<span>На 100 г</span><strong>— ккал · Б — · Ж — · В —</strong>';
+                return;
+            }
+            const factor = 100 / weight;
+            const kcal = readDishNumber('dish-kcal') * factor;
+            const p = readDishNumber('dish-p') * factor;
+            const f = readDishNumber('dish-f') * factor;
+            const c = readDishNumber('dish-c') * factor;
+            const one = n => Math.round(n * 10) / 10;
+            preview.innerHTML = `<span>На 100 г</span><strong>${Math.round(kcal)} ккал · Б ${one(p)} · Ж ${one(f)} · В ${one(c)}</strong>`;
+        };
+        window.openCalculatedDish = function() {
+            const overlay = document.getElementById('calculated-dish-overlay');
+            if(!overlay) return;
+            overlay.style.display = 'flex';
+            requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+            window.updateCalculatedDishPreview();
+            setTimeout(() => document.getElementById('dish-name')?.focus(), 120);
+        };
+        window.closeCalculatedDish = function() {
+            const overlay = document.getElementById('calculated-dish-overlay');
+            if(!overlay) return;
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 260);
+        };
+        window.saveCalculatedDish = function() {
+            const name = document.getElementById('dish-name')?.value.trim() || '';
+            const weight = readDishNumber('dish-weight');
+            const totalKcal = readDishNumber('dish-kcal');
+            const totalP = readDishNumber('dish-p');
+            const totalF = readDishNumber('dish-f');
+            const totalC = readDishNumber('dish-c');
+
+            if(!name) {
+                window.Achilles?.toast?.('Введи назву страви','fa-circle-info',1800) || alert('Введи назву страви');
+                return false;
+            }
+            if(!(weight > 0)) {
+                window.Achilles?.toast?.('Вкажи вагу готової страви','fa-scale-balanced',2000) || alert('Вкажи вагу готової страви');
+                return false;
+            }
+            if(totalKcal < 0 || totalP < 0 || totalF < 0 || totalC < 0 || (totalKcal === 0 && totalP === 0 && totalF === 0 && totalC === 0)) {
+                window.Achilles?.toast?.('Вкажи КБЖВ страви','fa-utensils',2000) || alert('Вкажи КБЖВ страви');
+                return false;
+            }
+
+            const factor = 100 / weight;
+            const round1 = n => Math.round(n * 10) / 10;
+            const customItem = {
+                name: '🍽️ ' + name,
+                kcal: Math.round(totalKcal * factor),
+                p: round1(totalP * factor),
+                f: round1(totalF * factor),
+                c: round1(totalC * factor),
+                fiber: 0,
+                source: 'custom',
+                kind: 'calculated-dish',
+                dishWeight: round1(weight),
+                dishTotals: { kcal: round1(totalKcal), p: round1(totalP), f: round1(totalF), c: round1(totalC) },
+                createdAt: Date.now()
+            };
+
+            let customFoods = [];
+            let favs = [];
+            try { customFoods = JSON.parse(localStorage.getItem('achilles_custom_foods')) || []; } catch(_) {}
+            try { favs = JSON.parse(localStorage.getItem('achilles_fav_foods')) || []; } catch(_) {}
+            customFoods.push(customItem);
+            favs.push(customItem);
+            localStorage.setItem('achilles_custom_foods', JSON.stringify(customFoods));
+            localStorage.setItem('achilles_fav_foods', JSON.stringify(favs));
+
+            try { window.syncToCloud?.(); } catch(_) {}
+            window.closeCalculatedDish();
+            ['dish-name', ...calculatedDishFields].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.value = '';
+            });
+            window.updateCalculatedDishPreview();
+            window.setFoodFilter?.('fav');
+            window.Achilles?.haptics?.success?.();
+            window.Achilles?.toast?.(`Страву «${name}» збережено`,'fa-check',2000);
+            return true;
+        };
+        document.addEventListener('input', function(event) {
+            if(calculatedDishFields.includes(event.target?.id)) window.updateCalculatedDishPreview();
+        });
+
         let searchTimeout;
         let currentAbortController = null;
 
