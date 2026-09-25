@@ -285,6 +285,26 @@
             return `name:${name}|${Number(item?.kcal || 0)}`;
         };
 
+        const CUSTOM_FOOD_DELETED_KEY = 'achilles_custom_food_deleted_v1';
+        const readCustomFoodDeleted = () => {
+            try {
+                const value = JSON.parse(localStorage.getItem(CUSTOM_FOOD_DELETED_KEY) || '{}');
+                return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+            } catch(_) { return {}; }
+        };
+        const mergeCustomFoodDeleted = (...maps) => {
+            const merged = {};
+            maps.forEach(map => Object.entries(map || {}).forEach(([key, value]) => {
+                merged[key] = Math.max(Number(merged[key] || 0), Number(value || 0));
+            }));
+            return merged;
+        };
+        const filterDeletedCustomFoods = (items, deleted) => (items || []).filter(item => {
+            const removedAt = Number(deleted?.[customFoodKey(item)] || 0);
+            const updatedAt = Number(item?.updatedAt || item?.createdAt || 0);
+            return !removedAt || updatedAt > removedAt;
+        });
+
         window.mergeCustomFoodLists = function(...lists) {
             const map = new Map();
             lists.forEach((list, sourceRank) => (list || []).forEach(item => {
@@ -304,9 +324,11 @@
         window.syncCustomFoodsBackup = async function(userName = localStorage.getItem('achilles_user')) {
             if(!userName || !(await window.waitForFirebaseTransport())) return false;
             const items = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
+            const deleted = readCustomFoodDeleted();
             await setDoc(doc(db, "users", userName, "backups", "customFoods"), {
-                items,
-                schemaVersion: 1,
+                items: filterDeletedCustomFoods(items, deleted),
+                deleted,
+                schemaVersion: 2,
                 updatedAt: Date.now()
             });
             return true;
@@ -318,8 +340,11 @@
                 const snap = await getDoc(doc(db, "users", userName, "backups", "customFoods"));
                 if(!snap.exists()) return false;
                 const local = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
-                const backup = snap.data()?.items || [];
-                const merged = window.mergeCustomFoodLists(backup, local);
+                const backupData = snap.data() || {};
+                const backup = backupData.items || [];
+                const deleted = mergeCustomFoodDeleted(backupData.deleted || {}, readCustomFoodDeleted());
+                const merged = filterDeletedCustomFoods(window.mergeCustomFoodLists(backup, local), deleted);
+                localStorage.setItem(CUSTOM_FOOD_DELETED_KEY, JSON.stringify(deleted));
                 localStorage.setItem('achilles_custom_foods', JSON.stringify(merged));
                 return true;
             } catch(error) {
@@ -347,8 +372,9 @@
                 targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
                 weightHistory: JSON.parse(localStorage.getItem('achilles_weight_history')) || [],
                 favWorkouts: JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [],
-                customFoods: JSON.parse(localStorage.getItem('achilles_custom_foods')) || [],
-                favFoods: JSON.parse(localStorage.getItem('achilles_fav_foods')) || [],
+                customFoods: filterDeletedCustomFoods(JSON.parse(localStorage.getItem('achilles_custom_foods')) || [], readCustomFoodDeleted()),
+                customFoodDeleted: readCustomFoodDeleted(),
+                favFoods: filterDeletedCustomFoods(JSON.parse(localStorage.getItem('achilles_fav_foods')) || [], readCustomFoodDeleted()),
                 avatarState: JSON.parse(localStorage.getItem('achilles_avatar_state_v1')) || null,
                 prs: JSON.parse(localStorage.getItem('achilles_prs')) || {},
                 lastPR: JSON.parse(localStorage.getItem('achilles_last_pr')) || null,
@@ -408,11 +434,17 @@
 
                     let localCF = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
                     let cloudCF = d.customFoods || [];
-                    localStorage.setItem('achilles_custom_foods', JSON.stringify(window.mergeCustomFoodLists(cloudCF, localCF)));
+                    const customFoodDeleted = mergeCustomFoodDeleted(d.customFoodDeleted || {}, readCustomFoodDeleted());
+                    localStorage.setItem(CUSTOM_FOOD_DELETED_KEY, JSON.stringify(customFoodDeleted));
+                    localStorage.setItem('achilles_custom_foods', JSON.stringify(
+                        filterDeletedCustomFoods(window.mergeCustomFoodLists(cloudCF, localCF), customFoodDeleted)
+                    ));
 
                     let localFF = JSON.parse(localStorage.getItem('achilles_fav_foods')) || [];
                     let cloudFF = d.favFoods || [];
-                    localStorage.setItem('achilles_fav_foods', JSON.stringify(window.mergeCustomFoodLists(cloudFF, localFF)));
+                    localStorage.setItem('achilles_fav_foods', JSON.stringify(
+                        filterDeletedCustomFoods(window.mergeCustomFoodLists(cloudFF, localFF), customFoodDeleted)
+                    ));
 
                     window.Achilles?.avatars?.mergeRemote?.(d.avatarState);
 
