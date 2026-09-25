@@ -7122,3 +7122,86 @@ html[data-theme="light"] #tab-journal .nutrition-completion{
         letter-spacing:-.05em!important;
     }
 }
+
+
+/* ===== Achilles 11.3.19 — Coach tabs, nav precision, custom-food actions ===== */
+#tab-coach .coach-v3-tabs{
+    position:static!important;
+    inset:auto!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    z-index:auto!important;
+    margin:0 0 12px!important;
+    transform:none!important;
+}
+#tab-coach .coach-v3-hero{
+    margin-top:0!important;
+    margin-bottom:14px!important;
+}
+
+.food-card-actions{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+    flex:0 0 auto;
+}
+.food-custom-delete{
+    width:34px;
+    height:34px;
+    min-width:34px;
+    margin:0;
+    padding:0;
+    border:1px solid rgba(255,69,58,.20);
+    border-radius:11px;
+    display:grid;
+    place-items:center;
+    color:var(--danger);
+    background:rgba(255,69,58,.08);
+    box-shadow:none;
+    cursor:pointer;
+}
+.food-custom-delete:active{transform:scale(.95)}
+
+@media (max-width:767px){
+    /* Active nav geometry must be mathematically identical in every cell. */
+    #main-app-window #bottom-nav .nav-item{
+        position:relative!important;
+        isolation:isolate!important;
+        border-radius:16px!important;
+    }
+    #main-app-window #bottom-nav .nav-item::before{
+        content:""!important;
+        position:absolute!important;
+        inset:2px!important;
+        z-index:0!important;
+        width:auto!important;
+        height:auto!important;
+        margin:0!important;
+        box-sizing:border-box!important;
+        border-radius:14px!important;
+        transform:none!important;
+        transform-origin:center!important;
+    }
+    #main-app-window #bottom-nav .nav-item.active::before{
+        opacity:1!important;
+        transform:none!important;
+    }
+    #main-app-window #bottom-nav .nav-item > *{
+        position:relative!important;
+        z-index:1!important;
+    }
+    #main-app-window #bottom-nav .nav-item.active,
+    #main-app-window #bottom-nav .nav-item.active .nav-icon,
+    #main-app-window #bottom-nav .nav-item.active .nav-text{
+        transform:none!important;
+    }
+
+    /* Coach section selector belongs to the top of Coach, never to the viewport. */
+    #tab-coach .coach-v3-tabs{
+        position:static!important;
+        top:auto!important;
+        margin-bottom:10px!important;
+    }
+}
