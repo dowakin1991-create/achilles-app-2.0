@@ -7006,3 +7006,108 @@ html[data-theme="light"] #tab-journal .nutrition-completion{
         font-size:16px!important;
     }
 }
+
+/* ===== Achilles 11.3.16 — symmetric bottom navigation ===== */
+#bottom-nav{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    align-items:stretch!important;
+    justify-items:stretch!important;
+    gap:6px!important;
+    left:12px!important;
+    right:12px!important;
+    width:auto!important;
+    margin:0!important;
+    padding:
+        8px
+        max(8px,env(safe-area-inset-right,0px))
+        calc(8px + env(safe-area-inset-bottom,0px))
+        max(8px,env(safe-area-inset-left,0px))!important;
+    box-sizing:border-box!important;
+}
+#bottom-nav .nav-item{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    flex:none!important;
+    margin:0!important;
+    padding:9px 4px!important;
+    min-height:68px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:5px!important;
+    position:relative!important;
+    box-sizing:border-box!important;
+    border-radius:17px!important;
+    transform:none!important;
+}
+#bottom-nav .nav-item.active{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    transform:none!important;
+}
+#bottom-nav .nav-item::before{
+    inset:0!important;
+    width:auto!important;
+    height:auto!important;
+    border-radius:17px!important;
+    transform:none!important;
+}
+#bottom-nav .nav-item.active::before{
+    transform:none!important;
+}
+#bottom-nav .nav-item > *{
+    position:relative!important;
+    z-index:1!important;
+}
+#bottom-nav .nav-icon{
+    width:24px!important;
+    height:24px!important;
+    min-width:24px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+    padding:0!important;
+    font-size:20px!important;
+    line-height:1!important;
+    transform:none!important;
+}
+#bottom-nav .nav-text{
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    text-align:center!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+    font-size:11px!important;
+    line-height:1.1!important;
+    transform:none!important;
+}
+#bottom-nav .nav-item.active .nav-icon,
+#bottom-nav .nav-item.active .nav-text{
+    transform:none!important;
+}
+@media(max-width:430px){
+    #bottom-nav{
+        left:10px!important;
+        right:10px!important;
+        gap:4px!important;
+        padding-left:max(6px,env(safe-area-inset-left,0px))!important;
+        padding-right:max(6px,env(safe-area-inset-right,0px))!important;
+    }
+    #bottom-nav .nav-item{
+        min-height:66px!important;
+        padding:8px 2px!important;
+        border-radius:16px!important;
+    }
+    #bottom-nav .nav-item::before{
+        border-radius:16px!important;
+    }
+    #bottom-nav .nav-text{
+        font-size:10.5px!important;
+    }
+}
