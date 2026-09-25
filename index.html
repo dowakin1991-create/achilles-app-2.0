@@ -10,18 +10,18 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=11.3.14" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=11.3.14" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=11.3.14" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=11.3.15" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=11.3.15" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=11.3.15" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="11.3.14" name="achilles-build"/>
+<meta content="11.3.15" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<script src="./coach-training.js?v=11.3.14"></script>
-<script src="./coach-engine.js?v=11.3.14"></script>
-<script src="./coach-settings.js?v=11.3.14"></script>
-<script src="./coach-cycle.js?v=11.3.14"></script>
-<script src="./coach-workflow.js?v=11.3.14"></script>
+<script src="./coach-training.js?v=11.3.15"></script>
+<script src="./coach-engine.js?v=11.3.15"></script>
+<script src="./coach-settings.js?v=11.3.15"></script>
+<script src="./coach-cycle.js?v=11.3.15"></script>
+<script src="./coach-workflow.js?v=11.3.15"></script>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
         (function() {
@@ -45,7 +45,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=11.3.14" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=11.3.15" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -152,22 +152,21 @@
 </div>
 <button class="overlay-close-btn" type="button" onclick="closeCalculatedDish()" aria-label="Закрити"><i class="fa-solid fa-xmark"></i></button>
 </div>
-<p class="calculated-dish-help">Внеси вагу всієї готової страви та вже пораховані КБЖВ. Achilles автоматично перерахує значення на 100 г і збереже страву як власний продукт.</p>
-<input id="dish-name" placeholder="Назва страви (напр. Різото з куркою)" type="text"/>
-<div class="calculated-dish-grid">
-<label><span>Вага всієї страви, г</span><input id="dish-weight" inputmode="decimal" min="1" step="1" placeholder="Напр. 650" type="number"/></label>
-<label><span>Калорії всього</span><input id="dish-kcal" inputmode="decimal" min="0" step="1" placeholder="Напр. 920" type="number"/></label>
+<p class="calculated-dish-help">Внеси готові КБЖВ саме тієї порції, яку з’їв. Нічого перераховувати на 100 г не треба — запис одразу потрапить у Журнал.</p>
+<input id="dish-name" placeholder="Назва страви (напр. Бургер)" type="text" autocomplete="off"/>
+<div class="calculated-dish-grid calculated-dish-grid-single">
+<label><span>Калорії</span><input id="dish-kcal" inputmode="decimal" min="0" step="1" placeholder="Напр. 520" type="number"/></label>
 </div>
 <div class="calculated-dish-macros">
-<label><span>Білки всього, г</span><input id="dish-p" inputmode="decimal" min="0" step="0.1" placeholder="0" type="number"/></label>
-<label><span>Жири всього, г</span><input id="dish-f" inputmode="decimal" min="0" step="0.1" placeholder="0" type="number"/></label>
-<label><span>Вуглеводи всього, г</span><input id="dish-c" inputmode="decimal" min="0" step="0.1" placeholder="0" type="number"/></label>
+<label><span>Білки, г</span><input id="dish-p" inputmode="decimal" min="0" step="0.1" placeholder="0" type="number"/></label>
+<label><span>Жири, г</span><input id="dish-f" inputmode="decimal" min="0" step="0.1" placeholder="0" type="number"/></label>
+<label><span>Вуглеводи, г</span><input id="dish-c" inputmode="decimal" min="0" step="0.1" placeholder="0" type="number"/></label>
 </div>
-<div class="calculated-dish-preview" id="calculated-dish-preview">
-<span>На 100 г</span>
+<div class="calculated-dish-preview calculated-dish-preview-total" id="calculated-dish-preview">
+<span>У журнал буде додано</span>
 <strong>— ккал · Б — · Ж — · В —</strong>
 </div>
-<button class="gradient-bg primary-btn custom-food-save" type="button" onclick="saveCalculatedDish()">Зберегти страву</button>
+<button class="gradient-bg primary-btn custom-food-save" type="button" onclick="saveCalculatedDish()">Додати в журнал</button>
 <button class="danger custom-food-cancel" type="button" onclick="closeCalculatedDish()">Скасувати</button>
 </div>
 </div>
@@ -711,13 +710,13 @@
 </div>
 </div>
 <!-- ACHILLES FOOD CORE — local/offline database -->
-<script src="./foods_ua_10000.js?v=11.3.14"></script>
-<script src="./foods_ua_extra.js?v=11.3.14"></script>
-<script src="./foods_ua_market.js?v=11.3.14"></script>
-<script src="./food-catalog.js?v=11.3.14"></script>
+<script src="./foods_ua_10000.js?v=11.3.15"></script>
+<script src="./foods_ua_extra.js?v=11.3.15"></script>
+<script src="./foods_ua_market.js?v=11.3.15"></script>
+<script src="./food-catalog.js?v=11.3.15"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=11.3.14"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=11.3.14"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=11.3.15"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=11.3.15"></script>
 
 
 
@@ -728,32 +727,32 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=11.3.14"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=11.3.15"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=11.3.14"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=11.3.15"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=11.3.14"></script>
+<script data-achilles-module="training.js" src="./training.js?v=11.3.15"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=11.3.14"></script>
-<script data-achilles-module="avatar-system.js" src="./avatar-system.js?v=11.3.14"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=11.3.14"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=11.3.14"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=11.3.15"></script>
+<script data-achilles-module="avatar-system.js" src="./avatar-system.js?v=11.3.15"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=11.3.14"></script>
 
-<script src="./coach-training-ui.js?v=11.3.14"></script>
-<script src="./food-search.js?v=11.3.14"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=11.3.14"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=11.3.15"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=11.3.15"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=11.3.15"></script>
+
+<script src="./coach-training-ui.js?v=11.3.15"></script>
+<script src="./food-search.js?v=11.3.15"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=11.3.15"></script>
 
 
 
