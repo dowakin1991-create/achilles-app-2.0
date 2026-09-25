@@ -6954,3 +6954,55 @@ html[data-theme="light"] #tab-journal .nutrition-completion{
 .calculated-dish-preview span{color:var(--text-muted)!important;font-size:11px!important;font-weight:700!important}
 .calculated-dish-preview strong{color:var(--text-main)!important;font-size:12px!important;text-align:right!important}
 @media(max-width:620px){#tab-food .workspace-block-head{align-items:flex-start!important;gap:12px!important}#tab-food .food-create-actions{width:100%!important;display:grid!important;grid-template-columns:1fr!important}#tab-food .food-create-actions .workspace-action-btn{width:100%!important;justify-content:center!important;min-height:44px!important}.calculated-dish-grid{grid-template-columns:1fr!important}.calculated-dish-macros{grid-template-columns:1fr 1fr 1fr!important;gap:7px!important}.calculated-dish-preview{align-items:flex-start!important;flex-direction:column!important;gap:4px!important}.calculated-dish-preview strong{text-align:left!important}}
+
+/* ===== Achilles 11.3.15 — direct calculated dish log + stable iOS carets ===== */
+.calculated-dish-grid-single{grid-template-columns:1fr!important}
+.calculated-dish-preview-total{margin-top:14px!important}
+
+/* iOS caret/input stability: no focus movement, no changing padding, fixed line box. */
+#calculated-dish-overlay input,
+#custom-food-overlay input{
+    box-sizing:border-box!important;
+    min-height:58px!important;
+    height:58px!important;
+    padding:0 16px!important;
+    margin:0!important;
+    font-size:16px!important;
+    line-height:58px!important;
+    text-align:left!important;
+    text-indent:0!important;
+    caret-color:var(--primary)!important;
+    transform:none!important;
+    -webkit-transform:none!important;
+    transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease!important;
+}
+#calculated-dish-overlay input:focus,
+#custom-food-overlay input:focus{
+    padding:0 16px!important;
+    text-indent:0!important;
+    transform:none!important;
+    -webkit-transform:none!important;
+    border-color:var(--primary)!important;
+    outline:none!important;
+    box-shadow:0 0 0 3px rgba(var(--primary-rgb),.10)!important;
+}
+#calculated-dish-overlay input::placeholder,
+#custom-food-overlay input::placeholder{
+    line-height:normal!important;
+}
+#calculated-dish-overlay .calculated-dish-macros input,
+#custom-food-overlay .custom-food-macros input{
+    text-align:left!important;
+}
+@media(max-width:430px){
+    #calculated-dish-overlay input,
+    #custom-food-overlay input,
+    #calculated-dish-overlay input:focus,
+    #custom-food-overlay input:focus{
+        height:56px!important;
+        min-height:56px!important;
+        line-height:56px!important;
+        padding:0 14px!important;
+        font-size:16px!important;
+    }
+}
