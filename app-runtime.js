@@ -81,6 +81,7 @@
     const A = root.Achilles = root.Achilles || {};
     const FOOD_CACHE_KEY = A.storage?.keys?.foodCache || 'achilles_food_cache_v2';
     const FOOD_RECENT_KEY = A.storage?.keys?.foodRecent || 'achilles_food_recent_v1';
+    const FOOD_DELETED_KEY = 'achilles_custom_food_deleted_v1';
     const SYNC_QUEUE_KEY = A.storage?.keys?.syncQueue || 'achilles_sync_queue_v1';
     const CACHE_TTL = 14 * 24 * 60 * 60 * 1000;
     const MAX_CACHE_QUERIES = 40;
@@ -136,13 +137,24 @@
         return String(query || '').trim().toLocaleLowerCase('uk-UA').replace(/\s+/g, ' ');
     }
 
+    function deletedCustomMap() {
+        const value = A.storage.json(FOOD_DELETED_KEY, {});
+        return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+    }
+
+    function setDeletedCustomMap(value) {
+        return A.storage.setJSON(FOOD_DELETED_KEY, value && typeof value === 'object' ? value : {});
+    }
+
     A.nutritionRepo = {
         normalize: normalizeFood,
         key: foodKey,
         dedupe: dedupeFoods,
 
         custom() {
-            return dedupeFoods(A.storage.json(A.storage.keys.customFoods, []));
+            const deleted = deletedCustomMap();
+            return dedupeFoods(A.storage.json(A.storage.keys.customFoods, []))
+                .filter(item => Number(deleted[foodKey(item)] || 0) < Number(item.updatedAt || item.createdAt || 0));
         },
 
         favorites() {
@@ -181,6 +193,11 @@
             if (!normalized) return null;
             const list = this.custom();
             const key = foodKey(normalized);
+            const deleted = deletedCustomMap();
+            if (deleted[key]) {
+                delete deleted[key];
+                setDeletedCustomMap(deleted);
+            }
             const index = list.findIndex(x => foodKey(x) === key);
             if (index >= 0) list[index] = { ...list[index], ...normalized, updatedAt: Date.now() };
             else list.unshift({ ...normalized, createdAt: Date.now(), updatedAt: Date.now() });
@@ -192,6 +209,33 @@
             A.sync?.push?.('custom-food');
             root.syncCustomFoodsBackup?.().catch?.(error => console.warn('[Achilles] immediate custom food backup', error));
             return normalized;
+        },
+
+        removeCustom(item) {
+            const normalized = normalizeFood(item);
+            if (!normalized) return false;
+            const key = foodKey(normalized);
+            const exists = this.custom().some(x => foodKey(x) === key);
+            if (!exists) return false;
+
+            const deleted = deletedCustomMap();
+            deleted[key] = Date.now();
+            setDeletedCustomMap(deleted);
+
+            this.setCustom(this.custom().filter(x => foodKey(x) !== key));
+            this.setFavorites(this.favorites().filter(x => foodKey(x) !== key));
+            A.storage.setJSON(FOOD_RECENT_KEY, this.recent().filter(x => foodKey(x) !== key));
+
+            const cache = this.cacheState();
+            Object.keys(cache.queries || {}).forEach(query => {
+                const entry = cache.queries[query];
+                if (Array.isArray(entry?.items)) entry.items = entry.items.filter(x => foodKey(x) !== key);
+            });
+            A.storage.setJSON(FOOD_CACHE_KEY, cache);
+
+            A.sync?.push?.('delete-custom-food');
+            root.syncCustomFoodsBackup?.().catch?.(error => console.warn('[Achilles] custom food delete backup', error));
+            return true;
         },
 
         recent() {
@@ -353,13 +397,31 @@
                         <span style="font-size:13px;opacity:.8;color:var(--text-muted);">${Math.round(normalized.kcal)} ккал | Б:${Number(normalized.p.toFixed(1))} Ж:${Number(normalized.f.toFixed(1))} В:${Number(normalized.c.toFixed(1))} (на 100г)</span><br>
                         <span class="food-source-badge">${escapeHtml(sourceLabel)}</span>
                     </div>
-                    <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavFoodByKey('${cardKey}', event)"></i>
+                    <div class="food-card-actions">
+                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavFoodByKey('${cardKey}', event)"></i>
+                        ${normalized.source === 'custom' ? `<button type="button" class="food-custom-delete" onclick="deleteCustomFoodByKey('${cardKey}', event)" aria-label="Видалити власний продукт"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                    </div>
                 </div>
                 <div style="display:flex;width:100%;gap:10px;">
                     <input type="number" inputmode="decimal" min="1" step="1" id="${uniqueId}" placeholder="Вага (г)" style="margin:0;padding:14px;flex:1;">
                     <button class="add-btn primary-btn gradient-bg" onclick="addFoodByKey('${cardKey}', '${uniqueId}')" style="margin:0;padding:0 25px;border-radius:16px;">+</button>
                 </div>
             </div>`;
+    };
+
+    root.deleteCustomFoodByKey = function (cardKey, event) {
+        event?.preventDefault?.();
+        event?.stopPropagation?.();
+        const item = foodFromCardKey(cardKey);
+        if (!item || item.source !== 'custom') return false;
+        if (!root.confirm('Видалити цей власний продукт? Записи в журналі залишаться без змін.')) return false;
+        const removed = A.nutritionRepo.removeCustom(item);
+        if (!removed) return false;
+        A.foodCardRegistry.delete(String(cardKey || ''));
+        A.toast?.('Продукт видалено. Журнал не змінено.', 'fa-trash-can', 1700);
+        if (root.currentFoodFilter === 'fav') root.renderFavFoods();
+        else root.onSearchInput?.();
+        return true;
     };
 
     root.toggleFavFoodByKey = function (cardKey, event) {
