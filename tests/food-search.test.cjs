@@ -28,8 +28,16 @@ test('catalog counts are honest and every search record points to valid per-100g
     }
 });
 
-test('every canonical name ranks its own profile first', () => {
-    for (const food of foods) assert.equal(search.search(food.name)[0]?.id, food.id, food.name);
+test('every unique canonical name ranks its own profile first; equivalent names remain exact matches', () => {
+    const normalize=require('../food-search.js').normalize;
+    const counts=new Map(); for(const f of foods) counts.set(normalize(f.name),(counts.get(normalize(f.name))||0)+1);
+    for (const food of foods) {
+        const match=search.search(food.name)[0];
+        assert.ok(match,food.name);
+        const normalize=require('../food-search.js').normalize;
+        assert.equal(normalize(match.name),normalize(food.name),food.name);
+        if(counts.get(normalize(food.name))===1) assert.equal(match.id,food.id,food.name);
+    }
 });
 
 test('fat percentages do not match substrings or malformed decimal aliases', () => {

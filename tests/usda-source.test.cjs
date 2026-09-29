@@ -13,7 +13,7 @@ const fieldIds = {kcal: '208', p: '203', f: '204', c: '205', fiber: '291'};
 
 test('new USDA profiles match the retained source values and descriptions', () => {
     const extra = window.ACHILLES_FOOD_CORE_CANONICAL.slice(479);
-    assert.equal(extra.length, 159);
+    assert.equal(extra.length, 521);
     for (const food of extra) {
         assert.equal(food.nameOriginal, evidence.descriptions[food.sourceRecordId]);
         assert.equal(food.per, '100g');
@@ -30,7 +30,7 @@ test('new USDA profiles match the retained source values and descriptions', () =
 test('supplement is idempotent and incomplete source records are excluded', () => {
     const size = window.ACHILLES_FOOD_SEARCH_INDEX.length;
     vm.runInNewContext(fs.readFileSync(path.join(root, 'foods_ua_extra.js'), 'utf8'), {window});
-    assert.equal(window.ACHILLES_FOOD_CORE_CANONICAL.length, 638);
+    assert.equal(window.ACHILLES_FOOD_CORE_CANONICAL.length, 1000);
     assert.equal(window.ACHILLES_FOOD_SEARCH_INDEX.length, size);
     assert.ok(!window.ACHILLES_FOOD_CORE_CANONICAL.some(x => x.id === 'usda-sr28-09138'));
 });

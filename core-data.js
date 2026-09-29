@@ -59,6 +59,7 @@
             workoutBonus: Number(d.workoutBonus || 0),
             macros: normalizeMacros(d.macros),
             log: Array.isArray(d.log) ? d.log : [],
+            deletedEntries: d.deletedEntries || {},
             nutritionComplete: d.nutritionComplete === true,
             updatedAt: Number(d.updatedAt || 0)
         };
@@ -319,6 +320,7 @@
 
         currentSnapshot() {
             return {
+                ...A.storage.getDay(root.currentViewDate || root.todayDate),
                 consumedCalories: Number(root.consumedCalories || 0),
                 workoutBonus: Number(root.workoutBonus || 0),
                 macros: { ...(root.macros || { p: 0, f: 0, c: 0 }) },
@@ -365,6 +367,20 @@
     };
 
     A.daily.installLegacyAPI();
+
+    root.refreshToday = function() {
+        const now = new Date();
+        const next = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+        if(next === root.todayDate) return false;
+        const wasToday = root.currentViewDate === root.todayDate;
+        if(localStorage.getItem('achilles_user')) A.daily.save({sync:false,touch:false});
+        root.todayDate = next;
+        if(localStorage.getItem('achilles_user')) A.daily.load(wasToday ? next : root.currentViewDate);
+        return true;
+    };
+    for(const event of ['focus','pageshow']) root.addEventListener(event,root.refreshToday);
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')root.refreshToday();});
+    setInterval(root.refreshToday,30000);
 })(window);
 
     

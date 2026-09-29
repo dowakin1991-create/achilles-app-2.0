@@ -4,7 +4,7 @@
 
     const A = root.Achilles = root.Achilles || {};
     const STATE_KEY = 'achilles_avatar_state_v1';
-    const AVATAR_VERSION = '11.3.19';
+    const AVATAR_VERSION = '11.3.20';
 
     const CATALOG = Object.freeze([
         {id:1,  name:'Новобранець',        tier:'I',   kind:'base'},
@@ -82,9 +82,10 @@
             .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
         const sessions=A.training?.history?.all?.() || [];
 
-        const nutritionDays=Object.values(days||{}).filter(day=>day?.nutritionComplete===true).length;
+        const completions=A.coachWorkflow?.read?.()?.completions || {};
+        const nutritionDays=Object.entries(days||{}).filter(([date,day])=>root.AchillesCoachCycle?.isComplete(date,day,completions)).length;
         const activeDays=Object.values(days||{}).filter(day=>Array.isArray(day?.log)&&day.log.length>0).length;
-        const trainingSessions=sessions.length;
+        const trainingSessions=new Set(sessions.map(s=>s.date).filter(Boolean)).size;
         const weekStreak=longestWeeklyStreak(sessions);
 
         const startWeight=Number(weights[0]?.weight||0);

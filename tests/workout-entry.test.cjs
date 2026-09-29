@@ -74,12 +74,12 @@ test('journal opens history for current and legacy exercises while keeping food 
         ],
         openExerciseHistory:id=>opened.push(id)
     };
-    const context = {window,document:{getElementById:id=>fields[id]}};
+    window.setJournalMode=()=>{}; const context = {window,document:{getElementById:id=>fields[id]}};
     for (const name of ['journalExercise','openJournalExerciseHistory','renderDiary']) load(name,context);
     window.renderDiary();
     assert.doesNotMatch(fields['food-list'].innerHTML,/openJournalExerciseHistory/);
     const targets = [...fields['workout-list'].innerHTML.matchAll(/onclick="openJournalExerciseHistory\((\d+)\)"/g)].map(m=>Number(m[1]));
-    assert.deepEqual(targets,[1,2]);
+    assert.deepEqual(targets,[2,1]);
     targets.forEach(index=>window.openJournalExerciseHistory(index));
     window.openJournalExerciseHistory(0);
     window.openJournalExerciseHistory(99);
@@ -111,17 +111,17 @@ test('repeating from the journal reveals the exercise and fills matching sets af
     assert.deepEqual(payload.sets,[{reps:12,weightKg:20},{reps:10,weightKg:15}]);
 });
 
-test('journal history index includes older exercises once and clicking a row opens the right history', () => {
+test('journal history groups all exercise entries by date and opens the selected day', () => {
     const runtime = fs.readFileSync(path.join(__dirname,'../app-runtime.js'),'utf8');
-    const start = runtime.indexOf('    function renderExerciseHistoryIndex()');
+    const start = runtime.indexOf('    function renderExerciseHistoryIndex(){');
     const end = runtime.indexOf('    /* -------------------- Analytics V2',start);
     let section;
     const opened=[];
-    const root={openExerciseHistory:id=>opened.push(id)};
+    const root={openTrainingDayHistory:id=>opened.push(id)};
     const journal={appendChild:node=>{section=node;}};
-    const document={getElementById:id=>id==='tab-journal'?journal:section,createElement:()=>({
+    const document={getElementById:id=>id==='journal-workout-panel'?journal:section,createElement:()=>({
         querySelectorAll(){
-            this.buttons=[...this.innerHTML.matchAll(/data-exercise-id="([^"]+)"/g)].map(m=>({dataset:{exerciseId:m[1]},addEventListener(event,fn){this.click=fn;}}));
+            this.buttons=[...this.innerHTML.matchAll(/data-training-date="([^"]+)"/g)].map(m=>({dataset:{trainingDate:m[1]},addEventListener(event,fn){this.click=fn;}}));
             return this.buttons;
         }
     })};
@@ -130,9 +130,9 @@ test('journal history index includes older exercises once and clicking a row ope
     vm.runInNewContext(runtime.slice(start,end),{root,A,document,esc:String,fmtDate:String});
     root.renderExerciseHistoryIndex();
     assert.equal(section.hidden,false);
-    assert.equal(section.buttons.length,2);
+    assert.equal(section.buttons.length,3);
     section.buttons.forEach(button=>button.click());
-    assert.deepEqual(opened,['press','curl']);
+    assert.deepEqual(opened,['2026-09-15','2026-08-01','2026-07-01']);
     sessions.length=0;
     root.renderExerciseHistoryIndex();
     assert.equal(section.hidden,true);

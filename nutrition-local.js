@@ -155,7 +155,12 @@
 
         const input = card.querySelector('input[type="number"]');
         let weight = num(input?.value);
-        if (!(weight > 0)) weight = 100;
+        if (!String(input?.value || '').trim()) weight = 100;
+        if (!(weight > 0) || !Number.isFinite(weight)) {
+            A.toast?.('Вкажи вагу порції більшу за нуль','fa-circle-info',2200);
+            input?.focus?.();
+            return false;
+        }
 
         const ratio = weight/100;
         const kcal = Math.round(num(item.kcal)*ratio);

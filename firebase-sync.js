@@ -9,7 +9,7 @@
             appId: "1:842206429977:web:eb78b2a92587395999bb88"
         };
         
-        let app, db, doc, setDoc, getDoc, onSnapshot;
+        let app, db, doc, setDoc, getDoc, onSnapshot, runTransaction;
 
         // V10.14.1: Firebase is optional transport, not a boot dependency.
         // The local app initializes immediately; SDK modules are loaded in the background.
@@ -25,6 +25,7 @@
                 setDoc = firestore.setDoc;
                 getDoc = firestore.getDoc;
                 onSnapshot = firestore.onSnapshot;
+                runTransaction = firestore.runTransaction;
                 window.dispatchEvent(new CustomEvent('achilles:firebase-ready'));
                 console.info('[Achilles OS] Firebase transport ready');
                 return true;
@@ -323,22 +324,25 @@
 
         window.syncCustomFoodsBackup = async function(userName = localStorage.getItem('achilles_user')) {
             if(!userName || !(await window.waitForFirebaseTransport())) return false;
+            if(localStorage.getItem('achilles_user') !== userName) return false;
             const items = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
             const deleted = readCustomFoodDeleted();
-            await setDoc(doc(db, "users", userName, "backups", "customFoods"), {
-                items: filterDeletedCustomFoods(items, deleted),
-                deleted,
-                schemaVersion: 2,
-                updatedAt: Date.now()
+            const ref = doc(db, "users", userName, "backups", "customFoods");
+            await runTransaction(db, async transaction => {
+                const snapshot = await transaction.get(ref);
+                const remote = snapshot.exists() ? snapshot.data() : {};
+                const tombstones = mergeCustomFoodDeleted(remote.deleted, deleted);
+                transaction.set(ref, {items: filterDeletedCustomFoods(window.mergeCustomFoodLists(remote.items || [], items), tombstones), deleted: tombstones, schemaVersion: 2, updatedAt: Date.now()});
             });
             return true;
         };
 
         window.loadCustomFoodsBackup = async function(userName = localStorage.getItem('achilles_user')) {
             if(!userName || !(await window.waitForFirebaseTransport())) return false;
+            if(localStorage.getItem('achilles_user') !== userName) return false;
             try {
                 const snap = await getDoc(doc(db, "users", userName, "backups", "customFoods"));
-                if(!snap.exists()) return false;
+                if(!snap.exists() || localStorage.getItem('achilles_user') !== userName) return false;
                 const local = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
                 const backupData = snap.data() || {};
                 const backup = backupData.items || [];
@@ -353,16 +357,36 @@
             }
         };
 
+        window.mergeCloudSnapshots = function(remote, local) {
+            const merged = window.AchillesSyncModel.mergeSnapshot(remote, local);
+            const deleted = mergeCustomFoodDeleted(remote.customFoodDeleted, local.customFoodDeleted);
+            merged.customFoodDeleted = deleted;
+            merged.customFoods = filterDeletedCustomFoods(window.mergeCustomFoodLists(remote.customFoods || [], local.customFoods || []), deleted);
+            merged.favFoods = filterDeletedCustomFoods(window.mergeCustomFoodLists(remote.favFoods || [], local.favFoods || []), deleted);
+            merged.coachWorkflow = window.AchillesCoachCycle.merge(remote.coachWorkflow || {}, local.coachWorkflow || {});
+            const a=remote.avatarState || {}, b=local.avatarState || {};
+            merged.avatarState = {...window.AchillesSyncModel.newest(a,b), unlocked:[...new Set([1,...(a.unlocked||[]),...(b.unlocked||[])])], unlockedAt:{...(a.unlockedAt||{}),...(b.unlockedAt||{})}};
+            merged.prs = {...(remote.prs||{})};
+            for(const [name,value] of Object.entries(local.prs||{})) {
+                const old=merged.prs[name]||{};
+                merged.prs[name]={maxWeight:Math.max(Number(old.maxWeight)||0,Number(value.maxWeight)||0),est1RM:Math.max(Number(old.est1RM)||0,Number(value.est1RM)||0),volume:Math.max(Number(old.volume)||0,Number(value.volume)||0),updatedAt:Math.max(Number(old.updatedAt)||0,Number(value.updatedAt)||0)};
+            }
+            merged.lastPR = window.AchillesSyncModel.newest(remote.lastPR,local.lastPR) || null;
+            return merged;
+        };
+
         window.syncToCloud = async function() {
             const userName = localStorage.getItem('achilles_user');
             if(!userName) return false;
             if(!(await window.waitForFirebaseTransport())) return false;
+            if(localStorage.getItem('achilles_user') !== userName) return false;
 
             const icon = document.getElementById('sync-icon');
             if(icon) { icon.style.opacity = '1'; setTimeout(() => icon.style.opacity = '0', 2000); }
 
             const dataToSave = {
                 profile: JSON.parse(localStorage.getItem('achilles_profile')) || {},
+                profileUpdatedAt: Number(JSON.parse(localStorage.getItem('achilles_profile') || '{}').updatedAt || 0),
                 coachWorkflow: window.Achilles?.coachWorkflow?.read?.() || null,
                 appMode: localStorage.getItem('achilles_app_mode') || 'pro',
                 themeColor: localStorage.getItem('achilles_theme_color') || 'gold',
@@ -372,18 +396,24 @@
                 targetMacros: JSON.parse(localStorage.getItem('achilles_macros')) || {p:0, f:0, c:0},
                 weightHistory: JSON.parse(localStorage.getItem('achilles_weight_history')) || [],
                 favWorkouts: JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [],
+                workoutFavoriteState: JSON.parse(localStorage.getItem('achilles_workout_favorite_state') || '{}'),
                 customFoods: filterDeletedCustomFoods(JSON.parse(localStorage.getItem('achilles_custom_foods')) || [], readCustomFoodDeleted()),
                 customFoodDeleted: readCustomFoodDeleted(),
                 favFoods: filterDeletedCustomFoods(JSON.parse(localStorage.getItem('achilles_fav_foods')) || [], readCustomFoodDeleted()),
                 avatarState: JSON.parse(localStorage.getItem('achilles_avatar_state_v1')) || null,
                 prs: JSON.parse(localStorage.getItem('achilles_prs')) || {},
                 lastPR: JSON.parse(localStorage.getItem('achilles_last_pr')) || null,
-                allDaysData: window.allDaysData,
+                allDaysData: JSON.parse(localStorage.getItem('achilles_all_days') || '{}'),
                 dataVersion: 2,
                 syncedAt: Date.now()
             };
             try {
-                await setDoc(doc(db, "users", userName), dataToSave);
+                const ref = doc(db, "users", userName);
+                await runTransaction(db, async transaction => {
+                    const snapshot = await transaction.get(ref);
+                    const remote = snapshot.exists() ? snapshot.data() : {};
+                    transaction.set(ref, window.mergeCloudSnapshots(remote, dataToSave));
+                });
                 await window.syncCustomFoodsBackup(userName);
                 return true;
             } catch(e) {
@@ -398,7 +428,19 @@
             try {
                 const docSnap = await getDoc(doc(db, "users", userName));
                 if (docSnap.exists()) {
-                    const d = docSnap.data();
+                    if(localStorage.getItem('achilles_user') !== userName) return false;
+                    const remote = docSnap.data();
+                    const localProfile = JSON.parse(localStorage.getItem('achilles_profile') || '{}');
+                    const d = window.AchillesSyncModel.mergeSnapshot(remote, {
+                        profile:localProfile, profileUpdatedAt:Number(localProfile.updatedAt||0),
+                        appMode:localStorage.getItem('achilles_app_mode') || 'pro',
+                        baseKcal:localStorage.getItem('achilles_base_kcal'), goalText:localStorage.getItem('achilles_goal_text'),
+                        targetMacros:JSON.parse(localStorage.getItem('achilles_macros') || '{}'),
+                        allDaysData:JSON.parse(localStorage.getItem('achilles_all_days') || '{}'),
+                        weightHistory:JSON.parse(localStorage.getItem('achilles_weight_history') || '[]'),
+                        favWorkouts:JSON.parse(localStorage.getItem('achilles_fav_workouts') || '[]'),
+                        workoutFavoriteState:JSON.parse(localStorage.getItem('achilles_workout_favorite_state') || '{}')
+                    });
                     window.Achilles?.coachWorkflow?.mergeRemote?.(d.coachWorkflow, userName);
                     
                     localStorage.setItem('achilles_profile', JSON.stringify(d.profile || {}));
@@ -428,9 +470,8 @@
                     });
                     localStorage.setItem('achilles_weight_history', JSON.stringify(mergedW));
 
-                    let localFW = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
-                    let cloudFW = d.favWorkouts || [];
-                    if(cloudFW.length > localFW.length) localStorage.setItem('achilles_fav_workouts', JSON.stringify(cloudFW));
+                    localStorage.setItem('achilles_fav_workouts', JSON.stringify(d.favWorkouts || []));
+                    localStorage.setItem('achilles_workout_favorite_state', JSON.stringify(d.workoutFavoriteState || {}));
 
                     let localCF = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
                     let cloudCF = d.customFoods || [];
@@ -476,27 +517,8 @@
                         if(!cloudAllDays[d.daily.date]) cloudAllDays[d.daily.date] = d.daily;
                     }
 
-                    for (let date in cloudAllDays) {
-                        const cloudDay = cloudAllDays[date] || {};
-                        const localDay = localAllDays[date] || null;
-                        if(!localDay) {
-                            localAllDays[date] = cloudDay;
-                            continue;
-                        }
+                    localAllDays = window.AchillesSyncModel.mergeDays(localAllDays, cloudAllDays);
 
-                        const cUpdated = Number(cloudDay.updatedAt || 0);
-                        const lUpdated = Number(localDay.updatedAt || 0);
-                        if(cUpdated || lUpdated) {
-                            if(cUpdated > lUpdated) localAllDays[date] = cloudDay;
-                            continue;
-                        }
-
-                        // Старі записи без updatedAt: сумісний fallback.
-                        const cCount = cloudDay.log ? cloudDay.log.length : 0;
-                        const lCount = localDay.log ? localDay.log.length : 0;
-                        if (cCount > lCount) localAllDays[date] = cloudDay;
-                    }
-                    
                     window.allDaysData = localAllDays;
                     localStorage.setItem('achilles_all_days', JSON.stringify(window.allDaysData));
                     
@@ -507,6 +529,7 @@
                     window.dailyLog = dayData.log || [];
                     
                     await window.loadCustomFoodsBackup(userName);
+                    if(localStorage.getItem('achilles_user') !== userName) return false;
                     window.applyTheme();
                     window.Achilles?.avatars?.render?.();
                     window.renderProgressInsights();
@@ -673,7 +696,7 @@
                 if(docSnap.exists()) {
                     const d = docSnap.data();
                     if(d.profile && d.profile.password === pass) {
-                        localStorage.setItem('achilles_user', user);
+                        window.AchillesLocalAccounts.activate(user);
                         await window.loadFromCloud(user);
                         window.loadUserData();
                         window.loadDailyData();
@@ -685,8 +708,10 @@
             } catch(e) {
                 console.error(e);
                 const localUser = localStorage.getItem('achilles_user');
-                const localProf = JSON.parse(localStorage.getItem('achilles_profile'));
-                if(localUser === user && localProf && localProf.password === pass) {
+                const backup = window.AchillesLocalAccounts.read(user);
+                const localProf = JSON.parse(localUser === user ? localStorage.getItem('achilles_profile') : (backup.achilles_profile || 'null'));
+                if(localProf && localProf.password === pass) {
+                    window.AchillesLocalAccounts.activate(user);
                     window.loadUserData();
                     window.loadDailyData();
                     window.renderWeightChart();
@@ -726,8 +751,8 @@
         };
 
         window.recalcAndSaveNorms = function(profile, skipSync = true) {
-            let wDays = parseInt(profile.workDays) || 2;
-            let rDays = parseInt(profile.restDays) || 2;
+            let wDays = Number.isInteger(Number(profile.workDays)) && Number(profile.workDays)>=0 ? Number(profile.workDays) : 2;
+            let rDays = Number.isInteger(Number(profile.restDays)) && Number(profile.restDays)>=0 ? Number(profile.restDays) : 2;
             let aWork = parseFloat(profile.activityWork) || 1.725;
             let aRest = parseFloat(profile.activityRest) || 1.2;
             
@@ -753,6 +778,7 @@
         };
 
         window.completeRegistration = async function() {
+            if(!window.validateProfileFields('reg')) return false;
             const name = document.getElementById('reg-name').value.trim();
             const pass = document.getElementById('reg-password').value;
             const gender = document.getElementById('reg-gender').value;
@@ -786,7 +812,8 @@
                 } catch(e) {}
             }
 
-            let profile = { name, password: pass, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
+            window.AchillesLocalAccounts.activate(name);
+            let profile = { name, password: pass, gender, age, height, weight, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet, updatedAt:Date.now() };
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_user', name);
             localStorage.setItem('achilles_app_mode', appMode);
@@ -814,8 +841,8 @@
                 document.getElementById('edit-gender').value = prof.gender;
                 document.getElementById('edit-age').value = prof.age;
                 document.getElementById('edit-height').value = prof.height;
-                document.getElementById('edit-work-days').value = prof.workDays || 2;
-                document.getElementById('edit-rest-days').value = prof.restDays || 2;
+                document.getElementById('edit-work-days').value = prof.workDays ?? 2;
+                document.getElementById('edit-rest-days').value = prof.restDays ?? 2;
                 document.getElementById('edit-activity-work').value = prof.activityWork || '1.725';
                 document.getElementById('edit-activity-rest').value = prof.activityRest || '1.2';
                 document.getElementById('edit-goal').value = prof.goal;
@@ -837,6 +864,7 @@
         };
 
         window.saveProfile = function() {
+            if(!window.validateProfileFields('edit')) return false;
             const name = document.getElementById('edit-name').value;
             const gender = document.getElementById('edit-gender').value;
             const age = parseInt(document.getElementById('edit-age').value);
@@ -857,7 +885,7 @@
             if(!name || !age || !height || !diet || !aWork || !aRest) { alert('Заповни всі поля!'); return; }
 
             let profile = JSON.parse(localStorage.getItem('achilles_profile')) || {};
-            profile = { ...profile, name, gender, age, height, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet };
+            profile = { ...profile, name, gender, age, height, activityWork: aWork, activityRest: aRest, workDays: wDays, restDays: rDays, goal, diet, updatedAt:Date.now() };
             
             localStorage.setItem('achilles_profile', JSON.stringify(profile));
             localStorage.setItem('achilles_app_mode', appMode);
@@ -896,6 +924,7 @@
             let prof = JSON.parse(localStorage.getItem('achilles_profile'));
             if(prof) {
                 prof.weight = w;
+                prof.updatedAt = Date.now();
                 localStorage.setItem('achilles_profile', JSON.stringify(prof));
                 window.recalcAndSaveNorms(prof, false);
             }
@@ -1149,6 +1178,7 @@
             }
 
             const snapshot = {
+                ...(window.allDaysData[date] || {}),
                 consumedCalories: Number(window.consumedCalories || 0),
                 workoutBonus: Number(window.workoutBonus || 0),
                 macros: {
@@ -1290,14 +1320,27 @@
             }
 
             window.__achillesDiaryDeleteLockUntil = now + 450;
+            const previousLog = [...window.dailyLog];
+            const previousDays = JSON.parse(JSON.stringify(window.allDaysData));
             const removed = window.dailyLog[index];
+            const date = window.currentViewDate || window.todayDate;
+            const day = window.allDaysData[date] || {};
+            const deletedEntries = {...(day.deletedEntries || {})};
+            deletedEntries[window.AchillesSyncModel.entryKey(removed,index)] = now;
+            window.allDaysData[date] = {...day,deletedEntries};
             window.dailyLog.splice(index, 1);
             window.__achillesRecalcDiaryTotals();
 
             try {
                 window.__achillesPersistDiaryV109();
             } catch(error) {
+                window.dailyLog=previousLog;
+                window.allDaysData=previousDays;
+                window.__achillesRecalcDiaryTotals();
+                window.__achillesDiaryDeleteLockUntil=0;
+                window.Achilles?.toast?.('Не вдалося зберегти видалення. Запис залишено.','fa-triangle-exclamation',2500);
                 console.error('[Achilles V10.10] local save after delete failed', error);
+                return false;
             }
 
             try { window.updateGoalDisplay?.(); } catch(_) {}
@@ -1707,7 +1750,7 @@
 
             if(!name || isNaN(kcal)) { alert('Введіть назву та калорійність!'); return; }
 
-            let customItem = { name: "🛠️ " + name, kcal, p, f, c, fiber: 0 };
+            let customItem = { name: "🛠️ " + name, kcal, p, f, c, fiber: null };
             
             let customFoods = JSON.parse(localStorage.getItem('achilles_custom_foods')) || [];
             customFoods.push(customItem);
@@ -1779,6 +1822,9 @@
             let favs = JSON.parse(localStorage.getItem('achilles_fav_workouts')) || [];
             if (favs.includes(name)) { favs = favs.filter(n => n !== name); } else { favs.push(name); }
             localStorage.setItem('achilles_fav_workouts', JSON.stringify(favs));
+            const state=JSON.parse(localStorage.getItem('achilles_workout_favorite_state') || '{}');
+            state[name]={active:favs.includes(name),updatedAt:Date.now()};
+            localStorage.setItem('achilles_workout_favorite_state',JSON.stringify(state));
             window.searchWorkout();
             window.syncToCloud();
         };
@@ -2222,7 +2268,10 @@
 
         window.logout = function() {
             window.stopCloudRealtimeSync?.();
-            localStorage.clear();
+            try { window.AchillesLocalAccounts.archive(); }
+            catch(error) { alert('Не вдалося зберегти локальну копію. Вихід скасовано, щоб не втратити записи.'); return false; }
+            clearTimeout(window.Achilles?.syncQueue?.timer);
+            window.AchillesLocalAccounts.clear();
             location.reload();
         };
     

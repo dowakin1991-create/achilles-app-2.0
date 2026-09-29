@@ -7,104 +7,419 @@
     "NUT_DATA.txt": "506c9ee39a276ac8f53565d270597e430944ec3363adb53a91cc6ee8c061fac5"
   },
   "descriptions": {
+    "01001": "Butter, salted",
+    "01003": "Butter oil, anhydrous",
+    "01004": "Cheese, blue",
+    "01005": "Cheese, brick",
+    "01006": "Cheese, brie",
+    "01007": "Cheese, camembert",
+    "01008": "Cheese, caraway",
+    "01009": "Cheese, cheddar",
+    "01010": "Cheese, cheshire",
+    "01011": "Cheese, colby",
+    "01017": "Cheese, cream",
+    "01018": "Cheese, edam",
+    "01019": "Cheese, feta",
     "01020": "Cheese, fontina",
     "01021": "Cheese, gjetost",
+    "01022": "Cheese, gouda",
     "01023": "Cheese, gruyere",
     "01024": "Cheese, limburger",
     "01025": "Cheese, monterey",
     "01030": "Cheese, muenster",
     "01031": "Cheese, neufchatel",
+    "01032": "Cheese, parmesan, grated",
+    "01033": "Cheese, parmesan, hard",
+    "01034": "Cheese, port de salut",
     "01035": "Cheese, provolone",
     "01038": "Cheese, romano",
     "01039": "Cheese, roquefort",
     "01040": "Cheese, swiss",
     "01041": "Cheese, tilsit",
+    "01056": "Cream, sour, cultured",
+    "01057": "Eggnog",
+    "01089": "Milk, low sodium, fluid",
+    "01094": "Milk, buttermilk, dried",
+    "01109": "Milk, sheep, fluid",
+    "01112": "Whey, acid, fluid",
+    "01113": "Whey, acid, dried",
+    "01114": "Whey, sweet, fluid",
+    "01115": "Whey, sweet, dried",
+    "01123": "Egg, whole, raw, fresh",
+    "01124": "Egg, white, raw, fresh",
+    "01125": "Egg, yolk, raw, fresh",
+    "01133": "Egg, whole, dried",
+    "01137": "Egg, yolk, dried",
+    "01144": "Egg substitute, powder",
+    "01145": "Butter, without salt",
     "01156": "Cheese, goat, hard type",
     "01157": "Cheese, goat, semisoft type",
     "01159": "Cheese, goat, soft type",
+    "01173": "Egg, white, dried",
+    "01178": "Sour cream, reduced fat",
+    "01179": "Sour cream, light",
+    "01180": "Sour cream, fat free",
+    "01186": "Cheese, cream, fat free",
+    "01225": "Dulce de Leche",
+    "01238": "Ice cream sandwich",
+    "01251": "Cheese, Mexican blend",
+    "01295": "Yogurt, vanilla, non-fat",
+    "01301": "Ice cream sundae cone",
+    "02002": "Spices, anise seed",
+    "02003": "Spices, basil, dried",
+    "02004": "Spices, bay leaf",
+    "02005": "Spices, caraway seed",
+    "02006": "Spices, cardamom",
+    "02007": "Spices, celery seed",
+    "02008": "Spices, chervil, dried",
+    "02009": "Spices, chili powder",
+    "02011": "Spices, cloves, ground",
+    "02013": "Spices, coriander seed",
+    "02014": "Spices, cumin seed",
+    "02015": "Spices, curry powder",
+    "02016": "Spices, dill seed",
+    "02018": "Spices, fennel seed",
+    "02019": "Spices, fenugreek seed",
+    "02020": "Spices, garlic powder",
+    "02021": "Spices, ginger, ground",
+    "02022": "Spices, mace, ground",
+    "02023": "Spices, marjoram, dried",
+    "02025": "Spices, nutmeg, ground",
+    "02026": "Spices, onion powder",
+    "02027": "Spices, oregano, dried",
+    "02028": "Spices, paprika",
+    "02029": "Spices, parsley, dried",
+    "02030": "Spices, pepper, black",
+    "02032": "Spices, pepper, white",
+    "02033": "Spices, poppy seed",
+    "02037": "Spices, saffron",
+    "02038": "Spices, sage, ground",
+    "02039": "Spices, savory, ground",
+    "02042": "Spices, thyme, dried",
+    "02044": "Basil, fresh",
+    "02045": "Dill weed, fresh",
+    "02047": "Salt, table",
+    "02048": "Vinegar, cider",
+    "02049": "Thyme, fresh",
+    "02050": "Vanilla extract",
+    "02053": "Vinegar, distilled",
+    "02054": "Capers, canned",
+    "02055": "Horseradish, prepared",
+    "02063": "Rosemary, fresh",
+    "02064": "Peppermint, fresh",
+    "02065": "Spearmint, fresh",
+    "02066": "Spearmint, dried",
+    "02068": "Vinegar, red wine",
+    "04001": "Fat, beef tallow",
+    "04002": "Lard",
+    "04037": "Oil, rice bran",
+    "04038": "Oil, wheat germ",
+    "04042": "Oil, peanut, salad or cooking",
+    "04047": "Oil, coconut",
+    "04053": "Oil, olive, salad or cooking",
+    "04055": "Oil, palm",
+    "04058": "Oil, sesame, salad or cooking",
+    "04501": "Oil, cocoa butter",
+    "04513": "Vegetable oil, palm kernel",
+    "04514": "Oil, poppyseed",
+    "04515": "Oil, tomatoseed",
+    "04516": "Oil, teaseed",
+    "04517": "Oil, grapeseed",
+    "04520": "Fat, mutton tallow",
+    "04528": "Oil, walnut",
+    "04529": "Oil, almond",
+    "04530": "Oil, apricot kernel",
+    "04531": "Oil, soybean lecithin",
+    "04532": "Oil, hazelnut",
+    "04534": "Oil, babassu",
+    "04536": "Oil, sheanut",
+    "04541": "Oil, cupu assu",
+    "04542": "Fat, chicken",
+    "04572": "Oil, nutmeg butter",
+    "04573": "Oil, ucuhuba butter",
+    "04574": "Fat, duck",
+    "04575": "Fat, turkey",
+    "04576": "Fat, goose",
+    "04581": "Oil, avocado",
+    "04582": "Oil, canola",
+    "04583": "Oil, mustard",
+    "04588": "Oil, oat",
+    "04589": "Fish oil, cod liver",
+    "04590": "Fish oil, herring",
+    "04591": "Fish oil, menhaden",
+    "04593": "Fish oil, salmon",
+    "04594": "Fish oil, sardine",
+    "04609": "Animal fat, bacon grease",
+    "05152": "Guinea hen, meat only, raw",
+    "05153": "Pheasant, raw, meat and skin",
+    "05154": "Pheasant, raw, meat only",
+    "05156": "Pheasant, leg, meat only, raw",
+    "05157": "Quail, meat and skin, raw",
+    "05158": "Quail, meat only, raw",
+    "05159": "Quail, breast, meat only, raw",
+    "05167": "Turkey, whole, meat only, raw",
+    "05305": "Ground turkey, raw",
+    "05306": "Ground turkey, cooked",
+    "05311": "Chicken, canned, no broth",
+    "05324": "Chicken patty, frozen, cooked",
+    "05332": "Chicken, ground, raw",
+    "05662": "Ground turkey, fat free, raw",
+    "06076": "Soup, beef broth, cubed, dry",
+    "06094": "Soup, onion, dry, mix",
+    "06114": "Gravy, au jus, canned",
+    "06118": "Gravy, brown, dry",
+    "06121": "Gravy, mushroom, canned",
+    "06122": "Gravy, mushroom, dry, powder",
+    "06123": "Gravy, onion, dry, mix",
+    "06124": "Gravy, pork, dry, powder",
+    "06150": "Sauce, barbecue",
+    "06151": "Sauce, plum, ready-to-serve",
+    "06164": "Sauce, salsa, ready-to-serve",
+    "06165": "Sauce, homemade, white, thin",
+    "06167": "Sauce, homemade, white, thick",
+    "06175": "Sauce, hoisin, ready-to-serve",
+    "06179": "Sauce, fish, ready-to-serve",
+    "06631": "Sauce, hot chile, sriracha",
+    "06720": "Sauce, cheese sauce mix, dry",
+    "06958": "Gravy, instant beef, dry",
+    "06960": "Sauce, alfredo mix, dry",
+    "06963": "Fish broth",
+    "06971": "Sauce, worcestershire",
+    "07005": "Blood sausage",
+    "07007": "Bologna, beef",
+    "07008": "Bologna, beef and pork",
+    "07010": "Bologna, pork",
+    "07011": "Bologna, turkey",
+    "07013": "Bratwurst, pork, cooked",
+    "07018": "Chicken spread",
+    "07019": "Chorizo, pork and beef",
+    "07024": "Frankfurter, chicken",
+    "07025": "Frankfurter, turkey",
+    "07026": "Ham, chopped, canned",
+    "07030": "Ham, minced",
+    "07040": "Liver cheese, pork",
+    "07050": "Mortadella, beef, pork",
+    "07052": "Pastrami, turkey",
+    "07059": "Polish sausage, pork",
+    "07068": "Salami, cooked, beef",
+    "07070": "Salami, cooked, turkey",
+    "07910": "Bratwurst, veal, cooked",
+    "07911": "Liverwurst spread",
+    "07912": "Roast beef spread",
+    "07926": "Salami, Italian, pork",
+    "07939": "Frankfurter, pork",
+    "08013": "Cereals ready-to-eat, GENERAL MILLS, CHEERIOS",
+    "08025": "Cereals ready-to-eat, RALSTON CRISP RICE",
+    "08029": "Cereals ready-to-eat, POST Bran Flakes",
+    "08037": "Cereals ready-to-eat, granola, homemade",
+    "08061": "Cereals ready-to-eat, POST Raisin Bran Cereal",
+    "08100": "Cereals, CREAM OF RICE, dry",
+    "08106": "Cereals, CREAM OF WHEAT, instant, dry",
+    "08144": "Cereals, whole wheat hot natural cereal, dry",
+    "08172": "Cereals, farina, unenriched, dry",
+    "08402": "Cereals, QUAKER, Quick Oats, Dry",
+    "08506": "Cereals ready-to-eat, RALSTON Corn Flakes",
     "09004": "Apples, raw, without skin",
     "09011": "Apples, dried, sulfured, uncooked",
+    "09021": "Apricots, raw",
+    "09040": "Bananas, raw",
+    "09042": "Blackberries, raw",
     "09044": "Cherries, tart, dried, sweetened",
+    "09050": "Blueberries, raw",
+    "09059": "Breadfruit, raw",
     "09060": "Carambola, (starfruit), raw",
     "09062": "Cherimoya, raw",
+    "09070": "Cherries, sweet, raw",
+    "09078": "Cranberries, raw",
     "09079": "Cranberries, dried, sweetened",
     "09084": "Currants, red and white, raw",
+    "09087": "Dates, deglet noor",
+    "09088": "Elderberries, raw",
+    "09089": "Figs, raw",
     "09094": "Figs, dried, uncooked",
+    "09095": "Figs, dried, stewed",
+    "09107": "Gooseberries, raw",
     "09110": "Goji berries, dried",
-    "09138": "Groundcherries, (cape-gooseberries or poha), raw",
     "09139": "Guavas, common, raw",
+    "09143": "Guava sauce, cooked",
     "09144": "Jackfruit, raw",
-    "09146": "Jujube, raw",
     "09149": "Kumquats, raw",
     "09152": "Lemon juice, raw",
     "09156": "Lemon peel, raw",
+    "09159": "Limes, raw",
     "09160": "Lime juice, raw",
     "09163": "Blueberries, dried, sweetened",
     "09164": "Litchis, raw",
+    "09165": "Litchis, dried",
+    "09167": "Loganberries, frozen",
     "09172": "Longans, raw",
+    "09174": "Loquats, raw",
+    "09176": "Mangos, raw",
     "09178": "Mango, dried, sweetened",
     "09181": "Melons, cantaloupe, raw",
+    "09183": "Melons, casaba, raw",
     "09184": "Melons, honeydew, raw",
+    "09185": "Melon balls, frozen",
     "09190": "Mulberries, raw",
+    "09191": "Nectarines, raw",
+    "09202": "Oranges, raw, navels",
+    "09206": "Orange juice, raw",
     "09216": "Orange peel, raw",
     "09221": "Tangerine juice, raw",
+    "09226": "Papayas, raw",
     "09231": "Passion-fruit, (granadilla), purple, raw",
+    "09252": "Pears, raw",
     "09277": "Plantains, raw",
+    "09278": "Plantains, cooked",
+    "09279": "Plums, raw",
+    "09286": "Pomegranates, raw",
+    "09287": "Prickly pears, raw",
+    "09294": "Prune juice, canned",
     "09295": "Pummelo, raw",
     "09296": "Quinces, raw",
+    "09298": "Raisins, seedless",
+    "09299": "Raisins, seeded",
+    "09302": "Raspberries, raw",
     "09307": "Rhubarb, raw",
+    "09313": "Sapodilla, raw",
+    "09314": "Sapote, mamey, raw",
+    "09315": "Soursop, raw",
+    "09316": "Strawberries, raw",
     "09318": "Strawberries, frozen, unsweetened",
     "09322": "Tamarinds, raw",
+    "09326": "Watermelon, raw",
     "09334": "Feijoa, raw",
     "09340": "Pears, asian, raw",
+    "09421": "Dates, medjool",
+    "09428": "Rowal, raw",
     "09433": "Clementines, raw",
+    "10005": "Pork, fresh, belly, raw",
+    "10020": "Pork, fresh, loin, whole, separable lean and fat, raw",
+    "10024": "Pork, fresh, loin, whole, separable lean only, raw",
+    "10072": "Pork, fresh, shoulder, whole, separable lean only, raw",
+    "10088": "Pork, fresh, spareribs, separable lean and fat, raw",
+    "10103": "Pork, fresh, variety meats and by-products, heart, raw",
+    "10110": "Pork, fresh, variety meats and by-products, liver, raw",
+    "10123": "Pork, cured, bacon, unprepared",
+    "10130": "Canadian bacon, unprepared",
+    "10165": "Pork, cured, salt pork, raw",
+    "10174": "Pork, fresh, variety meats and by-products, tail, raw",
+    "10192": "Pork, fresh, backribs, separable lean and fat, raw",
+    "10219": "Pork, fresh, ground, raw",
+    "10220": "Pork, fresh, ground, cooked",
+    "10860": "Pork, cured, bacon, cooked, baked",
+    "10861": "Pork, cured, bacon, cooked, microwaved",
+    "10972": "Pork, ground, 84% lean / 16% fat, raw",
+    "10973": "Pork, ground, 96% lean / 4% fat, raw",
+    "10976": "Pork, ground, 96% lean / 4% fat, cooked, crumbles",
+    "10998": "Canadian bacon, cooked, pan-fried",
     "11008": "Artichokes, (globe or french), cooked, boiled, drained, without salt",
+    "11011": "Asparagus, raw",
     "11027": "Bamboo shoots, cooked, boiled, drained, without salt",
     "11044": "Mung beans, mature seeds, sprouted, cooked, boiled, drained, without salt",
     "11053": "Beans, snap, green, cooked, boiled, drained, without salt",
+    "11080": "Beets, raw",
     "11087": "Beet greens, cooked, boiled, drained, without salt",
+    "11090": "Broccoli, raw",
     "11091": "Broccoli, cooked, boiled, drained, without salt",
     "11099": "Brussels sprouts, cooked, boiled, drained, without salt",
+    "11109": "Cabbage, raw",
     "11110": "Cabbage, cooked, boiled, drained, without salt",
     "11113": "Cabbage, red, cooked, boiled, drained, without salt",
     "11115": "Cabbage, savoy, cooked, boiled, drained, without salt",
     "11117": "Cabbage, chinese (pak-choi), cooked, boiled, drained, without salt",
+    "11118": "Cabbage, kimchi",
     "11120": "Cabbage, chinese (pe-tsai), cooked, boiled, drained, without salt",
+    "11124": "Carrots, raw",
     "11125": "Carrots, cooked, boiled, drained, without salt",
+    "11134": "Cassava, raw",
     "11136": "Cauliflower, cooked, boiled, drained, without salt",
+    "11141": "Celeriac, raw",
     "11142": "Celeriac, cooked, boiled, drained, without salt",
+    "11143": "Celery, raw",
     "11144": "Celery, cooked, boiled, drained, without salt",
     "11148": "Chard, swiss, cooked, boiled, drained, without salt",
+    "11156": "Chives, raw",
+    "11161": "Collards, raw",
     "11168": "Corn, sweet, yellow, cooked, boiled, drained, without salt",
+    "11209": "Eggplant, raw",
     "11210": "Eggplant, cooked, boiled, drained, without salt",
+    "11213": "Endive, raw",
+    "11215": "Garlic, raw",
+    "11233": "Kale, raw",
     "11234": "Kale, cooked, boiled, drained, without salt",
+    "11241": "Kohlrabi, raw",
     "11242": "Kohlrabi, cooked, boiled, drained, without salt",
     "11247": "Leeks, (bulb and lower leaf-portion), cooked, boiled, drained, without salt",
+    "11254": "Lotus root, raw",
     "11261": "Mushrooms, white, cooked, boiled, drained, without salt",
+    "11278": "Okra, raw",
     "11279": "Okra, cooked, boiled, drained, without salt",
+    "11282": "Onions, raw",
     "11283": "Onions, cooked, boiled, drained, without salt",
+    "11297": "Parsley, fresh",
+    "11298": "Parsnips, raw",
     "11299": "Parsnips, cooked, boiled, drained, without salt",
     "11305": "Peas, green, cooked, boiled, drained, without salt",
     "11334": "Peppers, sweet, green, cooked, boiled, drained, without salt",
+    "11422": "Pumpkin, raw",
     "11423": "Pumpkin, cooked, boiled, drained, without salt",
+    "11429": "Radishes, raw",
     "11431": "Radishes, oriental, cooked, boiled, drained, without salt",
+    "11435": "Rutabagas, raw",
     "11436": "Rutabagas, cooked, boiled, drained, without salt",
     "11451": "Soybeans, green, cooked, boiled, drained, without salt",
+    "11457": "Spinach, raw",
     "11458": "Spinach, cooked, boiled, drained, without salt",
     "11478": "Squash, summer, zucchini, includes skin, cooked, boiled, drained, without salt",
+    "11518": "Taro, raw",
+    "11548": "Tomato powder",
+    "11564": "Turnips, raw",
     "11565": "Turnips, cooked, boiled, drained, without salt",
+    "11591": "Watercress, raw",
+    "11601": "Yam, raw",
+    "11672": "Potato pancakes",
+    "11677": "Shallots, raw",
     "11823": "Peppers, sweet, red, cooked, boiled, drained, without salt",
+    "11943": "Pimento, canned",
+    "11952": "Radicchio, raw",
+    "11959": "Arugula, raw",
+    "12006": "Seeds, chia seeds, dried",
+    "12012": "Seeds, hemp seed, hulled",
+    "12014": "Seeds, pumpkin and squash seed kernels, dried",
+    "12023": "Seeds, sesame seeds, whole, dried",
+    "12036": "Seeds, sunflower seed kernels, dried",
+    "12040": "Seeds, sunflower seed butter, without salt",
+    "12061": "Nuts, almonds",
+    "12062": "Nuts, almonds, blanched",
+    "12063": "Nuts, almonds, dry roasted, without salt added",
+    "12065": "Nuts, almonds, oil roasted, without salt added",
+    "12071": "Nuts, almond paste",
     "12078": "Nuts, brazilnuts, dried, unblanched",
+    "12087": "Nuts, cashew nuts, raw",
+    "12088": "Nuts, cashew butter, plain, without salt added",
+    "12097": "Nuts, chestnuts, european, raw, unpeeled",
+    "12104": "Nuts, coconut meat, raw",
     "12115": "Nuts, coconut cream, raw (liquid expressed from grated meat)",
     "12117": "Nuts, coconut milk, raw (liquid expressed from grated meat and water)",
-    "12118": "Nuts, coconut milk, canned (liquid expressed from grated meat and water)",
     "12119": "Nuts, coconut water (liquid from coconuts)",
+    "12120": "Nuts, hazelnuts or filberts",
+    "12121": "Nuts, hazelnuts or filberts, blanched",
     "12131": "Nuts, macadamia nuts, raw",
     "12142": "Nuts, pecans",
+    "12143": "Nuts, pecans, dry roasted, without salt added",
+    "12144": "Nuts, pecans, oil roasted, without salt added",
     "12147": "Nuts, pine nuts, dried",
+    "12149": "Nuts, pine nuts, pinyon, dried",
+    "12151": "Nuts, pistachio nuts, raw",
+    "12155": "Nuts, walnuts, english",
     "12166": "Seeds, sesame butter, tahini, from roasted and toasted kernels (most common type)",
     "12167": "Nuts, chestnuts, european, roasted",
-    "12174": "Seeds, watermelon seed kernels, dried",
+    "12169": "Seeds, sesame butter, paste",
+    "12220": "Seeds, flaxseed",
+    "12540": "Seeds, sunflower seed butter, with salt added",
+    "13350": "Beef, cured, dried",
+    "13355": "Beef, cured, pastrami",
     "15009": "Fish, carp, cooked, dry heat",
     "15016": "Fish, cod, Atlantic, cooked, dry heat",
     "15026": "Fish, eel, mixed species, cooked, dry heat",
@@ -128,10 +443,39 @@
     "16002": "Beans, adzuki, mature seeds, cooked, boiled, without salt",
     "16015": "Beans, black, mature seeds, cooked, boiled, without salt",
     "16020": "Beans, cranberry (roman), mature seeds, cooked, boiled, without salt",
+    "16033": "Beans, kidney, red, mature seeds, cooked, boiled, without salt",
+    "16034": "Beans, kidney, red, mature seeds, canned, solids and liquids",
+    "16035": "Beans, kidney, royal red, mature seeds, raw",
+    "16036": "Beans, kidney, royal red, mature seeds, cooked, boiled, without salt",
+    "16037": "Beans, navy, mature seeds, raw",
     "16038": "Beans, navy, mature seeds, cooked, boiled, without salt",
+    "16039": "Beans, navy, mature seeds, canned",
+    "16040": "Beans, pink, mature seeds, raw",
+    "16041": "Beans, pink, mature seeds, cooked, boiled, without salt",
+    "16042": "Beans, pinto, mature seeds, raw",
     "16043": "Beans, pinto, mature seeds, cooked, boiled, without salt",
+    "16044": "Beans, pinto, mature seeds, canned, solids and liquids",
+    "16045": "Beans, small white, mature seeds, raw",
+    "16046": "Beans, small white, mature seeds, cooked, boiled, without salt",
+    "16047": "Beans, yellow, mature seeds, raw",
+    "16048": "Beans, yellow, mature seeds, cooked, boiled, without salt",
+    "16049": "Beans, white, mature seeds, raw",
+    "16050": "Beans, white, mature seeds, cooked, boiled, without salt",
+    "16051": "Beans, white, mature seeds, canned",
+    "16052": "Broadbeans (fava beans), mature seeds, raw",
     "16053": "Broadbeans (fava beans), mature seeds, cooked, boiled, without salt",
+    "16054": "Broadbeans (fava beans), mature seeds, canned",
+    "16055": "Carob flour",
+    "16056": "Chickpeas (garbanzo beans, bengal gram), mature seeds, raw",
+    "16057": "Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt",
+    "16058": "Chickpeas (garbanzo beans, bengal gram), mature seeds, canned, solids and liquids",
+    "16059": "Chili with beans, canned",
+    "16060": "Cowpeas, catjang, mature seeds, raw",
+    "16061": "Cowpeas, catjang, mature seeds, cooked, boiled, without salt",
+    "16062": "Cowpeas, common (blackeyes, crowder, southern), mature seeds, raw",
     "16063": "Cowpeas, common (blackeyes, crowder, southern), mature seeds, cooked, boiled, without salt",
+    "16064": "Cowpeas, common (blackeyes, crowder, southern), mature seeds, canned, plain",
+    "16069": "Lentils, raw",
     "16072": "Lima beans, large, mature seeds, cooked, boiled, without salt",
     "16077": "Lupins, mature seeds, cooked, boiled, without salt",
     "16081": "Mung beans, mature seeds, cooked, boiled, without salt",
@@ -157,12 +501,7 @@
     "20090": "Rice flour, brown",
     "20091": "Pasta, gluten-free, corn, dry",
     "20092": "Pasta, gluten-free, corn, cooked",
-    "20095": "Pasta, fresh-refrigerated, spinach, as purchased",
-    "20096": "Pasta, fresh-refrigerated, spinach, cooked",
-    "20114": "Noodles, japanese, soba, dry",
-    "20115": "Noodles, japanese, soba, cooked",
     "20116": "Noodles, japanese, somen, dry",
-    "20117": "Noodles, japanese, somen, cooked",
     "20124": "Pasta, whole-wheat, dry",
     "20125": "Pasta, whole-wheat, cooked",
     "20130": "Barley flour or meal",
@@ -174,9 +513,348 @@
     "20142": "Teff, uncooked",
     "20143": "Teff, cooked",
     "20647": "Millet flour",
-    "20648": "Sorghum flour, whole-grain"
+    "20648": "Sorghum flour, whole-grain",
+    "27048": "Sauce, steak, tomato based",
+    "27064": "Wasabi",
+    "27065": "Dip, bean, original flavor",
+    "27066": "Sauce, horseradish",
+    "42178": "Mayonnaise, made with tofu",
+    "42231": "Oil, flaxseed, cold pressed",
+    "42289": "Oil, corn and canola",
+    "43016": "Salad dressing, coleslaw",
+    "43274": "Cheese, cream, low fat",
+    "43282": "Quail, cooked, total edible",
+    "43287": "Dove, cooked (includes squab)",
+    "43483": "Millet, puffed",
+    "43589": "Cheese, swiss, low fat",
+    "44005": "Oil, corn, peanut, and olive"
   },
   "nutrients": [
+    {
+      "ndb": "01001",
+      "nutrient": "203",
+      "amount": "0.85"
+    },
+    {
+      "ndb": "01001",
+      "nutrient": "204",
+      "amount": "81.11"
+    },
+    {
+      "ndb": "01001",
+      "nutrient": "205",
+      "amount": "0.06"
+    },
+    {
+      "ndb": "01001",
+      "nutrient": "208",
+      "amount": "717"
+    },
+    {
+      "ndb": "01001",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01003",
+      "nutrient": "203",
+      "amount": "0.28"
+    },
+    {
+      "ndb": "01003",
+      "nutrient": "204",
+      "amount": "99.48"
+    },
+    {
+      "ndb": "01003",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "01003",
+      "nutrient": "208",
+      "amount": "876"
+    },
+    {
+      "ndb": "01003",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01004",
+      "nutrient": "203",
+      "amount": "21.40"
+    },
+    {
+      "ndb": "01004",
+      "nutrient": "204",
+      "amount": "28.74"
+    },
+    {
+      "ndb": "01004",
+      "nutrient": "205",
+      "amount": "2.34"
+    },
+    {
+      "ndb": "01004",
+      "nutrient": "208",
+      "amount": "353"
+    },
+    {
+      "ndb": "01004",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01005",
+      "nutrient": "203",
+      "amount": "23.24"
+    },
+    {
+      "ndb": "01005",
+      "nutrient": "204",
+      "amount": "29.68"
+    },
+    {
+      "ndb": "01005",
+      "nutrient": "205",
+      "amount": "2.79"
+    },
+    {
+      "ndb": "01005",
+      "nutrient": "208",
+      "amount": "371"
+    },
+    {
+      "ndb": "01005",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01006",
+      "nutrient": "203",
+      "amount": "20.75"
+    },
+    {
+      "ndb": "01006",
+      "nutrient": "204",
+      "amount": "27.68"
+    },
+    {
+      "ndb": "01006",
+      "nutrient": "205",
+      "amount": "0.45"
+    },
+    {
+      "ndb": "01006",
+      "nutrient": "208",
+      "amount": "334"
+    },
+    {
+      "ndb": "01006",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01007",
+      "nutrient": "203",
+      "amount": "19.80"
+    },
+    {
+      "ndb": "01007",
+      "nutrient": "204",
+      "amount": "24.26"
+    },
+    {
+      "ndb": "01007",
+      "nutrient": "205",
+      "amount": "0.46"
+    },
+    {
+      "ndb": "01007",
+      "nutrient": "208",
+      "amount": "300"
+    },
+    {
+      "ndb": "01007",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01008",
+      "nutrient": "203",
+      "amount": "25.18"
+    },
+    {
+      "ndb": "01008",
+      "nutrient": "204",
+      "amount": "29.20"
+    },
+    {
+      "ndb": "01008",
+      "nutrient": "205",
+      "amount": "3.06"
+    },
+    {
+      "ndb": "01008",
+      "nutrient": "208",
+      "amount": "376"
+    },
+    {
+      "ndb": "01008",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01009",
+      "nutrient": "203",
+      "amount": "22.87"
+    },
+    {
+      "ndb": "01009",
+      "nutrient": "204",
+      "amount": "33.31"
+    },
+    {
+      "ndb": "01009",
+      "nutrient": "205",
+      "amount": "3.09"
+    },
+    {
+      "ndb": "01009",
+      "nutrient": "208",
+      "amount": "404"
+    },
+    {
+      "ndb": "01009",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01010",
+      "nutrient": "203",
+      "amount": "23.37"
+    },
+    {
+      "ndb": "01010",
+      "nutrient": "204",
+      "amount": "30.60"
+    },
+    {
+      "ndb": "01010",
+      "nutrient": "205",
+      "amount": "4.78"
+    },
+    {
+      "ndb": "01010",
+      "nutrient": "208",
+      "amount": "387"
+    },
+    {
+      "ndb": "01010",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01011",
+      "nutrient": "203",
+      "amount": "23.76"
+    },
+    {
+      "ndb": "01011",
+      "nutrient": "204",
+      "amount": "32.11"
+    },
+    {
+      "ndb": "01011",
+      "nutrient": "205",
+      "amount": "2.57"
+    },
+    {
+      "ndb": "01011",
+      "nutrient": "208",
+      "amount": "394"
+    },
+    {
+      "ndb": "01011",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01017",
+      "nutrient": "203",
+      "amount": "6.15"
+    },
+    {
+      "ndb": "01017",
+      "nutrient": "204",
+      "amount": "34.44"
+    },
+    {
+      "ndb": "01017",
+      "nutrient": "205",
+      "amount": "5.52"
+    },
+    {
+      "ndb": "01017",
+      "nutrient": "208",
+      "amount": "350"
+    },
+    {
+      "ndb": "01017",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01018",
+      "nutrient": "203",
+      "amount": "24.99"
+    },
+    {
+      "ndb": "01018",
+      "nutrient": "204",
+      "amount": "27.80"
+    },
+    {
+      "ndb": "01018",
+      "nutrient": "205",
+      "amount": "1.43"
+    },
+    {
+      "ndb": "01018",
+      "nutrient": "208",
+      "amount": "357"
+    },
+    {
+      "ndb": "01018",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01019",
+      "nutrient": "203",
+      "amount": "14.21"
+    },
+    {
+      "ndb": "01019",
+      "nutrient": "204",
+      "amount": "21.28"
+    },
+    {
+      "ndb": "01019",
+      "nutrient": "205",
+      "amount": "4.09"
+    },
+    {
+      "ndb": "01019",
+      "nutrient": "208",
+      "amount": "264"
+    },
+    {
+      "ndb": "01019",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
     {
       "ndb": "01020",
       "nutrient": "203",
@@ -224,6 +902,31 @@
     },
     {
       "ndb": "01021",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01022",
+      "nutrient": "203",
+      "amount": "24.94"
+    },
+    {
+      "ndb": "01022",
+      "nutrient": "204",
+      "amount": "27.44"
+    },
+    {
+      "ndb": "01022",
+      "nutrient": "205",
+      "amount": "2.22"
+    },
+    {
+      "ndb": "01022",
+      "nutrient": "208",
+      "amount": "356"
+    },
+    {
+      "ndb": "01022",
       "nutrient": "291",
       "amount": "0.0"
     },
@@ -353,6 +1056,81 @@
       "amount": "0.0"
     },
     {
+      "ndb": "01032",
+      "nutrient": "203",
+      "amount": "28.42"
+    },
+    {
+      "ndb": "01032",
+      "nutrient": "204",
+      "amount": "27.84"
+    },
+    {
+      "ndb": "01032",
+      "nutrient": "205",
+      "amount": "13.91"
+    },
+    {
+      "ndb": "01032",
+      "nutrient": "208",
+      "amount": "420"
+    },
+    {
+      "ndb": "01032",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01033",
+      "nutrient": "203",
+      "amount": "35.75"
+    },
+    {
+      "ndb": "01033",
+      "nutrient": "204",
+      "amount": "25.83"
+    },
+    {
+      "ndb": "01033",
+      "nutrient": "205",
+      "amount": "3.22"
+    },
+    {
+      "ndb": "01033",
+      "nutrient": "208",
+      "amount": "392"
+    },
+    {
+      "ndb": "01033",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01034",
+      "nutrient": "203",
+      "amount": "23.78"
+    },
+    {
+      "ndb": "01034",
+      "nutrient": "204",
+      "amount": "28.20"
+    },
+    {
+      "ndb": "01034",
+      "nutrient": "205",
+      "amount": "0.57"
+    },
+    {
+      "ndb": "01034",
+      "nutrient": "208",
+      "amount": "352"
+    },
+    {
+      "ndb": "01034",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
       "ndb": "01035",
       "nutrient": "203",
       "amount": "25.58"
@@ -478,6 +1256,406 @@
       "amount": "0.0"
     },
     {
+      "ndb": "01056",
+      "nutrient": "203",
+      "amount": "2.44"
+    },
+    {
+      "ndb": "01056",
+      "nutrient": "204",
+      "amount": "19.35"
+    },
+    {
+      "ndb": "01056",
+      "nutrient": "205",
+      "amount": "4.63"
+    },
+    {
+      "ndb": "01056",
+      "nutrient": "208",
+      "amount": "198"
+    },
+    {
+      "ndb": "01056",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01057",
+      "nutrient": "203",
+      "amount": "4.55"
+    },
+    {
+      "ndb": "01057",
+      "nutrient": "204",
+      "amount": "4.19"
+    },
+    {
+      "ndb": "01057",
+      "nutrient": "205",
+      "amount": "8.05"
+    },
+    {
+      "ndb": "01057",
+      "nutrient": "208",
+      "amount": "88"
+    },
+    {
+      "ndb": "01057",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01089",
+      "nutrient": "203",
+      "amount": "3.10"
+    },
+    {
+      "ndb": "01089",
+      "nutrient": "204",
+      "amount": "3.46"
+    },
+    {
+      "ndb": "01089",
+      "nutrient": "205",
+      "amount": "4.46"
+    },
+    {
+      "ndb": "01089",
+      "nutrient": "208",
+      "amount": "61"
+    },
+    {
+      "ndb": "01089",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01094",
+      "nutrient": "203",
+      "amount": "34.30"
+    },
+    {
+      "ndb": "01094",
+      "nutrient": "204",
+      "amount": "5.78"
+    },
+    {
+      "ndb": "01094",
+      "nutrient": "205",
+      "amount": "49.00"
+    },
+    {
+      "ndb": "01094",
+      "nutrient": "208",
+      "amount": "387"
+    },
+    {
+      "ndb": "01094",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01109",
+      "nutrient": "203",
+      "amount": "5.98"
+    },
+    {
+      "ndb": "01109",
+      "nutrient": "204",
+      "amount": "7.00"
+    },
+    {
+      "ndb": "01109",
+      "nutrient": "205",
+      "amount": "5.36"
+    },
+    {
+      "ndb": "01109",
+      "nutrient": "208",
+      "amount": "108"
+    },
+    {
+      "ndb": "01109",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01112",
+      "nutrient": "203",
+      "amount": "0.76"
+    },
+    {
+      "ndb": "01112",
+      "nutrient": "204",
+      "amount": "0.09"
+    },
+    {
+      "ndb": "01112",
+      "nutrient": "205",
+      "amount": "5.12"
+    },
+    {
+      "ndb": "01112",
+      "nutrient": "208",
+      "amount": "24"
+    },
+    {
+      "ndb": "01112",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01113",
+      "nutrient": "203",
+      "amount": "11.73"
+    },
+    {
+      "ndb": "01113",
+      "nutrient": "204",
+      "amount": "0.54"
+    },
+    {
+      "ndb": "01113",
+      "nutrient": "205",
+      "amount": "73.45"
+    },
+    {
+      "ndb": "01113",
+      "nutrient": "208",
+      "amount": "339"
+    },
+    {
+      "ndb": "01113",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01114",
+      "nutrient": "203",
+      "amount": "0.85"
+    },
+    {
+      "ndb": "01114",
+      "nutrient": "204",
+      "amount": "0.36"
+    },
+    {
+      "ndb": "01114",
+      "nutrient": "205",
+      "amount": "5.14"
+    },
+    {
+      "ndb": "01114",
+      "nutrient": "208",
+      "amount": "27"
+    },
+    {
+      "ndb": "01114",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01115",
+      "nutrient": "203",
+      "amount": "12.93"
+    },
+    {
+      "ndb": "01115",
+      "nutrient": "204",
+      "amount": "1.07"
+    },
+    {
+      "ndb": "01115",
+      "nutrient": "205",
+      "amount": "74.46"
+    },
+    {
+      "ndb": "01115",
+      "nutrient": "208",
+      "amount": "353"
+    },
+    {
+      "ndb": "01115",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01123",
+      "nutrient": "203",
+      "amount": "12.56"
+    },
+    {
+      "ndb": "01123",
+      "nutrient": "204",
+      "amount": "9.51"
+    },
+    {
+      "ndb": "01123",
+      "nutrient": "205",
+      "amount": "0.72"
+    },
+    {
+      "ndb": "01123",
+      "nutrient": "208",
+      "amount": "143"
+    },
+    {
+      "ndb": "01123",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01124",
+      "nutrient": "203",
+      "amount": "10.90"
+    },
+    {
+      "ndb": "01124",
+      "nutrient": "204",
+      "amount": "0.17"
+    },
+    {
+      "ndb": "01124",
+      "nutrient": "205",
+      "amount": "0.73"
+    },
+    {
+      "ndb": "01124",
+      "nutrient": "208",
+      "amount": "52"
+    },
+    {
+      "ndb": "01124",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01125",
+      "nutrient": "203",
+      "amount": "15.86"
+    },
+    {
+      "ndb": "01125",
+      "nutrient": "204",
+      "amount": "26.54"
+    },
+    {
+      "ndb": "01125",
+      "nutrient": "205",
+      "amount": "3.59"
+    },
+    {
+      "ndb": "01125",
+      "nutrient": "208",
+      "amount": "322"
+    },
+    {
+      "ndb": "01125",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01133",
+      "nutrient": "203",
+      "amount": "48.05"
+    },
+    {
+      "ndb": "01133",
+      "nutrient": "204",
+      "amount": "43.90"
+    },
+    {
+      "ndb": "01133",
+      "nutrient": "205",
+      "amount": "1.13"
+    },
+    {
+      "ndb": "01133",
+      "nutrient": "208",
+      "amount": "592"
+    },
+    {
+      "ndb": "01133",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01137",
+      "nutrient": "203",
+      "amount": "33.63"
+    },
+    {
+      "ndb": "01137",
+      "nutrient": "204",
+      "amount": "59.13"
+    },
+    {
+      "ndb": "01137",
+      "nutrient": "205",
+      "amount": "0.66"
+    },
+    {
+      "ndb": "01137",
+      "nutrient": "208",
+      "amount": "669"
+    },
+    {
+      "ndb": "01137",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01144",
+      "nutrient": "203",
+      "amount": "55.50"
+    },
+    {
+      "ndb": "01144",
+      "nutrient": "204",
+      "amount": "13.00"
+    },
+    {
+      "ndb": "01144",
+      "nutrient": "205",
+      "amount": "21.80"
+    },
+    {
+      "ndb": "01144",
+      "nutrient": "208",
+      "amount": "444"
+    },
+    {
+      "ndb": "01144",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01145",
+      "nutrient": "203",
+      "amount": "0.85"
+    },
+    {
+      "ndb": "01145",
+      "nutrient": "204",
+      "amount": "81.11"
+    },
+    {
+      "ndb": "01145",
+      "nutrient": "205",
+      "amount": "0.06"
+    },
+    {
+      "ndb": "01145",
+      "nutrient": "208",
+      "amount": "717"
+    },
+    {
+      "ndb": "01145",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
       "ndb": "01156",
       "nutrient": "203",
       "amount": "30.52"
@@ -553,6 +1731,4106 @@
       "amount": "0.0"
     },
     {
+      "ndb": "01173",
+      "nutrient": "203",
+      "amount": "81.10"
+    },
+    {
+      "ndb": "01173",
+      "nutrient": "204",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "01173",
+      "nutrient": "205",
+      "amount": "7.80"
+    },
+    {
+      "ndb": "01173",
+      "nutrient": "208",
+      "amount": "382"
+    },
+    {
+      "ndb": "01173",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01178",
+      "nutrient": "203",
+      "amount": "7.00"
+    },
+    {
+      "ndb": "01178",
+      "nutrient": "204",
+      "amount": "14.10"
+    },
+    {
+      "ndb": "01178",
+      "nutrient": "205",
+      "amount": "7.00"
+    },
+    {
+      "ndb": "01178",
+      "nutrient": "208",
+      "amount": "181"
+    },
+    {
+      "ndb": "01178",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01179",
+      "nutrient": "203",
+      "amount": "3.50"
+    },
+    {
+      "ndb": "01179",
+      "nutrient": "204",
+      "amount": "10.60"
+    },
+    {
+      "ndb": "01179",
+      "nutrient": "205",
+      "amount": "7.10"
+    },
+    {
+      "ndb": "01179",
+      "nutrient": "208",
+      "amount": "136"
+    },
+    {
+      "ndb": "01179",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01180",
+      "nutrient": "203",
+      "amount": "3.10"
+    },
+    {
+      "ndb": "01180",
+      "nutrient": "204",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "01180",
+      "nutrient": "205",
+      "amount": "15.60"
+    },
+    {
+      "ndb": "01180",
+      "nutrient": "208",
+      "amount": "74"
+    },
+    {
+      "ndb": "01180",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01186",
+      "nutrient": "203",
+      "amount": "15.69"
+    },
+    {
+      "ndb": "01186",
+      "nutrient": "204",
+      "amount": "1.00"
+    },
+    {
+      "ndb": "01186",
+      "nutrient": "205",
+      "amount": "7.66"
+    },
+    {
+      "ndb": "01186",
+      "nutrient": "208",
+      "amount": "105"
+    },
+    {
+      "ndb": "01186",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01225",
+      "nutrient": "203",
+      "amount": "6.84"
+    },
+    {
+      "ndb": "01225",
+      "nutrient": "204",
+      "amount": "7.35"
+    },
+    {
+      "ndb": "01225",
+      "nutrient": "205",
+      "amount": "55.35"
+    },
+    {
+      "ndb": "01225",
+      "nutrient": "208",
+      "amount": "315"
+    },
+    {
+      "ndb": "01225",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01238",
+      "nutrient": "203",
+      "amount": "4.29"
+    },
+    {
+      "ndb": "01238",
+      "nutrient": "204",
+      "amount": "8.57"
+    },
+    {
+      "ndb": "01238",
+      "nutrient": "205",
+      "amount": "37.14"
+    },
+    {
+      "ndb": "01238",
+      "nutrient": "208",
+      "amount": "237"
+    },
+    {
+      "ndb": "01238",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01251",
+      "nutrient": "203",
+      "amount": "23.54"
+    },
+    {
+      "ndb": "01251",
+      "nutrient": "204",
+      "amount": "28.51"
+    },
+    {
+      "ndb": "01251",
+      "nutrient": "205",
+      "amount": "1.75"
+    },
+    {
+      "ndb": "01251",
+      "nutrient": "208",
+      "amount": "358"
+    },
+    {
+      "ndb": "01251",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01295",
+      "nutrient": "203",
+      "amount": "2.94"
+    },
+    {
+      "ndb": "01295",
+      "nutrient": "204",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "01295",
+      "nutrient": "205",
+      "amount": "17.04"
+    },
+    {
+      "ndb": "01295",
+      "nutrient": "208",
+      "amount": "78"
+    },
+    {
+      "ndb": "01295",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "01301",
+      "nutrient": "203",
+      "amount": "3.00"
+    },
+    {
+      "ndb": "01301",
+      "nutrient": "204",
+      "amount": "14.00"
+    },
+    {
+      "ndb": "01301",
+      "nutrient": "205",
+      "amount": "28.89"
+    },
+    {
+      "ndb": "01301",
+      "nutrient": "208",
+      "amount": "254"
+    },
+    {
+      "ndb": "01301",
+      "nutrient": "291",
+      "amount": "1.0"
+    },
+    {
+      "ndb": "02002",
+      "nutrient": "203",
+      "amount": "17.60"
+    },
+    {
+      "ndb": "02002",
+      "nutrient": "204",
+      "amount": "15.90"
+    },
+    {
+      "ndb": "02002",
+      "nutrient": "205",
+      "amount": "50.02"
+    },
+    {
+      "ndb": "02002",
+      "nutrient": "208",
+      "amount": "337"
+    },
+    {
+      "ndb": "02002",
+      "nutrient": "291",
+      "amount": "14.6"
+    },
+    {
+      "ndb": "02003",
+      "nutrient": "203",
+      "amount": "22.98"
+    },
+    {
+      "ndb": "02003",
+      "nutrient": "204",
+      "amount": "4.07"
+    },
+    {
+      "ndb": "02003",
+      "nutrient": "205",
+      "amount": "47.75"
+    },
+    {
+      "ndb": "02003",
+      "nutrient": "208",
+      "amount": "233"
+    },
+    {
+      "ndb": "02003",
+      "nutrient": "291",
+      "amount": "37.7"
+    },
+    {
+      "ndb": "02004",
+      "nutrient": "203",
+      "amount": "7.61"
+    },
+    {
+      "ndb": "02004",
+      "nutrient": "204",
+      "amount": "8.36"
+    },
+    {
+      "ndb": "02004",
+      "nutrient": "205",
+      "amount": "74.97"
+    },
+    {
+      "ndb": "02004",
+      "nutrient": "208",
+      "amount": "313"
+    },
+    {
+      "ndb": "02004",
+      "nutrient": "291",
+      "amount": "26.3"
+    },
+    {
+      "ndb": "02005",
+      "nutrient": "203",
+      "amount": "19.77"
+    },
+    {
+      "ndb": "02005",
+      "nutrient": "204",
+      "amount": "14.59"
+    },
+    {
+      "ndb": "02005",
+      "nutrient": "205",
+      "amount": "49.90"
+    },
+    {
+      "ndb": "02005",
+      "nutrient": "208",
+      "amount": "333"
+    },
+    {
+      "ndb": "02005",
+      "nutrient": "291",
+      "amount": "38.0"
+    },
+    {
+      "ndb": "02006",
+      "nutrient": "203",
+      "amount": "10.76"
+    },
+    {
+      "ndb": "02006",
+      "nutrient": "204",
+      "amount": "6.70"
+    },
+    {
+      "ndb": "02006",
+      "nutrient": "205",
+      "amount": "68.47"
+    },
+    {
+      "ndb": "02006",
+      "nutrient": "208",
+      "amount": "311"
+    },
+    {
+      "ndb": "02006",
+      "nutrient": "291",
+      "amount": "28.0"
+    },
+    {
+      "ndb": "02007",
+      "nutrient": "203",
+      "amount": "18.07"
+    },
+    {
+      "ndb": "02007",
+      "nutrient": "204",
+      "amount": "25.27"
+    },
+    {
+      "ndb": "02007",
+      "nutrient": "205",
+      "amount": "41.35"
+    },
+    {
+      "ndb": "02007",
+      "nutrient": "208",
+      "amount": "392"
+    },
+    {
+      "ndb": "02007",
+      "nutrient": "291",
+      "amount": "11.8"
+    },
+    {
+      "ndb": "02008",
+      "nutrient": "203",
+      "amount": "23.20"
+    },
+    {
+      "ndb": "02008",
+      "nutrient": "204",
+      "amount": "3.90"
+    },
+    {
+      "ndb": "02008",
+      "nutrient": "205",
+      "amount": "49.10"
+    },
+    {
+      "ndb": "02008",
+      "nutrient": "208",
+      "amount": "237"
+    },
+    {
+      "ndb": "02008",
+      "nutrient": "291",
+      "amount": "11.3"
+    },
+    {
+      "ndb": "02009",
+      "nutrient": "203",
+      "amount": "13.46"
+    },
+    {
+      "ndb": "02009",
+      "nutrient": "204",
+      "amount": "14.28"
+    },
+    {
+      "ndb": "02009",
+      "nutrient": "205",
+      "amount": "49.70"
+    },
+    {
+      "ndb": "02009",
+      "nutrient": "208",
+      "amount": "282"
+    },
+    {
+      "ndb": "02009",
+      "nutrient": "291",
+      "amount": "34.8"
+    },
+    {
+      "ndb": "02011",
+      "nutrient": "203",
+      "amount": "5.97"
+    },
+    {
+      "ndb": "02011",
+      "nutrient": "204",
+      "amount": "13.00"
+    },
+    {
+      "ndb": "02011",
+      "nutrient": "205",
+      "amount": "65.53"
+    },
+    {
+      "ndb": "02011",
+      "nutrient": "208",
+      "amount": "274"
+    },
+    {
+      "ndb": "02011",
+      "nutrient": "291",
+      "amount": "33.9"
+    },
+    {
+      "ndb": "02013",
+      "nutrient": "203",
+      "amount": "12.37"
+    },
+    {
+      "ndb": "02013",
+      "nutrient": "204",
+      "amount": "17.77"
+    },
+    {
+      "ndb": "02013",
+      "nutrient": "205",
+      "amount": "54.99"
+    },
+    {
+      "ndb": "02013",
+      "nutrient": "208",
+      "amount": "298"
+    },
+    {
+      "ndb": "02013",
+      "nutrient": "291",
+      "amount": "41.9"
+    },
+    {
+      "ndb": "02014",
+      "nutrient": "203",
+      "amount": "17.81"
+    },
+    {
+      "ndb": "02014",
+      "nutrient": "204",
+      "amount": "22.27"
+    },
+    {
+      "ndb": "02014",
+      "nutrient": "205",
+      "amount": "44.24"
+    },
+    {
+      "ndb": "02014",
+      "nutrient": "208",
+      "amount": "375"
+    },
+    {
+      "ndb": "02014",
+      "nutrient": "291",
+      "amount": "10.5"
+    },
+    {
+      "ndb": "02015",
+      "nutrient": "203",
+      "amount": "14.29"
+    },
+    {
+      "ndb": "02015",
+      "nutrient": "204",
+      "amount": "14.01"
+    },
+    {
+      "ndb": "02015",
+      "nutrient": "205",
+      "amount": "55.83"
+    },
+    {
+      "ndb": "02015",
+      "nutrient": "208",
+      "amount": "325"
+    },
+    {
+      "ndb": "02015",
+      "nutrient": "291",
+      "amount": "53.2"
+    },
+    {
+      "ndb": "02016",
+      "nutrient": "203",
+      "amount": "15.98"
+    },
+    {
+      "ndb": "02016",
+      "nutrient": "204",
+      "amount": "14.54"
+    },
+    {
+      "ndb": "02016",
+      "nutrient": "205",
+      "amount": "55.17"
+    },
+    {
+      "ndb": "02016",
+      "nutrient": "208",
+      "amount": "305"
+    },
+    {
+      "ndb": "02016",
+      "nutrient": "291",
+      "amount": "21.1"
+    },
+    {
+      "ndb": "02018",
+      "nutrient": "203",
+      "amount": "15.80"
+    },
+    {
+      "ndb": "02018",
+      "nutrient": "204",
+      "amount": "14.87"
+    },
+    {
+      "ndb": "02018",
+      "nutrient": "205",
+      "amount": "52.29"
+    },
+    {
+      "ndb": "02018",
+      "nutrient": "208",
+      "amount": "345"
+    },
+    {
+      "ndb": "02018",
+      "nutrient": "291",
+      "amount": "39.8"
+    },
+    {
+      "ndb": "02019",
+      "nutrient": "203",
+      "amount": "23.00"
+    },
+    {
+      "ndb": "02019",
+      "nutrient": "204",
+      "amount": "6.41"
+    },
+    {
+      "ndb": "02019",
+      "nutrient": "205",
+      "amount": "58.35"
+    },
+    {
+      "ndb": "02019",
+      "nutrient": "208",
+      "amount": "323"
+    },
+    {
+      "ndb": "02019",
+      "nutrient": "291",
+      "amount": "24.6"
+    },
+    {
+      "ndb": "02020",
+      "nutrient": "203",
+      "amount": "16.55"
+    },
+    {
+      "ndb": "02020",
+      "nutrient": "204",
+      "amount": "0.73"
+    },
+    {
+      "ndb": "02020",
+      "nutrient": "205",
+      "amount": "72.73"
+    },
+    {
+      "ndb": "02020",
+      "nutrient": "208",
+      "amount": "331"
+    },
+    {
+      "ndb": "02020",
+      "nutrient": "291",
+      "amount": "9.0"
+    },
+    {
+      "ndb": "02021",
+      "nutrient": "203",
+      "amount": "8.98"
+    },
+    {
+      "ndb": "02021",
+      "nutrient": "204",
+      "amount": "4.24"
+    },
+    {
+      "ndb": "02021",
+      "nutrient": "205",
+      "amount": "71.62"
+    },
+    {
+      "ndb": "02021",
+      "nutrient": "208",
+      "amount": "335"
+    },
+    {
+      "ndb": "02021",
+      "nutrient": "291",
+      "amount": "14.1"
+    },
+    {
+      "ndb": "02022",
+      "nutrient": "203",
+      "amount": "6.71"
+    },
+    {
+      "ndb": "02022",
+      "nutrient": "204",
+      "amount": "32.38"
+    },
+    {
+      "ndb": "02022",
+      "nutrient": "205",
+      "amount": "50.50"
+    },
+    {
+      "ndb": "02022",
+      "nutrient": "208",
+      "amount": "475"
+    },
+    {
+      "ndb": "02022",
+      "nutrient": "291",
+      "amount": "20.2"
+    },
+    {
+      "ndb": "02023",
+      "nutrient": "203",
+      "amount": "12.66"
+    },
+    {
+      "ndb": "02023",
+      "nutrient": "204",
+      "amount": "7.04"
+    },
+    {
+      "ndb": "02023",
+      "nutrient": "205",
+      "amount": "60.56"
+    },
+    {
+      "ndb": "02023",
+      "nutrient": "208",
+      "amount": "271"
+    },
+    {
+      "ndb": "02023",
+      "nutrient": "291",
+      "amount": "40.3"
+    },
+    {
+      "ndb": "02025",
+      "nutrient": "203",
+      "amount": "5.84"
+    },
+    {
+      "ndb": "02025",
+      "nutrient": "204",
+      "amount": "36.31"
+    },
+    {
+      "ndb": "02025",
+      "nutrient": "205",
+      "amount": "49.29"
+    },
+    {
+      "ndb": "02025",
+      "nutrient": "208",
+      "amount": "525"
+    },
+    {
+      "ndb": "02025",
+      "nutrient": "291",
+      "amount": "20.8"
+    },
+    {
+      "ndb": "02026",
+      "nutrient": "203",
+      "amount": "10.41"
+    },
+    {
+      "ndb": "02026",
+      "nutrient": "204",
+      "amount": "1.04"
+    },
+    {
+      "ndb": "02026",
+      "nutrient": "205",
+      "amount": "79.12"
+    },
+    {
+      "ndb": "02026",
+      "nutrient": "208",
+      "amount": "341"
+    },
+    {
+      "ndb": "02026",
+      "nutrient": "291",
+      "amount": "15.2"
+    },
+    {
+      "ndb": "02027",
+      "nutrient": "203",
+      "amount": "9.00"
+    },
+    {
+      "ndb": "02027",
+      "nutrient": "204",
+      "amount": "4.28"
+    },
+    {
+      "ndb": "02027",
+      "nutrient": "205",
+      "amount": "68.92"
+    },
+    {
+      "ndb": "02027",
+      "nutrient": "208",
+      "amount": "265"
+    },
+    {
+      "ndb": "02027",
+      "nutrient": "291",
+      "amount": "42.5"
+    },
+    {
+      "ndb": "02028",
+      "nutrient": "203",
+      "amount": "14.14"
+    },
+    {
+      "ndb": "02028",
+      "nutrient": "204",
+      "amount": "12.89"
+    },
+    {
+      "ndb": "02028",
+      "nutrient": "205",
+      "amount": "53.99"
+    },
+    {
+      "ndb": "02028",
+      "nutrient": "208",
+      "amount": "282"
+    },
+    {
+      "ndb": "02028",
+      "nutrient": "291",
+      "amount": "34.9"
+    },
+    {
+      "ndb": "02029",
+      "nutrient": "203",
+      "amount": "26.63"
+    },
+    {
+      "ndb": "02029",
+      "nutrient": "204",
+      "amount": "5.48"
+    },
+    {
+      "ndb": "02029",
+      "nutrient": "205",
+      "amount": "50.64"
+    },
+    {
+      "ndb": "02029",
+      "nutrient": "208",
+      "amount": "292"
+    },
+    {
+      "ndb": "02029",
+      "nutrient": "291",
+      "amount": "26.7"
+    },
+    {
+      "ndb": "02030",
+      "nutrient": "203",
+      "amount": "10.39"
+    },
+    {
+      "ndb": "02030",
+      "nutrient": "204",
+      "amount": "3.26"
+    },
+    {
+      "ndb": "02030",
+      "nutrient": "205",
+      "amount": "63.95"
+    },
+    {
+      "ndb": "02030",
+      "nutrient": "208",
+      "amount": "251"
+    },
+    {
+      "ndb": "02030",
+      "nutrient": "291",
+      "amount": "25.3"
+    },
+    {
+      "ndb": "02032",
+      "nutrient": "203",
+      "amount": "10.40"
+    },
+    {
+      "ndb": "02032",
+      "nutrient": "204",
+      "amount": "2.12"
+    },
+    {
+      "ndb": "02032",
+      "nutrient": "205",
+      "amount": "68.61"
+    },
+    {
+      "ndb": "02032",
+      "nutrient": "208",
+      "amount": "296"
+    },
+    {
+      "ndb": "02032",
+      "nutrient": "291",
+      "amount": "26.2"
+    },
+    {
+      "ndb": "02033",
+      "nutrient": "203",
+      "amount": "17.99"
+    },
+    {
+      "ndb": "02033",
+      "nutrient": "204",
+      "amount": "41.56"
+    },
+    {
+      "ndb": "02033",
+      "nutrient": "205",
+      "amount": "28.13"
+    },
+    {
+      "ndb": "02033",
+      "nutrient": "208",
+      "amount": "525"
+    },
+    {
+      "ndb": "02033",
+      "nutrient": "291",
+      "amount": "19.5"
+    },
+    {
+      "ndb": "02037",
+      "nutrient": "203",
+      "amount": "11.43"
+    },
+    {
+      "ndb": "02037",
+      "nutrient": "204",
+      "amount": "5.85"
+    },
+    {
+      "ndb": "02037",
+      "nutrient": "205",
+      "amount": "65.37"
+    },
+    {
+      "ndb": "02037",
+      "nutrient": "208",
+      "amount": "310"
+    },
+    {
+      "ndb": "02037",
+      "nutrient": "291",
+      "amount": "3.9"
+    },
+    {
+      "ndb": "02038",
+      "nutrient": "203",
+      "amount": "10.63"
+    },
+    {
+      "ndb": "02038",
+      "nutrient": "204",
+      "amount": "12.75"
+    },
+    {
+      "ndb": "02038",
+      "nutrient": "205",
+      "amount": "60.73"
+    },
+    {
+      "ndb": "02038",
+      "nutrient": "208",
+      "amount": "315"
+    },
+    {
+      "ndb": "02038",
+      "nutrient": "291",
+      "amount": "40.3"
+    },
+    {
+      "ndb": "02039",
+      "nutrient": "203",
+      "amount": "6.73"
+    },
+    {
+      "ndb": "02039",
+      "nutrient": "204",
+      "amount": "5.91"
+    },
+    {
+      "ndb": "02039",
+      "nutrient": "205",
+      "amount": "68.73"
+    },
+    {
+      "ndb": "02039",
+      "nutrient": "208",
+      "amount": "272"
+    },
+    {
+      "ndb": "02039",
+      "nutrient": "291",
+      "amount": "45.7"
+    },
+    {
+      "ndb": "02042",
+      "nutrient": "203",
+      "amount": "9.11"
+    },
+    {
+      "ndb": "02042",
+      "nutrient": "204",
+      "amount": "7.43"
+    },
+    {
+      "ndb": "02042",
+      "nutrient": "205",
+      "amount": "63.94"
+    },
+    {
+      "ndb": "02042",
+      "nutrient": "208",
+      "amount": "276"
+    },
+    {
+      "ndb": "02042",
+      "nutrient": "291",
+      "amount": "37.0"
+    },
+    {
+      "ndb": "02044",
+      "nutrient": "203",
+      "amount": "3.15"
+    },
+    {
+      "ndb": "02044",
+      "nutrient": "204",
+      "amount": "0.64"
+    },
+    {
+      "ndb": "02044",
+      "nutrient": "205",
+      "amount": "2.65"
+    },
+    {
+      "ndb": "02044",
+      "nutrient": "208",
+      "amount": "23"
+    },
+    {
+      "ndb": "02044",
+      "nutrient": "291",
+      "amount": "1.6"
+    },
+    {
+      "ndb": "02045",
+      "nutrient": "203",
+      "amount": "3.46"
+    },
+    {
+      "ndb": "02045",
+      "nutrient": "204",
+      "amount": "1.12"
+    },
+    {
+      "ndb": "02045",
+      "nutrient": "205",
+      "amount": "7.02"
+    },
+    {
+      "ndb": "02045",
+      "nutrient": "208",
+      "amount": "43"
+    },
+    {
+      "ndb": "02045",
+      "nutrient": "291",
+      "amount": "2.1"
+    },
+    {
+      "ndb": "02047",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "02047",
+      "nutrient": "204",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "02047",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "02047",
+      "nutrient": "208",
+      "amount": "0"
+    },
+    {
+      "ndb": "02047",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "02048",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "02048",
+      "nutrient": "204",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "02048",
+      "nutrient": "205",
+      "amount": "0.93"
+    },
+    {
+      "ndb": "02048",
+      "nutrient": "208",
+      "amount": "21"
+    },
+    {
+      "ndb": "02048",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "02049",
+      "nutrient": "203",
+      "amount": "5.56"
+    },
+    {
+      "ndb": "02049",
+      "nutrient": "204",
+      "amount": "1.68"
+    },
+    {
+      "ndb": "02049",
+      "nutrient": "205",
+      "amount": "24.45"
+    },
+    {
+      "ndb": "02049",
+      "nutrient": "208",
+      "amount": "101"
+    },
+    {
+      "ndb": "02049",
+      "nutrient": "291",
+      "amount": "14.0"
+    },
+    {
+      "ndb": "02050",
+      "nutrient": "203",
+      "amount": "0.06"
+    },
+    {
+      "ndb": "02050",
+      "nutrient": "204",
+      "amount": "0.06"
+    },
+    {
+      "ndb": "02050",
+      "nutrient": "205",
+      "amount": "12.65"
+    },
+    {
+      "ndb": "02050",
+      "nutrient": "208",
+      "amount": "288"
+    },
+    {
+      "ndb": "02050",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "02053",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "02053",
+      "nutrient": "204",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "02053",
+      "nutrient": "205",
+      "amount": "0.04"
+    },
+    {
+      "ndb": "02053",
+      "nutrient": "208",
+      "amount": "18"
+    },
+    {
+      "ndb": "02053",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "02054",
+      "nutrient": "203",
+      "amount": "2.36"
+    },
+    {
+      "ndb": "02054",
+      "nutrient": "204",
+      "amount": "0.86"
+    },
+    {
+      "ndb": "02054",
+      "nutrient": "205",
+      "amount": "4.89"
+    },
+    {
+      "ndb": "02054",
+      "nutrient": "208",
+      "amount": "23"
+    },
+    {
+      "ndb": "02054",
+      "nutrient": "291",
+      "amount": "3.2"
+    },
+    {
+      "ndb": "02055",
+      "nutrient": "203",
+      "amount": "1.18"
+    },
+    {
+      "ndb": "02055",
+      "nutrient": "204",
+      "amount": "0.69"
+    },
+    {
+      "ndb": "02055",
+      "nutrient": "205",
+      "amount": "11.29"
+    },
+    {
+      "ndb": "02055",
+      "nutrient": "208",
+      "amount": "48"
+    },
+    {
+      "ndb": "02055",
+      "nutrient": "291",
+      "amount": "3.3"
+    },
+    {
+      "ndb": "02063",
+      "nutrient": "203",
+      "amount": "3.31"
+    },
+    {
+      "ndb": "02063",
+      "nutrient": "204",
+      "amount": "5.86"
+    },
+    {
+      "ndb": "02063",
+      "nutrient": "205",
+      "amount": "20.70"
+    },
+    {
+      "ndb": "02063",
+      "nutrient": "208",
+      "amount": "131"
+    },
+    {
+      "ndb": "02063",
+      "nutrient": "291",
+      "amount": "14.1"
+    },
+    {
+      "ndb": "02064",
+      "nutrient": "203",
+      "amount": "3.75"
+    },
+    {
+      "ndb": "02064",
+      "nutrient": "204",
+      "amount": "0.94"
+    },
+    {
+      "ndb": "02064",
+      "nutrient": "205",
+      "amount": "14.89"
+    },
+    {
+      "ndb": "02064",
+      "nutrient": "208",
+      "amount": "70"
+    },
+    {
+      "ndb": "02064",
+      "nutrient": "291",
+      "amount": "8.0"
+    },
+    {
+      "ndb": "02065",
+      "nutrient": "203",
+      "amount": "3.29"
+    },
+    {
+      "ndb": "02065",
+      "nutrient": "204",
+      "amount": "0.73"
+    },
+    {
+      "ndb": "02065",
+      "nutrient": "205",
+      "amount": "8.41"
+    },
+    {
+      "ndb": "02065",
+      "nutrient": "208",
+      "amount": "44"
+    },
+    {
+      "ndb": "02065",
+      "nutrient": "291",
+      "amount": "6.8"
+    },
+    {
+      "ndb": "02066",
+      "nutrient": "203",
+      "amount": "19.93"
+    },
+    {
+      "ndb": "02066",
+      "nutrient": "204",
+      "amount": "6.03"
+    },
+    {
+      "ndb": "02066",
+      "nutrient": "205",
+      "amount": "52.04"
+    },
+    {
+      "ndb": "02066",
+      "nutrient": "208",
+      "amount": "285"
+    },
+    {
+      "ndb": "02066",
+      "nutrient": "291",
+      "amount": "29.8"
+    },
+    {
+      "ndb": "02068",
+      "nutrient": "203",
+      "amount": "0.04"
+    },
+    {
+      "ndb": "02068",
+      "nutrient": "204",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "02068",
+      "nutrient": "205",
+      "amount": "0.27"
+    },
+    {
+      "ndb": "02068",
+      "nutrient": "208",
+      "amount": "19"
+    },
+    {
+      "ndb": "02068",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04001",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04001",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04001",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04001",
+      "nutrient": "208",
+      "amount": "902"
+    },
+    {
+      "ndb": "04001",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04002",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04002",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04002",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04002",
+      "nutrient": "208",
+      "amount": "902"
+    },
+    {
+      "ndb": "04002",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04037",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04037",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04037",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04037",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04037",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04038",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04038",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04038",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04038",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04038",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04042",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04042",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04042",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04042",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04042",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04047",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04047",
+      "nutrient": "204",
+      "amount": "99.06"
+    },
+    {
+      "ndb": "04047",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04047",
+      "nutrient": "208",
+      "amount": "892"
+    },
+    {
+      "ndb": "04047",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04053",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04053",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04053",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04053",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04053",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04055",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04055",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04055",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04055",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04055",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04058",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04058",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04058",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04058",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04058",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04501",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04501",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04501",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04501",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04501",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04513",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04513",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04513",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04513",
+      "nutrient": "208",
+      "amount": "862"
+    },
+    {
+      "ndb": "04513",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04514",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04514",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04514",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04514",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04514",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04515",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04515",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04515",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04515",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04515",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04516",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04516",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04516",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04516",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04516",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04517",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04517",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04517",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04517",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04517",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04520",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04520",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04520",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04520",
+      "nutrient": "208",
+      "amount": "902"
+    },
+    {
+      "ndb": "04520",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04528",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04528",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04528",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04528",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04528",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04529",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04529",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04529",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04529",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04529",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04530",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04530",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04530",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04530",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04530",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04531",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04531",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04531",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04531",
+      "nutrient": "208",
+      "amount": "763"
+    },
+    {
+      "ndb": "04531",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04532",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04532",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04532",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04532",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04532",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04534",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04534",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04534",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04534",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04534",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04536",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04536",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04536",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04536",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04536",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04541",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04541",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04541",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04541",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04541",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04542",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04542",
+      "nutrient": "204",
+      "amount": "99.80"
+    },
+    {
+      "ndb": "04542",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04542",
+      "nutrient": "208",
+      "amount": "900"
+    },
+    {
+      "ndb": "04542",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04572",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04572",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04572",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04572",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04572",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04573",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04573",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04573",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04573",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04573",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04574",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04574",
+      "nutrient": "204",
+      "amount": "99.80"
+    },
+    {
+      "ndb": "04574",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04574",
+      "nutrient": "208",
+      "amount": "882"
+    },
+    {
+      "ndb": "04574",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04575",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04575",
+      "nutrient": "204",
+      "amount": "99.80"
+    },
+    {
+      "ndb": "04575",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04575",
+      "nutrient": "208",
+      "amount": "900"
+    },
+    {
+      "ndb": "04575",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04576",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04576",
+      "nutrient": "204",
+      "amount": "99.80"
+    },
+    {
+      "ndb": "04576",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04576",
+      "nutrient": "208",
+      "amount": "900"
+    },
+    {
+      "ndb": "04576",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04581",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04581",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04581",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04581",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04581",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04582",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04582",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04582",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04582",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04582",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04583",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04583",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04583",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04583",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04583",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04588",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04588",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04588",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04588",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "04588",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04589",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04589",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04589",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04589",
+      "nutrient": "208",
+      "amount": "902"
+    },
+    {
+      "ndb": "04589",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04590",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04590",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04590",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04590",
+      "nutrient": "208",
+      "amount": "902"
+    },
+    {
+      "ndb": "04590",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04591",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04591",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04591",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04591",
+      "nutrient": "208",
+      "amount": "902"
+    },
+    {
+      "ndb": "04591",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04593",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04593",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04593",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04593",
+      "nutrient": "208",
+      "amount": "902"
+    },
+    {
+      "ndb": "04593",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04594",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04594",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "04594",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04594",
+      "nutrient": "208",
+      "amount": "902"
+    },
+    {
+      "ndb": "04594",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "04609",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04609",
+      "nutrient": "204",
+      "amount": "99.50"
+    },
+    {
+      "ndb": "04609",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "04609",
+      "nutrient": "208",
+      "amount": "897"
+    },
+    {
+      "ndb": "04609",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05152",
+      "nutrient": "203",
+      "amount": "20.64"
+    },
+    {
+      "ndb": "05152",
+      "nutrient": "204",
+      "amount": "2.47"
+    },
+    {
+      "ndb": "05152",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05152",
+      "nutrient": "208",
+      "amount": "110"
+    },
+    {
+      "ndb": "05152",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05153",
+      "nutrient": "203",
+      "amount": "22.70"
+    },
+    {
+      "ndb": "05153",
+      "nutrient": "204",
+      "amount": "9.29"
+    },
+    {
+      "ndb": "05153",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05153",
+      "nutrient": "208",
+      "amount": "181"
+    },
+    {
+      "ndb": "05153",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05154",
+      "nutrient": "203",
+      "amount": "23.57"
+    },
+    {
+      "ndb": "05154",
+      "nutrient": "204",
+      "amount": "3.64"
+    },
+    {
+      "ndb": "05154",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05154",
+      "nutrient": "208",
+      "amount": "133"
+    },
+    {
+      "ndb": "05154",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05156",
+      "nutrient": "203",
+      "amount": "22.20"
+    },
+    {
+      "ndb": "05156",
+      "nutrient": "204",
+      "amount": "4.30"
+    },
+    {
+      "ndb": "05156",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05156",
+      "nutrient": "208",
+      "amount": "134"
+    },
+    {
+      "ndb": "05156",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05157",
+      "nutrient": "203",
+      "amount": "19.63"
+    },
+    {
+      "ndb": "05157",
+      "nutrient": "204",
+      "amount": "12.05"
+    },
+    {
+      "ndb": "05157",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05157",
+      "nutrient": "208",
+      "amount": "192"
+    },
+    {
+      "ndb": "05157",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05158",
+      "nutrient": "203",
+      "amount": "21.76"
+    },
+    {
+      "ndb": "05158",
+      "nutrient": "204",
+      "amount": "4.53"
+    },
+    {
+      "ndb": "05158",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05158",
+      "nutrient": "208",
+      "amount": "134"
+    },
+    {
+      "ndb": "05158",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05159",
+      "nutrient": "203",
+      "amount": "22.59"
+    },
+    {
+      "ndb": "05159",
+      "nutrient": "204",
+      "amount": "2.99"
+    },
+    {
+      "ndb": "05159",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05159",
+      "nutrient": "208",
+      "amount": "123"
+    },
+    {
+      "ndb": "05159",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05167",
+      "nutrient": "203",
+      "amount": "22.64"
+    },
+    {
+      "ndb": "05167",
+      "nutrient": "204",
+      "amount": "1.93"
+    },
+    {
+      "ndb": "05167",
+      "nutrient": "205",
+      "amount": "0.14"
+    },
+    {
+      "ndb": "05167",
+      "nutrient": "208",
+      "amount": "112"
+    },
+    {
+      "ndb": "05167",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05305",
+      "nutrient": "203",
+      "amount": "19.66"
+    },
+    {
+      "ndb": "05305",
+      "nutrient": "204",
+      "amount": "7.66"
+    },
+    {
+      "ndb": "05305",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05305",
+      "nutrient": "208",
+      "amount": "148"
+    },
+    {
+      "ndb": "05305",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05306",
+      "nutrient": "203",
+      "amount": "27.37"
+    },
+    {
+      "ndb": "05306",
+      "nutrient": "204",
+      "amount": "10.40"
+    },
+    {
+      "ndb": "05306",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05306",
+      "nutrient": "208",
+      "amount": "203"
+    },
+    {
+      "ndb": "05306",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05311",
+      "nutrient": "203",
+      "amount": "25.30"
+    },
+    {
+      "ndb": "05311",
+      "nutrient": "204",
+      "amount": "8.10"
+    },
+    {
+      "ndb": "05311",
+      "nutrient": "205",
+      "amount": "0.90"
+    },
+    {
+      "ndb": "05311",
+      "nutrient": "208",
+      "amount": "185"
+    },
+    {
+      "ndb": "05311",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05324",
+      "nutrient": "203",
+      "amount": "14.85"
+    },
+    {
+      "ndb": "05324",
+      "nutrient": "204",
+      "amount": "19.58"
+    },
+    {
+      "ndb": "05324",
+      "nutrient": "205",
+      "amount": "12.84"
+    },
+    {
+      "ndb": "05324",
+      "nutrient": "208",
+      "amount": "287"
+    },
+    {
+      "ndb": "05324",
+      "nutrient": "291",
+      "amount": "0.3"
+    },
+    {
+      "ndb": "05332",
+      "nutrient": "203",
+      "amount": "17.44"
+    },
+    {
+      "ndb": "05332",
+      "nutrient": "204",
+      "amount": "8.10"
+    },
+    {
+      "ndb": "05332",
+      "nutrient": "205",
+      "amount": "0.04"
+    },
+    {
+      "ndb": "05332",
+      "nutrient": "208",
+      "amount": "143"
+    },
+    {
+      "ndb": "05332",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "05662",
+      "nutrient": "203",
+      "amount": "23.57"
+    },
+    {
+      "ndb": "05662",
+      "nutrient": "204",
+      "amount": "1.95"
+    },
+    {
+      "ndb": "05662",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "05662",
+      "nutrient": "208",
+      "amount": "112"
+    },
+    {
+      "ndb": "05662",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "06076",
+      "nutrient": "203",
+      "amount": "17.30"
+    },
+    {
+      "ndb": "06076",
+      "nutrient": "204",
+      "amount": "4.00"
+    },
+    {
+      "ndb": "06076",
+      "nutrient": "205",
+      "amount": "16.10"
+    },
+    {
+      "ndb": "06076",
+      "nutrient": "208",
+      "amount": "170"
+    },
+    {
+      "ndb": "06076",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "06094",
+      "nutrient": "203",
+      "amount": "7.48"
+    },
+    {
+      "ndb": "06094",
+      "nutrient": "204",
+      "amount": "0.34"
+    },
+    {
+      "ndb": "06094",
+      "nutrient": "205",
+      "amount": "65.07"
+    },
+    {
+      "ndb": "06094",
+      "nutrient": "208",
+      "amount": "293"
+    },
+    {
+      "ndb": "06094",
+      "nutrient": "291",
+      "amount": "6.6"
+    },
+    {
+      "ndb": "06114",
+      "nutrient": "203",
+      "amount": "1.20"
+    },
+    {
+      "ndb": "06114",
+      "nutrient": "204",
+      "amount": "0.20"
+    },
+    {
+      "ndb": "06114",
+      "nutrient": "205",
+      "amount": "2.50"
+    },
+    {
+      "ndb": "06114",
+      "nutrient": "208",
+      "amount": "16"
+    },
+    {
+      "ndb": "06114",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "06118",
+      "nutrient": "203",
+      "amount": "10.74"
+    },
+    {
+      "ndb": "06118",
+      "nutrient": "204",
+      "amount": "9.61"
+    },
+    {
+      "ndb": "06118",
+      "nutrient": "205",
+      "amount": "59.38"
+    },
+    {
+      "ndb": "06118",
+      "nutrient": "208",
+      "amount": "367"
+    },
+    {
+      "ndb": "06118",
+      "nutrient": "291",
+      "amount": "2.0"
+    },
+    {
+      "ndb": "06121",
+      "nutrient": "203",
+      "amount": "1.26"
+    },
+    {
+      "ndb": "06121",
+      "nutrient": "204",
+      "amount": "2.71"
+    },
+    {
+      "ndb": "06121",
+      "nutrient": "205",
+      "amount": "5.47"
+    },
+    {
+      "ndb": "06121",
+      "nutrient": "208",
+      "amount": "50"
+    },
+    {
+      "ndb": "06121",
+      "nutrient": "291",
+      "amount": "0.4"
+    },
+    {
+      "ndb": "06122",
+      "nutrient": "203",
+      "amount": "10.00"
+    },
+    {
+      "ndb": "06122",
+      "nutrient": "204",
+      "amount": "4.00"
+    },
+    {
+      "ndb": "06122",
+      "nutrient": "205",
+      "amount": "64.66"
+    },
+    {
+      "ndb": "06122",
+      "nutrient": "208",
+      "amount": "328"
+    },
+    {
+      "ndb": "06122",
+      "nutrient": "291",
+      "amount": "4.8"
+    },
+    {
+      "ndb": "06123",
+      "nutrient": "203",
+      "amount": "9.00"
+    },
+    {
+      "ndb": "06123",
+      "nutrient": "204",
+      "amount": "3.00"
+    },
+    {
+      "ndb": "06123",
+      "nutrient": "205",
+      "amount": "67.64"
+    },
+    {
+      "ndb": "06123",
+      "nutrient": "208",
+      "amount": "322"
+    },
+    {
+      "ndb": "06123",
+      "nutrient": "291",
+      "amount": "6.0"
+    },
+    {
+      "ndb": "06124",
+      "nutrient": "203",
+      "amount": "8.78"
+    },
+    {
+      "ndb": "06124",
+      "nutrient": "204",
+      "amount": "8.63"
+    },
+    {
+      "ndb": "06124",
+      "nutrient": "205",
+      "amount": "63.57"
+    },
+    {
+      "ndb": "06124",
+      "nutrient": "208",
+      "amount": "367"
+    },
+    {
+      "ndb": "06124",
+      "nutrient": "291",
+      "amount": "2.4"
+    },
+    {
+      "ndb": "06150",
+      "nutrient": "203",
+      "amount": "0.82"
+    },
+    {
+      "ndb": "06150",
+      "nutrient": "204",
+      "amount": "0.63"
+    },
+    {
+      "ndb": "06150",
+      "nutrient": "205",
+      "amount": "40.77"
+    },
+    {
+      "ndb": "06150",
+      "nutrient": "208",
+      "amount": "172"
+    },
+    {
+      "ndb": "06150",
+      "nutrient": "291",
+      "amount": "0.9"
+    },
+    {
+      "ndb": "06151",
+      "nutrient": "203",
+      "amount": "0.89"
+    },
+    {
+      "ndb": "06151",
+      "nutrient": "204",
+      "amount": "1.04"
+    },
+    {
+      "ndb": "06151",
+      "nutrient": "205",
+      "amount": "42.81"
+    },
+    {
+      "ndb": "06151",
+      "nutrient": "208",
+      "amount": "184"
+    },
+    {
+      "ndb": "06151",
+      "nutrient": "291",
+      "amount": "0.7"
+    },
+    {
+      "ndb": "06164",
+      "nutrient": "203",
+      "amount": "1.52"
+    },
+    {
+      "ndb": "06164",
+      "nutrient": "204",
+      "amount": "0.17"
+    },
+    {
+      "ndb": "06164",
+      "nutrient": "205",
+      "amount": "6.64"
+    },
+    {
+      "ndb": "06164",
+      "nutrient": "208",
+      "amount": "29"
+    },
+    {
+      "ndb": "06164",
+      "nutrient": "291",
+      "amount": "1.9"
+    },
+    {
+      "ndb": "06165",
+      "nutrient": "203",
+      "amount": "3.77"
+    },
+    {
+      "ndb": "06165",
+      "nutrient": "204",
+      "amount": "6.73"
+    },
+    {
+      "ndb": "06165",
+      "nutrient": "205",
+      "amount": "7.40"
+    },
+    {
+      "ndb": "06165",
+      "nutrient": "208",
+      "amount": "105"
+    },
+    {
+      "ndb": "06165",
+      "nutrient": "291",
+      "amount": "0.1"
+    },
+    {
+      "ndb": "06167",
+      "nutrient": "203",
+      "amount": "3.99"
+    },
+    {
+      "ndb": "06167",
+      "nutrient": "204",
+      "amount": "13.83"
+    },
+    {
+      "ndb": "06167",
+      "nutrient": "205",
+      "amount": "11.61"
+    },
+    {
+      "ndb": "06167",
+      "nutrient": "208",
+      "amount": "186"
+    },
+    {
+      "ndb": "06167",
+      "nutrient": "291",
+      "amount": "0.3"
+    },
+    {
+      "ndb": "06175",
+      "nutrient": "203",
+      "amount": "3.31"
+    },
+    {
+      "ndb": "06175",
+      "nutrient": "204",
+      "amount": "3.39"
+    },
+    {
+      "ndb": "06175",
+      "nutrient": "205",
+      "amount": "44.08"
+    },
+    {
+      "ndb": "06175",
+      "nutrient": "208",
+      "amount": "220"
+    },
+    {
+      "ndb": "06175",
+      "nutrient": "291",
+      "amount": "2.8"
+    },
+    {
+      "ndb": "06179",
+      "nutrient": "203",
+      "amount": "5.06"
+    },
+    {
+      "ndb": "06179",
+      "nutrient": "204",
+      "amount": "0.01"
+    },
+    {
+      "ndb": "06179",
+      "nutrient": "205",
+      "amount": "3.64"
+    },
+    {
+      "ndb": "06179",
+      "nutrient": "208",
+      "amount": "35"
+    },
+    {
+      "ndb": "06179",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "06631",
+      "nutrient": "203",
+      "amount": "1.93"
+    },
+    {
+      "ndb": "06631",
+      "nutrient": "204",
+      "amount": "0.93"
+    },
+    {
+      "ndb": "06631",
+      "nutrient": "205",
+      "amount": "19.16"
+    },
+    {
+      "ndb": "06631",
+      "nutrient": "208",
+      "amount": "93"
+    },
+    {
+      "ndb": "06631",
+      "nutrient": "291",
+      "amount": "2.2"
+    },
+    {
+      "ndb": "06720",
+      "nutrient": "203",
+      "amount": "7.68"
+    },
+    {
+      "ndb": "06720",
+      "nutrient": "204",
+      "amount": "18.33"
+    },
+    {
+      "ndb": "06720",
+      "nutrient": "205",
+      "amount": "60.52"
+    },
+    {
+      "ndb": "06720",
+      "nutrient": "208",
+      "amount": "438"
+    },
+    {
+      "ndb": "06720",
+      "nutrient": "291",
+      "amount": "1.0"
+    },
+    {
+      "ndb": "06958",
+      "nutrient": "203",
+      "amount": "9.80"
+    },
+    {
+      "ndb": "06958",
+      "nutrient": "204",
+      "amount": "9.48"
+    },
+    {
+      "ndb": "06958",
+      "nutrient": "205",
+      "amount": "61.10"
+    },
+    {
+      "ndb": "06958",
+      "nutrient": "208",
+      "amount": "369"
+    },
+    {
+      "ndb": "06958",
+      "nutrient": "291",
+      "amount": "4.3"
+    },
+    {
+      "ndb": "06960",
+      "nutrient": "203",
+      "amount": "15.32"
+    },
+    {
+      "ndb": "06960",
+      "nutrient": "204",
+      "amount": "36.35"
+    },
+    {
+      "ndb": "06960",
+      "nutrient": "205",
+      "amount": "36.52"
+    },
+    {
+      "ndb": "06960",
+      "nutrient": "208",
+      "amount": "535"
+    },
+    {
+      "ndb": "06960",
+      "nutrient": "291",
+      "amount": "2.0"
+    },
+    {
+      "ndb": "06963",
+      "nutrient": "203",
+      "amount": "2.00"
+    },
+    {
+      "ndb": "06963",
+      "nutrient": "204",
+      "amount": "0.60"
+    },
+    {
+      "ndb": "06963",
+      "nutrient": "205",
+      "amount": "0.40"
+    },
+    {
+      "ndb": "06963",
+      "nutrient": "208",
+      "amount": "16"
+    },
+    {
+      "ndb": "06963",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "06971",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "06971",
+      "nutrient": "204",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "06971",
+      "nutrient": "205",
+      "amount": "19.46"
+    },
+    {
+      "ndb": "06971",
+      "nutrient": "208",
+      "amount": "78"
+    },
+    {
+      "ndb": "06971",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07005",
+      "nutrient": "203",
+      "amount": "14.60"
+    },
+    {
+      "ndb": "07005",
+      "nutrient": "204",
+      "amount": "34.50"
+    },
+    {
+      "ndb": "07005",
+      "nutrient": "205",
+      "amount": "1.29"
+    },
+    {
+      "ndb": "07005",
+      "nutrient": "208",
+      "amount": "379"
+    },
+    {
+      "ndb": "07005",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07007",
+      "nutrient": "203",
+      "amount": "10.91"
+    },
+    {
+      "ndb": "07007",
+      "nutrient": "204",
+      "amount": "26.13"
+    },
+    {
+      "ndb": "07007",
+      "nutrient": "205",
+      "amount": "4.29"
+    },
+    {
+      "ndb": "07007",
+      "nutrient": "208",
+      "amount": "299"
+    },
+    {
+      "ndb": "07007",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07008",
+      "nutrient": "203",
+      "amount": "15.20"
+    },
+    {
+      "ndb": "07008",
+      "nutrient": "204",
+      "amount": "24.59"
+    },
+    {
+      "ndb": "07008",
+      "nutrient": "205",
+      "amount": "5.49"
+    },
+    {
+      "ndb": "07008",
+      "nutrient": "208",
+      "amount": "308"
+    },
+    {
+      "ndb": "07008",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07010",
+      "nutrient": "203",
+      "amount": "15.30"
+    },
+    {
+      "ndb": "07010",
+      "nutrient": "204",
+      "amount": "19.87"
+    },
+    {
+      "ndb": "07010",
+      "nutrient": "205",
+      "amount": "0.73"
+    },
+    {
+      "ndb": "07010",
+      "nutrient": "208",
+      "amount": "247"
+    },
+    {
+      "ndb": "07010",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07011",
+      "nutrient": "203",
+      "amount": "11.42"
+    },
+    {
+      "ndb": "07011",
+      "nutrient": "204",
+      "amount": "16.05"
+    },
+    {
+      "ndb": "07011",
+      "nutrient": "205",
+      "amount": "4.68"
+    },
+    {
+      "ndb": "07011",
+      "nutrient": "208",
+      "amount": "209"
+    },
+    {
+      "ndb": "07011",
+      "nutrient": "291",
+      "amount": "0.5"
+    },
+    {
+      "ndb": "07013",
+      "nutrient": "203",
+      "amount": "13.72"
+    },
+    {
+      "ndb": "07013",
+      "nutrient": "204",
+      "amount": "29.18"
+    },
+    {
+      "ndb": "07013",
+      "nutrient": "205",
+      "amount": "2.85"
+    },
+    {
+      "ndb": "07013",
+      "nutrient": "208",
+      "amount": "333"
+    },
+    {
+      "ndb": "07013",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07018",
+      "nutrient": "203",
+      "amount": "18.01"
+    },
+    {
+      "ndb": "07018",
+      "nutrient": "204",
+      "amount": "17.56"
+    },
+    {
+      "ndb": "07018",
+      "nutrient": "205",
+      "amount": "4.05"
+    },
+    {
+      "ndb": "07018",
+      "nutrient": "208",
+      "amount": "158"
+    },
+    {
+      "ndb": "07018",
+      "nutrient": "291",
+      "amount": "0.3"
+    },
+    {
+      "ndb": "07019",
+      "nutrient": "203",
+      "amount": "24.10"
+    },
+    {
+      "ndb": "07019",
+      "nutrient": "204",
+      "amount": "38.27"
+    },
+    {
+      "ndb": "07019",
+      "nutrient": "205",
+      "amount": "1.86"
+    },
+    {
+      "ndb": "07019",
+      "nutrient": "208",
+      "amount": "455"
+    },
+    {
+      "ndb": "07019",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07024",
+      "nutrient": "203",
+      "amount": "15.51"
+    },
+    {
+      "ndb": "07024",
+      "nutrient": "204",
+      "amount": "16.19"
+    },
+    {
+      "ndb": "07024",
+      "nutrient": "205",
+      "amount": "2.74"
+    },
+    {
+      "ndb": "07024",
+      "nutrient": "208",
+      "amount": "223"
+    },
+    {
+      "ndb": "07024",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07025",
+      "nutrient": "203",
+      "amount": "12.23"
+    },
+    {
+      "ndb": "07025",
+      "nutrient": "204",
+      "amount": "17.29"
+    },
+    {
+      "ndb": "07025",
+      "nutrient": "205",
+      "amount": "3.81"
+    },
+    {
+      "ndb": "07025",
+      "nutrient": "208",
+      "amount": "223"
+    },
+    {
+      "ndb": "07025",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07026",
+      "nutrient": "203",
+      "amount": "16.06"
+    },
+    {
+      "ndb": "07026",
+      "nutrient": "204",
+      "amount": "18.83"
+    },
+    {
+      "ndb": "07026",
+      "nutrient": "205",
+      "amount": "0.26"
+    },
+    {
+      "ndb": "07026",
+      "nutrient": "208",
+      "amount": "239"
+    },
+    {
+      "ndb": "07026",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07030",
+      "nutrient": "203",
+      "amount": "16.28"
+    },
+    {
+      "ndb": "07030",
+      "nutrient": "204",
+      "amount": "20.68"
+    },
+    {
+      "ndb": "07030",
+      "nutrient": "205",
+      "amount": "1.84"
+    },
+    {
+      "ndb": "07030",
+      "nutrient": "208",
+      "amount": "263"
+    },
+    {
+      "ndb": "07030",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07040",
+      "nutrient": "203",
+      "amount": "15.20"
+    },
+    {
+      "ndb": "07040",
+      "nutrient": "204",
+      "amount": "25.60"
+    },
+    {
+      "ndb": "07040",
+      "nutrient": "205",
+      "amount": "2.10"
+    },
+    {
+      "ndb": "07040",
+      "nutrient": "208",
+      "amount": "304"
+    },
+    {
+      "ndb": "07040",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07050",
+      "nutrient": "203",
+      "amount": "16.37"
+    },
+    {
+      "ndb": "07050",
+      "nutrient": "204",
+      "amount": "25.39"
+    },
+    {
+      "ndb": "07050",
+      "nutrient": "205",
+      "amount": "3.05"
+    },
+    {
+      "ndb": "07050",
+      "nutrient": "208",
+      "amount": "311"
+    },
+    {
+      "ndb": "07050",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07052",
+      "nutrient": "203",
+      "amount": "16.30"
+    },
+    {
+      "ndb": "07052",
+      "nutrient": "204",
+      "amount": "6.21"
+    },
+    {
+      "ndb": "07052",
+      "nutrient": "205",
+      "amount": "3.34"
+    },
+    {
+      "ndb": "07052",
+      "nutrient": "208",
+      "amount": "139"
+    },
+    {
+      "ndb": "07052",
+      "nutrient": "291",
+      "amount": "0.1"
+    },
+    {
+      "ndb": "07059",
+      "nutrient": "203",
+      "amount": "14.10"
+    },
+    {
+      "ndb": "07059",
+      "nutrient": "204",
+      "amount": "28.72"
+    },
+    {
+      "ndb": "07059",
+      "nutrient": "205",
+      "amount": "1.63"
+    },
+    {
+      "ndb": "07059",
+      "nutrient": "208",
+      "amount": "326"
+    },
+    {
+      "ndb": "07059",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07068",
+      "nutrient": "203",
+      "amount": "12.60"
+    },
+    {
+      "ndb": "07068",
+      "nutrient": "204",
+      "amount": "22.20"
+    },
+    {
+      "ndb": "07068",
+      "nutrient": "205",
+      "amount": "1.90"
+    },
+    {
+      "ndb": "07068",
+      "nutrient": "208",
+      "amount": "261"
+    },
+    {
+      "ndb": "07068",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07070",
+      "nutrient": "203",
+      "amount": "19.20"
+    },
+    {
+      "ndb": "07070",
+      "nutrient": "204",
+      "amount": "9.21"
+    },
+    {
+      "ndb": "07070",
+      "nutrient": "205",
+      "amount": "1.55"
+    },
+    {
+      "ndb": "07070",
+      "nutrient": "208",
+      "amount": "172"
+    },
+    {
+      "ndb": "07070",
+      "nutrient": "291",
+      "amount": "0.1"
+    },
+    {
+      "ndb": "07910",
+      "nutrient": "203",
+      "amount": "13.99"
+    },
+    {
+      "ndb": "07910",
+      "nutrient": "204",
+      "amount": "31.70"
+    },
+    {
+      "ndb": "07910",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "07910",
+      "nutrient": "208",
+      "amount": "341"
+    },
+    {
+      "ndb": "07910",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07911",
+      "nutrient": "203",
+      "amount": "12.38"
+    },
+    {
+      "ndb": "07911",
+      "nutrient": "204",
+      "amount": "25.45"
+    },
+    {
+      "ndb": "07911",
+      "nutrient": "205",
+      "amount": "5.89"
+    },
+    {
+      "ndb": "07911",
+      "nutrient": "208",
+      "amount": "305"
+    },
+    {
+      "ndb": "07911",
+      "nutrient": "291",
+      "amount": "2.5"
+    },
+    {
+      "ndb": "07912",
+      "nutrient": "203",
+      "amount": "15.27"
+    },
+    {
+      "ndb": "07912",
+      "nutrient": "204",
+      "amount": "16.28"
+    },
+    {
+      "ndb": "07912",
+      "nutrient": "205",
+      "amount": "3.73"
+    },
+    {
+      "ndb": "07912",
+      "nutrient": "208",
+      "amount": "223"
+    },
+    {
+      "ndb": "07912",
+      "nutrient": "291",
+      "amount": "0.2"
+    },
+    {
+      "ndb": "07926",
+      "nutrient": "203",
+      "amount": "21.70"
+    },
+    {
+      "ndb": "07926",
+      "nutrient": "204",
+      "amount": "37.00"
+    },
+    {
+      "ndb": "07926",
+      "nutrient": "205",
+      "amount": "1.20"
+    },
+    {
+      "ndb": "07926",
+      "nutrient": "208",
+      "amount": "425"
+    },
+    {
+      "ndb": "07926",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "07939",
+      "nutrient": "203",
+      "amount": "12.81"
+    },
+    {
+      "ndb": "07939",
+      "nutrient": "204",
+      "amount": "23.68"
+    },
+    {
+      "ndb": "07939",
+      "nutrient": "205",
+      "amount": "0.28"
+    },
+    {
+      "ndb": "07939",
+      "nutrient": "208",
+      "amount": "269"
+    },
+    {
+      "ndb": "07939",
+      "nutrient": "291",
+      "amount": "0.1"
+    },
+    {
+      "ndb": "08013",
+      "nutrient": "203",
+      "amount": "12.09"
+    },
+    {
+      "ndb": "08013",
+      "nutrient": "204",
+      "amount": "6.73"
+    },
+    {
+      "ndb": "08013",
+      "nutrient": "205",
+      "amount": "73.23"
+    },
+    {
+      "ndb": "08013",
+      "nutrient": "208",
+      "amount": "376"
+    },
+    {
+      "ndb": "08013",
+      "nutrient": "291",
+      "amount": "9.4"
+    },
+    {
+      "ndb": "08025",
+      "nutrient": "203",
+      "amount": "6.69"
+    },
+    {
+      "ndb": "08025",
+      "nutrient": "204",
+      "amount": "1.26"
+    },
+    {
+      "ndb": "08025",
+      "nutrient": "205",
+      "amount": "86.22"
+    },
+    {
+      "ndb": "08025",
+      "nutrient": "208",
+      "amount": "394"
+    },
+    {
+      "ndb": "08025",
+      "nutrient": "291",
+      "amount": "0.7"
+    },
+    {
+      "ndb": "08029",
+      "nutrient": "203",
+      "amount": "9.90"
+    },
+    {
+      "ndb": "08029",
+      "nutrient": "204",
+      "amount": "2.10"
+    },
+    {
+      "ndb": "08029",
+      "nutrient": "205",
+      "amount": "80.50"
+    },
+    {
+      "ndb": "08029",
+      "nutrient": "208",
+      "amount": "328"
+    },
+    {
+      "ndb": "08029",
+      "nutrient": "291",
+      "amount": "18.3"
+    },
+    {
+      "ndb": "08037",
+      "nutrient": "203",
+      "amount": "13.67"
+    },
+    {
+      "ndb": "08037",
+      "nutrient": "204",
+      "amount": "24.31"
+    },
+    {
+      "ndb": "08037",
+      "nutrient": "205",
+      "amount": "53.88"
+    },
+    {
+      "ndb": "08037",
+      "nutrient": "208",
+      "amount": "489"
+    },
+    {
+      "ndb": "08037",
+      "nutrient": "291",
+      "amount": "8.9"
+    },
+    {
+      "ndb": "08061",
+      "nutrient": "203",
+      "amount": "7.60"
+    },
+    {
+      "ndb": "08061",
+      "nutrient": "204",
+      "amount": "1.60"
+    },
+    {
+      "ndb": "08061",
+      "nutrient": "205",
+      "amount": "78.90"
+    },
+    {
+      "ndb": "08061",
+      "nutrient": "208",
+      "amount": "324"
+    },
+    {
+      "ndb": "08061",
+      "nutrient": "291",
+      "amount": "13.7"
+    },
+    {
+      "ndb": "08100",
+      "nutrient": "203",
+      "amount": "6.30"
+    },
+    {
+      "ndb": "08100",
+      "nutrient": "204",
+      "amount": "0.50"
+    },
+    {
+      "ndb": "08100",
+      "nutrient": "205",
+      "amount": "82.40"
+    },
+    {
+      "ndb": "08100",
+      "nutrient": "208",
+      "amount": "370"
+    },
+    {
+      "ndb": "08100",
+      "nutrient": "291",
+      "amount": "0.7"
+    },
+    {
+      "ndb": "08106",
+      "nutrient": "203",
+      "amount": "10.60"
+    },
+    {
+      "ndb": "08106",
+      "nutrient": "204",
+      "amount": "1.40"
+    },
+    {
+      "ndb": "08106",
+      "nutrient": "205",
+      "amount": "75.50"
+    },
+    {
+      "ndb": "08106",
+      "nutrient": "208",
+      "amount": "366"
+    },
+    {
+      "ndb": "08106",
+      "nutrient": "291",
+      "amount": "3.3"
+    },
+    {
+      "ndb": "08144",
+      "nutrient": "203",
+      "amount": "11.20"
+    },
+    {
+      "ndb": "08144",
+      "nutrient": "204",
+      "amount": "2.00"
+    },
+    {
+      "ndb": "08144",
+      "nutrient": "205",
+      "amount": "75.20"
+    },
+    {
+      "ndb": "08144",
+      "nutrient": "208",
+      "amount": "342"
+    },
+    {
+      "ndb": "08144",
+      "nutrient": "291",
+      "amount": "9.5"
+    },
+    {
+      "ndb": "08172",
+      "nutrient": "203",
+      "amount": "10.60"
+    },
+    {
+      "ndb": "08172",
+      "nutrient": "204",
+      "amount": "0.50"
+    },
+    {
+      "ndb": "08172",
+      "nutrient": "205",
+      "amount": "78.00"
+    },
+    {
+      "ndb": "08172",
+      "nutrient": "208",
+      "amount": "369"
+    },
+    {
+      "ndb": "08172",
+      "nutrient": "291",
+      "amount": "1.9"
+    },
+    {
+      "ndb": "08402",
+      "nutrient": "203",
+      "amount": "13.70"
+    },
+    {
+      "ndb": "08402",
+      "nutrient": "204",
+      "amount": "6.87"
+    },
+    {
+      "ndb": "08402",
+      "nutrient": "205",
+      "amount": "68.18"
+    },
+    {
+      "ndb": "08402",
+      "nutrient": "208",
+      "amount": "371"
+    },
+    {
+      "ndb": "08402",
+      "nutrient": "291",
+      "amount": "9.4"
+    },
+    {
+      "ndb": "08506",
+      "nutrient": "203",
+      "amount": "5.90"
+    },
+    {
+      "ndb": "08506",
+      "nutrient": "204",
+      "amount": "0.91"
+    },
+    {
+      "ndb": "08506",
+      "nutrient": "205",
+      "amount": "88.01"
+    },
+    {
+      "ndb": "08506",
+      "nutrient": "208",
+      "amount": "357"
+    },
+    {
+      "ndb": "08506",
+      "nutrient": "291",
+      "amount": "2.7"
+    },
+    {
       "ndb": "09004",
       "nutrient": "203",
       "amount": "0.27"
@@ -603,6 +5881,81 @@
       "amount": "8.7"
     },
     {
+      "ndb": "09021",
+      "nutrient": "203",
+      "amount": "1.40"
+    },
+    {
+      "ndb": "09021",
+      "nutrient": "204",
+      "amount": "0.39"
+    },
+    {
+      "ndb": "09021",
+      "nutrient": "205",
+      "amount": "11.12"
+    },
+    {
+      "ndb": "09021",
+      "nutrient": "208",
+      "amount": "48"
+    },
+    {
+      "ndb": "09021",
+      "nutrient": "291",
+      "amount": "2.0"
+    },
+    {
+      "ndb": "09040",
+      "nutrient": "203",
+      "amount": "1.09"
+    },
+    {
+      "ndb": "09040",
+      "nutrient": "204",
+      "amount": "0.33"
+    },
+    {
+      "ndb": "09040",
+      "nutrient": "205",
+      "amount": "22.84"
+    },
+    {
+      "ndb": "09040",
+      "nutrient": "208",
+      "amount": "89"
+    },
+    {
+      "ndb": "09040",
+      "nutrient": "291",
+      "amount": "2.6"
+    },
+    {
+      "ndb": "09042",
+      "nutrient": "203",
+      "amount": "1.39"
+    },
+    {
+      "ndb": "09042",
+      "nutrient": "204",
+      "amount": "0.49"
+    },
+    {
+      "ndb": "09042",
+      "nutrient": "205",
+      "amount": "9.61"
+    },
+    {
+      "ndb": "09042",
+      "nutrient": "208",
+      "amount": "43"
+    },
+    {
+      "ndb": "09042",
+      "nutrient": "291",
+      "amount": "5.3"
+    },
+    {
       "ndb": "09044",
       "nutrient": "203",
       "amount": "1.25"
@@ -626,6 +5979,56 @@
       "ndb": "09044",
       "nutrient": "291",
       "amount": "2.5"
+    },
+    {
+      "ndb": "09050",
+      "nutrient": "203",
+      "amount": "0.74"
+    },
+    {
+      "ndb": "09050",
+      "nutrient": "204",
+      "amount": "0.33"
+    },
+    {
+      "ndb": "09050",
+      "nutrient": "205",
+      "amount": "14.49"
+    },
+    {
+      "ndb": "09050",
+      "nutrient": "208",
+      "amount": "57"
+    },
+    {
+      "ndb": "09050",
+      "nutrient": "291",
+      "amount": "2.4"
+    },
+    {
+      "ndb": "09059",
+      "nutrient": "203",
+      "amount": "1.07"
+    },
+    {
+      "ndb": "09059",
+      "nutrient": "204",
+      "amount": "0.23"
+    },
+    {
+      "ndb": "09059",
+      "nutrient": "205",
+      "amount": "27.12"
+    },
+    {
+      "ndb": "09059",
+      "nutrient": "208",
+      "amount": "103"
+    },
+    {
+      "ndb": "09059",
+      "nutrient": "291",
+      "amount": "4.9"
     },
     {
       "ndb": "09060",
@@ -678,6 +6081,56 @@
       "amount": "3.0"
     },
     {
+      "ndb": "09070",
+      "nutrient": "203",
+      "amount": "1.06"
+    },
+    {
+      "ndb": "09070",
+      "nutrient": "204",
+      "amount": "0.20"
+    },
+    {
+      "ndb": "09070",
+      "nutrient": "205",
+      "amount": "16.01"
+    },
+    {
+      "ndb": "09070",
+      "nutrient": "208",
+      "amount": "63"
+    },
+    {
+      "ndb": "09070",
+      "nutrient": "291",
+      "amount": "2.1"
+    },
+    {
+      "ndb": "09078",
+      "nutrient": "203",
+      "amount": "0.46"
+    },
+    {
+      "ndb": "09078",
+      "nutrient": "204",
+      "amount": "0.13"
+    },
+    {
+      "ndb": "09078",
+      "nutrient": "205",
+      "amount": "11.97"
+    },
+    {
+      "ndb": "09078",
+      "nutrient": "208",
+      "amount": "46"
+    },
+    {
+      "ndb": "09078",
+      "nutrient": "291",
+      "amount": "3.6"
+    },
+    {
       "ndb": "09079",
       "nutrient": "203",
       "amount": "0.17"
@@ -728,6 +6181,81 @@
       "amount": "4.3"
     },
     {
+      "ndb": "09087",
+      "nutrient": "203",
+      "amount": "2.45"
+    },
+    {
+      "ndb": "09087",
+      "nutrient": "204",
+      "amount": "0.39"
+    },
+    {
+      "ndb": "09087",
+      "nutrient": "205",
+      "amount": "75.03"
+    },
+    {
+      "ndb": "09087",
+      "nutrient": "208",
+      "amount": "282"
+    },
+    {
+      "ndb": "09087",
+      "nutrient": "291",
+      "amount": "8.0"
+    },
+    {
+      "ndb": "09088",
+      "nutrient": "203",
+      "amount": "0.66"
+    },
+    {
+      "ndb": "09088",
+      "nutrient": "204",
+      "amount": "0.50"
+    },
+    {
+      "ndb": "09088",
+      "nutrient": "205",
+      "amount": "18.40"
+    },
+    {
+      "ndb": "09088",
+      "nutrient": "208",
+      "amount": "73"
+    },
+    {
+      "ndb": "09088",
+      "nutrient": "291",
+      "amount": "7.0"
+    },
+    {
+      "ndb": "09089",
+      "nutrient": "203",
+      "amount": "0.75"
+    },
+    {
+      "ndb": "09089",
+      "nutrient": "204",
+      "amount": "0.30"
+    },
+    {
+      "ndb": "09089",
+      "nutrient": "205",
+      "amount": "19.18"
+    },
+    {
+      "ndb": "09089",
+      "nutrient": "208",
+      "amount": "74"
+    },
+    {
+      "ndb": "09089",
+      "nutrient": "291",
+      "amount": "2.9"
+    },
+    {
       "ndb": "09094",
       "nutrient": "203",
       "amount": "3.30"
@@ -751,6 +6279,56 @@
       "ndb": "09094",
       "nutrient": "291",
       "amount": "9.8"
+    },
+    {
+      "ndb": "09095",
+      "nutrient": "203",
+      "amount": "1.42"
+    },
+    {
+      "ndb": "09095",
+      "nutrient": "204",
+      "amount": "0.40"
+    },
+    {
+      "ndb": "09095",
+      "nutrient": "205",
+      "amount": "27.57"
+    },
+    {
+      "ndb": "09095",
+      "nutrient": "208",
+      "amount": "107"
+    },
+    {
+      "ndb": "09095",
+      "nutrient": "291",
+      "amount": "4.2"
+    },
+    {
+      "ndb": "09107",
+      "nutrient": "203",
+      "amount": "0.88"
+    },
+    {
+      "ndb": "09107",
+      "nutrient": "204",
+      "amount": "0.58"
+    },
+    {
+      "ndb": "09107",
+      "nutrient": "205",
+      "amount": "10.18"
+    },
+    {
+      "ndb": "09107",
+      "nutrient": "208",
+      "amount": "44"
+    },
+    {
+      "ndb": "09107",
+      "nutrient": "291",
+      "amount": "4.3"
     },
     {
       "ndb": "09110",
@@ -778,26 +6356,6 @@
       "amount": "13.0"
     },
     {
-      "ndb": "09138",
-      "nutrient": "203",
-      "amount": "1.90"
-    },
-    {
-      "ndb": "09138",
-      "nutrient": "204",
-      "amount": "0.70"
-    },
-    {
-      "ndb": "09138",
-      "nutrient": "205",
-      "amount": "11.20"
-    },
-    {
-      "ndb": "09138",
-      "nutrient": "208",
-      "amount": "53"
-    },
-    {
       "ndb": "09139",
       "nutrient": "203",
       "amount": "2.55"
@@ -823,6 +6381,31 @@
       "amount": "5.4"
     },
     {
+      "ndb": "09143",
+      "nutrient": "203",
+      "amount": "0.32"
+    },
+    {
+      "ndb": "09143",
+      "nutrient": "204",
+      "amount": "0.14"
+    },
+    {
+      "ndb": "09143",
+      "nutrient": "205",
+      "amount": "9.48"
+    },
+    {
+      "ndb": "09143",
+      "nutrient": "208",
+      "amount": "36"
+    },
+    {
+      "ndb": "09143",
+      "nutrient": "291",
+      "amount": "3.6"
+    },
+    {
       "ndb": "09144",
       "nutrient": "203",
       "amount": "1.72"
@@ -846,26 +6429,6 @@
       "ndb": "09144",
       "nutrient": "291",
       "amount": "1.5"
-    },
-    {
-      "ndb": "09146",
-      "nutrient": "203",
-      "amount": "1.20"
-    },
-    {
-      "ndb": "09146",
-      "nutrient": "204",
-      "amount": "0.20"
-    },
-    {
-      "ndb": "09146",
-      "nutrient": "205",
-      "amount": "20.23"
-    },
-    {
-      "ndb": "09146",
-      "nutrient": "208",
-      "amount": "79"
     },
     {
       "ndb": "09149",
@@ -943,6 +6506,31 @@
       "amount": "10.6"
     },
     {
+      "ndb": "09159",
+      "nutrient": "203",
+      "amount": "0.70"
+    },
+    {
+      "ndb": "09159",
+      "nutrient": "204",
+      "amount": "0.20"
+    },
+    {
+      "ndb": "09159",
+      "nutrient": "205",
+      "amount": "10.54"
+    },
+    {
+      "ndb": "09159",
+      "nutrient": "208",
+      "amount": "30"
+    },
+    {
+      "ndb": "09159",
+      "nutrient": "291",
+      "amount": "2.8"
+    },
+    {
       "ndb": "09160",
       "nutrient": "203",
       "amount": "0.42"
@@ -1018,6 +6606,56 @@
       "amount": "1.3"
     },
     {
+      "ndb": "09165",
+      "nutrient": "203",
+      "amount": "3.80"
+    },
+    {
+      "ndb": "09165",
+      "nutrient": "204",
+      "amount": "1.20"
+    },
+    {
+      "ndb": "09165",
+      "nutrient": "205",
+      "amount": "70.70"
+    },
+    {
+      "ndb": "09165",
+      "nutrient": "208",
+      "amount": "277"
+    },
+    {
+      "ndb": "09165",
+      "nutrient": "291",
+      "amount": "4.6"
+    },
+    {
+      "ndb": "09167",
+      "nutrient": "203",
+      "amount": "1.52"
+    },
+    {
+      "ndb": "09167",
+      "nutrient": "204",
+      "amount": "0.31"
+    },
+    {
+      "ndb": "09167",
+      "nutrient": "205",
+      "amount": "13.02"
+    },
+    {
+      "ndb": "09167",
+      "nutrient": "208",
+      "amount": "55"
+    },
+    {
+      "ndb": "09167",
+      "nutrient": "291",
+      "amount": "5.3"
+    },
+    {
       "ndb": "09172",
       "nutrient": "203",
       "amount": "1.31"
@@ -1041,6 +6679,56 @@
       "ndb": "09172",
       "nutrient": "291",
       "amount": "1.1"
+    },
+    {
+      "ndb": "09174",
+      "nutrient": "203",
+      "amount": "0.43"
+    },
+    {
+      "ndb": "09174",
+      "nutrient": "204",
+      "amount": "0.20"
+    },
+    {
+      "ndb": "09174",
+      "nutrient": "205",
+      "amount": "12.14"
+    },
+    {
+      "ndb": "09174",
+      "nutrient": "208",
+      "amount": "47"
+    },
+    {
+      "ndb": "09174",
+      "nutrient": "291",
+      "amount": "1.7"
+    },
+    {
+      "ndb": "09176",
+      "nutrient": "203",
+      "amount": "0.82"
+    },
+    {
+      "ndb": "09176",
+      "nutrient": "204",
+      "amount": "0.38"
+    },
+    {
+      "ndb": "09176",
+      "nutrient": "205",
+      "amount": "14.98"
+    },
+    {
+      "ndb": "09176",
+      "nutrient": "208",
+      "amount": "60"
+    },
+    {
+      "ndb": "09176",
+      "nutrient": "291",
+      "amount": "1.6"
     },
     {
       "ndb": "09178",
@@ -1093,6 +6781,31 @@
       "amount": "0.9"
     },
     {
+      "ndb": "09183",
+      "nutrient": "203",
+      "amount": "1.11"
+    },
+    {
+      "ndb": "09183",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "09183",
+      "nutrient": "205",
+      "amount": "6.58"
+    },
+    {
+      "ndb": "09183",
+      "nutrient": "208",
+      "amount": "28"
+    },
+    {
+      "ndb": "09183",
+      "nutrient": "291",
+      "amount": "0.9"
+    },
+    {
       "ndb": "09184",
       "nutrient": "203",
       "amount": "0.54"
@@ -1118,6 +6831,31 @@
       "amount": "0.8"
     },
     {
+      "ndb": "09185",
+      "nutrient": "203",
+      "amount": "0.84"
+    },
+    {
+      "ndb": "09185",
+      "nutrient": "204",
+      "amount": "0.25"
+    },
+    {
+      "ndb": "09185",
+      "nutrient": "205",
+      "amount": "7.94"
+    },
+    {
+      "ndb": "09185",
+      "nutrient": "208",
+      "amount": "33"
+    },
+    {
+      "ndb": "09185",
+      "nutrient": "291",
+      "amount": "0.7"
+    },
+    {
       "ndb": "09190",
       "nutrient": "203",
       "amount": "1.44"
@@ -1141,6 +6879,81 @@
       "ndb": "09190",
       "nutrient": "291",
       "amount": "1.7"
+    },
+    {
+      "ndb": "09191",
+      "nutrient": "203",
+      "amount": "1.06"
+    },
+    {
+      "ndb": "09191",
+      "nutrient": "204",
+      "amount": "0.32"
+    },
+    {
+      "ndb": "09191",
+      "nutrient": "205",
+      "amount": "10.55"
+    },
+    {
+      "ndb": "09191",
+      "nutrient": "208",
+      "amount": "44"
+    },
+    {
+      "ndb": "09191",
+      "nutrient": "291",
+      "amount": "1.7"
+    },
+    {
+      "ndb": "09202",
+      "nutrient": "203",
+      "amount": "0.91"
+    },
+    {
+      "ndb": "09202",
+      "nutrient": "204",
+      "amount": "0.15"
+    },
+    {
+      "ndb": "09202",
+      "nutrient": "205",
+      "amount": "12.54"
+    },
+    {
+      "ndb": "09202",
+      "nutrient": "208",
+      "amount": "49"
+    },
+    {
+      "ndb": "09202",
+      "nutrient": "291",
+      "amount": "2.2"
+    },
+    {
+      "ndb": "09206",
+      "nutrient": "203",
+      "amount": "0.70"
+    },
+    {
+      "ndb": "09206",
+      "nutrient": "204",
+      "amount": "0.20"
+    },
+    {
+      "ndb": "09206",
+      "nutrient": "205",
+      "amount": "10.40"
+    },
+    {
+      "ndb": "09206",
+      "nutrient": "208",
+      "amount": "45"
+    },
+    {
+      "ndb": "09206",
+      "nutrient": "291",
+      "amount": "0.2"
     },
     {
       "ndb": "09216",
@@ -1193,6 +7006,31 @@
       "amount": "0.2"
     },
     {
+      "ndb": "09226",
+      "nutrient": "203",
+      "amount": "0.47"
+    },
+    {
+      "ndb": "09226",
+      "nutrient": "204",
+      "amount": "0.26"
+    },
+    {
+      "ndb": "09226",
+      "nutrient": "205",
+      "amount": "10.82"
+    },
+    {
+      "ndb": "09226",
+      "nutrient": "208",
+      "amount": "43"
+    },
+    {
+      "ndb": "09226",
+      "nutrient": "291",
+      "amount": "1.7"
+    },
+    {
       "ndb": "09231",
       "nutrient": "203",
       "amount": "2.20"
@@ -1218,6 +7056,31 @@
       "amount": "10.4"
     },
     {
+      "ndb": "09252",
+      "nutrient": "203",
+      "amount": "0.36"
+    },
+    {
+      "ndb": "09252",
+      "nutrient": "204",
+      "amount": "0.14"
+    },
+    {
+      "ndb": "09252",
+      "nutrient": "205",
+      "amount": "15.23"
+    },
+    {
+      "ndb": "09252",
+      "nutrient": "208",
+      "amount": "57"
+    },
+    {
+      "ndb": "09252",
+      "nutrient": "291",
+      "amount": "3.1"
+    },
+    {
       "ndb": "09277",
       "nutrient": "203",
       "amount": "1.30"
@@ -1241,6 +7104,131 @@
       "ndb": "09277",
       "nutrient": "291",
       "amount": "2.3"
+    },
+    {
+      "ndb": "09278",
+      "nutrient": "203",
+      "amount": "0.79"
+    },
+    {
+      "ndb": "09278",
+      "nutrient": "204",
+      "amount": "0.18"
+    },
+    {
+      "ndb": "09278",
+      "nutrient": "205",
+      "amount": "31.15"
+    },
+    {
+      "ndb": "09278",
+      "nutrient": "208",
+      "amount": "116"
+    },
+    {
+      "ndb": "09278",
+      "nutrient": "291",
+      "amount": "2.3"
+    },
+    {
+      "ndb": "09279",
+      "nutrient": "203",
+      "amount": "0.70"
+    },
+    {
+      "ndb": "09279",
+      "nutrient": "204",
+      "amount": "0.28"
+    },
+    {
+      "ndb": "09279",
+      "nutrient": "205",
+      "amount": "11.42"
+    },
+    {
+      "ndb": "09279",
+      "nutrient": "208",
+      "amount": "46"
+    },
+    {
+      "ndb": "09279",
+      "nutrient": "291",
+      "amount": "1.4"
+    },
+    {
+      "ndb": "09286",
+      "nutrient": "203",
+      "amount": "1.67"
+    },
+    {
+      "ndb": "09286",
+      "nutrient": "204",
+      "amount": "1.17"
+    },
+    {
+      "ndb": "09286",
+      "nutrient": "205",
+      "amount": "18.70"
+    },
+    {
+      "ndb": "09286",
+      "nutrient": "208",
+      "amount": "83"
+    },
+    {
+      "ndb": "09286",
+      "nutrient": "291",
+      "amount": "4.0"
+    },
+    {
+      "ndb": "09287",
+      "nutrient": "203",
+      "amount": "0.73"
+    },
+    {
+      "ndb": "09287",
+      "nutrient": "204",
+      "amount": "0.51"
+    },
+    {
+      "ndb": "09287",
+      "nutrient": "205",
+      "amount": "9.57"
+    },
+    {
+      "ndb": "09287",
+      "nutrient": "208",
+      "amount": "41"
+    },
+    {
+      "ndb": "09287",
+      "nutrient": "291",
+      "amount": "3.6"
+    },
+    {
+      "ndb": "09294",
+      "nutrient": "203",
+      "amount": "0.61"
+    },
+    {
+      "ndb": "09294",
+      "nutrient": "204",
+      "amount": "0.03"
+    },
+    {
+      "ndb": "09294",
+      "nutrient": "205",
+      "amount": "17.45"
+    },
+    {
+      "ndb": "09294",
+      "nutrient": "208",
+      "amount": "71"
+    },
+    {
+      "ndb": "09294",
+      "nutrient": "291",
+      "amount": "1.0"
     },
     {
       "ndb": "09295",
@@ -1293,6 +7281,81 @@
       "amount": "1.9"
     },
     {
+      "ndb": "09298",
+      "nutrient": "203",
+      "amount": "3.07"
+    },
+    {
+      "ndb": "09298",
+      "nutrient": "204",
+      "amount": "0.46"
+    },
+    {
+      "ndb": "09298",
+      "nutrient": "205",
+      "amount": "79.18"
+    },
+    {
+      "ndb": "09298",
+      "nutrient": "208",
+      "amount": "299"
+    },
+    {
+      "ndb": "09298",
+      "nutrient": "291",
+      "amount": "3.7"
+    },
+    {
+      "ndb": "09299",
+      "nutrient": "203",
+      "amount": "2.52"
+    },
+    {
+      "ndb": "09299",
+      "nutrient": "204",
+      "amount": "0.54"
+    },
+    {
+      "ndb": "09299",
+      "nutrient": "205",
+      "amount": "78.47"
+    },
+    {
+      "ndb": "09299",
+      "nutrient": "208",
+      "amount": "296"
+    },
+    {
+      "ndb": "09299",
+      "nutrient": "291",
+      "amount": "6.8"
+    },
+    {
+      "ndb": "09302",
+      "nutrient": "203",
+      "amount": "1.20"
+    },
+    {
+      "ndb": "09302",
+      "nutrient": "204",
+      "amount": "0.65"
+    },
+    {
+      "ndb": "09302",
+      "nutrient": "205",
+      "amount": "11.94"
+    },
+    {
+      "ndb": "09302",
+      "nutrient": "208",
+      "amount": "52"
+    },
+    {
+      "ndb": "09302",
+      "nutrient": "291",
+      "amount": "6.5"
+    },
+    {
       "ndb": "09307",
       "nutrient": "203",
       "amount": "0.90"
@@ -1316,6 +7379,106 @@
       "ndb": "09307",
       "nutrient": "291",
       "amount": "1.8"
+    },
+    {
+      "ndb": "09313",
+      "nutrient": "203",
+      "amount": "0.44"
+    },
+    {
+      "ndb": "09313",
+      "nutrient": "204",
+      "amount": "1.10"
+    },
+    {
+      "ndb": "09313",
+      "nutrient": "205",
+      "amount": "19.96"
+    },
+    {
+      "ndb": "09313",
+      "nutrient": "208",
+      "amount": "83"
+    },
+    {
+      "ndb": "09313",
+      "nutrient": "291",
+      "amount": "5.3"
+    },
+    {
+      "ndb": "09314",
+      "nutrient": "203",
+      "amount": "1.45"
+    },
+    {
+      "ndb": "09314",
+      "nutrient": "204",
+      "amount": "0.46"
+    },
+    {
+      "ndb": "09314",
+      "nutrient": "205",
+      "amount": "32.10"
+    },
+    {
+      "ndb": "09314",
+      "nutrient": "208",
+      "amount": "124"
+    },
+    {
+      "ndb": "09314",
+      "nutrient": "291",
+      "amount": "5.4"
+    },
+    {
+      "ndb": "09315",
+      "nutrient": "203",
+      "amount": "1.00"
+    },
+    {
+      "ndb": "09315",
+      "nutrient": "204",
+      "amount": "0.30"
+    },
+    {
+      "ndb": "09315",
+      "nutrient": "205",
+      "amount": "16.84"
+    },
+    {
+      "ndb": "09315",
+      "nutrient": "208",
+      "amount": "66"
+    },
+    {
+      "ndb": "09315",
+      "nutrient": "291",
+      "amount": "3.3"
+    },
+    {
+      "ndb": "09316",
+      "nutrient": "203",
+      "amount": "0.67"
+    },
+    {
+      "ndb": "09316",
+      "nutrient": "204",
+      "amount": "0.30"
+    },
+    {
+      "ndb": "09316",
+      "nutrient": "205",
+      "amount": "7.68"
+    },
+    {
+      "ndb": "09316",
+      "nutrient": "208",
+      "amount": "32"
+    },
+    {
+      "ndb": "09316",
+      "nutrient": "291",
+      "amount": "2.0"
     },
     {
       "ndb": "09318",
@@ -1368,6 +7531,31 @@
       "amount": "5.1"
     },
     {
+      "ndb": "09326",
+      "nutrient": "203",
+      "amount": "0.61"
+    },
+    {
+      "ndb": "09326",
+      "nutrient": "204",
+      "amount": "0.15"
+    },
+    {
+      "ndb": "09326",
+      "nutrient": "205",
+      "amount": "7.55"
+    },
+    {
+      "ndb": "09326",
+      "nutrient": "208",
+      "amount": "30"
+    },
+    {
+      "ndb": "09326",
+      "nutrient": "291",
+      "amount": "0.4"
+    },
+    {
       "ndb": "09334",
       "nutrient": "203",
       "amount": "0.71"
@@ -1418,6 +7606,56 @@
       "amount": "3.6"
     },
     {
+      "ndb": "09421",
+      "nutrient": "203",
+      "amount": "1.81"
+    },
+    {
+      "ndb": "09421",
+      "nutrient": "204",
+      "amount": "0.15"
+    },
+    {
+      "ndb": "09421",
+      "nutrient": "205",
+      "amount": "74.97"
+    },
+    {
+      "ndb": "09421",
+      "nutrient": "208",
+      "amount": "277"
+    },
+    {
+      "ndb": "09421",
+      "nutrient": "291",
+      "amount": "6.7"
+    },
+    {
+      "ndb": "09428",
+      "nutrient": "203",
+      "amount": "2.30"
+    },
+    {
+      "ndb": "09428",
+      "nutrient": "204",
+      "amount": "2.00"
+    },
+    {
+      "ndb": "09428",
+      "nutrient": "205",
+      "amount": "23.90"
+    },
+    {
+      "ndb": "09428",
+      "nutrient": "208",
+      "amount": "111"
+    },
+    {
+      "ndb": "09428",
+      "nutrient": "291",
+      "amount": "6.2"
+    },
+    {
       "ndb": "09433",
       "nutrient": "203",
       "amount": "0.85"
@@ -1443,6 +7681,506 @@
       "amount": "1.7"
     },
     {
+      "ndb": "10005",
+      "nutrient": "203",
+      "amount": "9.34"
+    },
+    {
+      "ndb": "10005",
+      "nutrient": "204",
+      "amount": "53.01"
+    },
+    {
+      "ndb": "10005",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10005",
+      "nutrient": "208",
+      "amount": "518"
+    },
+    {
+      "ndb": "10005",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10020",
+      "nutrient": "203",
+      "amount": "19.74"
+    },
+    {
+      "ndb": "10020",
+      "nutrient": "204",
+      "amount": "12.58"
+    },
+    {
+      "ndb": "10020",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10020",
+      "nutrient": "208",
+      "amount": "198"
+    },
+    {
+      "ndb": "10020",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10024",
+      "nutrient": "203",
+      "amount": "21.43"
+    },
+    {
+      "ndb": "10024",
+      "nutrient": "204",
+      "amount": "5.66"
+    },
+    {
+      "ndb": "10024",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10024",
+      "nutrient": "208",
+      "amount": "143"
+    },
+    {
+      "ndb": "10024",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10072",
+      "nutrient": "203",
+      "amount": "19.55"
+    },
+    {
+      "ndb": "10072",
+      "nutrient": "204",
+      "amount": "7.14"
+    },
+    {
+      "ndb": "10072",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10072",
+      "nutrient": "208",
+      "amount": "148"
+    },
+    {
+      "ndb": "10072",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10088",
+      "nutrient": "203",
+      "amount": "15.47"
+    },
+    {
+      "ndb": "10088",
+      "nutrient": "204",
+      "amount": "23.40"
+    },
+    {
+      "ndb": "10088",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10088",
+      "nutrient": "208",
+      "amount": "277"
+    },
+    {
+      "ndb": "10088",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10103",
+      "nutrient": "203",
+      "amount": "17.27"
+    },
+    {
+      "ndb": "10103",
+      "nutrient": "204",
+      "amount": "4.36"
+    },
+    {
+      "ndb": "10103",
+      "nutrient": "205",
+      "amount": "1.33"
+    },
+    {
+      "ndb": "10103",
+      "nutrient": "208",
+      "amount": "118"
+    },
+    {
+      "ndb": "10103",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10110",
+      "nutrient": "203",
+      "amount": "21.39"
+    },
+    {
+      "ndb": "10110",
+      "nutrient": "204",
+      "amount": "3.65"
+    },
+    {
+      "ndb": "10110",
+      "nutrient": "205",
+      "amount": "2.47"
+    },
+    {
+      "ndb": "10110",
+      "nutrient": "208",
+      "amount": "134"
+    },
+    {
+      "ndb": "10110",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10123",
+      "nutrient": "203",
+      "amount": "12.62"
+    },
+    {
+      "ndb": "10123",
+      "nutrient": "204",
+      "amount": "39.69"
+    },
+    {
+      "ndb": "10123",
+      "nutrient": "205",
+      "amount": "1.28"
+    },
+    {
+      "ndb": "10123",
+      "nutrient": "208",
+      "amount": "417"
+    },
+    {
+      "ndb": "10123",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10130",
+      "nutrient": "203",
+      "amount": "20.31"
+    },
+    {
+      "ndb": "10130",
+      "nutrient": "204",
+      "amount": "2.62"
+    },
+    {
+      "ndb": "10130",
+      "nutrient": "205",
+      "amount": "1.34"
+    },
+    {
+      "ndb": "10130",
+      "nutrient": "208",
+      "amount": "110"
+    },
+    {
+      "ndb": "10130",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10165",
+      "nutrient": "203",
+      "amount": "5.05"
+    },
+    {
+      "ndb": "10165",
+      "nutrient": "204",
+      "amount": "80.50"
+    },
+    {
+      "ndb": "10165",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10165",
+      "nutrient": "208",
+      "amount": "748"
+    },
+    {
+      "ndb": "10165",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10174",
+      "nutrient": "203",
+      "amount": "17.75"
+    },
+    {
+      "ndb": "10174",
+      "nutrient": "204",
+      "amount": "33.50"
+    },
+    {
+      "ndb": "10174",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10174",
+      "nutrient": "208",
+      "amount": "378"
+    },
+    {
+      "ndb": "10174",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10192",
+      "nutrient": "203",
+      "amount": "19.07"
+    },
+    {
+      "ndb": "10192",
+      "nutrient": "204",
+      "amount": "16.33"
+    },
+    {
+      "ndb": "10192",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10192",
+      "nutrient": "208",
+      "amount": "224"
+    },
+    {
+      "ndb": "10192",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10219",
+      "nutrient": "203",
+      "amount": "16.88"
+    },
+    {
+      "ndb": "10219",
+      "nutrient": "204",
+      "amount": "21.19"
+    },
+    {
+      "ndb": "10219",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10219",
+      "nutrient": "208",
+      "amount": "263"
+    },
+    {
+      "ndb": "10219",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10220",
+      "nutrient": "203",
+      "amount": "25.69"
+    },
+    {
+      "ndb": "10220",
+      "nutrient": "204",
+      "amount": "20.77"
+    },
+    {
+      "ndb": "10220",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10220",
+      "nutrient": "208",
+      "amount": "297"
+    },
+    {
+      "ndb": "10220",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10860",
+      "nutrient": "203",
+      "amount": "35.73"
+    },
+    {
+      "ndb": "10860",
+      "nutrient": "204",
+      "amount": "43.27"
+    },
+    {
+      "ndb": "10860",
+      "nutrient": "205",
+      "amount": "1.35"
+    },
+    {
+      "ndb": "10860",
+      "nutrient": "208",
+      "amount": "548"
+    },
+    {
+      "ndb": "10860",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10861",
+      "nutrient": "203",
+      "amount": "39.01"
+    },
+    {
+      "ndb": "10861",
+      "nutrient": "204",
+      "amount": "34.12"
+    },
+    {
+      "ndb": "10861",
+      "nutrient": "205",
+      "amount": "0.48"
+    },
+    {
+      "ndb": "10861",
+      "nutrient": "208",
+      "amount": "476"
+    },
+    {
+      "ndb": "10861",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10972",
+      "nutrient": "203",
+      "amount": "17.99"
+    },
+    {
+      "ndb": "10972",
+      "nutrient": "204",
+      "amount": "16.00"
+    },
+    {
+      "ndb": "10972",
+      "nutrient": "205",
+      "amount": "0.44"
+    },
+    {
+      "ndb": "10972",
+      "nutrient": "208",
+      "amount": "218"
+    },
+    {
+      "ndb": "10972",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10973",
+      "nutrient": "203",
+      "amount": "21.10"
+    },
+    {
+      "ndb": "10973",
+      "nutrient": "204",
+      "amount": "4.00"
+    },
+    {
+      "ndb": "10973",
+      "nutrient": "205",
+      "amount": "0.21"
+    },
+    {
+      "ndb": "10973",
+      "nutrient": "208",
+      "amount": "121"
+    },
+    {
+      "ndb": "10973",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10976",
+      "nutrient": "203",
+      "amount": "30.55"
+    },
+    {
+      "ndb": "10976",
+      "nutrient": "204",
+      "amount": "7.15"
+    },
+    {
+      "ndb": "10976",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "10976",
+      "nutrient": "208",
+      "amount": "187"
+    },
+    {
+      "ndb": "10976",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "10998",
+      "nutrient": "203",
+      "amount": "28.31"
+    },
+    {
+      "ndb": "10998",
+      "nutrient": "204",
+      "amount": "2.78"
+    },
+    {
+      "ndb": "10998",
+      "nutrient": "205",
+      "amount": "1.80"
+    },
+    {
+      "ndb": "10998",
+      "nutrient": "208",
+      "amount": "146"
+    },
+    {
+      "ndb": "10998",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
       "ndb": "11008",
       "nutrient": "203",
       "amount": "2.89"
@@ -1466,6 +8204,31 @@
       "ndb": "11008",
       "nutrient": "291",
       "amount": "5.7"
+    },
+    {
+      "ndb": "11011",
+      "nutrient": "203",
+      "amount": "2.20"
+    },
+    {
+      "ndb": "11011",
+      "nutrient": "204",
+      "amount": "0.12"
+    },
+    {
+      "ndb": "11011",
+      "nutrient": "205",
+      "amount": "3.88"
+    },
+    {
+      "ndb": "11011",
+      "nutrient": "208",
+      "amount": "20"
+    },
+    {
+      "ndb": "11011",
+      "nutrient": "291",
+      "amount": "2.1"
     },
     {
       "ndb": "11027",
@@ -1543,6 +8306,31 @@
       "amount": "3.2"
     },
     {
+      "ndb": "11080",
+      "nutrient": "203",
+      "amount": "1.61"
+    },
+    {
+      "ndb": "11080",
+      "nutrient": "204",
+      "amount": "0.17"
+    },
+    {
+      "ndb": "11080",
+      "nutrient": "205",
+      "amount": "9.56"
+    },
+    {
+      "ndb": "11080",
+      "nutrient": "208",
+      "amount": "43"
+    },
+    {
+      "ndb": "11080",
+      "nutrient": "291",
+      "amount": "2.8"
+    },
+    {
       "ndb": "11087",
       "nutrient": "203",
       "amount": "2.57"
@@ -1566,6 +8354,31 @@
       "ndb": "11087",
       "nutrient": "291",
       "amount": "2.9"
+    },
+    {
+      "ndb": "11090",
+      "nutrient": "203",
+      "amount": "2.82"
+    },
+    {
+      "ndb": "11090",
+      "nutrient": "204",
+      "amount": "0.37"
+    },
+    {
+      "ndb": "11090",
+      "nutrient": "205",
+      "amount": "6.64"
+    },
+    {
+      "ndb": "11090",
+      "nutrient": "208",
+      "amount": "34"
+    },
+    {
+      "ndb": "11090",
+      "nutrient": "291",
+      "amount": "2.6"
     },
     {
       "ndb": "11091",
@@ -1616,6 +8429,31 @@
       "ndb": "11099",
       "nutrient": "291",
       "amount": "2.6"
+    },
+    {
+      "ndb": "11109",
+      "nutrient": "203",
+      "amount": "1.28"
+    },
+    {
+      "ndb": "11109",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11109",
+      "nutrient": "205",
+      "amount": "5.80"
+    },
+    {
+      "ndb": "11109",
+      "nutrient": "208",
+      "amount": "25"
+    },
+    {
+      "ndb": "11109",
+      "nutrient": "291",
+      "amount": "2.5"
     },
     {
       "ndb": "11110",
@@ -1718,6 +8556,31 @@
       "amount": "1.0"
     },
     {
+      "ndb": "11118",
+      "nutrient": "203",
+      "amount": "1.10"
+    },
+    {
+      "ndb": "11118",
+      "nutrient": "204",
+      "amount": "0.50"
+    },
+    {
+      "ndb": "11118",
+      "nutrient": "205",
+      "amount": "2.40"
+    },
+    {
+      "ndb": "11118",
+      "nutrient": "208",
+      "amount": "15"
+    },
+    {
+      "ndb": "11118",
+      "nutrient": "291",
+      "amount": "1.6"
+    },
+    {
       "ndb": "11120",
       "nutrient": "203",
       "amount": "1.50"
@@ -1741,6 +8604,31 @@
       "ndb": "11120",
       "nutrient": "291",
       "amount": "1.7"
+    },
+    {
+      "ndb": "11124",
+      "nutrient": "203",
+      "amount": "0.93"
+    },
+    {
+      "ndb": "11124",
+      "nutrient": "204",
+      "amount": "0.24"
+    },
+    {
+      "ndb": "11124",
+      "nutrient": "205",
+      "amount": "9.58"
+    },
+    {
+      "ndb": "11124",
+      "nutrient": "208",
+      "amount": "41"
+    },
+    {
+      "ndb": "11124",
+      "nutrient": "291",
+      "amount": "2.8"
     },
     {
       "ndb": "11125",
@@ -1768,6 +8656,31 @@
       "amount": "3.0"
     },
     {
+      "ndb": "11134",
+      "nutrient": "203",
+      "amount": "1.36"
+    },
+    {
+      "ndb": "11134",
+      "nutrient": "204",
+      "amount": "0.28"
+    },
+    {
+      "ndb": "11134",
+      "nutrient": "205",
+      "amount": "38.06"
+    },
+    {
+      "ndb": "11134",
+      "nutrient": "208",
+      "amount": "160"
+    },
+    {
+      "ndb": "11134",
+      "nutrient": "291",
+      "amount": "1.8"
+    },
+    {
       "ndb": "11136",
       "nutrient": "203",
       "amount": "1.84"
@@ -1793,6 +8706,31 @@
       "amount": "2.3"
     },
     {
+      "ndb": "11141",
+      "nutrient": "203",
+      "amount": "1.50"
+    },
+    {
+      "ndb": "11141",
+      "nutrient": "204",
+      "amount": "0.30"
+    },
+    {
+      "ndb": "11141",
+      "nutrient": "205",
+      "amount": "9.20"
+    },
+    {
+      "ndb": "11141",
+      "nutrient": "208",
+      "amount": "42"
+    },
+    {
+      "ndb": "11141",
+      "nutrient": "291",
+      "amount": "1.8"
+    },
+    {
       "ndb": "11142",
       "nutrient": "203",
       "amount": "0.96"
@@ -1816,6 +8754,31 @@
       "ndb": "11142",
       "nutrient": "291",
       "amount": "1.2"
+    },
+    {
+      "ndb": "11143",
+      "nutrient": "203",
+      "amount": "0.69"
+    },
+    {
+      "ndb": "11143",
+      "nutrient": "204",
+      "amount": "0.17"
+    },
+    {
+      "ndb": "11143",
+      "nutrient": "205",
+      "amount": "2.97"
+    },
+    {
+      "ndb": "11143",
+      "nutrient": "208",
+      "amount": "16"
+    },
+    {
+      "ndb": "11143",
+      "nutrient": "291",
+      "amount": "1.6"
     },
     {
       "ndb": "11144",
@@ -1868,6 +8831,56 @@
       "amount": "2.1"
     },
     {
+      "ndb": "11156",
+      "nutrient": "203",
+      "amount": "3.27"
+    },
+    {
+      "ndb": "11156",
+      "nutrient": "204",
+      "amount": "0.73"
+    },
+    {
+      "ndb": "11156",
+      "nutrient": "205",
+      "amount": "4.35"
+    },
+    {
+      "ndb": "11156",
+      "nutrient": "208",
+      "amount": "30"
+    },
+    {
+      "ndb": "11156",
+      "nutrient": "291",
+      "amount": "2.5"
+    },
+    {
+      "ndb": "11161",
+      "nutrient": "203",
+      "amount": "3.02"
+    },
+    {
+      "ndb": "11161",
+      "nutrient": "204",
+      "amount": "0.61"
+    },
+    {
+      "ndb": "11161",
+      "nutrient": "205",
+      "amount": "5.42"
+    },
+    {
+      "ndb": "11161",
+      "nutrient": "208",
+      "amount": "32"
+    },
+    {
+      "ndb": "11161",
+      "nutrient": "291",
+      "amount": "4.0"
+    },
+    {
       "ndb": "11168",
       "nutrient": "203",
       "amount": "3.41"
@@ -1891,6 +8904,31 @@
       "ndb": "11168",
       "nutrient": "291",
       "amount": "2.4"
+    },
+    {
+      "ndb": "11209",
+      "nutrient": "203",
+      "amount": "0.98"
+    },
+    {
+      "ndb": "11209",
+      "nutrient": "204",
+      "amount": "0.18"
+    },
+    {
+      "ndb": "11209",
+      "nutrient": "205",
+      "amount": "5.88"
+    },
+    {
+      "ndb": "11209",
+      "nutrient": "208",
+      "amount": "25"
+    },
+    {
+      "ndb": "11209",
+      "nutrient": "291",
+      "amount": "3.0"
     },
     {
       "ndb": "11210",
@@ -1918,6 +8956,81 @@
       "amount": "2.5"
     },
     {
+      "ndb": "11213",
+      "nutrient": "203",
+      "amount": "1.25"
+    },
+    {
+      "ndb": "11213",
+      "nutrient": "204",
+      "amount": "0.20"
+    },
+    {
+      "ndb": "11213",
+      "nutrient": "205",
+      "amount": "3.35"
+    },
+    {
+      "ndb": "11213",
+      "nutrient": "208",
+      "amount": "17"
+    },
+    {
+      "ndb": "11213",
+      "nutrient": "291",
+      "amount": "3.1"
+    },
+    {
+      "ndb": "11215",
+      "nutrient": "203",
+      "amount": "6.36"
+    },
+    {
+      "ndb": "11215",
+      "nutrient": "204",
+      "amount": "0.50"
+    },
+    {
+      "ndb": "11215",
+      "nutrient": "205",
+      "amount": "33.06"
+    },
+    {
+      "ndb": "11215",
+      "nutrient": "208",
+      "amount": "149"
+    },
+    {
+      "ndb": "11215",
+      "nutrient": "291",
+      "amount": "2.1"
+    },
+    {
+      "ndb": "11233",
+      "nutrient": "203",
+      "amount": "4.28"
+    },
+    {
+      "ndb": "11233",
+      "nutrient": "204",
+      "amount": "0.93"
+    },
+    {
+      "ndb": "11233",
+      "nutrient": "205",
+      "amount": "8.75"
+    },
+    {
+      "ndb": "11233",
+      "nutrient": "208",
+      "amount": "49"
+    },
+    {
+      "ndb": "11233",
+      "nutrient": "291",
+      "amount": "3.6"
+    },
+    {
       "ndb": "11234",
       "nutrient": "203",
       "amount": "1.90"
@@ -1941,6 +9054,31 @@
       "ndb": "11234",
       "nutrient": "291",
       "amount": "2.0"
+    },
+    {
+      "ndb": "11241",
+      "nutrient": "203",
+      "amount": "1.70"
+    },
+    {
+      "ndb": "11241",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11241",
+      "nutrient": "205",
+      "amount": "6.20"
+    },
+    {
+      "ndb": "11241",
+      "nutrient": "208",
+      "amount": "27"
+    },
+    {
+      "ndb": "11241",
+      "nutrient": "291",
+      "amount": "3.6"
     },
     {
       "ndb": "11242",
@@ -1993,6 +9131,31 @@
       "amount": "1.0"
     },
     {
+      "ndb": "11254",
+      "nutrient": "203",
+      "amount": "2.60"
+    },
+    {
+      "ndb": "11254",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11254",
+      "nutrient": "205",
+      "amount": "17.23"
+    },
+    {
+      "ndb": "11254",
+      "nutrient": "208",
+      "amount": "74"
+    },
+    {
+      "ndb": "11254",
+      "nutrient": "291",
+      "amount": "4.9"
+    },
+    {
       "ndb": "11261",
       "nutrient": "203",
       "amount": "2.17"
@@ -2016,6 +9179,31 @@
       "ndb": "11261",
       "nutrient": "291",
       "amount": "2.2"
+    },
+    {
+      "ndb": "11278",
+      "nutrient": "203",
+      "amount": "1.93"
+    },
+    {
+      "ndb": "11278",
+      "nutrient": "204",
+      "amount": "0.19"
+    },
+    {
+      "ndb": "11278",
+      "nutrient": "205",
+      "amount": "7.45"
+    },
+    {
+      "ndb": "11278",
+      "nutrient": "208",
+      "amount": "33"
+    },
+    {
+      "ndb": "11278",
+      "nutrient": "291",
+      "amount": "3.2"
     },
     {
       "ndb": "11279",
@@ -2043,6 +9231,31 @@
       "amount": "2.5"
     },
     {
+      "ndb": "11282",
+      "nutrient": "203",
+      "amount": "1.10"
+    },
+    {
+      "ndb": "11282",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11282",
+      "nutrient": "205",
+      "amount": "9.34"
+    },
+    {
+      "ndb": "11282",
+      "nutrient": "208",
+      "amount": "40"
+    },
+    {
+      "ndb": "11282",
+      "nutrient": "291",
+      "amount": "1.7"
+    },
+    {
       "ndb": "11283",
       "nutrient": "203",
       "amount": "1.36"
@@ -2066,6 +9279,56 @@
       "ndb": "11283",
       "nutrient": "291",
       "amount": "1.4"
+    },
+    {
+      "ndb": "11297",
+      "nutrient": "203",
+      "amount": "2.97"
+    },
+    {
+      "ndb": "11297",
+      "nutrient": "204",
+      "amount": "0.79"
+    },
+    {
+      "ndb": "11297",
+      "nutrient": "205",
+      "amount": "6.33"
+    },
+    {
+      "ndb": "11297",
+      "nutrient": "208",
+      "amount": "36"
+    },
+    {
+      "ndb": "11297",
+      "nutrient": "291",
+      "amount": "3.3"
+    },
+    {
+      "ndb": "11298",
+      "nutrient": "203",
+      "amount": "1.20"
+    },
+    {
+      "ndb": "11298",
+      "nutrient": "204",
+      "amount": "0.30"
+    },
+    {
+      "ndb": "11298",
+      "nutrient": "205",
+      "amount": "17.99"
+    },
+    {
+      "ndb": "11298",
+      "nutrient": "208",
+      "amount": "75"
+    },
+    {
+      "ndb": "11298",
+      "nutrient": "291",
+      "amount": "4.9"
     },
     {
       "ndb": "11299",
@@ -2143,6 +9406,31 @@
       "amount": "1.2"
     },
     {
+      "ndb": "11422",
+      "nutrient": "203",
+      "amount": "1.00"
+    },
+    {
+      "ndb": "11422",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11422",
+      "nutrient": "205",
+      "amount": "6.50"
+    },
+    {
+      "ndb": "11422",
+      "nutrient": "208",
+      "amount": "26"
+    },
+    {
+      "ndb": "11422",
+      "nutrient": "291",
+      "amount": "0.5"
+    },
+    {
       "ndb": "11423",
       "nutrient": "203",
       "amount": "0.72"
@@ -2168,6 +9456,31 @@
       "amount": "1.1"
     },
     {
+      "ndb": "11429",
+      "nutrient": "203",
+      "amount": "0.68"
+    },
+    {
+      "ndb": "11429",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11429",
+      "nutrient": "205",
+      "amount": "3.40"
+    },
+    {
+      "ndb": "11429",
+      "nutrient": "208",
+      "amount": "16"
+    },
+    {
+      "ndb": "11429",
+      "nutrient": "291",
+      "amount": "1.6"
+    },
+    {
       "ndb": "11431",
       "nutrient": "203",
       "amount": "0.67"
@@ -2191,6 +9504,31 @@
       "ndb": "11431",
       "nutrient": "291",
       "amount": "1.6"
+    },
+    {
+      "ndb": "11435",
+      "nutrient": "203",
+      "amount": "1.08"
+    },
+    {
+      "ndb": "11435",
+      "nutrient": "204",
+      "amount": "0.16"
+    },
+    {
+      "ndb": "11435",
+      "nutrient": "205",
+      "amount": "8.62"
+    },
+    {
+      "ndb": "11435",
+      "nutrient": "208",
+      "amount": "37"
+    },
+    {
+      "ndb": "11435",
+      "nutrient": "291",
+      "amount": "2.3"
     },
     {
       "ndb": "11436",
@@ -2243,6 +9581,31 @@
       "amount": "4.2"
     },
     {
+      "ndb": "11457",
+      "nutrient": "203",
+      "amount": "2.86"
+    },
+    {
+      "ndb": "11457",
+      "nutrient": "204",
+      "amount": "0.39"
+    },
+    {
+      "ndb": "11457",
+      "nutrient": "205",
+      "amount": "3.63"
+    },
+    {
+      "ndb": "11457",
+      "nutrient": "208",
+      "amount": "23"
+    },
+    {
+      "ndb": "11457",
+      "nutrient": "291",
+      "amount": "2.2"
+    },
+    {
       "ndb": "11458",
       "nutrient": "203",
       "amount": "2.97"
@@ -2293,6 +9656,81 @@
       "amount": "1.0"
     },
     {
+      "ndb": "11518",
+      "nutrient": "203",
+      "amount": "1.50"
+    },
+    {
+      "ndb": "11518",
+      "nutrient": "204",
+      "amount": "0.20"
+    },
+    {
+      "ndb": "11518",
+      "nutrient": "205",
+      "amount": "26.46"
+    },
+    {
+      "ndb": "11518",
+      "nutrient": "208",
+      "amount": "112"
+    },
+    {
+      "ndb": "11518",
+      "nutrient": "291",
+      "amount": "4.1"
+    },
+    {
+      "ndb": "11548",
+      "nutrient": "203",
+      "amount": "12.91"
+    },
+    {
+      "ndb": "11548",
+      "nutrient": "204",
+      "amount": "0.44"
+    },
+    {
+      "ndb": "11548",
+      "nutrient": "205",
+      "amount": "74.68"
+    },
+    {
+      "ndb": "11548",
+      "nutrient": "208",
+      "amount": "302"
+    },
+    {
+      "ndb": "11548",
+      "nutrient": "291",
+      "amount": "16.5"
+    },
+    {
+      "ndb": "11564",
+      "nutrient": "203",
+      "amount": "0.90"
+    },
+    {
+      "ndb": "11564",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11564",
+      "nutrient": "205",
+      "amount": "6.43"
+    },
+    {
+      "ndb": "11564",
+      "nutrient": "208",
+      "amount": "28"
+    },
+    {
+      "ndb": "11564",
+      "nutrient": "291",
+      "amount": "1.8"
+    },
+    {
       "ndb": "11565",
       "nutrient": "203",
       "amount": "0.71"
@@ -2316,6 +9754,106 @@
       "ndb": "11565",
       "nutrient": "291",
       "amount": "2.0"
+    },
+    {
+      "ndb": "11591",
+      "nutrient": "203",
+      "amount": "2.30"
+    },
+    {
+      "ndb": "11591",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11591",
+      "nutrient": "205",
+      "amount": "1.29"
+    },
+    {
+      "ndb": "11591",
+      "nutrient": "208",
+      "amount": "11"
+    },
+    {
+      "ndb": "11591",
+      "nutrient": "291",
+      "amount": "0.5"
+    },
+    {
+      "ndb": "11601",
+      "nutrient": "203",
+      "amount": "1.53"
+    },
+    {
+      "ndb": "11601",
+      "nutrient": "204",
+      "amount": "0.17"
+    },
+    {
+      "ndb": "11601",
+      "nutrient": "205",
+      "amount": "27.88"
+    },
+    {
+      "ndb": "11601",
+      "nutrient": "208",
+      "amount": "118"
+    },
+    {
+      "ndb": "11601",
+      "nutrient": "291",
+      "amount": "4.1"
+    },
+    {
+      "ndb": "11672",
+      "nutrient": "203",
+      "amount": "6.08"
+    },
+    {
+      "ndb": "11672",
+      "nutrient": "204",
+      "amount": "14.76"
+    },
+    {
+      "ndb": "11672",
+      "nutrient": "205",
+      "amount": "27.81"
+    },
+    {
+      "ndb": "11672",
+      "nutrient": "208",
+      "amount": "268"
+    },
+    {
+      "ndb": "11672",
+      "nutrient": "291",
+      "amount": "3.3"
+    },
+    {
+      "ndb": "11677",
+      "nutrient": "203",
+      "amount": "2.50"
+    },
+    {
+      "ndb": "11677",
+      "nutrient": "204",
+      "amount": "0.10"
+    },
+    {
+      "ndb": "11677",
+      "nutrient": "205",
+      "amount": "16.80"
+    },
+    {
+      "ndb": "11677",
+      "nutrient": "208",
+      "amount": "72"
+    },
+    {
+      "ndb": "11677",
+      "nutrient": "291",
+      "amount": "3.2"
     },
     {
       "ndb": "11823",
@@ -2343,6 +9881,356 @@
       "amount": "1.2"
     },
     {
+      "ndb": "11943",
+      "nutrient": "203",
+      "amount": "1.10"
+    },
+    {
+      "ndb": "11943",
+      "nutrient": "204",
+      "amount": "0.30"
+    },
+    {
+      "ndb": "11943",
+      "nutrient": "205",
+      "amount": "5.10"
+    },
+    {
+      "ndb": "11943",
+      "nutrient": "208",
+      "amount": "23"
+    },
+    {
+      "ndb": "11943",
+      "nutrient": "291",
+      "amount": "1.9"
+    },
+    {
+      "ndb": "11952",
+      "nutrient": "203",
+      "amount": "1.43"
+    },
+    {
+      "ndb": "11952",
+      "nutrient": "204",
+      "amount": "0.25"
+    },
+    {
+      "ndb": "11952",
+      "nutrient": "205",
+      "amount": "4.48"
+    },
+    {
+      "ndb": "11952",
+      "nutrient": "208",
+      "amount": "23"
+    },
+    {
+      "ndb": "11952",
+      "nutrient": "291",
+      "amount": "0.9"
+    },
+    {
+      "ndb": "11959",
+      "nutrient": "203",
+      "amount": "2.58"
+    },
+    {
+      "ndb": "11959",
+      "nutrient": "204",
+      "amount": "0.66"
+    },
+    {
+      "ndb": "11959",
+      "nutrient": "205",
+      "amount": "3.65"
+    },
+    {
+      "ndb": "11959",
+      "nutrient": "208",
+      "amount": "25"
+    },
+    {
+      "ndb": "11959",
+      "nutrient": "291",
+      "amount": "1.6"
+    },
+    {
+      "ndb": "12006",
+      "nutrient": "203",
+      "amount": "16.54"
+    },
+    {
+      "ndb": "12006",
+      "nutrient": "204",
+      "amount": "30.74"
+    },
+    {
+      "ndb": "12006",
+      "nutrient": "205",
+      "amount": "42.12"
+    },
+    {
+      "ndb": "12006",
+      "nutrient": "208",
+      "amount": "486"
+    },
+    {
+      "ndb": "12006",
+      "nutrient": "291",
+      "amount": "34.4"
+    },
+    {
+      "ndb": "12012",
+      "nutrient": "203",
+      "amount": "31.56"
+    },
+    {
+      "ndb": "12012",
+      "nutrient": "204",
+      "amount": "48.75"
+    },
+    {
+      "ndb": "12012",
+      "nutrient": "205",
+      "amount": "8.67"
+    },
+    {
+      "ndb": "12012",
+      "nutrient": "208",
+      "amount": "553"
+    },
+    {
+      "ndb": "12012",
+      "nutrient": "291",
+      "amount": "4.0"
+    },
+    {
+      "ndb": "12014",
+      "nutrient": "203",
+      "amount": "30.23"
+    },
+    {
+      "ndb": "12014",
+      "nutrient": "204",
+      "amount": "49.05"
+    },
+    {
+      "ndb": "12014",
+      "nutrient": "205",
+      "amount": "10.71"
+    },
+    {
+      "ndb": "12014",
+      "nutrient": "208",
+      "amount": "559"
+    },
+    {
+      "ndb": "12014",
+      "nutrient": "291",
+      "amount": "6.0"
+    },
+    {
+      "ndb": "12023",
+      "nutrient": "203",
+      "amount": "17.73"
+    },
+    {
+      "ndb": "12023",
+      "nutrient": "204",
+      "amount": "49.67"
+    },
+    {
+      "ndb": "12023",
+      "nutrient": "205",
+      "amount": "23.45"
+    },
+    {
+      "ndb": "12023",
+      "nutrient": "208",
+      "amount": "573"
+    },
+    {
+      "ndb": "12023",
+      "nutrient": "291",
+      "amount": "11.8"
+    },
+    {
+      "ndb": "12036",
+      "nutrient": "203",
+      "amount": "20.78"
+    },
+    {
+      "ndb": "12036",
+      "nutrient": "204",
+      "amount": "51.46"
+    },
+    {
+      "ndb": "12036",
+      "nutrient": "205",
+      "amount": "20.00"
+    },
+    {
+      "ndb": "12036",
+      "nutrient": "208",
+      "amount": "584"
+    },
+    {
+      "ndb": "12036",
+      "nutrient": "291",
+      "amount": "8.6"
+    },
+    {
+      "ndb": "12040",
+      "nutrient": "203",
+      "amount": "17.28"
+    },
+    {
+      "ndb": "12040",
+      "nutrient": "204",
+      "amount": "55.20"
+    },
+    {
+      "ndb": "12040",
+      "nutrient": "205",
+      "amount": "23.32"
+    },
+    {
+      "ndb": "12040",
+      "nutrient": "208",
+      "amount": "617"
+    },
+    {
+      "ndb": "12040",
+      "nutrient": "291",
+      "amount": "5.7"
+    },
+    {
+      "ndb": "12061",
+      "nutrient": "203",
+      "amount": "21.15"
+    },
+    {
+      "ndb": "12061",
+      "nutrient": "204",
+      "amount": "49.93"
+    },
+    {
+      "ndb": "12061",
+      "nutrient": "205",
+      "amount": "21.55"
+    },
+    {
+      "ndb": "12061",
+      "nutrient": "208",
+      "amount": "579"
+    },
+    {
+      "ndb": "12061",
+      "nutrient": "291",
+      "amount": "12.5"
+    },
+    {
+      "ndb": "12062",
+      "nutrient": "203",
+      "amount": "21.40"
+    },
+    {
+      "ndb": "12062",
+      "nutrient": "204",
+      "amount": "52.52"
+    },
+    {
+      "ndb": "12062",
+      "nutrient": "205",
+      "amount": "18.67"
+    },
+    {
+      "ndb": "12062",
+      "nutrient": "208",
+      "amount": "590"
+    },
+    {
+      "ndb": "12062",
+      "nutrient": "291",
+      "amount": "9.9"
+    },
+    {
+      "ndb": "12063",
+      "nutrient": "203",
+      "amount": "20.96"
+    },
+    {
+      "ndb": "12063",
+      "nutrient": "204",
+      "amount": "52.54"
+    },
+    {
+      "ndb": "12063",
+      "nutrient": "205",
+      "amount": "21.01"
+    },
+    {
+      "ndb": "12063",
+      "nutrient": "208",
+      "amount": "598"
+    },
+    {
+      "ndb": "12063",
+      "nutrient": "291",
+      "amount": "10.9"
+    },
+    {
+      "ndb": "12065",
+      "nutrient": "203",
+      "amount": "21.23"
+    },
+    {
+      "ndb": "12065",
+      "nutrient": "204",
+      "amount": "55.17"
+    },
+    {
+      "ndb": "12065",
+      "nutrient": "205",
+      "amount": "17.68"
+    },
+    {
+      "ndb": "12065",
+      "nutrient": "208",
+      "amount": "607"
+    },
+    {
+      "ndb": "12065",
+      "nutrient": "291",
+      "amount": "10.5"
+    },
+    {
+      "ndb": "12071",
+      "nutrient": "203",
+      "amount": "9.00"
+    },
+    {
+      "ndb": "12071",
+      "nutrient": "204",
+      "amount": "27.74"
+    },
+    {
+      "ndb": "12071",
+      "nutrient": "205",
+      "amount": "47.81"
+    },
+    {
+      "ndb": "12071",
+      "nutrient": "208",
+      "amount": "458"
+    },
+    {
+      "ndb": "12071",
+      "nutrient": "291",
+      "amount": "4.8"
+    },
+    {
       "ndb": "12078",
       "nutrient": "203",
       "amount": "14.32"
@@ -2366,6 +10254,106 @@
       "ndb": "12078",
       "nutrient": "291",
       "amount": "7.5"
+    },
+    {
+      "ndb": "12087",
+      "nutrient": "203",
+      "amount": "18.22"
+    },
+    {
+      "ndb": "12087",
+      "nutrient": "204",
+      "amount": "43.85"
+    },
+    {
+      "ndb": "12087",
+      "nutrient": "205",
+      "amount": "30.19"
+    },
+    {
+      "ndb": "12087",
+      "nutrient": "208",
+      "amount": "553"
+    },
+    {
+      "ndb": "12087",
+      "nutrient": "291",
+      "amount": "3.3"
+    },
+    {
+      "ndb": "12088",
+      "nutrient": "203",
+      "amount": "17.56"
+    },
+    {
+      "ndb": "12088",
+      "nutrient": "204",
+      "amount": "49.41"
+    },
+    {
+      "ndb": "12088",
+      "nutrient": "205",
+      "amount": "27.57"
+    },
+    {
+      "ndb": "12088",
+      "nutrient": "208",
+      "amount": "587"
+    },
+    {
+      "ndb": "12088",
+      "nutrient": "291",
+      "amount": "2.0"
+    },
+    {
+      "ndb": "12097",
+      "nutrient": "203",
+      "amount": "2.42"
+    },
+    {
+      "ndb": "12097",
+      "nutrient": "204",
+      "amount": "2.26"
+    },
+    {
+      "ndb": "12097",
+      "nutrient": "205",
+      "amount": "45.54"
+    },
+    {
+      "ndb": "12097",
+      "nutrient": "208",
+      "amount": "213"
+    },
+    {
+      "ndb": "12097",
+      "nutrient": "291",
+      "amount": "8.1"
+    },
+    {
+      "ndb": "12104",
+      "nutrient": "203",
+      "amount": "3.33"
+    },
+    {
+      "ndb": "12104",
+      "nutrient": "204",
+      "amount": "33.49"
+    },
+    {
+      "ndb": "12104",
+      "nutrient": "205",
+      "amount": "15.23"
+    },
+    {
+      "ndb": "12104",
+      "nutrient": "208",
+      "amount": "354"
+    },
+    {
+      "ndb": "12104",
+      "nutrient": "291",
+      "amount": "9.0"
     },
     {
       "ndb": "12115",
@@ -2418,26 +10406,6 @@
       "amount": "2.2"
     },
     {
-      "ndb": "12118",
-      "nutrient": "203",
-      "amount": "2.02"
-    },
-    {
-      "ndb": "12118",
-      "nutrient": "204",
-      "amount": "21.33"
-    },
-    {
-      "ndb": "12118",
-      "nutrient": "205",
-      "amount": "2.81"
-    },
-    {
-      "ndb": "12118",
-      "nutrient": "208",
-      "amount": "197"
-    },
-    {
       "ndb": "12119",
       "nutrient": "203",
       "amount": "0.72"
@@ -2461,6 +10429,56 @@
       "ndb": "12119",
       "nutrient": "291",
       "amount": "1.1"
+    },
+    {
+      "ndb": "12120",
+      "nutrient": "203",
+      "amount": "14.95"
+    },
+    {
+      "ndb": "12120",
+      "nutrient": "204",
+      "amount": "60.75"
+    },
+    {
+      "ndb": "12120",
+      "nutrient": "205",
+      "amount": "16.70"
+    },
+    {
+      "ndb": "12120",
+      "nutrient": "208",
+      "amount": "628"
+    },
+    {
+      "ndb": "12120",
+      "nutrient": "291",
+      "amount": "9.7"
+    },
+    {
+      "ndb": "12121",
+      "nutrient": "203",
+      "amount": "13.70"
+    },
+    {
+      "ndb": "12121",
+      "nutrient": "204",
+      "amount": "61.15"
+    },
+    {
+      "ndb": "12121",
+      "nutrient": "205",
+      "amount": "17.00"
+    },
+    {
+      "ndb": "12121",
+      "nutrient": "208",
+      "amount": "629"
+    },
+    {
+      "ndb": "12121",
+      "nutrient": "291",
+      "amount": "11.0"
     },
     {
       "ndb": "12131",
@@ -2513,6 +10531,56 @@
       "amount": "9.6"
     },
     {
+      "ndb": "12143",
+      "nutrient": "203",
+      "amount": "9.50"
+    },
+    {
+      "ndb": "12143",
+      "nutrient": "204",
+      "amount": "74.27"
+    },
+    {
+      "ndb": "12143",
+      "nutrient": "205",
+      "amount": "13.55"
+    },
+    {
+      "ndb": "12143",
+      "nutrient": "208",
+      "amount": "710"
+    },
+    {
+      "ndb": "12143",
+      "nutrient": "291",
+      "amount": "9.4"
+    },
+    {
+      "ndb": "12144",
+      "nutrient": "203",
+      "amount": "9.20"
+    },
+    {
+      "ndb": "12144",
+      "nutrient": "204",
+      "amount": "75.23"
+    },
+    {
+      "ndb": "12144",
+      "nutrient": "205",
+      "amount": "13.01"
+    },
+    {
+      "ndb": "12144",
+      "nutrient": "208",
+      "amount": "715"
+    },
+    {
+      "ndb": "12144",
+      "nutrient": "291",
+      "amount": "9.5"
+    },
+    {
       "ndb": "12147",
       "nutrient": "203",
       "amount": "13.69"
@@ -2536,6 +10604,81 @@
       "ndb": "12147",
       "nutrient": "291",
       "amount": "3.7"
+    },
+    {
+      "ndb": "12149",
+      "nutrient": "203",
+      "amount": "11.57"
+    },
+    {
+      "ndb": "12149",
+      "nutrient": "204",
+      "amount": "60.98"
+    },
+    {
+      "ndb": "12149",
+      "nutrient": "205",
+      "amount": "19.30"
+    },
+    {
+      "ndb": "12149",
+      "nutrient": "208",
+      "amount": "629"
+    },
+    {
+      "ndb": "12149",
+      "nutrient": "291",
+      "amount": "10.7"
+    },
+    {
+      "ndb": "12151",
+      "nutrient": "203",
+      "amount": "20.16"
+    },
+    {
+      "ndb": "12151",
+      "nutrient": "204",
+      "amount": "45.32"
+    },
+    {
+      "ndb": "12151",
+      "nutrient": "205",
+      "amount": "27.17"
+    },
+    {
+      "ndb": "12151",
+      "nutrient": "208",
+      "amount": "560"
+    },
+    {
+      "ndb": "12151",
+      "nutrient": "291",
+      "amount": "10.6"
+    },
+    {
+      "ndb": "12155",
+      "nutrient": "203",
+      "amount": "15.23"
+    },
+    {
+      "ndb": "12155",
+      "nutrient": "204",
+      "amount": "65.21"
+    },
+    {
+      "ndb": "12155",
+      "nutrient": "205",
+      "amount": "13.71"
+    },
+    {
+      "ndb": "12155",
+      "nutrient": "208",
+      "amount": "654"
+    },
+    {
+      "ndb": "12155",
+      "nutrient": "291",
+      "amount": "6.7"
     },
     {
       "ndb": "12166",
@@ -2588,24 +10731,129 @@
       "amount": "5.1"
     },
     {
-      "ndb": "12174",
+      "ndb": "12169",
       "nutrient": "203",
-      "amount": "28.33"
+      "amount": "18.08"
     },
     {
-      "ndb": "12174",
+      "ndb": "12169",
       "nutrient": "204",
-      "amount": "47.37"
+      "amount": "50.87"
     },
     {
-      "ndb": "12174",
+      "ndb": "12169",
       "nutrient": "205",
-      "amount": "15.31"
+      "amount": "24.05"
     },
     {
-      "ndb": "12174",
+      "ndb": "12169",
       "nutrient": "208",
-      "amount": "557"
+      "amount": "586"
+    },
+    {
+      "ndb": "12169",
+      "nutrient": "291",
+      "amount": "5.5"
+    },
+    {
+      "ndb": "12220",
+      "nutrient": "203",
+      "amount": "18.29"
+    },
+    {
+      "ndb": "12220",
+      "nutrient": "204",
+      "amount": "42.16"
+    },
+    {
+      "ndb": "12220",
+      "nutrient": "205",
+      "amount": "28.88"
+    },
+    {
+      "ndb": "12220",
+      "nutrient": "208",
+      "amount": "534"
+    },
+    {
+      "ndb": "12220",
+      "nutrient": "291",
+      "amount": "27.3"
+    },
+    {
+      "ndb": "12540",
+      "nutrient": "203",
+      "amount": "17.28"
+    },
+    {
+      "ndb": "12540",
+      "nutrient": "204",
+      "amount": "55.20"
+    },
+    {
+      "ndb": "12540",
+      "nutrient": "205",
+      "amount": "23.32"
+    },
+    {
+      "ndb": "12540",
+      "nutrient": "208",
+      "amount": "617"
+    },
+    {
+      "ndb": "12540",
+      "nutrient": "291",
+      "amount": "5.7"
+    },
+    {
+      "ndb": "13350",
+      "nutrient": "203",
+      "amount": "31.10"
+    },
+    {
+      "ndb": "13350",
+      "nutrient": "204",
+      "amount": "1.94"
+    },
+    {
+      "ndb": "13350",
+      "nutrient": "205",
+      "amount": "2.76"
+    },
+    {
+      "ndb": "13350",
+      "nutrient": "208",
+      "amount": "153"
+    },
+    {
+      "ndb": "13350",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "13355",
+      "nutrient": "203",
+      "amount": "21.80"
+    },
+    {
+      "ndb": "13355",
+      "nutrient": "204",
+      "amount": "5.82"
+    },
+    {
+      "ndb": "13355",
+      "nutrient": "205",
+      "amount": "0.36"
+    },
+    {
+      "ndb": "13355",
+      "nutrient": "208",
+      "amount": "147"
+    },
+    {
+      "ndb": "13355",
+      "nutrient": "291",
+      "amount": "0.0"
     },
     {
       "ndb": "15009",
@@ -3183,6 +11431,131 @@
       "amount": "8.6"
     },
     {
+      "ndb": "16033",
+      "nutrient": "203",
+      "amount": "8.67"
+    },
+    {
+      "ndb": "16033",
+      "nutrient": "204",
+      "amount": "0.50"
+    },
+    {
+      "ndb": "16033",
+      "nutrient": "205",
+      "amount": "22.80"
+    },
+    {
+      "ndb": "16033",
+      "nutrient": "208",
+      "amount": "127"
+    },
+    {
+      "ndb": "16033",
+      "nutrient": "291",
+      "amount": "7.4"
+    },
+    {
+      "ndb": "16034",
+      "nutrient": "203",
+      "amount": "5.22"
+    },
+    {
+      "ndb": "16034",
+      "nutrient": "204",
+      "amount": "0.36"
+    },
+    {
+      "ndb": "16034",
+      "nutrient": "205",
+      "amount": "14.83"
+    },
+    {
+      "ndb": "16034",
+      "nutrient": "208",
+      "amount": "81"
+    },
+    {
+      "ndb": "16034",
+      "nutrient": "291",
+      "amount": "4.3"
+    },
+    {
+      "ndb": "16035",
+      "nutrient": "203",
+      "amount": "25.33"
+    },
+    {
+      "ndb": "16035",
+      "nutrient": "204",
+      "amount": "0.45"
+    },
+    {
+      "ndb": "16035",
+      "nutrient": "205",
+      "amount": "58.33"
+    },
+    {
+      "ndb": "16035",
+      "nutrient": "208",
+      "amount": "329"
+    },
+    {
+      "ndb": "16035",
+      "nutrient": "291",
+      "amount": "24.9"
+    },
+    {
+      "ndb": "16036",
+      "nutrient": "203",
+      "amount": "9.49"
+    },
+    {
+      "ndb": "16036",
+      "nutrient": "204",
+      "amount": "0.17"
+    },
+    {
+      "ndb": "16036",
+      "nutrient": "205",
+      "amount": "21.85"
+    },
+    {
+      "ndb": "16036",
+      "nutrient": "208",
+      "amount": "123"
+    },
+    {
+      "ndb": "16036",
+      "nutrient": "291",
+      "amount": "9.3"
+    },
+    {
+      "ndb": "16037",
+      "nutrient": "203",
+      "amount": "22.33"
+    },
+    {
+      "ndb": "16037",
+      "nutrient": "204",
+      "amount": "1.50"
+    },
+    {
+      "ndb": "16037",
+      "nutrient": "205",
+      "amount": "60.75"
+    },
+    {
+      "ndb": "16037",
+      "nutrient": "208",
+      "amount": "337"
+    },
+    {
+      "ndb": "16037",
+      "nutrient": "291",
+      "amount": "15.3"
+    },
+    {
       "ndb": "16038",
       "nutrient": "203",
       "amount": "8.23"
@@ -3206,6 +11579,106 @@
       "ndb": "16038",
       "nutrient": "291",
       "amount": "10.5"
+    },
+    {
+      "ndb": "16039",
+      "nutrient": "203",
+      "amount": "7.53"
+    },
+    {
+      "ndb": "16039",
+      "nutrient": "204",
+      "amount": "0.43"
+    },
+    {
+      "ndb": "16039",
+      "nutrient": "205",
+      "amount": "20.45"
+    },
+    {
+      "ndb": "16039",
+      "nutrient": "208",
+      "amount": "113"
+    },
+    {
+      "ndb": "16039",
+      "nutrient": "291",
+      "amount": "5.1"
+    },
+    {
+      "ndb": "16040",
+      "nutrient": "203",
+      "amount": "20.96"
+    },
+    {
+      "ndb": "16040",
+      "nutrient": "204",
+      "amount": "1.13"
+    },
+    {
+      "ndb": "16040",
+      "nutrient": "205",
+      "amount": "64.19"
+    },
+    {
+      "ndb": "16040",
+      "nutrient": "208",
+      "amount": "343"
+    },
+    {
+      "ndb": "16040",
+      "nutrient": "291",
+      "amount": "12.7"
+    },
+    {
+      "ndb": "16041",
+      "nutrient": "203",
+      "amount": "9.06"
+    },
+    {
+      "ndb": "16041",
+      "nutrient": "204",
+      "amount": "0.49"
+    },
+    {
+      "ndb": "16041",
+      "nutrient": "205",
+      "amount": "27.91"
+    },
+    {
+      "ndb": "16041",
+      "nutrient": "208",
+      "amount": "149"
+    },
+    {
+      "ndb": "16041",
+      "nutrient": "291",
+      "amount": "5.3"
+    },
+    {
+      "ndb": "16042",
+      "nutrient": "203",
+      "amount": "21.42"
+    },
+    {
+      "ndb": "16042",
+      "nutrient": "204",
+      "amount": "1.23"
+    },
+    {
+      "ndb": "16042",
+      "nutrient": "205",
+      "amount": "62.55"
+    },
+    {
+      "ndb": "16042",
+      "nutrient": "208",
+      "amount": "347"
+    },
+    {
+      "ndb": "16042",
+      "nutrient": "291",
+      "amount": "15.5"
     },
     {
       "ndb": "16043",
@@ -3233,6 +11706,231 @@
       "amount": "9.0"
     },
     {
+      "ndb": "16044",
+      "nutrient": "203",
+      "amount": "4.60"
+    },
+    {
+      "ndb": "16044",
+      "nutrient": "204",
+      "amount": "0.56"
+    },
+    {
+      "ndb": "16044",
+      "nutrient": "205",
+      "amount": "15.18"
+    },
+    {
+      "ndb": "16044",
+      "nutrient": "208",
+      "amount": "82"
+    },
+    {
+      "ndb": "16044",
+      "nutrient": "291",
+      "amount": "4.6"
+    },
+    {
+      "ndb": "16045",
+      "nutrient": "203",
+      "amount": "21.11"
+    },
+    {
+      "ndb": "16045",
+      "nutrient": "204",
+      "amount": "1.18"
+    },
+    {
+      "ndb": "16045",
+      "nutrient": "205",
+      "amount": "62.25"
+    },
+    {
+      "ndb": "16045",
+      "nutrient": "208",
+      "amount": "336"
+    },
+    {
+      "ndb": "16045",
+      "nutrient": "291",
+      "amount": "24.9"
+    },
+    {
+      "ndb": "16046",
+      "nutrient": "203",
+      "amount": "8.97"
+    },
+    {
+      "ndb": "16046",
+      "nutrient": "204",
+      "amount": "0.64"
+    },
+    {
+      "ndb": "16046",
+      "nutrient": "205",
+      "amount": "25.81"
+    },
+    {
+      "ndb": "16046",
+      "nutrient": "208",
+      "amount": "142"
+    },
+    {
+      "ndb": "16046",
+      "nutrient": "291",
+      "amount": "10.4"
+    },
+    {
+      "ndb": "16047",
+      "nutrient": "203",
+      "amount": "22.00"
+    },
+    {
+      "ndb": "16047",
+      "nutrient": "204",
+      "amount": "2.60"
+    },
+    {
+      "ndb": "16047",
+      "nutrient": "205",
+      "amount": "60.70"
+    },
+    {
+      "ndb": "16047",
+      "nutrient": "208",
+      "amount": "345"
+    },
+    {
+      "ndb": "16047",
+      "nutrient": "291",
+      "amount": "25.1"
+    },
+    {
+      "ndb": "16048",
+      "nutrient": "203",
+      "amount": "9.16"
+    },
+    {
+      "ndb": "16048",
+      "nutrient": "204",
+      "amount": "1.08"
+    },
+    {
+      "ndb": "16048",
+      "nutrient": "205",
+      "amount": "25.28"
+    },
+    {
+      "ndb": "16048",
+      "nutrient": "208",
+      "amount": "144"
+    },
+    {
+      "ndb": "16048",
+      "nutrient": "291",
+      "amount": "10.4"
+    },
+    {
+      "ndb": "16049",
+      "nutrient": "203",
+      "amount": "23.36"
+    },
+    {
+      "ndb": "16049",
+      "nutrient": "204",
+      "amount": "0.85"
+    },
+    {
+      "ndb": "16049",
+      "nutrient": "205",
+      "amount": "60.27"
+    },
+    {
+      "ndb": "16049",
+      "nutrient": "208",
+      "amount": "333"
+    },
+    {
+      "ndb": "16049",
+      "nutrient": "291",
+      "amount": "15.2"
+    },
+    {
+      "ndb": "16050",
+      "nutrient": "203",
+      "amount": "9.73"
+    },
+    {
+      "ndb": "16050",
+      "nutrient": "204",
+      "amount": "0.35"
+    },
+    {
+      "ndb": "16050",
+      "nutrient": "205",
+      "amount": "25.09"
+    },
+    {
+      "ndb": "16050",
+      "nutrient": "208",
+      "amount": "139"
+    },
+    {
+      "ndb": "16050",
+      "nutrient": "291",
+      "amount": "6.3"
+    },
+    {
+      "ndb": "16051",
+      "nutrient": "203",
+      "amount": "7.26"
+    },
+    {
+      "ndb": "16051",
+      "nutrient": "204",
+      "amount": "0.29"
+    },
+    {
+      "ndb": "16051",
+      "nutrient": "205",
+      "amount": "21.20"
+    },
+    {
+      "ndb": "16051",
+      "nutrient": "208",
+      "amount": "114"
+    },
+    {
+      "ndb": "16051",
+      "nutrient": "291",
+      "amount": "4.8"
+    },
+    {
+      "ndb": "16052",
+      "nutrient": "203",
+      "amount": "26.12"
+    },
+    {
+      "ndb": "16052",
+      "nutrient": "204",
+      "amount": "1.53"
+    },
+    {
+      "ndb": "16052",
+      "nutrient": "205",
+      "amount": "58.29"
+    },
+    {
+      "ndb": "16052",
+      "nutrient": "208",
+      "amount": "341"
+    },
+    {
+      "ndb": "16052",
+      "nutrient": "291",
+      "amount": "25.0"
+    },
+    {
       "ndb": "16053",
       "nutrient": "203",
       "amount": "7.60"
@@ -3258,6 +11956,231 @@
       "amount": "5.4"
     },
     {
+      "ndb": "16054",
+      "nutrient": "203",
+      "amount": "5.47"
+    },
+    {
+      "ndb": "16054",
+      "nutrient": "204",
+      "amount": "0.22"
+    },
+    {
+      "ndb": "16054",
+      "nutrient": "205",
+      "amount": "12.41"
+    },
+    {
+      "ndb": "16054",
+      "nutrient": "208",
+      "amount": "71"
+    },
+    {
+      "ndb": "16054",
+      "nutrient": "291",
+      "amount": "3.7"
+    },
+    {
+      "ndb": "16055",
+      "nutrient": "203",
+      "amount": "4.62"
+    },
+    {
+      "ndb": "16055",
+      "nutrient": "204",
+      "amount": "0.65"
+    },
+    {
+      "ndb": "16055",
+      "nutrient": "205",
+      "amount": "88.88"
+    },
+    {
+      "ndb": "16055",
+      "nutrient": "208",
+      "amount": "222"
+    },
+    {
+      "ndb": "16055",
+      "nutrient": "291",
+      "amount": "39.8"
+    },
+    {
+      "ndb": "16056",
+      "nutrient": "203",
+      "amount": "20.47"
+    },
+    {
+      "ndb": "16056",
+      "nutrient": "204",
+      "amount": "6.04"
+    },
+    {
+      "ndb": "16056",
+      "nutrient": "205",
+      "amount": "62.95"
+    },
+    {
+      "ndb": "16056",
+      "nutrient": "208",
+      "amount": "378"
+    },
+    {
+      "ndb": "16056",
+      "nutrient": "291",
+      "amount": "12.2"
+    },
+    {
+      "ndb": "16057",
+      "nutrient": "203",
+      "amount": "8.86"
+    },
+    {
+      "ndb": "16057",
+      "nutrient": "204",
+      "amount": "2.59"
+    },
+    {
+      "ndb": "16057",
+      "nutrient": "205",
+      "amount": "27.42"
+    },
+    {
+      "ndb": "16057",
+      "nutrient": "208",
+      "amount": "164"
+    },
+    {
+      "ndb": "16057",
+      "nutrient": "291",
+      "amount": "7.6"
+    },
+    {
+      "ndb": "16058",
+      "nutrient": "203",
+      "amount": "4.92"
+    },
+    {
+      "ndb": "16058",
+      "nutrient": "204",
+      "amount": "1.95"
+    },
+    {
+      "ndb": "16058",
+      "nutrient": "205",
+      "amount": "13.49"
+    },
+    {
+      "ndb": "16058",
+      "nutrient": "208",
+      "amount": "88"
+    },
+    {
+      "ndb": "16058",
+      "nutrient": "291",
+      "amount": "4.4"
+    },
+    {
+      "ndb": "16059",
+      "nutrient": "203",
+      "amount": "6.12"
+    },
+    {
+      "ndb": "16059",
+      "nutrient": "204",
+      "amount": "3.76"
+    },
+    {
+      "ndb": "16059",
+      "nutrient": "205",
+      "amount": "13.24"
+    },
+    {
+      "ndb": "16059",
+      "nutrient": "208",
+      "amount": "103"
+    },
+    {
+      "ndb": "16059",
+      "nutrient": "291",
+      "amount": "3.3"
+    },
+    {
+      "ndb": "16060",
+      "nutrient": "203",
+      "amount": "23.85"
+    },
+    {
+      "ndb": "16060",
+      "nutrient": "204",
+      "amount": "2.07"
+    },
+    {
+      "ndb": "16060",
+      "nutrient": "205",
+      "amount": "59.64"
+    },
+    {
+      "ndb": "16060",
+      "nutrient": "208",
+      "amount": "343"
+    },
+    {
+      "ndb": "16060",
+      "nutrient": "291",
+      "amount": "10.7"
+    },
+    {
+      "ndb": "16061",
+      "nutrient": "203",
+      "amount": "8.13"
+    },
+    {
+      "ndb": "16061",
+      "nutrient": "204",
+      "amount": "0.71"
+    },
+    {
+      "ndb": "16061",
+      "nutrient": "205",
+      "amount": "20.32"
+    },
+    {
+      "ndb": "16061",
+      "nutrient": "208",
+      "amount": "117"
+    },
+    {
+      "ndb": "16061",
+      "nutrient": "291",
+      "amount": "3.6"
+    },
+    {
+      "ndb": "16062",
+      "nutrient": "203",
+      "amount": "23.52"
+    },
+    {
+      "ndb": "16062",
+      "nutrient": "204",
+      "amount": "1.26"
+    },
+    {
+      "ndb": "16062",
+      "nutrient": "205",
+      "amount": "60.03"
+    },
+    {
+      "ndb": "16062",
+      "nutrient": "208",
+      "amount": "336"
+    },
+    {
+      "ndb": "16062",
+      "nutrient": "291",
+      "amount": "10.6"
+    },
+    {
       "ndb": "16063",
       "nutrient": "203",
       "amount": "7.73"
@@ -3281,6 +12204,56 @@
       "ndb": "16063",
       "nutrient": "291",
       "amount": "6.5"
+    },
+    {
+      "ndb": "16064",
+      "nutrient": "203",
+      "amount": "4.74"
+    },
+    {
+      "ndb": "16064",
+      "nutrient": "204",
+      "amount": "0.55"
+    },
+    {
+      "ndb": "16064",
+      "nutrient": "205",
+      "amount": "13.63"
+    },
+    {
+      "ndb": "16064",
+      "nutrient": "208",
+      "amount": "77"
+    },
+    {
+      "ndb": "16064",
+      "nutrient": "291",
+      "amount": "3.3"
+    },
+    {
+      "ndb": "16069",
+      "nutrient": "203",
+      "amount": "24.63"
+    },
+    {
+      "ndb": "16069",
+      "nutrient": "204",
+      "amount": "1.06"
+    },
+    {
+      "ndb": "16069",
+      "nutrient": "205",
+      "amount": "63.35"
+    },
+    {
+      "ndb": "16069",
+      "nutrient": "208",
+      "amount": "352"
+    },
+    {
+      "ndb": "16069",
+      "nutrient": "291",
+      "amount": "10.7"
     },
     {
       "ndb": "16072",
@@ -3908,86 +12881,6 @@
       "amount": "4.8"
     },
     {
-      "ndb": "20095",
-      "nutrient": "203",
-      "amount": "11.26"
-    },
-    {
-      "ndb": "20095",
-      "nutrient": "204",
-      "amount": "2.10"
-    },
-    {
-      "ndb": "20095",
-      "nutrient": "205",
-      "amount": "55.72"
-    },
-    {
-      "ndb": "20095",
-      "nutrient": "208",
-      "amount": "289"
-    },
-    {
-      "ndb": "20096",
-      "nutrient": "203",
-      "amount": "5.06"
-    },
-    {
-      "ndb": "20096",
-      "nutrient": "204",
-      "amount": "0.94"
-    },
-    {
-      "ndb": "20096",
-      "nutrient": "205",
-      "amount": "25.04"
-    },
-    {
-      "ndb": "20096",
-      "nutrient": "208",
-      "amount": "130"
-    },
-    {
-      "ndb": "20114",
-      "nutrient": "203",
-      "amount": "14.38"
-    },
-    {
-      "ndb": "20114",
-      "nutrient": "204",
-      "amount": "0.71"
-    },
-    {
-      "ndb": "20114",
-      "nutrient": "205",
-      "amount": "74.62"
-    },
-    {
-      "ndb": "20114",
-      "nutrient": "208",
-      "amount": "336"
-    },
-    {
-      "ndb": "20115",
-      "nutrient": "203",
-      "amount": "5.06"
-    },
-    {
-      "ndb": "20115",
-      "nutrient": "204",
-      "amount": "0.10"
-    },
-    {
-      "ndb": "20115",
-      "nutrient": "205",
-      "amount": "21.44"
-    },
-    {
-      "ndb": "20115",
-      "nutrient": "208",
-      "amount": "99"
-    },
-    {
       "ndb": "20116",
       "nutrient": "203",
       "amount": "11.35"
@@ -4011,26 +12904,6 @@
       "ndb": "20116",
       "nutrient": "291",
       "amount": "4.3"
-    },
-    {
-      "ndb": "20117",
-      "nutrient": "203",
-      "amount": "4.00"
-    },
-    {
-      "ndb": "20117",
-      "nutrient": "204",
-      "amount": "0.18"
-    },
-    {
-      "ndb": "20117",
-      "nutrient": "205",
-      "amount": "27.54"
-    },
-    {
-      "ndb": "20117",
-      "nutrient": "208",
-      "amount": "131"
     },
     {
       "ndb": "20124",
@@ -4331,6 +13204,356 @@
       "ndb": "20648",
       "nutrient": "291",
       "amount": "6.6"
+    },
+    {
+      "ndb": "27048",
+      "nutrient": "203",
+      "amount": "1.25"
+    },
+    {
+      "ndb": "27048",
+      "nutrient": "204",
+      "amount": "0.23"
+    },
+    {
+      "ndb": "27048",
+      "nutrient": "205",
+      "amount": "22.04"
+    },
+    {
+      "ndb": "27048",
+      "nutrient": "208",
+      "amount": "95"
+    },
+    {
+      "ndb": "27048",
+      "nutrient": "291",
+      "amount": "1.5"
+    },
+    {
+      "ndb": "27064",
+      "nutrient": "203",
+      "amount": "2.23"
+    },
+    {
+      "ndb": "27064",
+      "nutrient": "204",
+      "amount": "10.90"
+    },
+    {
+      "ndb": "27064",
+      "nutrient": "205",
+      "amount": "46.13"
+    },
+    {
+      "ndb": "27064",
+      "nutrient": "208",
+      "amount": "292"
+    },
+    {
+      "ndb": "27064",
+      "nutrient": "291",
+      "amount": "6.1"
+    },
+    {
+      "ndb": "27065",
+      "nutrient": "203",
+      "amount": "5.44"
+    },
+    {
+      "ndb": "27065",
+      "nutrient": "204",
+      "amount": "3.70"
+    },
+    {
+      "ndb": "27065",
+      "nutrient": "205",
+      "amount": "15.89"
+    },
+    {
+      "ndb": "27065",
+      "nutrient": "208",
+      "amount": "119"
+    },
+    {
+      "ndb": "27065",
+      "nutrient": "291",
+      "amount": "4.9"
+    },
+    {
+      "ndb": "27066",
+      "nutrient": "203",
+      "amount": "1.09"
+    },
+    {
+      "ndb": "27066",
+      "nutrient": "204",
+      "amount": "50.89"
+    },
+    {
+      "ndb": "27066",
+      "nutrient": "205",
+      "amount": "10.05"
+    },
+    {
+      "ndb": "27066",
+      "nutrient": "208",
+      "amount": "503"
+    },
+    {
+      "ndb": "27066",
+      "nutrient": "291",
+      "amount": "1.0"
+    },
+    {
+      "ndb": "42178",
+      "nutrient": "203",
+      "amount": "5.95"
+    },
+    {
+      "ndb": "42178",
+      "nutrient": "204",
+      "amount": "31.79"
+    },
+    {
+      "ndb": "42178",
+      "nutrient": "205",
+      "amount": "3.06"
+    },
+    {
+      "ndb": "42178",
+      "nutrient": "208",
+      "amount": "322"
+    },
+    {
+      "ndb": "42178",
+      "nutrient": "291",
+      "amount": "1.1"
+    },
+    {
+      "ndb": "42231",
+      "nutrient": "203",
+      "amount": "0.11"
+    },
+    {
+      "ndb": "42231",
+      "nutrient": "204",
+      "amount": "99.98"
+    },
+    {
+      "ndb": "42231",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "42231",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "42231",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "42289",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "42289",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "42289",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "42289",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "42289",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "43016",
+      "nutrient": "203",
+      "amount": "0.90"
+    },
+    {
+      "ndb": "43016",
+      "nutrient": "204",
+      "amount": "33.40"
+    },
+    {
+      "ndb": "43016",
+      "nutrient": "205",
+      "amount": "23.80"
+    },
+    {
+      "ndb": "43016",
+      "nutrient": "208",
+      "amount": "390"
+    },
+    {
+      "ndb": "43016",
+      "nutrient": "291",
+      "amount": "0.1"
+    },
+    {
+      "ndb": "43274",
+      "nutrient": "203",
+      "amount": "7.85"
+    },
+    {
+      "ndb": "43274",
+      "nutrient": "204",
+      "amount": "15.28"
+    },
+    {
+      "ndb": "43274",
+      "nutrient": "205",
+      "amount": "8.13"
+    },
+    {
+      "ndb": "43274",
+      "nutrient": "208",
+      "amount": "201"
+    },
+    {
+      "ndb": "43274",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "43282",
+      "nutrient": "203",
+      "amount": "25.10"
+    },
+    {
+      "ndb": "43282",
+      "nutrient": "204",
+      "amount": "14.10"
+    },
+    {
+      "ndb": "43282",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "43282",
+      "nutrient": "208",
+      "amount": "227"
+    },
+    {
+      "ndb": "43282",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "43287",
+      "nutrient": "203",
+      "amount": "23.90"
+    },
+    {
+      "ndb": "43287",
+      "nutrient": "204",
+      "amount": "13.00"
+    },
+    {
+      "ndb": "43287",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "43287",
+      "nutrient": "208",
+      "amount": "213"
+    },
+    {
+      "ndb": "43287",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "43483",
+      "nutrient": "203",
+      "amount": "13.00"
+    },
+    {
+      "ndb": "43483",
+      "nutrient": "204",
+      "amount": "3.40"
+    },
+    {
+      "ndb": "43483",
+      "nutrient": "205",
+      "amount": "80.00"
+    },
+    {
+      "ndb": "43483",
+      "nutrient": "208",
+      "amount": "354"
+    },
+    {
+      "ndb": "43483",
+      "nutrient": "291",
+      "amount": "2.7"
+    },
+    {
+      "ndb": "43589",
+      "nutrient": "203",
+      "amount": "28.40"
+    },
+    {
+      "ndb": "43589",
+      "nutrient": "204",
+      "amount": "5.10"
+    },
+    {
+      "ndb": "43589",
+      "nutrient": "205",
+      "amount": "3.40"
+    },
+    {
+      "ndb": "43589",
+      "nutrient": "208",
+      "amount": "179"
+    },
+    {
+      "ndb": "43589",
+      "nutrient": "291",
+      "amount": "0.0"
+    },
+    {
+      "ndb": "44005",
+      "nutrient": "203",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "44005",
+      "nutrient": "204",
+      "amount": "100.00"
+    },
+    {
+      "ndb": "44005",
+      "nutrient": "205",
+      "amount": "0.00"
+    },
+    {
+      "ndb": "44005",
+      "nutrient": "208",
+      "amount": "884"
+    },
+    {
+      "ndb": "44005",
+      "nutrient": "291",
+      "amount": "0.0"
     }
   ]
 }

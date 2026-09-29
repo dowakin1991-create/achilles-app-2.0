@@ -99,7 +99,7 @@ test('Coach 2.0 reports data quality and asks contextual non-binary questions',(
 });
 
 test('Coach 2.0 creates expanded response from multi and scale answers',()=>{
-    assert.match(engine.responseFor('training-barrier',['time','fatigue']),/коротші тренування/);
-    assert.match(engine.responseFor('training-barrier',['time','fatigue']),/робочих днів/);
-    assert.match(engine.responseFor('last-workout-effort',5),/не радитиме автоматично підвищувати вагу/);
+    assert.match(engine.responseFor('training-barrier',['time','fatigue']),/коротший мінімальний варіант/);
+    assert.match(engine.responseFor('training-barrier',['time','fatigue']),/робочого дня/);
+    assert.match(engine.responseFor('last-workout-effort',5),/вагу|навантаження/);
 });

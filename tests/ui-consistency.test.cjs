@@ -145,7 +145,7 @@ test('10.20 mobile AAA pass simplifies non-dashboard workspaces only',()=>{
     assert.match(css,/#tab-food \.workspace-header[\s\S]*background:transparent!important/);
     assert.match(css,/#tab-coach \.coach-v3-signal[\s\S]*border-radius:0!important/);
     assert.match(css,/#tab-profile \.profile-hero[\s\S]*grid-template-columns:68px minmax\(0,1fr\)/);
-    const block=css.slice(css.indexOf('achilles-v10-20-0-mobile-aaa-pass'));
+    const start=css.indexOf('achilles-v10-20-0-mobile-aaa-pass'); const block=css.slice(start,css.indexOf('/* =====',start+1));
     assert.doesNotMatch(block,/#tab-dashboard/);
 });
 
@@ -165,7 +165,7 @@ test('Mobile 11 preview is isolated to mobile and Coach has one question host', 
 test('Mobile 11 release keeps dashboard rings and flattens profile/nav on mobile', () => {
     const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
     const css = fs.readFileSync(path.join(__dirname, '../app.css'), 'utf8');
-    assert.match(html, /11\.0\.0/);
+    assert.match(html, /name="achilles-build"/);
     assert.match(html, /id="ring-kcal"/);
     assert.match(html, /id="macro-p"/);
     assert.match(html, /id="macro-f"/);
@@ -214,13 +214,13 @@ test('11.2 avatar progression and durable custom-food backup are wired', () => {
     const sync = fs.readFileSync(path.join(__dirname, '../firebase-sync.js'), 'utf8');
     const sw = fs.readFileSync(path.join(__dirname, '../sw.js'), 'utf8');
     assert.match(html, /id="avatar-progression-grid"/);
-    assert.match(html, /avatar-system\.js\?v=11\.2\.0/);
-    assert.match(css, /achilles-avatar-atlas\.webp\?v=11\.2\.0/);
+    assert.match(html, /avatar-system\.js\?v=/);
+
     assert.match(sync, /"backups", "customFoods"/);
     assert.match(sync, /avatarState:/);
     assert.match(sync, /syncCustomFoodsBackup/);
     assert.match(sw, /avatar-system\.js/);
-    assert.match(sw, /achilles-avatar-atlas\.webp/);
+    assert.match(sw, /assets\/avatars\/avatar-15\.webp/);
 });
 
 
@@ -252,22 +252,12 @@ test('11.2.2 avatar changes from clickable profile avatar and picker overlay', (
 });
 
 
-test('11.2.3 keeps unapproved avatar artwork disabled in production', () => {
-    const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
-    const sw = fs.readFileSync(path.join(__dirname, '../sw.js'), 'utf8');
-    assert.match(html, /<div class="profile-avatar-large"><\/div>/);
-    assert.doesNotMatch(html, /id="avatar-picker-overlay"/);
-    assert.doesNotMatch(html, /data-achilles-module="avatar-system\.js"/);
-    assert.doesNotMatch(sw, /avatar-system\.js/);
-    assert.doesNotMatch(sw, /achilles-avatar-atlas\.webp/);
-});
-
 test('11.3 avatars are hard-disabled until unlocked and training history is grouped by date',()=>{const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');const av=fs.readFileSync(path.join(__dirname,'../avatar-system.js'),'utf8');const rt=fs.readFileSync(path.join(__dirname,'../app-runtime.js'),'utf8');assert.match(html,/id="profile-avatar-trigger"/);assert.match(av,/aria-disabled="true"/);assert.match(rt,/Історія тренувань/);assert.match(rt,/data-training-date/);assert.match(rt,/openTrainingDayHistory/);});
 
-test('11.3.1 uses approved avatar atlas and keeps locked avatars disabled',()=>{const av=fs.readFileSync(path.join(__dirname,'../avatar-system.js'),'utf8');const css=fs.readFileSync(path.join(__dirname,'../app.css'),'utf8');assert.match(av,/achilles-avatar-atlas\.webp\?v=11\.3\.1/);assert.match(av,/disabled aria-disabled="true"/);assert.match(css,/achilles-avatar-atlas\.webp\?v=11\.3\.1/);});
-
-
-test('11.3.2 refreshes approved avatar atlas cache',()=>{const av=fs.readFileSync(path.join(__dirname,'../avatar-system.js'),'utf8');const css=fs.readFileSync(path.join(__dirname,'../app.css'),'utf8');assert.match(av,/achilles-avatar-atlas\.webp\?v=11\.3\.2/);assert.match(css,/achilles-avatar-atlas\.webp\?v=11\.3\.2/);});
-
-
-test('11.3.3 uses verified approved avatar atlas',()=>{const av=fs.readFileSync(path.join(__dirname,'../avatar-system.js'),'utf8');const css=fs.readFileSync(path.join(__dirname,'../app.css'),'utf8');assert.match(av,/achilles-avatar-atlas\.webp\?v=11\.3\.3/);assert.match(css,/achilles-avatar-atlas\.webp\?v=11\.3\.3/);});
+test('approved individual avatar portraits are versioned and locked options stay disabled',()=>{
+    const av=fs.readFileSync(path.join(root,'avatar-system.js'),'utf8');
+    const sw=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+    assert.match(av,/avatar-\$\{validId\}\.webp/);
+    assert.match(av,/disabled aria-disabled="true"/);
+    for(let i=1;i<=15;i++)assert.ok(sw.includes(`assets/avatars/avatar-${i}.webp`));
+});

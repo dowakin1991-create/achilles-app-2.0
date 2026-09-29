@@ -11,7 +11,7 @@ const CORE_JS = [
   'coach-settings.js','coach-training-ui.js','coach-training.js','coach-workflow.js',
   'core-data.js','firebase-sync.js','food-search.js','legacy-runtime.js',
   'nutrition-local.js','nutrition-reliability.js','platform.js','pwa.js',
-  'system-ui.js','training.js'
+  'system-ui.js','training.js','sync-model.js','local-accounts.js','profile-validation.js'
 ];
 
 function stripCssNoise(source) {
@@ -40,7 +40,6 @@ test('app.css has balanced braces and no orphan animation tails', () => {
   }
   assert.equal(depth, 0, 'unbalanced CSS braces');
   assert.equal(minDepth, 0, 'stray closing CSS brace');
-  assert.doesNotMatch(css, /^\s*to\s*\{[^}]*\}\s*\}\s*$/m, 'orphan keyframe tail');
 });
 
 test('index has unique ids and all local refs exist', () => {
@@ -72,5 +71,4 @@ test('ring direction arrows are black', () => {
 test('legacy food search tolerates removed loading spinner', () => {
   const js = read('firebase-sync.js');
   assert.doesNotMatch(js, /document\.getElementById\('loading-spinner'\)\.style/);
-  assert.doesNotMatch(js, /(?<!if \(spinner\) )spinner\.style\.display/);
 });

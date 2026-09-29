@@ -113,7 +113,8 @@
             p: Math.max(0, Number(item.p || 0)),
             f: Math.max(0, Number(item.f || 0)),
             c: Math.max(0, Number(item.c || 0)),
-            fiber: item.fiber === null || item.fiber === undefined || item.fiber === '' ? null : Math.max(0, Number(item.fiber)),
+            fiber: item.fiber === null || item.fiber === undefined || item.fiber === '' ||
+                (Number(item.fiber)===0 && item.fiberEntered!==true && (item.source==='custom'||/^\s*🛠️/u.test(name))) ? null : Math.max(0, Number(item.fiber)),
             barcode: String(item.barcode || ''),
             source: item.source || defaults.source || 'local',
             createdAt: Number(item.createdAt || defaults.createdAt || now),
@@ -467,11 +468,14 @@
         const p = Number(document.getElementById('cf-p')?.value || 0);
         const f = Number(document.getElementById('cf-f')?.value || 0);
         const c = Number(document.getElementById('cf-c')?.value || 0);
+        const rawFiber = document.getElementById('cf-fiber')?.value.trim() || '';
+        const fiber = rawFiber === '' ? null : Number(rawFiber.replace(',','.'));
         if (!name || !Number.isFinite(kcal) || kcal < 0) { alert('Введіть назву та калорійність!'); return; }
+        if([p,f,c].some(n=>!Number.isFinite(n)||n<0||n>100) || (fiber!==null&&(!Number.isFinite(fiber)||fiber<0||fiber>100))) { alert('БЖВ і клітковина: від 0 до 100 г на 100 г продукту.'); return; }
 
-        A.nutritionRepo.addCustom({ name: `🛠️ ${name}`, kcal, p, f, c, fiber: 0, source: 'custom' });
+        A.nutritionRepo.addCustom({ name: `🛠️ ${name}`, kcal, p, f, c, fiber, fiberEntered:rawFiber!=='', source: 'custom' });
         root.closeCustomFood?.();
-        ['cf-name','cf-kcal','cf-p','cf-f','cf-c'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        ['cf-name','cf-kcal','cf-p','cf-f','cf-c','cf-fiber'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
         root.setFoodFilter?.('fav');
     };
 
@@ -705,7 +709,7 @@
             }
             const previous = this.read()[0];
             this.write([{
-                id: previous?.id || `snapshot-${Date.now()}`,
+                id: `snapshot-${Date.now()}-${Math.random().toString(36).slice(2)}`,
                 type: 'cloud-snapshot',
                 reason,
                 createdAt: Number(previous?.createdAt || Date.now()),
@@ -736,14 +740,18 @@
             if (typeof this.transport !== 'function') return false;
 
             this.flushing = (async () => {
+                const sentId = this.read()[0]?.id;
+                const sentUser = localStorage.getItem('achilles_user');
                 A.state?.setSync?.('syncing', { error: null });
                 try {
                     const result = await this.transport();
                     if (result === false) throw new Error('Хмарна синхронізація недоступна');
-                    this.write([]);
-                    A.state?.setSync?.('synced', { lastAt: Date.now(), error: null });
+                    if(localStorage.getItem('achilles_user') !== sentUser) return false;
+                    if(this.read()[0]?.id === sentId) this.write([]);
+                    A.state?.setSync?.(this.read().length ? 'queued' : 'synced', { lastAt: Date.now(), error: null });
                     return true;
                 } catch (error) {
+                    if(localStorage.getItem('achilles_user') !== sentUser) return false;
                     const queue = this.read();
                     if (queue[0]) queue[0].attempts = Number(queue[0].attempts || 0) + 1;
                     this.write(queue);
@@ -752,6 +760,10 @@
                     return false;
                 } finally {
                     this.flushing = null;
+                    if(localStorage.getItem('achilles_user') === sentUser && this.read()[0]?.id !== sentId && this.read().length) {
+                        clearTimeout(this.timer);
+                        this.timer=setTimeout(()=>this.flush(),650);
+                    }
                 }
             })();
             return this.flushing;

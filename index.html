@@ -10,18 +10,18 @@
 <meta content="#000000" name="theme-color"/>
 <meta content="Achilles OS — харчування, тренування, прогрес і персональний Coach в одному local-first фітнес-додатку." name="description"/>
 <meta content="telephone=no" name="format-detection"/>
-<link href="./icon-180.png?v=11.3.19" rel="apple-touch-icon" sizes="180x180"/>
-<link href="./icon-192.png?v=11.3.19" rel="icon" sizes="192x192" type="image/png"/>
-<link href="./icon-512.png?v=11.3.19" rel="icon" sizes="512x512" type="image/png"/>
+<link href="./icon-180.png?v=11.3.20" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=11.3.20" rel="icon" sizes="192x192" type="image/png"/>
+<link href="./icon-512.png?v=11.3.20" rel="icon" sizes="512x512" type="image/png"/>
 <link href="manifest.webmanifest" rel="manifest"/>
 <title>Achilles OS</title>
-<meta content="11.3.19" name="achilles-build"/>
+<meta content="11.3.20" name="achilles-build"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<script src="./coach-training.js?v=11.3.19"></script>
-<script src="./coach-engine.js?v=11.3.19"></script>
-<script src="./coach-settings.js?v=11.3.19"></script>
-<script src="./coach-cycle.js?v=11.3.19"></script>
-<script src="./coach-workflow.js?v=11.3.19"></script>
+<script src="./coach-training.js?v=11.3.20"></script>
+<script src="./coach-engine.js?v=11.3.20"></script>
+<script src="./coach-settings.js?v=11.3.20"></script>
+<script src="./coach-cycle.js?v=11.3.20"></script>
+<script src="./coach-workflow.js?v=11.3.20"></script>
 <!-- ЗАВАНТАЖЕННЯ ТЕМИ ДО ВІДМАЛЬОВУВАННЯ ЕКРАНУ -->
 <script>
         (function() {
@@ -45,7 +45,7 @@
             }
         })();
     </script>
-<link href="./app.css?v=11.3.19" id="achilles-app-styles" rel="stylesheet"/>
+<link href="./app.css?v=11.3.20" id="achilles-app-styles" rel="stylesheet"/>
 
 
 
@@ -138,6 +138,7 @@
 <input id="cf-f" inputmode="decimal" min="0" step="0.1" placeholder="Жири" type="number"/>
 <input id="cf-c" inputmode="decimal" min="0" step="0.1" placeholder="Вугл." type="number"/>
 </div>
+<input id="cf-fiber" inputmode="decimal" min="0" max="100" step="0.1" placeholder="Клітковина, г на 100 г (необов’язково)" type="number"/>
 <button class="gradient-bg primary-btn custom-food-save" onclick="saveCustomFood()">Зберегти продукт</button>
 <button class="danger custom-food-cancel" onclick="closeCustomFood()">Скасувати</button>
 </div>
@@ -206,14 +207,14 @@
 </select>
 <select id="reg-gender" required=""><option disabled="" selected="" value="">Стать</option><option value="male">Чоловік</option><option value="female">Жінка</option></select>
 <div class="numeric-input-row">
-<input id="reg-age" inputmode="numeric" pattern="[0-9]*" placeholder="Вік (років)" required="" type="number"/>
-<input id="reg-height" inputmode="numeric" pattern="[0-9]*" placeholder="Зріст (см)" required="" type="number"/>
+<input id="reg-age" min="1" max="120" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Вік (років)" required="" type="number"/>
+<input id="reg-height" min="50" max="250" step="0.1" inputmode="numeric" pattern="[0-9]*" placeholder="Зріст (см)" required="" type="number"/>
 </div>
-<input id="reg-weight" inputmode="decimal" placeholder="Поточна вага (кг)" required="" type="number"/>
+<input id="reg-weight" min="1" max="500" step="0.1" inputmode="decimal" placeholder="Поточна вага (кг)" required="" type="number"/>
 <span class="label-text">Твій графік (днів підряд):</span>
 <div class="numeric-input-row numeric-input-row-spaced">
-<input id="reg-work-days" inputmode="numeric" pattern="[0-9]*" placeholder="Робочих (напр. 2)" required="" type="number" value="2"/>
-<input id="reg-rest-days" inputmode="numeric" pattern="[0-9]*" placeholder="Вихідних (напр. 2)" required="" type="number" value="2"/>
+<input id="reg-work-days" min="0" max="365" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Робочих (напр. 2)" required="" type="number" value="2"/>
+<input id="reg-rest-days" min="0" max="365" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Вихідних (напр. 2)" required="" type="number" value="2"/>
 </div>
 <select id="reg-activity-work" required="">
 <option disabled="" selected="" value="">Активність у РОБОЧИЙ день</option>
@@ -629,8 +630,8 @@
 <label><span>Ім'я</span><input disabled="" id="edit-name" placeholder="Ім'я" type="text"/></label>
 <label><span>Стать</span><select id="edit-gender"><option value="male">Чоловік</option><option value="female">Жінка</option></select></label>
 <div class="two-field-grid">
-<label><span>Вік</span><input id="edit-age" inputmode="numeric" pattern="[0-9]*" placeholder="Вік" type="number"/></label>
-<label><span>Зріст</span><input id="edit-height" inputmode="numeric" pattern="[0-9]*" placeholder="см" type="number"/></label>
+<label><span>Вік</span><input id="edit-age" min="1" max="120" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="Вік" type="number"/></label>
+<label><span>Зріст</span><input id="edit-height" min="50" max="250" step="0.1" inputmode="numeric" pattern="[0-9]*" placeholder="см" type="number"/></label>
 </div>
 </div>
 </section>
@@ -638,8 +639,8 @@
 <div class="settings-card-head"><div class="settings-icon"><i class="fa-solid fa-calendar-days"></i></div><div><span class="eyebrow">РИТМ</span><h2>Графік і активність</h2></div></div>
 <div class="settings-fields">
 <div class="two-field-grid">
-<label><span>Робочих днів</span><input id="edit-work-days" inputmode="numeric" pattern="[0-9]*" placeholder="2" type="number"/></label>
-<label><span>Вихідних днів</span><input id="edit-rest-days" inputmode="numeric" pattern="[0-9]*" placeholder="2" type="number"/></label>
+<label><span>Робочих днів</span><input id="edit-work-days" min="0" max="365" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="2" type="number"/></label>
+<label><span>Вихідних днів</span><input id="edit-rest-days" min="0" max="365" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="2" type="number"/></label>
 </div>
 <label><span>Активність у робочий день</span>
 <select id="edit-activity-work">
@@ -710,13 +711,16 @@
 </div>
 </div>
 <!-- ACHILLES FOOD CORE — local/offline database -->
-<script src="./foods_ua_10000.js?v=11.3.19"></script>
-<script src="./foods_ua_extra.js?v=11.3.19"></script>
-<script src="./foods_ua_market.js?v=11.3.19"></script>
-<script src="./food-catalog.js?v=11.3.19"></script>
+<script src="./foods_ua_10000.js?v=11.3.20"></script>
+<script src="./foods_ua_extra.js?v=11.3.20"></script>
+<script src="./foods_ua_market.js?v=11.3.20"></script>
+
+<script src="./sync-model.js?v=11.3.20"></script>
+<script src="./local-accounts.js?v=11.3.20"></script>
+<script src="./profile-validation.js?v=11.3.20"></script>
 <!-- FIREBASE MODULE SCRIPT -->
-<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=11.3.19"></script>
-<script data-achilles-module="platform.js" src="./platform.js?v=11.3.19"></script>
+<script data-achilles-module="firebase-sync.js" src="./firebase-sync.js?v=11.3.20"></script>
+<script data-achilles-module="platform.js" src="./platform.js?v=11.3.20"></script>
 
 
 
@@ -727,32 +731,32 @@
 
 
 
-<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=11.3.19"></script>
+<script data-achilles-module="legacy-runtime.js" src="./legacy-runtime.js?v=11.3.20"></script>
 
 
 
 
 <!-- Achilles OS V9.2 architecture -->
-<script data-achilles-module="core-data.js" src="./core-data.js?v=11.3.19"></script>
+<script data-achilles-module="core-data.js" src="./core-data.js?v=11.3.20"></script>
 
 
-<script data-achilles-module="training.js" src="./training.js?v=11.3.19"></script>
+<script data-achilles-module="training.js" src="./training.js?v=11.3.20"></script>
 
-<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=11.3.19"></script>
-<script data-achilles-module="avatar-system.js" src="./avatar-system.js?v=11.3.19"></script>
-
-
-
-<script data-achilles-module="system-ui.js" src="./system-ui.js?v=11.3.19"></script>
-
-<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=11.3.19"></script>
+<script data-achilles-module="app-runtime.js" src="./app-runtime.js?v=11.3.20"></script>
+<script data-achilles-module="avatar-system.js" src="./avatar-system.js?v=11.3.20"></script>
 
 
-<script data-achilles-module="pwa.js" src="./pwa.js?v=11.3.19"></script>
 
-<script src="./coach-training-ui.js?v=11.3.19"></script>
-<script src="./food-search.js?v=11.3.19"></script>
-<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=11.3.19"></script>
+<script data-achilles-module="system-ui.js" src="./system-ui.js?v=11.3.20"></script>
+
+<script data-achilles-module="nutrition-reliability.js" src="./nutrition-reliability.js?v=11.3.20"></script>
+
+
+<script data-achilles-module="pwa.js" src="./pwa.js?v=11.3.20"></script>
+
+<script src="./coach-training-ui.js?v=11.3.20"></script>
+<script src="./food-search.js?v=11.3.20"></script>
+<script data-achilles-module="nutrition-local.js" src="./nutrition-local.js?v=11.3.20"></script>
 
 
 

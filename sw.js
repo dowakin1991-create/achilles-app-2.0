@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'achilles-os-v11-3-19';
+const CACHE_VERSION = 'achilles-os-v11-3-20';
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -18,7 +18,9 @@ const APP_SHELL = [
   "./foods_ua_10000.js",
   "./foods_ua_extra.js",
   "./foods_ua_market.js",
-  "./food-catalog.js",
+  "./sync-model.js",
+  "./local-accounts.js",
+  "./profile-validation.js",
   "./firebase-sync.js",
   "./platform.js",
   "./legacy-runtime.js",

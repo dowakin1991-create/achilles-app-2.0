@@ -1,0 +1,14 @@
+{
+  "name": "achilles-app",
+  "private": true,
+  "version": "11.3.20",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "30.1.1"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

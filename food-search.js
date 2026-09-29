@@ -109,6 +109,7 @@
                     percentages: normalize(byId.get(id).name).match(/\d+(?:\.\d+)?%/g) || []});
         }
         const prepared = [...entries.values()];
+        const canonicalNames = new Map([...byId].map(([id,item])=>[id,normalize(item.name)]));
         const cache = new Map();
         const cacheKey = (query, limit) => `${query}\0${limit}`;
         function collect(query, terms, fuzzy) {
@@ -116,9 +117,10 @@
             for (const rec of prepared) {
                 // Older aliases split decimals into words ("2 5%"). The canonical
                 // percentage is authoritative; those aliases must not match "5%".
-                if (rec.percentages.length && terms.some(term => /^\d+(?:\.\d+)?%?$/.test(term) &&
+                if (rec.text !== query && rec.percentages.length && terms.some(term => /^\d+(?:\.\d+)?%?$/.test(term) &&
                     !rec.percentages.some(value => Number(value.slice(0, -1)) === Number(term.replace(/%$/, ''))))) continue;
-                const value = score(rec.text, rec.words, query, terms, fuzzy) + rec.boost;
+                const value = score(rec.text, rec.words, query, terms, fuzzy) + rec.boost
+                    + (canonicalNames.get(rec.id) === query ? 1000 : 0);
                 if (Number.isFinite(value) && (!best.has(rec.id) || best.get(rec.id).score < value))
                     best.set(rec.id, {score: value, term: rec.term});
             }
