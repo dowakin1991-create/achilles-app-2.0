@@ -4,7 +4,7 @@
 
     const A = root.Achilles = root.Achilles || {};
     const STATE_KEY = 'achilles_avatar_state_v1';
-    const AVATAR_VERSION = '11.3.20';
+    const AVATAR_VERSION = '11.3.21';
 
     const CATALOG = Object.freeze([
         {id:1,  name:'Новобранець',        tier:'I',   kind:'base'},

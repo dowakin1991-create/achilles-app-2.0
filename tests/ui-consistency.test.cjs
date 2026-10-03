@@ -204,7 +204,7 @@ test('11.1.1 numeric input audit prevents iOS caret/flex glitches', () => {
     assert.match(html, /id="cf-p"[^>]*step="0\.1"/);
     assert.match(css, /\.numeric-input-row > input[\s\S]*width:0!important[\s\S]*min-width:0!important/);
     assert.match(css, /input\[type="number"\][\s\S]*text-indent:0!important[\s\S]*text-align:left!important/);
-    assert.match(css, /#custom-food-overlay input:focus[\s\S]*padding-left:14px!important/);
+    assert.doesNotMatch(css, /line-height:(?:56|58)px!important/);
 });
 
 

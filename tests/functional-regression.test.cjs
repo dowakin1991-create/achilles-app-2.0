@@ -96,3 +96,15 @@ test('actual cloud upload uses a transaction and does not overwrite remote-only 
     w.localStorage.setItem('achilles_all_days',JSON.stringify({'2026-09-29':{log:[{id:'local',type:'food',kcal:200}]}}));await w.Achilles.syncQueue.transport();
     const result=writes.find(x=>x.ref==='users/AUDIT').data;assert.equal(result.allDaysData['2026-09-29'].log.length,2);assert.equal(result.allDaysData['2026-09-29'].consumedCalories,300);
 });
+
+test('cloud refresh preserves the selected historical day and saves dinner to that day',async t=>{
+    const{w}=await setup(t);w.changeDate(-1);const yesterday=w.currentViewDate;
+    w.loadFromCloud=async()=>true;w.syncToCloud=async()=>true;
+    await w.refreshFromCloud(true);
+    assert.equal(w.currentViewDate,yesterday);
+    for(const[id,value]of Object.entries({'dish-name':'Вечеря вчора','dish-kcal':'520','dish-p':'35','dish-f':'20','dish-c':'50'}))w.document.getElementById(id).value=value;
+    w.openCalculatedDish();w.saveCalculatedDish();w.loadDailyData();
+    assert.equal(w.currentViewDate,yesterday);
+    assert.ok(w.Achilles.storage.getDay(yesterday).log.some(e=>e.html?.includes('Вечеря вчора')));
+    assert.equal(w.Achilles.storage.getDay(w.todayDate).log.length,0);
+});

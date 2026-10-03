@@ -329,7 +329,7 @@
             };
         },
 
-        load(date = root.todayDate) {
+        load(date = root.currentViewDate || root.todayDate) {
             const days = A.storage.days();
             root.allDaysData = days;
             const day = days[date] || emptyDay();
@@ -360,7 +360,7 @@
         },
 
         installLegacyAPI() {
-            root.loadDailyData = () => this.load(root.todayDate);
+            root.loadDailyData = (date = root.currentViewDate || root.todayDate) => this.load(date);
             root.saveDailyData = () => this.save({ sync: true, touch: true });
             root.changeDate = offset => this.switch(offset);
         }

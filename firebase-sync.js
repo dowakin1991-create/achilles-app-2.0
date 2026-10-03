@@ -1419,27 +1419,41 @@
             const c = readDishNumber('dish-c');
             const one = n => Math.round(n * 10) / 10;
             if(kcal === 0 && p === 0 && f === 0 && c === 0) {
-                preview.innerHTML = '<span>У журнал буде додано</span><strong>— ккал · Б — · Ж — · В —</strong>';
+                preview.innerHTML = '<span>Разом за порцію</span><strong>— ккал · Б — · Ж — · В —</strong>';
                 return;
             }
-            preview.innerHTML = `<span>У журнал буде додано</span><strong>${Math.round(kcal)} ккал · Б ${one(p)} · Ж ${one(f)} · В ${one(c)}</strong>`;
+            preview.innerHTML = `<span>Разом за порцію</span><strong>${Math.round(kcal)} ккал · Б ${one(p)} · Ж ${one(f)} · В ${one(c)}</strong>`;
         };
 
+        let dishOpener = null;
         window.openCalculatedDish = function() {
             const overlay = document.getElementById('calculated-dish-overlay');
             if(!overlay) return;
+            dishOpener = document.activeElement;
             overlay.style.display = 'flex';
             requestAnimationFrame(() => { overlay.style.opacity = '1'; });
             window.updateCalculatedDishPreview();
-            setTimeout(() => document.getElementById('dish-name')?.focus({preventScroll:true}), 80);
+            overlay.querySelector('[role=dialog]')?.focus({preventScroll:true});
         };
 
         window.closeCalculatedDish = function() {
             const overlay = document.getElementById('calculated-dish-overlay');
             if(!overlay) return;
+            document.activeElement?.blur?.();
+            overlay.style.display = 'none';
             overlay.style.opacity = '0';
-            setTimeout(() => { overlay.style.display = 'none'; }, 260);
+            dishOpener?.focus?.({preventScroll:true});
         };
+
+        document.getElementById('calculated-dish-overlay')?.addEventListener('keydown', event => {
+            if(event.key === 'Escape') { event.preventDefault(); window.closeCalculatedDish(); return; }
+            if(event.key !== 'Tab') return;
+            const items = [...event.currentTarget.querySelectorAll('button,input')].filter(el => !el.disabled);
+            const first = items[0], last = items[items.length-1], active = document.activeElement;
+            if(event.shiftKey && (active === first || active?.getAttribute('role') === 'dialog')) {
+                event.preventDefault(); last?.focus();
+            } else if(!event.shiftKey && active === last) { event.preventDefault(); first?.focus(); }
+        });
 
         window.saveCalculatedDish = function() {
             const name = document.getElementById('dish-name')?.value.trim() || '';

@@ -109,3 +109,29 @@
     document.addEventListener('DOMContentLoaded', runSplash, { once: true });
 })();
 
+
+/* Form sheets must fit above the virtual keyboard, including iOS standalone mode. */
+(function () {
+    const viewport = window.visualViewport;
+    let frame;
+    function update() {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+            const style = document.documentElement.style;
+            style.setProperty('--form-viewport-height', `${viewport?.height || window.innerHeight}px`);
+            style.setProperty('--form-viewport-top', `${viewport?.offsetTop || 0}px`);
+            const field = document.activeElement;
+            const sheet = field?.closest?.('.calculated-dish-body, #custom-food-overlay .custom-food-sheet');
+            if (!sheet) return;
+            const box = field.getBoundingClientRect(), area = sheet.getBoundingClientRect();
+            if (box.bottom > area.bottom - 12) sheet.scrollTop += box.bottom - area.bottom + 12;
+            else if (box.top < area.top + 12) sheet.scrollTop -= area.top + 12 - box.top;
+        });
+    }
+    viewport?.addEventListener('resize', update, {passive:true});
+    viewport?.addEventListener('scroll', update, {passive:true});
+    window.addEventListener('resize', update, {passive:true});
+    window.addEventListener('pageshow', update, {passive:true});
+    document.addEventListener('focusin', update);
+    update();
+})();
